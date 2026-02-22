@@ -1,8 +1,8 @@
 {
-    'name': 'My First Module 2',
+    'name': 'My First Module',
     'version': '1.0',
     'summary': 'Learning custom module in Odoo 17',
-    'author': 'Fatima ',
+    'author': 'Fatima Hasan',
     'depends': ['base'],
     'data': [],
     'installable': True,
