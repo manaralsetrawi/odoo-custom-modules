@@ -4,7 +4,7 @@
     'summary': 'Learning custom module in Odoo 17',
     'author': 'Fatima Hasan',
     'depends': ['base'],
-    'data': [],
+    'data': ['views/my_model_views.xml'],
     'installable': True,
     'application': True,
 }
