@@ -39,7 +39,7 @@ $hover-blue: #ff00aa;
         &:hover,
         &:focus {
           background-color: $hover-blue !important;
-          color: white !important; // keeps text visible
+          color: red !important; // keeps text visible
         }
       }
 
