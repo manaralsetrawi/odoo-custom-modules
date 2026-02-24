@@ -38,8 +38,8 @@ $hover-blue: #ff00aa;
         &.active,
         &:hover,
         &:focus {
-          background-color: $hover-blue !important;
-          color: red !important; // keeps text visible
+          background-color: white !important;
+          color: $brand-blue !important; // keeps text visible
         }
       }
 
@@ -48,15 +48,14 @@ $hover-blue: #ff00aa;
 
         &:hover,
         &:focus {
-          background-color: white !important;
+          background-color: rgb(252, 47, 47) !important;
           color: $brand-blue !important;
-          font-weight: 700;
         }
 
         &.active {
           background-color: white !important;
-          color: $brand-blue !important;
-          font-weight: bold;
+          color: purple !important;
+          font-weight: 700;
         }
       }
     }
