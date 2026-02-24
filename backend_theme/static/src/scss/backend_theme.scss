@@ -2,7 +2,7 @@ $o-community-color: #0B2C3D;
 $o-brand-odoo: #0B2C3D;
 $o-brand-primary: #0B2C3D;
 $brand-blue: #0B2C3D;
-$hover-blue: #3b90b8;
+$hover-blue: #ff00aa;
 // 1. Force the brand color at the highest priority
 :root {
     --o-brand-primary: #{$brand-blue} !important;
@@ -122,4 +122,32 @@ $hover-blue: #3b90b8;
     input::placeholder {
         color: #999 !important; // Makes "Search..." more readable
     }
+}
+
+
+// Hover effect for Search Filters
+.o_searchview_facet:hover {
+    // 1. Make the background of the whole bubble lighter on hover
+    background-color: #e2e8f0 !important; 
+    
+    // 2. Change the label text to your dark brand blue
+    .o_searchview_facet_label {
+        background-color: transparent !important;
+        color: #0B2C3D !important; 
+    }
+
+    // 3. Change the value text to your dark brand blue
+    .o_facet_values {
+        color: #0B2C3D !important;
+        background-color: transparent !important;
+    }
+
+    // 4. Change the "X" icon to your dark brand blue
+    .o_facet_remove {
+        color: #0B2C3D !important;
+    }
+}
+
+.o_searchview_facet {
+    transition: all 0.2s ease-in-out; /* Adds a smooth fade effect */
 }
