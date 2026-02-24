@@ -1,63 +1,44 @@
-$o-community-color: #0B2C3D;
-$o-brand-odoo: #0B2C3D;
-$o-brand-primary: #0B2C3D;
 $brand-blue: #0B2C3D;
-$hover-blue: #ff00aa;
-// 1. Force the brand color at the highest priority
+$hover-blue: #ff00aa; // Your Pink Hover
+
+// 1. Force CSS Variables
 :root {
     --o-brand-primary: #{$brand-blue} !important;
     --o-brand-odoo: #{$brand-blue} !important;
     --primary: #{$brand-blue} !important;
-    
-    // Navbar specific variables
     --o-navbar-background-color: #{$brand-blue} !important;
     --o-navbar-entry-active-bg: #{$hover-blue} !important;
     --o-navbar-entry-hover-bg: #{$hover-blue} !important;
 }
 
-// 2. Specific override for the secondary menu bar (the purple area)
+// 2. Navbar Fix - Corrected Nesting
 .o_main_navbar {
-    // Override the background of the entire bar
     background-color: $brand-blue !important;
-    --o-navbar-background-color: $brand-blue !important;
 
-    // Target the specific container for Overview, Management, etc.
-    .o_menu_sections {
-        background-color: #0B2C3D !important;
-        
-        .o_menu_sections, .o_menu_brand, .o_nav_entry, .o_menu_sections_more {
+    // Fixed: These are siblings, not nested inside each other
+    .o_menu_brand, 
+    .o_menu_sections, 
+    .o_nav_entry, 
+    .o_menu_sections_more {
         background-color: $brand-blue !important;
         
         .nav-link, .dropdown-toggle {
             color: white !important;
             
-            &.active, &:hover, &:focus {
-                background-color: $hover-blue !important;
-            }
-        }
-    
-    }   
-        .nav-link {
-            color: white !important;
-            
+            // This is where your Pink Hover lives
             &:hover, &:focus {
                 background-color: $hover-blue !important;
             }
             
             &.active {
-                background-color: #12455C !important;
+                background-color: #12455C !important; // Darker blue for active
                 font-weight: bold;
             }
         }
     }
 }
 
-// 3. Fix the "Attendances" branding area (left side)
-.o_main_navbar .o_menu_brand {
-    background-color: #0B2C3D !important;
-    color: white !important;
-}
-
+// 3. Primary Buttons
 .btn-primary, .btn-outline-primary {
     --btn-bg: #{$brand-blue} !important;
     --btn-border-color: #{$brand-blue} !important;
@@ -66,88 +47,44 @@ $hover-blue: #ff00aa;
     background-color: $brand-blue !important;
     border-color: $brand-blue !important;
 }
-// 4. Force the Search icon and other navbar icons
-.o_main_navbar .o_nav_entry, 
-.o_main_navbar .o_menu_sections_more {
-    background-color: #0B2C3D !important;
-}
 
-.o_searchview .o_searchview_facet {
-    background-color: $brand-blue !important;
-    
-    .o_searchview_facet_label {
-        background-color: $brand-blue !important;
-    }
-}
-
-.o_control_panel .o_searchview .o_search_reification_list .o_selection_focus {
-    background-color: $brand-blue !important;
-}
-
-// Change the color of icons like the magnifying glass if they remain purple
-.text-primary, .fa-search, .o_searchview_icon {
-    color: $brand-blue !important;
-}
-
-
-// Fix for Search Filter (Facet) Text and Icons
+// 4. Search Bar & Filters (Facets)
 .o_searchview_facet {
     background-color: $brand-blue !important;
+    transition: all 0.2s ease-in-out;
 
-    // The text label (e.g., "Date: Month > Employee")
     .o_searchview_facet_label {
         background-color: $brand-blue !important;
-        color: white !important; // Makes text white
+        color: white !important;
     }
 
-    // The value part of the filter
     .o_facet_values {
         color: white !important;
-        background-color: rgba(255, 255, 255, 0.1) !important; // Slight tint to distinguish from label
+        background-color: rgba(255, 255, 255, 0.1) !important;
     }
 
-    // The "X" remove button
     .o_facet_remove {
         color: white !important;
-        &:hover {
-            color: #ffcccc !important; // Light red on hover to show it's a delete action
+    }
+
+    // Filter Hover: Switches to Light Grey with Dark Blue Text
+    &:hover {
+        background-color: #e2e8f0 !important; 
+        .o_searchview_facet_label, 
+        .o_facet_values, 
+        .o_facet_remove {
+            background-color: transparent !important;
+            color: $brand-blue !important; 
         }
     }
 }
 
+// 5. Search Bar Icons
 .o_searchview {
-    .o_searchview_icon {
-        color: $brand-blue !important; // Magnifying glass color
-    }
-    input::placeholder {
-        color: #999 !important; // Makes "Search..." more readable
-    }
+    .o_searchview_icon { color: $brand-blue !important; }
+    input::placeholder { color: #999 !important; }
 }
 
-
-// Hover effect for Search Filters
-.o_searchview_facet:hover {
-    // 1. Make the background of the whole bubble lighter on hover
-    background-color: #e2e8f0 !important; 
-    
-    // 2. Change the label text to your dark brand blue
-    .o_searchview_facet_label {
-        background-color: transparent !important;
-        color: #0B2C3D !important; 
-    }
-
-    // 3. Change the value text to your dark brand blue
-    .o_facet_values {
-        color: #0B2C3D !important;
-        background-color: transparent !important;
-    }
-
-    // 4. Change the "X" icon to your dark brand blue
-    .o_facet_remove {
-        color: #0B2C3D !important;
-    }
-}
-
-.o_searchview_facet {
-    transition: all 0.2s ease-in-out; /* Adds a smooth fade effect */
+.text-primary, .fa-search, .o_searchview_icon {
+    color: $brand-blue !important;
 }
