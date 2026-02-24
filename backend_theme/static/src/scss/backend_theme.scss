@@ -65,3 +65,50 @@ $primary: #0B2C3D;
     border-color: #0B2C3D !important;
     box-shadow: 0 0 0 0.2rem rgba(11, 44, 61, 0.25) !important;
 }
+
+// =======================================
+// FORCE REMOVE PURPLE (Odoo 18 Fix)
+// =======================================
+
+// Override CSS root variables
+:root {
+    --o-brand-primary: #0B2C3D !important;
+    --primary: #0B2C3D !important;
+}
+
+// Secondary top menu (Overview / Management / Reporting)
+.o_menu_sections .nav-link {
+    background-color: transparent !important;
+    color: #ffffff !important;
+}
+
+.o_menu_sections .nav-link.active {
+    background-color: #12455C !important;
+    color: #ffffff !important;
+}
+
+.o_menu_sections .nav-link:hover {
+    background-color: #12455C !important;
+    color: #ffffff !important;
+}
+
+// Fix control panel buttons & filters
+.o_control_panel .btn-primary {
+    background-color: #0B2C3D !important;
+    border-color: #0B2C3D !important;
+}
+
+// Fix purple badges / counters
+.badge.bg-primary {
+    background-color: #0B2C3D !important;
+}
+
+// Fix icons that inherit primary color
+.text-primary {
+    color: #0B2C3D !important;
+}
+
+// Fix active pills (search filters)
+.nav-pills .nav-link.active {
+    background-color: #0B2C3D !important;
+}
