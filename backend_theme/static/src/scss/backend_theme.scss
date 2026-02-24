@@ -1,41 +1,46 @@
-// Override the Odoo Brand Colors at the source
+$o-community-color: #0B2C3D;
+$o-brand-odoo: #0B2C3D;
+$o-brand-primary: #0B2C3D;
+// 1. Force the brand color at the highest priority
 :root {
-    --o-brand-primary: #0B2C3D;
-    --o-brand-odoo: #0B2C3D;
-    --o-navbar-background-color: #0B2C3D;
-    --o-actionbar-background-color: #ffffff;
-    
-    // This targets the active tab background in the navbar
-    --o-navbar-entry-active-bg: #12455C;
-    --o-navbar-entry-hover-bg: #12455C;
-}
+    --o-brand-primary: #0B2C3D !important;
+    --o-brand-odoo: #0B2C3D !important;
+    --o-navbar-background-color: #0B2C3D !important;
+    --o-navbar-entry-active-bg: #12455C !important;}
 
-// Target the Navbar specifically to ensure the purple is gone
+// 2. Specific override for the secondary menu bar (the purple area)
 .o_main_navbar {
-    background-color: var(--o-navbar-background-color) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    // Override the background of the entire bar
+    background-color: #0B2C3D !important;
+    --o-navbar-background-color: #0B2C3D !important;
 
-    // Titles and Links
-    .o_menu_brand, .o_nav_entry, .nav-link {
-        color: #ffffff !important;
+    // Target the specific container for Overview, Management, etc.
+    .o_menu_sections {
+        background-color: #0B2C3D !important;
         
-        &:hover, &:focus, &.active {
-            background-color: var(--o-navbar-entry-active-bg) !important;
+        .nav-link {
+            color: white !important;
+            
+            &:hover, &:focus {
+                background-color: #12455C !important;
+            }
+            
+            &.active {
+                background-color: #12455C !important;
+                font-weight: bold;
+            }
         }
     }
 }
 
-// Fix for the "App Selector" (the grid icon) background
-.o_navbar_apps_menu .dropdown-toggle {
-    &:hover, &:focus {
-        background-color: var(--o-navbar-entry-active-bg) !important;
-    }
+// 3. Fix the "Attendances" branding area (left side)
+.o_main_navbar .o_menu_brand {
+    background-color: #0B2C3D !important;
+    color: white !important;
 }
 
-// Global button override without needing !important everywhere
-.btn-primary {
-    --btn-bg: #0B2C3D;
-    --btn-border-color: #0B2C3D;
-    --btn-hover-bg: #12455C;
-    --btn-hover-border-color: #12455C;
+// 4. Force the Search icon and other navbar icons
+.o_main_navbar .o_nav_entry, 
+.o_main_navbar .o_menu_sections_more {
+    background-color: #0B2C3D !important;
 }
