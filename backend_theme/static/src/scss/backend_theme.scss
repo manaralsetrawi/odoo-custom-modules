@@ -50,6 +50,7 @@ $hover-blue: #ff00aa;
         &:focus {
           background-color: white !important;
           color: $brand-blue !important;
+          font-weight: 700;
         }
 
         &.active {
