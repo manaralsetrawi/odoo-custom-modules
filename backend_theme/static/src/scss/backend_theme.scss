@@ -88,3 +88,38 @@ $hover-blue: #3b90b8;
 .text-primary, .fa-search, .o_searchview_icon {
     color: $brand-blue !important;
 }
+
+
+// Fix for Search Filter (Facet) Text and Icons
+.o_searchview_facet {
+    background-color: $brand-blue !important;
+
+    // The text label (e.g., "Date: Month > Employee")
+    .o_searchview_facet_label {
+        background-color: $brand-blue !important;
+        color: white !important; // Makes text white
+    }
+
+    // The value part of the filter
+    .o_facet_values {
+        color: white !important;
+        background-color: rgba(255, 255, 255, 0.1) !important; // Slight tint to distinguish from label
+    }
+
+    // The "X" remove button
+    .o_facet_remove {
+        color: white !important;
+        &:hover {
+            color: #ffcccc !important; // Light red on hover to show it's a delete action
+        }
+    }
+}
+
+.o_searchview {
+    .o_searchview_icon {
+        color: $brand-blue !important; // Magnifying glass color
+    }
+    input::placeholder {
+        color: #999 !important; // Makes "Search..." more readable
+    }
+}
