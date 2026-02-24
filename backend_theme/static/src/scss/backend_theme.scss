@@ -1,122 +1,41 @@
-$o-brand-primary: #0B2C3D;
-$primary: #0B2C3D;
-// =========================
-// NCST Corporate Theme
-// =========================
-
-// Primary brand color
-$o-brand-primary: #0B2C3D;
-$primary: #0B2C3D;
-
-// Web client background
-.o_web_client {
-    background-color: #F4F6F9;
+// Override the Odoo Brand Colors at the source
+:root {
+    --o-brand-primary: #0B2C3D;
+    --o-brand-odoo: #0B2C3D;
+    --o-navbar-background-color: #0B2C3D;
+    --o-actionbar-background-color: #ffffff;
+    
+    // This targets the active tab background in the navbar
+    --o-navbar-entry-active-bg: #12455C;
+    --o-navbar-entry-hover-bg: #12455C;
 }
 
-// =========================
-// Navbar
-// =========================
-
+// Target the Navbar specifically to ensure the purple is gone
 .o_main_navbar {
-    background-color: #0B2C3D !important;
+    background-color: var(--o-navbar-background-color) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    // Titles and Links
+    .o_menu_brand, .o_nav_entry, .nav-link {
+        color: #ffffff !important;
+        
+        &:hover, &:focus, &.active {
+            background-color: var(--o-navbar-entry-active-bg) !important;
+        }
+    }
 }
 
-.o_main_navbar .nav-link {
-    color: #ffffff !important;
+// Fix for the "App Selector" (the grid icon) background
+.o_navbar_apps_menu .dropdown-toggle {
+    &:hover, &:focus {
+        background-color: var(--o-navbar-entry-active-bg) !important;
+    }
 }
 
-// Remove purple hover on top menu tabs
-.o_main_navbar .nav-link:hover,
-.o_main_navbar .nav-link:focus {
-    background-color: #12455C !important;
-    color: #ffffff !important;
-}
-
-// Active menu tab (Overview / Management etc.)
-.o_main_navbar .nav-link.active {
-    background-color: #12455C !important;
-    color: #ffffff !important;
-}
-
-// Dropdown hover
-.dropdown-item:hover {
-    background-color: #12455C !important;
-    color: #ffffff !important;
-}
-
-// =========================
-// Buttons
-// =========================
-
+// Global button override without needing !important everywhere
 .btn-primary {
-    background-color: #0B2C3D !important;
-    border-color: #0B2C3D !important;
-}
-
-.btn-primary:hover {
-    background-color: #12455C !important;
-    border-color: #12455C !important;
-}
-
-// =========================
-// Remove Purple Focus Borders
-// =========================
-
-.form-control:focus,
-.btn:focus {
-    border-color: #0B2C3D !important;
-    box-shadow: 0 0 0 0.2rem rgba(11, 44, 61, 0.25) !important;
-}
-
-// =======================================
-// FORCE REMOVE PURPLE (Odoo 18 Fix)
-// =======================================
-
-// Override CSS root variables
-:root {
-    --o-brand-primary: #0B2C3D !important;
-    --primary: #0B2C3D !important;
-}
-
-// Secondary top menu (Overview / Management / Reporting)
-.o_menu_sections .nav-link {
-    background-color: transparent !important;
-    color: #ffffff !important;
-}
-
-.o_menu_sections .nav-link.active {
-    background-color: #12455C !important;
-    color: #ffffff !important;
-}
-
-.o_menu_sections .nav-link:hover {
-    background-color: #12455C !important;
-    color: #ffffff !important;
-}
-
-// Fix control panel buttons & filters
-.o_control_panel .btn-primary {
-    background-color: #0B2C3D !important;
-    border-color: #0B2C3D !important;
-}
-
-// Fix purple badges / counters
-.badge.bg-primary {
-    background-color: #0B2C3D !important;
-}
-
-// Fix icons that inherit primary color
-.text-primary {
-    color: #0B2C3D !important;
-}
-
-// Fix active pills (search filters)
-.nav-pills .nav-link.active {
-    background-color: #0B2C3D !important;
-}
-
-:root {
-    --o-brand-primary: #0B2C3D !important;
-    --o-navbar-background: #0B2C3D !important;
-    --o-navbar-entry-hover-bg: #12455C !important;
+    --btn-bg: #0B2C3D;
+    --btn-border-color: #0B2C3D;
+    --btn-hover-bg: #12455C;
+    --btn-hover-border-color: #12455C;
 }
