@@ -1,28 +1,47 @@
 $o-community-color: #0B2C3D;
 $o-brand-odoo: #0B2C3D;
 $o-brand-primary: #0B2C3D;
+$brand-blue: #0B2C3D;
+$hover-blue: #12455C;
 // 1. Force the brand color at the highest priority
 :root {
-    --o-brand-primary: #0B2C3D !important;
-    --o-brand-odoo: #0B2C3D !important;
-    --o-navbar-background-color: #0B2C3D !important;
-    --o-navbar-entry-active-bg: #12455C !important;}
+    --o-brand-primary: #{$brand-blue} !important;
+    --o-brand-odoo: #{$brand-blue} !important;
+    --primary: #{$brand-blue} !important;
+    
+    // Navbar specific variables
+    --o-navbar-background-color: #{$brand-blue} !important;
+    --o-navbar-entry-active-bg: #{$hover-blue} !important;
+    --o-navbar-entry-hover-bg: #{$hover-blue} !important;
+}
 
 // 2. Specific override for the secondary menu bar (the purple area)
 .o_main_navbar {
     // Override the background of the entire bar
-    background-color: #0B2C3D !important;
-    --o-navbar-background-color: #0B2C3D !important;
+    background-color: $brand-blue !important;
+    --o-navbar-background-color: $brand-blue !important;
 
     // Target the specific container for Overview, Management, etc.
     .o_menu_sections {
         background-color: #0B2C3D !important;
         
+        .o_menu_sections, .o_menu_brand, .o_nav_entry, .o_menu_sections_more {
+        background-color: $brand-blue !important;
+        
+        .nav-link, .dropdown-toggle {
+            color: white !important;
+            
+            &.active, &:hover, &:focus {
+                background-color: $hover-blue !important;
+            }
+        }
+    
+    }   
         .nav-link {
             color: white !important;
             
             &:hover, &:focus {
-                background-color: #3b90b8 !important;
+                background-color: #317da1 !important;
             }
             
             &.active {
@@ -39,8 +58,33 @@ $o-brand-primary: #0B2C3D;
     color: white !important;
 }
 
+.btn-primary, .btn-outline-primary {
+    --btn-bg: #{$brand-blue} !important;
+    --btn-border-color: #{$brand-blue} !important;
+    --btn-hover-bg: #{$hover-blue} !important;
+    --btn-hover-border-color: #{$hover-blue} !important;
+    background-color: $brand-blue !important;
+    border-color: $brand-blue !important;
+}
 // 4. Force the Search icon and other navbar icons
 .o_main_navbar .o_nav_entry, 
 .o_main_navbar .o_menu_sections_more {
     background-color: #0B2C3D !important;
+}
+
+.o_searchview .o_searchview_facet {
+    background-color: $brand-blue !important;
+    
+    .o_searchview_facet_label {
+        background-color: $brand-blue !important;
+    }
+}
+
+.o_control_panel .o_searchview .o_search_reification_list .o_selection_focus {
+    background-color: $brand-blue !important;
+}
+
+// Change the color of icons like the magnifying glass if they remain purple
+.text-primary, .fa-search, .o_searchview_icon {
+    color: $brand-blue !important;
 }
