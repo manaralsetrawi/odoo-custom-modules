@@ -1,3 +1,5 @@
+$o-brand-primary: #0B2C3D;
+$primary: #0B2C3D;
 // =========================
 // NCST Corporate Theme
 // =========================
@@ -111,4 +113,10 @@ $primary: #0B2C3D;
 // Fix active pills (search filters)
 .nav-pills .nav-link.active {
     background-color: #0B2C3D !important;
+}
+
+:root {
+    --o-brand-primary: #0B2C3D !important;
+    --o-navbar-background: #0B2C3D !important;
+    --o-navbar-entry-hover-bg: #12455C !important;
 }
