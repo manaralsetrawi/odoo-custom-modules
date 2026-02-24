@@ -1,6 +1,41 @@
-$o-brand-primary: #007BFF;
-$primary: #007BFF;
+// Main Brand Colors
+$o-brand-primary: #0B3D91;
+$primary: #0B3D91;
 
+// Navbar background
 .o_main_navbar {
-    background-color: #007BFF !important;
+    background-color: #0B3D91 !important;
+}
+
+// Navbar menu text
+.o_main_navbar .nav-link {
+    color: #ffffff !important;
+}
+
+// Navbar hover (removes purple hover)
+.o_main_navbar .nav-link:hover,
+.o_main_navbar .dropdown-item:hover {
+    background-color: #1456C3 !important;
+    color: #ffffff !important;
+}
+
+// Active menu item
+.o_main_navbar .nav-link.active {
+    background-color: #1456C3 !important;
+}
+
+// Buttons
+.btn-primary {
+    background-color: #0B3D91 !important;
+    border-color: #0B3D91 !important;
+}
+
+.btn-primary:hover {
+    background-color: #1456C3 !important;
+    border-color: #1456C3 !important;
+}
+
+// Background subtle gray
+.o_web_client {
+    background-color: #F4F6F9;
 }
