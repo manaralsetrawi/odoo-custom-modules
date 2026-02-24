@@ -1,41 +1,67 @@
-// Main Brand Colors
-$o-brand-primary: #0B3D91;
-$primary: #0B3D91;
+// =========================
+// NCST Corporate Theme
+// =========================
 
-// Navbar background
-.o_main_navbar {
-    background-color: #0B3D91 !important;
+// Primary brand color
+$o-brand-primary: #0B2C3D;
+$primary: #0B2C3D;
+
+// Web client background
+.o_web_client {
+    background-color: #F4F6F9;
 }
 
-// Navbar menu text
+// =========================
+// Navbar
+// =========================
+
+.o_main_navbar {
+    background-color: #0B2C3D !important;
+}
+
 .o_main_navbar .nav-link {
     color: #ffffff !important;
 }
 
-// Navbar hover (removes purple hover)
+// Remove purple hover on top menu tabs
 .o_main_navbar .nav-link:hover,
-.o_main_navbar .dropdown-item:hover {
-    background-color: #1456C3 !important;
+.o_main_navbar .nav-link:focus {
+    background-color: #12455C !important;
     color: #ffffff !important;
 }
 
-// Active menu item
+// Active menu tab (Overview / Management etc.)
 .o_main_navbar .nav-link.active {
-    background-color: #1456C3 !important;
+    background-color: #12455C !important;
+    color: #ffffff !important;
 }
 
+// Dropdown hover
+.dropdown-item:hover {
+    background-color: #12455C !important;
+    color: #ffffff !important;
+}
+
+// =========================
 // Buttons
+// =========================
+
 .btn-primary {
-    background-color: #0B3D91 !important;
-    border-color: #0B3D91 !important;
+    background-color: #0B2C3D !important;
+    border-color: #0B2C3D !important;
 }
 
 .btn-primary:hover {
-    background-color: #1456C3 !important;
-    border-color: #1456C3 !important;
+    background-color: #12455C !important;
+    border-color: #12455C !important;
 }
 
-// Background subtle gray
-.o_web_client {
-    background-color: #F4F6F9;
+// =========================
+// Remove Purple Focus Borders
+// =========================
+
+.form-control:focus,
+.btn:focus {
+    border-color: #0B2C3D !important;
+    box-shadow: 0 0 0 0.2rem rgba(11, 44, 61, 0.25) !important;
 }
