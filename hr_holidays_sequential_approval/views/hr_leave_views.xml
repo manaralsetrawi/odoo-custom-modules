@@ -1,61 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Extend hr.leave form view -->
+        
+        <!-- ========================================
+             EXTEND EXISTING LEAVE FORM VIEW
+             ======================================== -->
+        
         <record id="view_hr_leave_form_sequential" model="ir.ui.view">
             <field name="name">hr.leave.form.sequential</field>
             <field name="model">hr.leave</field>
-            <field name="inherit_id">hr_holidays.hr_leave_view_form</field>
+            <field name="inherit_id" ref="hr_holidays.view_hr_leave_allocation_form"/>
             <field name="arch" type="xml">
                 
-                <!-- Add approval status fields after state field -->
+                <!-- Add new fields to the form -->
                 <xpath expr="//field[@name='state']" position="after">
                     <field name="supervisor_state" readonly="1"/>
                     <field name="hr_state" readonly="1"/>
                     <field name="rejection_reason" widget="html" readonly="1"/>
                 </xpath>
 
-                <!-- Add approval buttons in form -->
-                <xpath expr="//button[@name='action_confirm']" position="replace">
-                    <!-- Show different buttons based on user role and approval state -->
+                <!-- Add Supervisor Approval Buttons -->
+                <xpath expr="//button[@name='action_confirm']" position="after">
+                    <button name="action_supervisor_approve" 
+                            type="object" 
+                            string="✓ Approve as Supervisor" 
+                            class="btn btn-success"
+                            attrs="{'invisible': ['|', ('supervisor_state', '!=', 'pending'), ('supervisor_id', '!=', uid)]}"/>
+                    <button name="action_supervisor_reject" 
+                            type="object" 
+                            string="✗ Reject as Supervisor" 
+                            class="btn btn-danger"
+                            attrs="{'invisible': ['|', ('supervisor_state', '!=', 'pending'), ('supervisor_id', '!=', uid)]}"/>
                 </xpath>
 
-                <!-- Add button section for supervisor -->
-                <xpath expr="//div[@class='oe_button_box']" position="inside">
-                    <div class="oe_inline" attrs="{'invisible': [('supervisor_state', '!=', 'pending')]}">
-                        <button name="action_supervisor_approve" 
-                                type="object" 
-                                string="Approve as Supervisor" 
-                                class="btn btn-success"
-                                attrs="{'invisible': [('supervisor_id', '!=', uid)]}"/>
-                        <button name="action_supervisor_reject" 
-                                type="object" 
-                                string="Reject as Supervisor" 
-                                class="btn btn-danger"
-                                attrs="{'invisible': [('supervisor_id', '!=', uid)]}"/>
-                    </div>
-                </xpath>
-
-                <!-- Add button section for HR -->
-                <xpath expr="//div[@class='oe_button_box']" position="inside">
-                    <div class="oe_inline" attrs="{'invisible': [('hr_state', '!=', 'pending'), ('supervisor_state', '!=', 'approved')]}">
-                        <button name="action_hr_approve" 
-                                type="object" 
-                                string="Approve as HR" 
-                                class="btn btn-success"
-                                attrs="{'invisible': [('hr_state', '!=', 'pending')]}"/>
-                        <button name="action_hr_reject" 
-                                type="object" 
-                                string="Reject as HR" 
-                                class="btn btn-danger"
-                                attrs="{'invisible': [('hr_state', '!=', 'pending')]}"/>
-                    </div>
+                <!-- Add HR Approval Buttons -->
+                <xpath expr="//button[@name='action_confirm']" position="after">
+                    <button name="action_hr_approve" 
+                            type="object" 
+                            string="✓ Approve as HR" 
+                            class="btn btn-success"
+                            attrs="{'invisible': ['|', ('hr_state', '!=', 'pending'), ('supervisor_state', '!=', 'approved')]}"/>
+                    <button name="action_hr_reject" 
+                            type="object" 
+                            string="✗ Reject as HR" 
+                            class="btn btn-danger"
+                            attrs="{'invisible': ['|', ('hr_state', '!=', 'pending'), ('supervisor_state', '!=', 'approved')]}"/>
                 </xpath>
 
             </field>
         </record>
 
-        <!-- Rejection wizard form -->
+        <!-- ========================================
+             REJECTION WIZARD FORM
+             ======================================== -->
+        
         <record id="view_hr_leave_rejection_form" model="ir.ui.view">
             <field name="name">hr.leave.rejection.form</field>
             <field name="model">hr.leave.rejection</field>
