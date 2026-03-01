@@ -149,7 +149,7 @@ class HrLeave(models.Model):
     def _notify_supervisor_approved(self, leave):
         """Send approval notification to supervisor"""
         if not leave.supervisor_id:
-        return
+            return
         body = f"Your approved leave request has been further approved by HR."
         leave.message_post(
             body=body,
@@ -160,7 +160,7 @@ class HrLeave(models.Model):
     def _notify_supervisor_rejected(self, leave):
         """Send rejection notification to supervisor"""
         if not leave.supervisor_id:
-        return
+            return
         body = f"A leave request you approved has been rejected by HR. Reason: {leave.rejection_reason}"
         leave.message_post(
             body=body,
@@ -174,11 +174,11 @@ class HrLeave(models.Model):
         partner_ids = [user.partner_id.id for user in hr_group.users]
 
         if partner_ids:
-        leave.message_post(
-            body="Supervisor has approved leave request. Please review and approve.",
-            subtype_xmlid='mail.mt_comment',
-            partner_ids=partner_ids
-        )
+            leave.message_post(
+                body="Supervisor has approved leave request. Please review and approve.",
+                subtype_xmlid='mail.mt_comment',
+                partner_ids=partner_ids
+            )
 
     @api.model
     def create(self, vals):
