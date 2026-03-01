@@ -27,7 +27,7 @@
                             type="object"
                             string="Approve as Supervisor"
                             class="btn btn-success"
-                            attrs="{'invisible': ['|',
+                            modifiers="{'invisible': ['|',
                                 ('supervisor_state','!=','pending'),
                                 ('supervisor_id','!=',uid)
                             ]}"/>
@@ -36,7 +36,7 @@
                             type="object"
                             string="Reject as Supervisor"
                             class="btn btn-danger"
-                            attrs="{'invisible': ['|',
+                            modifiers="{'invisible': ['|',
                                 ('supervisor_state','!=','pending'),
                                 ('supervisor_id','!=',uid)
                             ]}"/>
@@ -46,7 +46,7 @@
                             type="object"
                             string="Approve as HR"
                             class="btn btn-success"
-                            attrs="{'invisible': ['|',
+                            modifiers="{'invisible': ['|',
                                 ('hr_state','!=','pending'),
                                 ('supervisor_state','!=','approved')
                             ]}"/>
@@ -55,7 +55,7 @@
                             type="object"
                             string="Reject as HR"
                             class="btn btn-danger"
-                            attrs="{'invisible': ['|',
+                            modifiers="{'invisible': ['|',
                                 ('hr_state','!=','pending'),
                                 ('supervisor_state','!=','approved')
                             ]}"/>
