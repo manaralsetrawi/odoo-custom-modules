@@ -22,43 +22,33 @@
                 <!-- Insert buttons after Validate button -->
                 <xpath expr="//button[@name='action_validate']" position="after">
 
-                    <!-- Supervisor Buttons -->
+                    <!-- Supervisor Approve Button -->
                     <button name="action_supervisor_approve"
                             type="object"
                             string="Approve as Supervisor"
                             class="btn btn-success"
-                            modifiers="{'invisible': ['|',
-                                ('supervisor_state','!=','pending'),
-                                ('supervisor_id','!=',uid)
-                            ]}"/>
+                            invisible="supervisor_state != 'pending' or supervisor_id != uid"/>
 
+                    <!-- Supervisor Reject Button -->
                     <button name="action_supervisor_reject"
                             type="object"
                             string="Reject as Supervisor"
                             class="btn btn-danger"
-                            modifiers="{'invisible': ['|',
-                                ('supervisor_state','!=','pending'),
-                                ('supervisor_id','!=',uid)
-                            ]}"/>
+                            invisible="supervisor_state != 'pending' or supervisor_id != uid"/>
 
-                    <!-- HR Buttons -->
+                    <!-- HR Approve Button -->
                     <button name="action_hr_approve"
                             type="object"
                             string="Approve as HR"
                             class="btn btn-success"
-                            modifiers="{'invisible': ['|',
-                                ('hr_state','!=','pending'),
-                                ('supervisor_state','!=','approved')
-                            ]}"/>
+                            invisible="hr_state != 'pending' or supervisor_state != 'approved'"/>
 
+                    <!-- HR Reject Button -->
                     <button name="action_hr_reject"
                             type="object"
                             string="Reject as HR"
                             class="btn btn-danger"
-                            modifiers="{'invisible': ['|',
-                                ('hr_state','!=','pending'),
-                                ('supervisor_state','!=','approved')
-                            ]}"/>
+                            invisible="hr_state != 'pending' or supervisor_state != 'approved'"/>
 
                 </xpath>
 

@@ -52,19 +52,35 @@ class HrLeave(models.Model):
     def action_supervisor_approve(self):
         """Supervisor approves the leave request"""
         for leave in self:
-            # Check if current user is the supervisor
-            if not leave.supervisor_id or leave.supervisor_id.id != self.env.user.id:
+            # CHECK 1: Verify supervisor is assigned
+            if not leave.supervisor_id:
+                raise ValidationError(
+                    "No supervisor assigned to this employee."
+                )
+            
+            # CHECK 2: Verify current user IS the supervisor
+            if leave.supervisor_id.id != self.env.user.id:
                 raise ValidationError(
                     "Only the supervisor can approve this request."
                 )
             
-            leave.supervisor_state = 'approved'
+            # CHECK 3: Verify state is pending
+            if leave.supervisor_state != 'pending':
+                raise ValidationError(
+                    "This request is not pending supervisor approval."
+                )
             
-            # Send notification to HR
+            leave.supervisor_state = 'approved'
             self._notify_hr_pending(leave)
-
+    
     def action_supervisor_reject(self):
         """Supervisor rejects the leave request"""
+        # ✅ CHECK: Verify current user IS the supervisor
+        if not self.supervisor_id or self.supervisor_id.id != self.env.user.id:
+            raise ValidationError(
+                "Only the supervisor can reject this request."
+            )
+        
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'hr.leave.rejection',
@@ -87,16 +103,22 @@ class HrLeave(models.Model):
     def action_hr_approve(self):
         """HR approves the leave request"""
         for leave in self:
-            # Check if current user is in HR group
+            # ✅ CHECK 1: Verify user is in HR group
             if not self.env.user.has_group('hr.group_hr_manager'):
                 raise ValidationError(
                     "Only HR Manager can approve this request."
                 )
             
-            # Check if supervisor already approved
+            # ✅ CHECK 2: Verify supervisor already approved
             if leave.supervisor_state != 'approved':
                 raise ValidationError(
                     "Supervisor must approve first before HR can approve."
+                )
+            
+            # ✅ CHECK 3: Verify state is pending
+            if leave.hr_state != 'pending':
+                raise ValidationError(
+                    "This request is not pending HR approval."
                 )
             
             leave.hr_state = 'approved'
@@ -106,8 +128,15 @@ class HrLeave(models.Model):
             self._notify_employee_approved(leave)
             self._notify_supervisor_approved(leave)
 
+
     def action_hr_reject(self):
         """HR rejects the leave request"""
+        # ✅ CHECK: Verify user is in HR group
+        if not self.env.user.has_group('hr.group_hr_manager'):
+            raise ValidationError(
+                "Only HR Manager can reject this request."
+            )
+        
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'hr.leave.rejection',
