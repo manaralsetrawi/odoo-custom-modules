@@ -1,59 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        
+
         <!-- ========================================
-             EXTEND EXISTING LEAVE FORM VIEW
+             EXTEND LEAVE REQUEST FORM
              ======================================== -->
-        
+
         <record id="view_hr_leave_form_sequential" model="ir.ui.view">
             <field name="name">hr.leave.form.sequential</field>
             <field name="model">hr.leave</field>
-            <field name="inherit_id" ref="hr_holidays.view_hr_leave_allocation_form"/>
+            <field name="inherit_id" ref="hr_leave.hr_leave_view_form"/>
             <field name="arch" type="xml">
-                
-                <!-- Add new fields to the form -->
+
+                <!-- Add approval status fields -->
                 <xpath expr="//field[@name='state']" position="after">
                     <field name="supervisor_state" readonly="1"/>
                     <field name="hr_state" readonly="1"/>
-                    <field name="rejection_reason" widget="html" readonly="1"/>
+                    <field name="rejection_reason" readonly="1"/>
                 </xpath>
 
-                <!-- Add Supervisor Approval Buttons -->
-                <xpath expr="//button[@name='action_confirm']" position="after">
-                    <button name="action_supervisor_approve" 
-                            type="object" 
-                            string="✓ Approve as Supervisor" 
+                <!-- Supervisor Approval Buttons -->
+                <xpath expr="//button[@name='action_validate']" position="after">
+
+                    <button name="action_supervisor_approve"
+                            type="object"
+                            string="Approve as Supervisor"
                             class="btn btn-success"
-                            attrs="{'invisible': ['|', ('supervisor_state', '!=', 'pending'), ('supervisor_id', '!=', uid)]}"/>
-                    <button name="action_supervisor_reject" 
-                            type="object" 
-                            string="✗ Reject as Supervisor" 
+                            attrs="{'invisible': ['|',
+                                ('supervisor_state','!=','pending'),
+                                ('supervisor_id','!=',uid)
+                            ]}"/>
+
+                    <button name="action_supervisor_reject"
+                            type="object"
+                            string="Reject as Supervisor"
                             class="btn btn-danger"
-                            attrs="{'invisible': ['|', ('supervisor_state', '!=', 'pending'), ('supervisor_id', '!=', uid)]}"/>
+                            attrs="{'invisible': ['|',
+                                ('supervisor_state','!=','pending'),
+                                ('supervisor_id','!=',uid)
+                            ]}"/>
+
                 </xpath>
 
-                <!-- Add HR Approval Buttons -->
-                <xpath expr="//button[@name='action_confirm']" position="after">
-                    <button name="action_hr_approve" 
-                            type="object" 
-                            string="✓ Approve as HR" 
+                <!-- HR Approval Buttons -->
+                <xpath expr="//button[@name='action_validate']" position="after">
+
+                    <button name="action_hr_approve"
+                            type="object"
+                            string="Approve as HR"
                             class="btn btn-success"
-                            attrs="{'invisible': ['|', ('hr_state', '!=', 'pending'), ('supervisor_state', '!=', 'approved')]}"/>
-                    <button name="action_hr_reject" 
-                            type="object" 
-                            string="✗ Reject as HR" 
+                            attrs="{'invisible': ['|',
+                                ('hr_state','!=','pending'),
+                                ('supervisor_state','!=','approved')
+                            ]}"/>
+
+                    <button name="action_hr_reject"
+                            type="object"
+                            string="Reject as HR"
                             class="btn btn-danger"
-                            attrs="{'invisible': ['|', ('hr_state', '!=', 'pending'), ('supervisor_state', '!=', 'approved')]}"/>
+                            attrs="{'invisible': ['|',
+                                ('hr_state','!=','pending'),
+                                ('supervisor_state','!=','approved')
+                            ]}"/>
+
                 </xpath>
 
             </field>
         </record>
 
+
         <!-- ========================================
              REJECTION WIZARD FORM
              ======================================== -->
-        
+
         <record id="view_hr_leave_rejection_form" model="ir.ui.view">
             <field name="name">hr.leave.rejection.form</field>
             <field name="model">hr.leave.rejection</field>
@@ -62,11 +81,17 @@
                     <group>
                         <field name="leave_id" readonly="1"/>
                         <field name="rejection_by" invisible="1"/>
-                        <field name="rejection_reason" placeholder="Please provide a reason for rejection..."/>
+                        <field name="rejection_reason"
+                               placeholder="Please provide a reason for rejection..."/>
                     </group>
                     <footer>
-                        <button name="action_reject" type="object" string="Confirm Rejection" class="btn btn-danger"/>
-                        <button string="Cancel" special="cancel" class="btn btn-secondary"/>
+                        <button name="action_reject"
+                                type="object"
+                                string="Confirm Rejection"
+                                class="btn btn-danger"/>
+                        <button string="Cancel"
+                                special="cancel"
+                                class="btn btn-secondary"/>
                     </footer>
                 </form>
             </field>

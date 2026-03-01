@@ -2,7 +2,7 @@
     'name': 'HR Holidays Sequential Approval',
     'version': '18.0.1.0.0',
     'category': 'Human Resources',
-    'depends': ['hr_holidays'],
+    'depends': ['hr_leave', 'mail'],
     'author': 'Fatima Hasan',
     'description': 'Implements sequential approval workflow: Supervisor → HR',
     'data': [
