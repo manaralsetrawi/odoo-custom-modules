@@ -1,12 +1,16 @@
 {
     'name': 'HR Holidays Sequential Approval',
-    'version': '18.0.1.0.0',
+    'version': '1.0',
+    'summary': 'Two-step approval for leave requests (Supervisor → HR)',
     'category': 'Human Resources',
-    'depends': ['hr_leave', 'mail'],
-    'author': 'Fatima Hasan',
-    'description': 'Implements sequential approval workflow: Supervisor → HR',
+    'author': 'Your Name',
+    'depends': [
+        'hr_holidays',   # Required for hr.leave
+        'mail',          # Required for chatter & notifications
+    ],
     'data': [
         'views/hr_leave_views.xml',
     ],
     'installable': True,
+    'application': False,
 }

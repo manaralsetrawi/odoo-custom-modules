@@ -53,7 +53,7 @@ class HrLeave(models.Model):
         """Supervisor approves the leave request"""
         for leave in self:
             # Check if current user is the supervisor
-            if leave.supervisor_id.id != self.env.user.id:
+            if not leave.supervisor_id or leave.supervisor_id.id != self.env.user.id:
                 raise ValidationError(
                     "Only the supervisor can approve this request."
                 )
@@ -148,6 +148,8 @@ class HrLeave(models.Model):
 
     def _notify_supervisor_approved(self, leave):
         """Send approval notification to supervisor"""
+        if not leave.supervisor_id:
+        return
         body = f"Your approved leave request has been further approved by HR."
         leave.message_post(
             body=body,
@@ -157,6 +159,8 @@ class HrLeave(models.Model):
 
     def _notify_supervisor_rejected(self, leave):
         """Send rejection notification to supervisor"""
+        if not leave.supervisor_id:
+        return
         body = f"A leave request you approved has been rejected by HR. Reason: {leave.rejection_reason}"
         leave.message_post(
             body=body,
@@ -167,12 +171,14 @@ class HrLeave(models.Model):
     def _notify_hr_pending(self, leave):
         """Notify HR that supervisor has approved"""
         hr_group = self.env.ref('hr.group_hr_manager')
-        for user in hr_group.users:
-            leave.message_notify(
-                partner_ids=[user.partner_id.id],
-                body=f"Supervisor has approved leave request. Please review and approve.",
-                subtype_xmlid='mail.mt_comment'
-            )
+        partner_ids = [user.partner_id.id for user in hr_group.users]
+
+        if partner_ids:
+        leave.message_post(
+            body="Supervisor has approved leave request. Please review and approve.",
+            subtype_xmlid='mail.mt_comment',
+            partner_ids=partner_ids
+        )
 
     @api.model
     def create(self, vals):
