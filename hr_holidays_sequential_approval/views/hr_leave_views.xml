@@ -55,7 +55,7 @@
                                         class="btn btn-success"
                                         attrs="{'invisible': ['|','|',
                                             ('supervisor_state','!=','pending'),
-                                            ('supervisor_id','!=',uid),
+                                            ('supervisor_id.user_id','!=',uid),
                                             ('employee_id.user_id','=',uid)
                                         ]}"
                                         style="width:100%; margin-bottom:10px;"/>
@@ -67,7 +67,7 @@
                                         class="btn btn-danger"
                                         attrs="{'invisible': ['|','|',
                                             ('supervisor_state','!=','pending'),
-                                            ('supervisor_id','!=',uid),
+                                            ('supervisor_id.user_id','!=',uid),
                                             ('employee_id.user_id','=',uid)
                                         ]}"
                                         style="width:100%; margin-bottom:10px;"/>
@@ -79,7 +79,7 @@
                                         class="btn btn-secondary"
                                         attrs="{'invisible': ['|','|',
                                             ('supervisor_state','=','pending'),
-                                            ('supervisor_id','!=',uid),
+                                            ('supervisor_id.user_id','!=',uid),
                                             ('employee_id.user_id','=',uid)
                                         ]}"
                                         style="width:100%;"/>
@@ -103,7 +103,7 @@
                     <!-- HR APPROVAL SECTION -->
                     <!-- ===================================================== -->
 
-                    <div groups="hr.group_hr_user"
+                    <div 
                          attrs="{'invisible': [('supervisor_state','!=','approved')]}"
                          style="background-color: #f4fff7; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #00b341;">
 
@@ -112,28 +112,37 @@
                             <div class="col-md-6">
                                 <h5>HR Approval</h5>
 
-                                <!-- Approve -->
-                                <button name="action_hr_approve"
-                                        type="object"
-                                        string="Approve"
-                                        class="btn btn-success"
-                                        attrs="{'invisible': [('hr_state','!=','pending')]}"
-                                        style="width:100%; margin-bottom:10px;"/>
+                            <!-- HR Approve -->
+                            <button name="action_hr_approve"
+                                    type="object"
+                                    string="Approve"
+                                    class="btn btn-success"
+                                    groups="hr.group_hr_user"
+                                    attrs="{'invisible': ['|',
+                                                        ('hr_state','!=','pending'),
+                                                        ('supervisor_state','!=','approved')]}"
+                                    style="width:100%; margin-bottom:10px;"/>
 
-                                <!-- Reject -->
-                                <button name="action_hr_reject"
-                                        type="object"
-                                        string="Reject"
-                                        class="btn btn-danger"
-                                        attrs="{'invisible': [('hr_state','!=','pending')]}"
-                                        style="width:100%; margin-bottom:10px;"/>
+                            <!-- HR Reject -->
+                            <button name="action_hr_reject"
+                                    type="object"
+                                    string="Reject"
+                                    class="btn btn-danger"
+                                    groups="hr.group_hr_user"
+                                    attrs="{'invisible': ['|',
+                                                        ('hr_state','!=','pending'),
+                                                        ('supervisor_state','!=','approved')]}"
+                                    style="width:100%; margin-bottom:10px;"/>
 
                                 <!-- RESET BUTTON (NEW) -->
                                 <button name="action_hr_reset"
                                         type="object"
                                         string="Reset Decision"
                                         class="btn btn-secondary"
-                                        attrs="{'invisible': [('hr_state','=','pending')]}"
+                                        attrs="{'invisible': ['|',
+                                                            ('hr_state','=','pending'),
+                                                            ('supervisor_state','!=','approved')]}"
+                                        groups="hr.group_hr_user"
                                         style="width:100%;"/>
                             </div>
 

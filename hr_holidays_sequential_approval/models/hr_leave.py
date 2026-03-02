@@ -45,8 +45,9 @@ class HrLeave(models.Model):
     @api.depends('employee_id', 'employee_id.parent_id', 'employee_id.parent_id.user_id')
     def _compute_supervisor_id(self):
         for leave in self:
+            # Make sure it’s a res.users object, not employee
             leave.supervisor_id = leave.employee_id.parent_id.user_id if leave.employee_id and leave.employee_id.parent_id else False
-
+            
     @api.depends('employee_id.user_id')
     def _compute_user_flags(self):
         uid = self.env.user.id
