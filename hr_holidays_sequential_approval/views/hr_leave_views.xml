@@ -1,75 +1,243 @@
-<!-- Supervisor Section -->
-<div style="background-color:#f8fbff; padding:20px; border-radius:10px; margin-bottom:20px; border-left:4px solid #0B2C3D;">
-  <div class="row">
-    <div class="col-md-6">
-      <h5>Supervisor Approval</h5>
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
 
-      <!-- Approve -->
-      <button name="action_supervisor_approve"
-              type="object"
-              string="Approve"
-              class="oe_highlight"
-              attrs="{'invisible': ['|', ('supervisor_state','!=','pending'), ('is_current_user_supervisor','=',False)]}"
-              style="width:100%; margin-bottom:10px;"/>
+        <!-- ========================================
+             EXTEND LEAVE FORM VIEW
+             ======================================== -->
 
-      <!-- Reject -->
-      <button name="action_supervisor_reject"
-              type="object"
-              string="Reject"
-              attrs="{'invisible': ['|', ('supervisor_state','!=','pending'), ('is_current_user_supervisor','=',False)]}"
-              style="width:100%; margin-bottom:10px;"/>
+        <record id="view_hr_leave_form_sequential" model="ir.ui.view">
+            <field name="name">hr.leave.form.sequential</field>
+            <field name="model">hr.leave</field>
+            <field name="inherit_id" ref="hr_holidays.hr_leave_view_form"/>
+            <field name="arch" type="xml">
 
-      <!-- Reset -->
-      <button name="action_supervisor_reset"
-              type="object"
-              string="Reset Decision"
-              attrs="{'invisible': ['|', ('supervisor_state','=','pending'), ('is_current_user_supervisor','=',False)]}"
-              style="width:100%;"/>
-    </div>
+                <!-- HIDE default Approve button -->
+                <xpath expr="//button[@name='action_approve']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
 
-    <div class="col-md-6">
-      <h5>Status</h5>
-      <field name="supervisor_state"
-             widget="badge"
-             decoration-success="supervisor_state == 'approved'"
-             decoration-warning="supervisor_state == 'pending'"
-             decoration-danger="supervisor_state == 'rejected'"
-             readonly="1"/>
-    </div>
-  </div>
-</div>
+                <!-- HIDE default Refuse button -->
+                <xpath expr="//button[@name='action_refuse']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
 
-<!-- HR Section -->
-<div groups="hr_holidays.group_hr_holidays_user,hr.group_hr_user"
-     attrs="{'invisible': [('supervisor_state','!=','approved')]}"
-     style="background-color:#f4fff7; padding:20px; border-radius:10px; margin-bottom:20px; border-left:4px solid #00b341;">
-  <div class="row">
-    <div class="col-md-6">
-      <h5>HR Approval</h5>
+                <!-- HIDE default Validate button -->
+                <xpath expr="//button[@name='action_validate']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
 
-      <button name="action_hr_approve"
-              type="object"
-              string="Approve"
-              class="oe_highlight"
-              attrs="{'invisible': [('hr_state','!=','pending')]}"/>
-      <button name="action_hr_reject"
-              type="object"
-              string="Reject"
-              attrs="{'invisible': [('hr_state','!=','pending')]}"/>
-      <button name="action_hr_reset"
-              type="object"
-              string="Reset Decision"
-              attrs="{'invisible': [('hr_state','=','pending')]}"/>
-    </div>
+                <!-- HIDE "To Approve" status field -->
+                <xpath expr="//field[@name='state']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
 
-    <div class="col-md-6">
-      <h5>Status</h5>
-      <field name="hr_state"
-             widget="badge"
-             decoration-success="hr_state == 'approved'"
-             decoration-warning="hr_state == 'pending'"
-             decoration-danger="hr_state == 'rejected'"
-             readonly="1"/>
-    </div>
-  </div>
-</div>
+                    <!-- ========================================
+                     BUTTONS AND STATUS SECTION
+                     ======================================== -->
+
+                <xpath expr="//field[@name='state']" position="after">
+
+                    <!-- ===================================================== -->
+                    <!-- SUPERVISOR APPROVAL SECTION -->
+                    <!-- ===================================================== -->
+
+                    <div style="background-color: #f8fbff; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #0B2C3D;">
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <h5>Supervisor Approval</h5>
+
+                                <!-- Approve -->
+                                <button name="action_supervisor_approve"
+                                        type="object"
+                                        string="Approve"
+                                        class="btn btn-success"
+                                        attrs="{'invisible': ['|','|',
+                                            ('supervisor_state','!=','pending'),
+                                            ('supervisor_id','!=',uid),
+                                            ('employee_id.user_id','=',uid)
+                                        ]}"
+                                        style="width:100%; margin-bottom:10px;"/>
+
+                                <!-- Reject -->
+                                <button name="action_supervisor_reject"
+                                        type="object"
+                                        string="Reject"
+                                        class="btn btn-danger"
+                                        attrs="{'invisible': ['|','|',
+                                            ('supervisor_state','!=','pending'),
+                                            ('supervisor_id','!=',uid),
+                                            ('employee_id.user_id','=',uid)
+                                        ]}"
+                                        style="width:100%; margin-bottom:10px;"/>
+
+                                <!-- Reset -->
+                                <button name="action_supervisor_reset"
+                                        type="object"
+                                        string="Reset Decision"
+                                        class="btn btn-secondary"
+                                        attrs="{'invisible': ['|','|',
+                                            ('supervisor_state','=','pending'),
+                                            ('supervisor_id','!=',uid),
+                                            ('employee_id.user_id','=',uid)
+                                        ]}"
+                                        style="width:100%;"/>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h5>Status</h5>
+
+                                <field name="supervisor_state"
+                                    widget="badge"
+                                    decoration-success="supervisor_state == 'approved'"
+                                    decoration-warning="supervisor_state == 'pending'"
+                                    decoration-danger="supervisor_state == 'rejected'"
+                                    readonly="1"/>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ===================================================== -->
+                    <!-- HR APPROVAL SECTION -->
+                    <!-- ===================================================== -->
+
+                    <div groups="hr.group_hr_user"
+                         attrs="{'invisible': [('supervisor_state','!=','approved')]}"
+                         style="background-color: #f4fff7; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #00b341;">
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <h5>HR Approval</h5>
+
+                                <!-- Approve -->
+                                <button name="action_hr_approve"
+                                        type="object"
+                                        string="Approve"
+                                        class="btn btn-success"
+                                        attrs="{'invisible': [('hr_state','!=','pending')]}"
+                                        style="width:100%; margin-bottom:10px;"/>
+
+                                <!-- Reject -->
+                                <button name="action_hr_reject"
+                                        type="object"
+                                        string="Reject"
+                                        class="btn btn-danger"
+                                        attrs="{'invisible': [('hr_state','!=','pending')]}"
+                                        style="width:100%; margin-bottom:10px;"/>
+
+                                <!-- RESET BUTTON (NEW) -->
+                                <button name="action_hr_reset"
+                                        type="object"
+                                        string="Reset Decision"
+                                        class="btn btn-secondary"
+                                        attrs="{'invisible': [('hr_state','=','pending')]}"
+                                        style="width:100%;"/>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h5>Status</h5>
+
+                                <field name="hr_state"
+                                    widget="badge"
+                                    decoration-success="hr_state == 'approved'"
+                                    decoration-warning="hr_state == 'pending'"
+                                    decoration-danger="hr_state == 'rejected'"
+                                    readonly="1"/>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <!-- Hidden technical fields -->
+                    <field name="supervisor_state" invisible="1"/>
+                    <field name="hr_state" invisible="1"/>
+                    <field name="supervisor_id" invisible="1"/>
+
+                </xpath>
+            </field>
+        </record>
+
+
+        <!-- ========================================
+             EXTEND LEAVE LIST VIEW - HIDE BUTTONS
+             ======================================== -->
+
+        <record id="view_hr_leave_tree_sequential" model="ir.ui.view">
+            <field name="name">hr.leave.tree.sequential</field>
+            <field name="model">hr.leave</field>
+            <field name="inherit_id" ref="hr_holidays.hr_leave_view_tree"/>
+            <field name="arch" type="xml">
+
+                <!-- Hide action_approve button from list -->
+                <xpath expr="//button[@name='action_approve']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <!-- Hide action_refuse button from list -->
+                <xpath expr="//button[@name='action_refuse']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <!-- ========================================
+             EXTEND LEAVE KANBAN VIEW - HIDE BUTTONS
+             ======================================== -->
+
+        <record id="view_hr_leave_kanban_sequential" model="ir.ui.view">
+            <field name="name">hr.leave.kanban.sequential</field>
+            <field name="model">hr.leave</field>
+            <field name="inherit_id" ref="hr_holidays.hr_leave_view_kanban"/>
+            <field name="arch" type="xml">
+
+                <!-- Hide action_approve button in kanban -->
+                <xpath expr="//button[@name='action_approve']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <!-- Hide action_refuse button in kanban -->
+                <xpath expr="//button[@name='action_refuse']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <!-- ========================================
+             REJECTION WIZARD FORM
+             ======================================== -->
+
+        <record id="view_hr_leave_rejection_form" model="ir.ui.view">
+            <field name="name">hr.leave.rejection.form</field>
+            <field name="model">hr.leave.rejection</field>
+            <field name="arch" type="xml">
+                <form string="Reject Leave Request">
+                    <group>
+                        <field name="leave_id" readonly="1"/>
+                        <field name="rejection_by" invisible="1"/>
+                        <field name="rejection_reason"
+                               placeholder="Please provide a reason for rejection..."
+                               required="1"/>
+                    </group>
+                    <footer>
+                        <button name="action_reject"
+                                type="object"
+                                string="Confirm Rejection"
+                                class="btn btn-danger"/>
+                        <button string="Cancel"
+                                special="cancel"
+                                class="btn btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>
