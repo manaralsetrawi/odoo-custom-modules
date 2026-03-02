@@ -27,11 +27,54 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
 
-                <!-- Add custom approval status fields -->
+                <!-- Add custom approval status fields with styling -->
                 <xpath expr="//field[@name='state']" position="after">
-                    <field name="supervisor_state" readonly="1"/>
-                    <field name="hr_state" readonly="1"/>
-                    <field name="rejection_reason" readonly="1"/>
+                    
+                    <!-- Supervisor Status with color coding -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Supervisor Approval Status</label>
+                            <div attrs="{'invisible': [('supervisor_state', '=', 'pending')]}">
+                                <span class="badge bg-success" invisible="supervisor_state != 'approved'">
+                                    <i class="fa fa-check-circle"></i> Supervisor Approved
+                                </span>
+                                <span class="badge bg-danger" invisible="supervisor_state != 'rejected'">
+                                    <i class="fa fa-times-circle"></i> Supervisor Rejected
+                                </span>
+                            </div>
+                            <div attrs="{'invisible': [('supervisor_state', '!=', 'pending')]}">
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fa fa-clock-o"></i> Pending Supervisor Approval
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- HR Status with color coding -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">HR Approval Status</label>
+                            <div attrs="{'invisible': [('hr_state', '=', 'pending')]}">
+                                <span class="badge bg-success" invisible="hr_state != 'approved'">
+                                    <i class="fa fa-check-circle"></i> HR Approved
+                                </span>
+                                <span class="badge bg-danger" invisible="hr_state != 'rejected'">
+                                    <i class="fa fa-times-circle"></i> HR Rejected
+                                </span>
+                            </div>
+                            <div attrs="{'invisible': [('hr_state', '!=', 'pending')]}">
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fa fa-clock-o"></i> Pending HR Approval
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rejection Reason (only show if rejected) -->
+                    <field name="rejection_reason" readonly="1" attrs="{'invisible': [('rejection_reason', '=', False)]}"/>
+                    
+                    <!-- Hidden fields for backend logic -->
+                    <field name="supervisor_state" invisible="1"/>
+                    <field name="hr_state" invisible="1"/>
+
                 </xpath>
 
                 <!-- Add new buttons after state field -->
@@ -44,34 +87,38 @@
                     <!-- Supervisor Approve Button -->
                     <button name="action_supervisor_approve"
                             type="object"
-                            string="Approve as Supervisor"
+                            string="✓ Approve as Supervisor"
                             class="btn btn-success"
+                            icon="fa-check"
                             invisible="supervisor_state != 'pending' or supervisor_id != uid"/>
 
                     <!-- Supervisor Reject Button -->
                     <button name="action_supervisor_reject"
                             type="object"
-                            string="Reject as Supervisor"
+                            string="✗ Reject as Supervisor"
                             class="btn btn-danger"
+                            icon="fa-times"
                             invisible="supervisor_state != 'pending' or supervisor_id != uid"/>
 
                     <!-- ========================================
-                         HR BUTTONS - Only for HR managers
+                         HR BUTTONS - Only for HR users
                          ======================================== -->
 
-                    <!-- HR Approve Button - ONLY show to HR managers -->
+                    <!-- HR Approve Button - ONLY show to HR users -->
                     <button name="action_hr_approve"
                             type="object"
-                            string="Approve as HR"
+                            string="✓ Approve as HR"
                             class="btn btn-success"
+                            icon="fa-check"
                             groups="hr.group_hr_user"
                             invisible="hr_state != 'pending' or supervisor_state != 'approved'"/>
 
-                    <!-- HR Reject Button - ONLY show to HR managers -->
+                    <!-- HR Reject Button - ONLY show to HR users -->
                     <button name="action_hr_reject"
                             type="object"
-                            string="Reject as HR"
+                            string="✗ Reject as HR"
                             class="btn btn-danger"
+                            icon="fa-times"
                             groups="hr.group_hr_user"
                             invisible="hr_state != 'pending' or supervisor_state != 'approved'"/>
 
@@ -82,7 +129,7 @@
 
 
         <!-- ========================================
-             EXTEND LEAVE LIST VIEW
+             EXTEND LEAVE LIST VIEW - REMOVE BUTTONS
              ======================================== -->
 
         <record id="view_hr_leave_tree_sequential" model="ir.ui.view">
@@ -91,22 +138,18 @@
             <field name="inherit_id" ref="hr_holidays.hr_leave_view_tree"/>
             <field name="arch" type="xml">
 
-                <!-- HIDE default Approve button in list view -->
-                <xpath expr="//button[@name='action_approve']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
+                <!-- COMPLETELY REMOVE action_approve button from list -->
+                <xpath expr="//button[@name='action_approve']" position="replace"/>
 
-                <!-- HIDE default Refuse button in list view -->
-                <xpath expr="//button[@name='action_refuse']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
+                <!-- COMPLETELY REMOVE action_refuse button from list -->
+                <xpath expr="//button[@name='action_refuse']" position="replace"/>
 
             </field>
         </record>
 
 
         <!-- ========================================
-             EXTEND LEAVE KANBAN VIEW
+             EXTEND LEAVE KANBAN VIEW - REMOVE BUTTONS
              ======================================== -->
 
         <record id="view_hr_leave_kanban_sequential" model="ir.ui.view">
@@ -115,15 +158,11 @@
             <field name="inherit_id" ref="hr_holidays.hr_leave_view_kanban"/>
             <field name="arch" type="xml">
 
-                <!-- HIDE default Approve button in kanban view -->
-                <xpath expr="//button[@name='action_approve']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
+                <!-- COMPLETELY REMOVE action_approve button from kanban -->
+                <xpath expr="//button[@name='action_approve']" position="replace"/>
 
-                <!-- HIDE default Refuse button in kanban view -->
-                <xpath expr="//button[@name='action_refuse']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
+                <!-- COMPLETELY REMOVE action_refuse button from kanban -->
+                <xpath expr="//button[@name='action_refuse']" position="replace"/>
 
             </field>
         </record>
