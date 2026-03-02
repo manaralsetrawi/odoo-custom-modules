@@ -221,11 +221,11 @@ class HrLeave(models.Model):
     # DISABLE DEFAULT APPROVAL METHODS
     # ============================================
 
-    def action_approve(self):
-        """Override default approve - disable it"""
-        raise ValidationError(
-            "Please use 'Approve as Supervisor' or 'Approve as HR' buttons instead."
-        )
+    # def action_approve(self):
+    #     """Override default approve - disable it"""
+    #     raise ValidationError(
+    #         "Please use 'Approve as Supervisor' or 'Approve as HR' buttons instead."
+    #     )
 
     # def action_refuse(self):
     #     """Override default refuse - disable it"""
