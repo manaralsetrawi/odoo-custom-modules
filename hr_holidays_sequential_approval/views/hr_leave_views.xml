@@ -34,8 +34,8 @@
                     <field name="rejection_reason" readonly="1"/>
                 </xpath>
 
-                <!-- Add new buttons section -->
-                <xpath expr="//div[@class='oe_button_box']" position="inside">
+                <!-- Add new buttons after state field -->
+                <xpath expr="//field[@name='state']" position="after">
 
                     <!-- ========================================
                          SUPERVISOR BUTTONS - Only for supervisors
