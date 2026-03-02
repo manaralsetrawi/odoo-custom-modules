@@ -32,31 +32,84 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
 
-                <!-- Add custom approval status fields with styling -->
+                <!-- ========================================
+                     BUTTONS SECTION AT TOP
+                     ======================================== -->
+
+                <xpath expr="//field[@name='state']" position="after">
+
+                    <!-- SUPERVISOR BUTTONS -->
+                    <div class="row mb-4" style="background-color: #f8f9fa; padding: 15px; border-radius: 8px;">
+                        <div class="col-md-6">
+                            <button name="action_supervisor_approve"
+                                    type="object"
+                                    string="✓ Approve as Supervisor"
+                                    class="btn btn-success btn-lg"
+                                    icon="fa-check"
+                                    invisible="(supervisor_state not in ('pending', 'rejected')) or supervisor_id != uid"
+                                    style="width: 100%; margin-bottom: 10px;"/>
+
+                            <button name="action_supervisor_reject"
+                                    type="object"
+                                    string="✗ Reject as Supervisor"
+                                    class="btn btn-danger btn-lg"
+                                    icon="fa-times"
+                                    invisible="(supervisor_state not in ('pending', 'approved')) or supervisor_id != uid"
+                                    style="width: 100%;"/>
+                        </div>
+
+                        <!-- HR BUTTONS -->
+                        <div class="col-md-6">
+                            <button name="action_hr_approve"
+                                    type="object"
+                                    string="✓ Approve as HR"
+                                    class="btn btn-success btn-lg"
+                                    icon="fa-check"
+                                    groups="hr.group_hr_user"
+                                    invisible="supervisor_state != 'approved' or hr_state not in ('pending', 'rejected')"
+                                    style="width: 100%; margin-bottom: 10px;"/>
+
+                            <button name="action_hr_reject"
+                                    type="object"
+                                    string="✗ Reject as HR"
+                                    class="btn btn-danger btn-lg"
+                                    icon="fa-times"
+                                    groups="hr.group_hr_user"
+                                    invisible="supervisor_state != 'approved' or hr_state not in ('pending', 'approved')"
+                                    style="width: 100%;"/>
+                        </div>
+                    </div>
+
+                </xpath>
+
+                <!-- ========================================
+                     STATUS SECTION BELOW BUTTONS
+                     ======================================== -->
+
                 <xpath expr="//field[@name='state']" position="after">
                     
                     <!-- Supervisor Status - Show ONLY current status -->
-                    <div class="row mb-3">
+                    <div class="row mb-3" style="margin-top: 20px;">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Supervisor Approval Status</label>
+                            <label class="form-label fw-bold" style="font-size: 16px;">Supervisor Approval Status</label>
                             
-                            <!-- Show Approved badge only if approved -->
+                            <!-- Show Approved badge ONLY if approved -->
                             <div attrs="{'invisible': [('supervisor_state', '!=', 'approved')]}">
-                                <span class="badge bg-success" style="font-size: 14px; padding: 8px 12px;">
+                                <span class="badge bg-success" style="font-size: 16px; padding: 12px 20px; display: block;">
                                     <i class="fa fa-check-circle"></i> Approved
                                 </span>
                             </div>
                             
-                            <!-- Show Pending badge only if pending -->
+                            <!-- Show Pending badge ONLY if pending -->
                             <div attrs="{'invisible': [('supervisor_state', '!=', 'pending')]}">
-                                <span class="badge bg-warning text-dark" style="font-size: 14px; padding: 8px 12px;">
+                                <span class="badge bg-warning text-dark" style="font-size: 16px; padding: 12px 20px; display: block;">
                                     <i class="fa fa-clock-o"></i> Pending
                                 </span>
                             </div>
                             
-                            <!-- Show Rejected badge only if rejected -->
+                            <!-- Show Rejected badge ONLY if rejected -->
                             <div attrs="{'invisible': [('supervisor_state', '!=', 'rejected')]}">
-                                <span class="badge bg-danger" style="font-size: 14px; padding: 8px 12px;">
+                                <span class="badge bg-danger" style="font-size: 16px; padding: 12px 20px; display: block;">
                                     <i class="fa fa-times-circle"></i> Rejected
                                 </span>
                             </div>
@@ -64,31 +117,36 @@
 
                         <!-- HR Status - Show ONLY current status -->
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">HR Approval Status</label>
+                            <label class="form-label fw-bold" style="font-size: 16px;">HR Approval Status</label>
                             
-                            <!-- Show Approved badge only if approved -->
+                            <!-- Show Approved badge ONLY if approved -->
                             <div attrs="{'invisible': [('hr_state', '!=', 'approved')]}">
-                                <span class="badge bg-success" style="font-size: 14px; padding: 8px 12px;">
+                                <span class="badge bg-success" style="font-size: 16px; padding: 12px 20px; display: block;">
                                     <i class="fa fa-check-circle"></i> Approved
                                 </span>
                             </div>
                             
-                            <!-- Show Pending badge only if pending -->
+                            <!-- Show Pending badge ONLY if pending -->
                             <div attrs="{'invisible': [('hr_state', '!=', 'pending')]}">
-                                <span class="badge bg-warning text-dark" style="font-size: 14px; padding: 8px 12px;">
+                                <span class="badge bg-warning text-dark" style="font-size: 16px; padding: 12px 20px; display: block;">
                                     <i class="fa fa-clock-o"></i> Pending
                                 </span>
                             </div>
                             
-                            <!-- Show Rejected badge only if rejected -->
+                            <!-- Show Rejected badge ONLY if rejected -->
                             <div attrs="{'invisible': [('hr_state', '!=', 'rejected')]}">
-                                <span class="badge bg-danger" style="font-size: 14px; padding: 8px 12px;">
+                                <span class="badge bg-danger" style="font-size: 16px; padding: 12px 20px; display: block;">
                                     <i class="fa fa-times-circle"></i> Rejected
                                 </span>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Rejection Reason Alert (only show if rejected) -->
+                    <div class="alert alert-danger" attrs="{'invisible': [('rejection_reason', '=', False)]}" style="margin-top: 20px;">
+                        <strong>Rejection Reason:</strong>
+                        <field name="rejection_reason" readonly="1" nolabel="1" style="margin-top: 10px;"/>
+                    </div>
                     
                     <!-- Hidden fields for backend logic -->
                     <field name="supervisor_state" invisible="1"/>
@@ -96,52 +154,6 @@
 
                 </xpath>
 
-                <!-- Add new buttons after state field -->
-                <xpath expr="//field[@name='state']" position="after">
-
-                    <!-- ========================================
-                         SUPERVISOR BUTTONS - Only for supervisors
-                         ======================================== -->
-
-                    <!-- Supervisor Approve Button - Show when pending OR rejected -->
-                    <button name="action_supervisor_approve"
-                            type="object"
-                            string="✓ Approve as Supervisor"
-                            class="btn btn-success"
-                            icon="fa-check"
-                            invisible="(supervisor_state not in ('pending', 'rejected')) or supervisor_id != uid"/>
-
-                    <!-- Supervisor Reject Button - Show when pending OR approved -->
-                    <button name="action_supervisor_reject"
-                            type="object"
-                            string="✗ Reject as Supervisor"
-                            class="btn btn-danger"
-                            icon="fa-times"
-                            invisible="(supervisor_state not in ('pending', 'approved')) or supervisor_id != uid"/>
-
-                    <!-- ========================================
-                         HR BUTTONS - Only for HR users
-                         ======================================== -->
-
-                    <!-- HR Approve Button - Show when pending OR rejected (AND supervisor approved) -->
-                    <button name="action_hr_approve"
-                            type="object"
-                            string="✓ Approve as HR"
-                            class="btn btn-success"
-                            icon="fa-check"
-                            groups="hr.group_hr_user"
-                            invisible="supervisor_state != 'approved' or hr_state not in ('pending', 'rejected')"/>
-
-                    <!-- HR Reject Button - Show when pending OR approved (AND supervisor approved) -->
-                    <button name="action_hr_reject"
-                            type="object"
-                            string="✗ Reject as HR"
-                            class="btn btn-danger"
-                            icon="fa-times"
-                            groups="hr.group_hr_user"
-                            invisible="supervisor_state != 'approved' or hr_state not in ('pending', 'approved')"/>
-
-                </xpath>
             </field>
         </record>
 
