@@ -89,17 +89,23 @@ class HrLeave(models.Model):
         return True
 
     def action_supervisor_reject(self):
-        self.ensure_one()
-        self._check_supervisor()
-        if self.supervisor_state not in ('pending', 'approved'):
-            raise ValidationError(_("This request cannot be rejected at this stage."))
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'hr.leave.rejection',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {'default_leave_id': self.id, 'rejection_by': 'supervisor'},
-        }
+        for leave in self:
+            leave._check_supervisor()
+            # Only allow rejection if currently pending or approved by supervisor
+            if leave.supervisor_state not in ('pending', 'approved'):
+                raise ValidationError(_("This request cannot be rejected at this stage."))
+
+            # Set rejection
+            leave.supervisor_state = 'rejected'
+            leave.rejection_reason = False  # Optional, clear any previous reason
+
+            # Use core refusal logic to properly rollback leave allocations
+            super(HrLeave, leave).action_refuse()
+
+            # Notify HR and employee
+            leave._notify_employee_rejected(leave, 'supervisor')
+            leave._notify_employee_status_change(leave, 'supervisor', 'rejected')
+        return True
 
     def _supervisor_reject(self, reason):
         for leave in self:
@@ -136,17 +142,24 @@ class HrLeave(models.Model):
         return True
 
     def action_hr_reject(self):
-        self.ensure_one()
-        self._check_hr()
-        if self.hr_state not in ('pending', 'approved'):
-            raise ValidationError(_("This request cannot be rejected at this stage."))
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'hr.leave.rejection',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {'default_leave_id': self.id, 'rejection_by': 'hr'},
-        }
+        for leave in self:
+            leave._check_hr()
+            # Only allow rejection if currently pending or approved by HR
+            if leave.hr_state not in ('pending', 'approved'):
+                raise ValidationError(_("This request cannot be rejected at this stage."))
+
+            # Set rejection
+            leave.hr_state = 'rejected'
+            leave.rejection_reason = False  # Optional, clear any previous reason
+
+            # Use core refusal logic to properly rollback leave allocations
+            super(HrLeave, leave).action_refuse()
+
+            # Notify supervisor and employee
+            leave._notify_employee_rejected(leave, 'hr')
+            leave._notify_supervisor_rejected(leave)
+            leave._notify_employee_status_change(leave, 'hr', 'rejected')
+        return True
 
     def _hr_reject(self, reason):
         for leave in self:
@@ -221,17 +234,14 @@ class HrLeave(models.Model):
     def action_supervisor_reset(self):
         for leave in self:
             leave._check_supervisor()
-            # Reset supervisor decision
             leave.supervisor_state = 'pending'
             leave.rejection_reason = False
 
-            # If leave was fully approved, rollback to draft
             if leave.state in ('validate1', 'validate'):
-                super(HrLeave, leave).action_refuse()  # this rolls back the core approval
-
-            # If leave was refused by supervisor, just bring it back to pending
+                super(HrLeave, leave).action_refuse()
             if leave.state == 'refuse':
-                leave.state = 'confirm'  # sets it back to "to approve" without calling action_confirm()
+                # Bypass the core manager check using sudo()
+                leave.sudo().action_confirm()
 
     def action_hr_reset(self):
         for leave in self:
