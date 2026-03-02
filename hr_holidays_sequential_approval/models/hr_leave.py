@@ -53,26 +53,38 @@ class HrLeave(models.Model):
     # ============================================
     
     def action_supervisor_approve(self):
-        """Supervisor approves the leave request"""
+        """Supervisor approves the leave request (allows changing from rejected)"""
         for leave in self:
             if not leave.supervisor_id or leave.supervisor_id.id != self.env.user.id:
                 raise ValidationError(
                     "Only the supervisor can approve this request."
                 )
             
-            if leave.supervisor_state != 'pending':
+            # Allow approval if pending OR if previously rejected
+            if leave.supervisor_state not in ('pending', 'rejected'):
                 raise ValidationError(
-                    "This request is not pending supervisor approval."
+                    "This request cannot be approved at this stage."
                 )
             
+            # Clear rejection reason when re-approving
+            leave.rejection_reason = False
             leave.supervisor_state = 'approved'
+            leave.state = 'confirm'  # Set to confirm state (not validate yet)
+            
             self._notify_hr_pending(leave)
+            self._notify_employee_status_change(leave, 'supervisor', 'approved')
 
     def action_supervisor_reject(self):
-        """Supervisor rejects the leave request"""
+        """Supervisor rejects the leave request (allows changing from approved)"""
         if not self.supervisor_id or self.supervisor_id.id != self.env.user.id:
             raise ValidationError(
                 "Only the supervisor can reject this request."
+            )
+        
+        # Allow rejection if pending OR if previously approved
+        if self.supervisor_state not in ('pending', 'approved'):
+            raise ValidationError(
+                "This request cannot be rejected at this stage."
             )
         
         return {
@@ -91,32 +103,43 @@ class HrLeave(models.Model):
             leave.state = 'refuse'
             
             self._notify_employee_rejected(leave, 'supervisor')
+            self._notify_employee_status_change(leave, 'supervisor', 'rejected')
 
     # ============================================
     # HR APPROVAL METHODS
     # ============================================
     
     def action_hr_approve(self):
-        """HR approves the leave request"""
+        """HR approves the leave request (allows changing from rejected)"""
         for leave in self:
             if leave.supervisor_state != 'approved':
                 raise ValidationError(
                     "Supervisor must approve first before HR can approve."
                 )
             
-            if leave.hr_state != 'pending':
+            # Allow approval if pending HR OR if previously rejected by HR
+            if leave.hr_state not in ('pending', 'rejected'):
                 raise ValidationError(
                     "This request is not pending HR approval."
                 )
             
+            # Clear rejection reason when re-approving
+            leave.rejection_reason = False
             leave.hr_state = 'approved'
-            leave.state = 'validate'
+            leave.state = 'validate'  # Final approval state
             
             self._notify_employee_approved(leave)
             self._notify_supervisor_approved(leave)
+            self._notify_employee_status_change(leave, 'hr', 'approved')
 
     def action_hr_reject(self):
-        """HR rejects the leave request"""
+        """HR rejects the leave request (allows changing from approved)"""
+        # Allow rejection if pending HR OR if previously approved by HR
+        if self.hr_state not in ('pending', 'approved'):
+            raise ValidationError(
+                "This request cannot be rejected at this stage."
+            )
+        
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'hr.leave.rejection',
@@ -128,19 +151,13 @@ class HrLeave(models.Model):
     def _hr_reject(self, reason):
         """Internal method to process HR rejection"""
         for leave in self:
-            if leave.hr_state != 'pending':
-                raise ValidationError(
-                    "This request is not pending HR rejection."
-                )
-            
             leave.hr_state = 'rejected'
             leave.rejection_reason = reason
             leave.state = 'refuse'
             
             self._notify_employee_rejected(leave, 'hr')
             self._notify_supervisor_rejected(leave)
-
-
+            self._notify_employee_status_change(leave, 'hr', 'rejected')
 
     # ============================================
     # NOTIFICATION METHODS
@@ -197,7 +214,7 @@ class HrLeave(models.Model):
 
     def _notify_hr_pending(self, leave):
         """Notify HR that supervisor has approved"""
-        hr_group = self.env.ref('hr.group_hr_manager', raise_if_not_found=False)
+        hr_group = self.env.ref('hr.group_hr_user', raise_if_not_found=False)
         if not hr_group:
             return
         
@@ -210,6 +227,21 @@ class HrLeave(models.Model):
                 partner_ids=partner_ids
             )
 
+    def _notify_employee_status_change(self, leave, changed_by, new_status):
+        """Notify employee of status changes"""
+        if not leave.employee_id or not leave.employee_id.user_id:
+            return
+        
+        changed_by_text = "Supervisor" if changed_by == 'supervisor' else "HR"
+        status_text = "approved" if new_status == 'approved' else "rejected"
+        
+        body = f"Your leave request status has been changed to {status_text} by {changed_by_text}."
+        leave.message_post(
+            body=body,
+            subtype_xmlid='mail.mt_comment',
+            partner_ids=[leave.employee_id.user_id.partner_id.id]
+        )
+
     @api.model
     def create(self, vals):
         """Initialize approval states when creating a new leave request"""
@@ -221,17 +253,17 @@ class HrLeave(models.Model):
     # DISABLE DEFAULT APPROVAL METHODS
     # ============================================
 
-    # def action_approve(self):
-    #     """Override default approve - disable it"""
-    #     raise ValidationError(
-    #         "Please use 'Approve as Supervisor' or 'Approve as HR' buttons instead."
-    #     )
+    def action_approve(self):
+        """Override default approve - disable it"""
+        raise ValidationError(
+            "Please use 'Approve as Supervisor' or 'Approve as HR' buttons instead."
+        )
 
-    # def action_refuse(self):
-    #     """Override default refuse - disable it"""
-    #     raise ValidationError(
-    #         "Please use 'Reject as Supervisor' or 'Reject as HR' buttons instead."
-    #     )
+    def action_refuse(self):
+        """Override default refuse - disable it"""
+        raise ValidationError(
+            "Please use 'Reject as Supervisor' or 'Reject as HR' buttons instead."
+        )
 
     def action_validate(self):
         """Override default validate - disable it"""

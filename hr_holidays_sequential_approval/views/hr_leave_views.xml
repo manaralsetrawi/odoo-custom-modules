@@ -89,11 +89,6 @@
                         </div>
                     </div>
 
-                    <!-- Rejection Reason (only show if rejected) -->
-                    <div class="alert alert-danger" attrs="{'invisible': [('rejection_reason', '=', False)]}" style="margin-top: 15px;">
-                        <strong>Rejection Reason:</strong>
-                        <field name="rejection_reason" readonly="1" nolabel="1"/>
-                    </div>
                     
                     <!-- Hidden fields for backend logic -->
                     <field name="supervisor_state" invisible="1"/>
@@ -108,46 +103,45 @@
                          SUPERVISOR BUTTONS - Only for supervisors
                          ======================================== -->
 
-                    <!-- Supervisor Approve Button -->
+                    <!-- Supervisor Approve Button - Show when pending OR rejected -->
                     <button name="action_supervisor_approve"
                             type="object"
                             string="✓ Approve as Supervisor"
                             class="btn btn-success"
                             icon="fa-check"
-                            invisible="supervisor_state != 'pending' or supervisor_id != uid"/>
+                            invisible="(supervisor_state not in ('pending', 'rejected')) or supervisor_id != uid"/>
 
-                    <!-- Supervisor Reject Button -->
+                    <!-- Supervisor Reject Button - Show when pending OR approved -->
                     <button name="action_supervisor_reject"
                             type="object"
                             string="✗ Reject as Supervisor"
                             class="btn btn-danger"
                             icon="fa-times"
-                            invisible="supervisor_state != 'pending' or supervisor_id != uid"/>
+                            invisible="(supervisor_state not in ('pending', 'approved')) or supervisor_id != uid"/>
 
                     <!-- ========================================
                          HR BUTTONS - Only for HR users
                          ======================================== -->
 
-                    <!-- HR Approve Button - ONLY show to HR users -->
+                    <!-- HR Approve Button - Show when pending OR rejected (AND supervisor approved) -->
                     <button name="action_hr_approve"
                             type="object"
                             string="✓ Approve as HR"
                             class="btn btn-success"
                             icon="fa-check"
                             groups="hr.group_hr_user"
-                            invisible="hr_state != 'pending' or supervisor_state != 'approved'"/>
+                            invisible="supervisor_state != 'approved' or hr_state not in ('pending', 'rejected')"/>
 
-                    <!-- HR Reject Button - ONLY show to HR users -->
+                    <!-- HR Reject Button - Show when pending OR approved (AND supervisor approved) -->
                     <button name="action_hr_reject"
                             type="object"
                             string="✗ Reject as HR"
                             class="btn btn-danger"
                             icon="fa-times"
                             groups="hr.group_hr_user"
-                            invisible="hr_state != 'pending' or supervisor_state != 'approved'"/>
+                            invisible="supervisor_state != 'approved' or hr_state not in ('pending', 'approved')"/>
 
                 </xpath>
-
             </field>
         </record>
 
