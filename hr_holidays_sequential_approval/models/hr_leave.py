@@ -1,10 +1,10 @@
-from odoo import models, fields, api
-from odoo.exceptions import ValidationError
+# models/hr_leave.py
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, AccessError
 
 class HrLeave(models.Model):
     _inherit = 'hr.leave'
 
-    # New custom fields for sequential approval
     supervisor_state = fields.Selection(
         [
             ('pending', 'Pending Supervisor Approval'),
@@ -13,9 +13,9 @@ class HrLeave(models.Model):
         ],
         default='pending',
         string='Supervisor Approval Status',
-        tracking=True
+        tracking=True,
     )
-    
+
     hr_state = fields.Selection(
         [
             ('pending', 'Pending HR Approval'),
@@ -24,69 +24,74 @@ class HrLeave(models.Model):
         ],
         default='pending',
         string='HR Approval Status',
-        tracking=True
+        tracking=True,
     )
-    
+
     supervisor_id = fields.Many2one(
         'res.users',
         string='Supervisor',
         compute='_compute_supervisor_id',
-        store=True
-    )
-    
-    rejection_reason = fields.Text(
-        string='Rejection Reason',
-        tracking=True
+        store=True,
+        readonly=True,
     )
 
-    @api.depends('employee_id')
+    rejection_reason = fields.Text(string='Rejection Reason', tracking=True)
+
+    # Optional flags for safer attrs in views
+    is_current_user_supervisor = fields.Boolean(compute='_compute_user_flags', store=False)
+    is_current_user_employee = fields.Boolean(compute='_compute_user_flags', store=False)
+    is_current_user_hr = fields.Boolean(compute='_compute_user_flags', store=False)
+
+    @api.depends('employee_id', 'employee_id.parent_id', 'employee_id.parent_id.user_id')
     def _compute_supervisor_id(self):
-        """Automatically assign the employee's manager as supervisor"""
         for leave in self:
-            if leave.employee_id and leave.employee_id.parent_id:
-                leave.supervisor_id = leave.employee_id.parent_id.user_id
-            else:
-                leave.supervisor_id = False
+            leave.supervisor_id = leave.employee_id.parent_id.user_id if leave.employee_id and leave.employee_id.parent_id else False
+
+    @api.depends('employee_id.user_id')
+    def _compute_user_flags(self):
+        uid = self.env.user.id
+        is_hr = self.env.user.has_group('hr_holidays.group_hr_holidays_user') or self.env.user.has_group('hr.group_hr_user')
+        for leave in self:
+            leave.is_current_user_employee = bool(leave.employee_id and leave.employee_id.user_id.id == uid)
+            leave.is_current_user_supervisor = bool(leave.supervisor_id and leave.supervisor_id.id == uid)
+            leave.is_current_user_hr = is_hr
+
+    # ---------- Internal check helpers ----------
+    def _check_supervisor(self):
+        self.ensure_one()
+        if self.supervisor_id.id != self.env.user.id:
+            raise AccessError(_("Only the assigned supervisor can perform this action."))
+
+    def _check_hr(self):
+        self.ensure_one()
+        if not (self.env.user.has_group('hr_holidays.group_hr_holidays_user') or self.env.user.has_group('hr.group_hr_user')):
+            raise AccessError(_("Only HR can perform this action."))
 
     # ============================================
     # SUPERVISOR APPROVAL METHODS
     # ============================================
-    
     def action_supervisor_approve(self):
-        """Supervisor approves the leave request (allows changing from rejected)"""
         for leave in self:
-            if not leave.supervisor_id or leave.supervisor_id.id != self.env.user.id:
-                raise ValidationError(
-                    "Only the supervisor can approve this request."
-                )
-            
-            # Allow approval if pending OR if previously rejected
+            leave._check_supervisor()
+            # Allow from 'pending' or previously 'rejected' by supervisor
             if leave.supervisor_state not in ('pending', 'rejected'):
-                raise ValidationError(
-                    "This request cannot be approved at this stage."
-                )
-            
-            # Clear rejection reason when re-approving
+                raise ValidationError(_("This request cannot be approved at this stage."))
+
             leave.rejection_reason = False
             leave.supervisor_state = 'approved'
-            leave.state = 'confirm'  # Set to confirm state (not validate yet)
-            
-            self._notify_hr_pending(leave)
-            self._notify_employee_status_change(leave, 'supervisor', 'approved')
+
+            # Use core logic: first approval (validate1) if double validation
+            super(HrLeave, leave).action_approve()
+
+            leave._notify_hr_pending(leave)
+            leave._notify_employee_status_change(leave, 'supervisor', 'approved')
+        return True
 
     def action_supervisor_reject(self):
-        """Supervisor rejects the leave request (allows changing from approved)"""
-        if not self.supervisor_id or self.supervisor_id.id != self.env.user.id:
-            raise ValidationError(
-                "Only the supervisor can reject this request."
-            )
-        
-        # Allow rejection if pending OR if previously approved
+        self.ensure_one()
+        self._check_supervisor()
         if self.supervisor_state not in ('pending', 'approved'):
-            raise ValidationError(
-                "This request cannot be rejected at this stage."
-            )
-        
+            raise ValidationError(_("This request cannot be rejected at this stage."))
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'hr.leave.rejection',
@@ -96,50 +101,44 @@ class HrLeave(models.Model):
         }
 
     def _supervisor_reject(self, reason):
-        """Internal method to process supervisor rejection"""
         for leave in self:
             leave.supervisor_state = 'rejected'
             leave.rejection_reason = reason
-            leave.state = 'refuse'
-            
-            self._notify_employee_rejected(leave, 'supervisor')
-            self._notify_employee_status_change(leave, 'supervisor', 'rejected')
+
+            # Core refusal to rollback allocations/resource leaves if needed
+            super(HrLeave, leave).action_refuse()
+
+            leave._notify_employee_rejected(leave, 'supervisor')
+            leave._notify_employee_status_change(leave, 'supervisor', 'rejected')
+        return True
 
     # ============================================
     # HR APPROVAL METHODS
     # ============================================
-    
     def action_hr_approve(self):
-        """HR approves the leave request (allows changing from rejected)"""
         for leave in self:
+            leave._check_hr()
             if leave.supervisor_state != 'approved':
-                raise ValidationError(
-                    "Supervisor must approve first before HR can approve."
-                )
-            
-            # Allow approval if pending HR OR if previously rejected by HR
+                raise ValidationError(_("Supervisor must approve first before HR can approve."))
             if leave.hr_state not in ('pending', 'rejected'):
-                raise ValidationError(
-                    "This request is not pending HR approval."
-                )
-            
-            # Clear rejection reason when re-approving
+                raise ValidationError(_("This request is not pending HR approval."))
+
             leave.rejection_reason = False
             leave.hr_state = 'approved'
-            leave.state = 'validate'  # Final approval state
-            
-            self._notify_employee_approved(leave)
-            self._notify_supervisor_approved(leave)
-            self._notify_employee_status_change(leave, 'hr', 'approved')
+
+            # Final approval using core method
+            super(HrLeave, leave).action_validate()
+
+            leave._notify_employee_approved(leave)
+            leave._notify_supervisor_approved(leave)
+            leave._notify_employee_status_change(leave, 'hr', 'approved')
+        return True
 
     def action_hr_reject(self):
-        """HR rejects the leave request (allows changing from approved)"""
-        # Allow rejection if pending HR OR if previously approved by HR
+        self.ensure_one()
+        self._check_hr()
         if self.hr_state not in ('pending', 'approved'):
-            raise ValidationError(
-                "This request cannot be rejected at this stage."
-            )
-        
+            raise ValidationError(_("This request cannot be rejected at this stage."))
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'hr.leave.rejection',
@@ -149,211 +148,98 @@ class HrLeave(models.Model):
         }
 
     def _hr_reject(self, reason):
-        """Internal method to process HR rejection"""
         for leave in self:
+            leave._check_hr()
             leave.hr_state = 'rejected'
             leave.rejection_reason = reason
-            leave.state = 'refuse'
-            
-            self._notify_employee_rejected(leave, 'hr')
-            self._notify_supervisor_rejected(leave)
-            self._notify_employee_status_change(leave, 'hr', 'rejected')
+
+            # Use core refusal
+            super(HrLeave, leave).action_refuse()
+
+            leave._notify_employee_rejected(leave, 'hr')
+            leave._notify_supervisor_rejected(leave)
+            leave._notify_employee_status_change(leave, 'hr', 'rejected')
+        return True
 
     # ============================================
-    # NOTIFICATION METHODS
+    # NOTIFICATION METHODS (kept as-is)
     # ============================================
-    
     def _notify_employee_approved(self, leave):
-        """Send approval notification to employee"""
         if not leave.employee_id or not leave.employee_id.user_id:
             return
-        
-        body = "Your leave request has been approved by HR."
-        leave.message_post(
-            body=body,
-            subtype_xmlid='mail.mt_comment',
-            partner_ids=[leave.employee_id.user_id.partner_id.id]
-        )
+        body = _("Your leave request has been approved by HR.")
+        leave.message_post(body=body, subtype_xmlid='mail.mt_comment', partner_ids=[leave.employee_id.user_id.partner_id.id])
 
     def _notify_employee_rejected(self, leave, rejected_by):
-        """Send rejection notification to employee"""
         if not leave.employee_id or not leave.employee_id.user_id:
             return
-        
-        rejected_by_text = "Supervisor" if rejected_by == 'supervisor' else "HR"
-        body = f"Your leave request has been rejected by {rejected_by_text}. Reason: {leave.rejection_reason}"
-        leave.message_post(
-            body=body,
-            subtype_xmlid='mail.mt_comment',
-            partner_ids=[leave.employee_id.user_id.partner_id.id]
-        )
+        rejected_by_text = _("Supervisor") if rejected_by == 'supervisor' else _("HR")
+        body = _("Your leave request has been rejected by %s. Reason: %s") % (rejected_by_text, leave.rejection_reason or '')
+        leave.message_post(body=body, subtype_xmlid='mail.mt_comment', partner_ids=[leave.employee_id.user_id.partner_id.id])
 
     def _notify_supervisor_approved(self, leave):
-        """Send approval notification to supervisor"""
         if not leave.supervisor_id:
             return
-        
-        body = "Your approved leave request has been further approved by HR."
-        leave.message_post(
-            body=body,
-            subtype_xmlid='mail.mt_comment',
-            partner_ids=[leave.supervisor_id.partner_id.id]
-        )
+        body = _("A leave request you approved has been further approved by HR.")
+        leave.message_post(body=body, subtype_xmlid='mail.mt_comment', partner_ids=[leave.supervisor_id.partner_id.id])
 
     def _notify_supervisor_rejected(self, leave):
-        """Send rejection notification to supervisor"""
         if not leave.supervisor_id:
             return
-        
-        body = f"A leave request you approved has been rejected by HR. Reason: {leave.rejection_reason}"
-        leave.message_post(
-            body=body,
-            subtype_xmlid='mail.mt_comment',
-            partner_ids=[leave.supervisor_id.partner_id.id]
-        )
+        body = _("A leave request you approved has been rejected by HR. Reason: %s") % (leave.rejection_reason or '')
+        leave.message_post(body=body, subtype_xmlid='mail.mt_comment', partner_ids=[leave.supervisor_id.partner_id.id])
 
     def _notify_hr_pending(self, leave):
-        """Notify HR that supervisor has approved"""
-        hr_group = self.env.ref('hr.group_hr_user', raise_if_not_found=False)
+        hr_group = self.env.ref('hr.group_hr_user', raise_if_not_found=False) or self.env.ref('hr_holidays.group_hr_holidays_user', raise_if_not_found=False)
         if not hr_group:
             return
-        
-        partner_ids = [user.partner_id.id for user in hr_group.users if user.partner_id]
-        
+        partner_ids = [u.partner_id.id for u in hr_group.users if u.partner_id]
         if partner_ids:
             leave.message_post(
-                body="Supervisor has approved leave request. Please review and approve.",
+                body=_("Supervisor has approved a leave request. Please review and approve."),
                 subtype_xmlid='mail.mt_comment',
                 partner_ids=partner_ids
             )
 
     def _notify_employee_status_change(self, leave, changed_by, new_status):
-        """Notify employee of status changes"""
         if not leave.employee_id or not leave.employee_id.user_id:
             return
-        
-        changed_by_text = "Supervisor" if changed_by == 'supervisor' else "HR"
-        status_text = "approved" if new_status == 'approved' else "rejected"
-        
-        body = f"Your leave request status has been changed to {status_text} by {changed_by_text}."
-        leave.message_post(
-            body=body,
-            subtype_xmlid='mail.mt_comment',
-            partner_ids=[leave.employee_id.user_id.partner_id.id]
-        )
+        changed_by_text = _("Supervisor") if changed_by == 'supervisor' else _("HR")
+        status_text = _("approved") if new_status == 'approved' else _("rejected")
+        body = _("Your leave request status has been changed to %s by %s.") % (status_text, changed_by_text)
+        leave.message_post(body=body, subtype_xmlid='mail.mt_comment', partner_ids=[leave.employee_id.user_id.partner_id.id])
 
-    @api.model
-    def create(self, vals):
-        """Initialize approval states when creating a new leave request"""
-        vals['supervisor_state'] = 'pending'
-        vals['hr_state'] = 'pending'
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals.setdefault('supervisor_state', 'pending')
+            vals.setdefault('hr_state', 'pending')
+        return super().create(vals_list)
 
-    # ============================================
-    # DISABLE DEFAULT APPROVAL METHODS
-    # ============================================
-
-    def action_approve(self):
-        """Override default approve - disable it"""
-        raise ValidationError(
-            "Please use 'Approve as Supervisor' or 'Approve as HR' buttons instead."
-        )
-
-    def action_refuse(self):
-        """Override default refuse - disable it"""
-        raise ValidationError(
-            "Please use 'Reject as Supervisor' or 'Reject as HR' buttons instead."
-        )
-
-    def action_validate(self):
-        """Override default validate - disable it"""
-        raise ValidationError(
-            "Validation must go through the sequential approval workflow."
-        )
-    
-    def action_reset_approval(self):
-        for leave in self:
-            # Only HR Manager should reset
-            if not self.env.user.has_group('hr.group_hr_manager'):
-                raise ValidationError("Only HR Manager can reset approval.")
-
-            # Reset states
-            leave.state = 'confirm'
-            leave.supervisor_state = 'pending'
-            leave.hr_state = 'pending'
-            leave.rejection_reason = False
-
-            leave.message_post(
-                body="Approval workflow has been reset to pending by HR Manager.",
-                subtype_xmlid='mail.mt_comment'
-            )
-    
-
-
-
-    # ============================================
-    # RESET SUPERVISOR DECISION
-    # ============================================
-
-    def action_reset_supervisor(self):
-        for leave in self:
-            # Only assigned supervisor can reset
-            if leave.supervisor_id.id != self.env.user.id:
-                raise ValidationError("Only the assigned supervisor can reset their approval.")
-
-            # Can only reset if supervisor already decided
-            if leave.supervisor_state not in ('approved', 'rejected'):
-                raise ValidationError("There is no supervisor decision to reset.")
-
-            # Reset supervisor state
-            leave.supervisor_state = 'pending'
-            leave.rejection_reason = False
-
-            # Reset overall state
-            leave.state = 'confirm'
-
-            # If HR had approved before, reset HR too
-            leave.hr_state = 'pending'
-
-            leave.message_post(
-                body="Supervisor has reset their approval decision.",
-                subtype_xmlid='mail.mt_comment'
-            )
-
-
-    # ============================================
-    # RESET HR DECISION
-    # ============================================
-
-    def action_reset_hr(self):
-        for leave in self:
-            # Only HR user can reset
-            if not self.env.user.has_group('hr.group_hr_user'):
-                raise ValidationError("Only HR can reset HR approval.")
-
-            # Can only reset if HR already decided
-            if leave.hr_state not in ('approved', 'rejected'):
-                raise ValidationError("There is no HR decision to reset.")
-
-            # Reset HR state only
-            leave.hr_state = 'pending'
-            leave.rejection_reason = False
-
-            # Return to supervisor-approved stage
-            leave.state = 'confirm'
-
-            leave.message_post(
-                body="HR has reset their approval decision.",
-                subtype_xmlid='mail.mt_comment'
-            )
-    
-    
+    # (Optional) Reset helpers. Consider using core transitions instead of raw state sets.
     def action_supervisor_reset(self):
-        for rec in self:
-            rec.supervisor_state = 'pending'
-            rec.state = 'confirm'
+        for leave in self:
+            leave._check_supervisor()
+            # Reset supervisor decision
+            leave.supervisor_state = 'pending'
+            leave.rejection_reason = False
+            # Bring back to "to approve" properly
+            if leave.state in ('validate1', 'validate'):
+                super(HrLeave, leave).action_refuse()
+            # reconfirm (employee's submitted state)
+            if leave.state == 'refuse':
+                super(HrLeave, leave).action_confirm()
+        return True
 
     def action_hr_reset(self):
-        for rec in self:
-            rec.hr_state = 'pending'
-            rec.state = 'confirm'
+        for leave in self:
+            leave._check_hr()
+            if leave.hr_state not in ('approved', 'rejected'):
+                raise ValidationError(_("There is no HR decision to reset."))
+            leave.hr_state = 'pending'
+            leave.rejection_reason = False
+            # If it was fully validated, refuse then confirm to re-queue
+            if leave.state == 'validate':
+                super(HrLeave, leave).action_refuse()
+                super(HrLeave, leave).action_confirm()
+        return True
