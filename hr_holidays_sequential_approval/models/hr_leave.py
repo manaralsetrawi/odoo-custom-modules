@@ -287,3 +287,73 @@ class HrLeave(models.Model):
                 body="Approval workflow has been reset to pending by HR Manager.",
                 subtype_xmlid='mail.mt_comment'
             )
+    
+
+
+
+    # ============================================
+    # RESET SUPERVISOR DECISION
+    # ============================================
+
+    def action_reset_supervisor(self):
+        for leave in self:
+            # Only assigned supervisor can reset
+            if leave.supervisor_id.id != self.env.user.id:
+                raise ValidationError("Only the assigned supervisor can reset their approval.")
+
+            # Can only reset if supervisor already decided
+            if leave.supervisor_state not in ('approved', 'rejected'):
+                raise ValidationError("There is no supervisor decision to reset.")
+
+            # Reset supervisor state
+            leave.supervisor_state = 'pending'
+            leave.rejection_reason = False
+
+            # Reset overall state
+            leave.state = 'confirm'
+
+            # If HR had approved before, reset HR too
+            leave.hr_state = 'pending'
+
+            leave.message_post(
+                body="Supervisor has reset their approval decision.",
+                subtype_xmlid='mail.mt_comment'
+            )
+
+
+    # ============================================
+    # RESET HR DECISION
+    # ============================================
+
+    def action_reset_hr(self):
+        for leave in self:
+            # Only HR user can reset
+            if not self.env.user.has_group('hr.group_hr_user'):
+                raise ValidationError("Only HR can reset HR approval.")
+
+            # Can only reset if HR already decided
+            if leave.hr_state not in ('approved', 'rejected'):
+                raise ValidationError("There is no HR decision to reset.")
+
+            # Reset HR state only
+            leave.hr_state = 'pending'
+            leave.rejection_reason = False
+
+            # Return to supervisor-approved stage
+            leave.state = 'confirm'
+
+            leave.message_post(
+                body="HR has reset their approval decision.",
+                subtype_xmlid='mail.mt_comment'
+            )
+    
+    
+    def action_supervisor_reset(self):
+        for rec in self:
+            rec.supervisor_state = 'pending'
+            rec.state = 'confirm'
+
+    def action_hr_reset(self):
+        for rec in self:
+            rec.hr_state = 'pending'
+            rec.state = 'confirm'
