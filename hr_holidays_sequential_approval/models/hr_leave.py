@@ -48,23 +48,18 @@ class HrLeave(models.Model):
             else:
                 leave.supervisor_id = False
 
+    # ============================================
     # SUPERVISOR APPROVAL METHODS
+    # ============================================
+    
     def action_supervisor_approve(self):
         """Supervisor approves the leave request"""
         for leave in self:
-            # CHECK 1: Verify supervisor is assigned
-            if not leave.supervisor_id:
-                raise ValidationError(
-                    "No supervisor assigned to this employee."
-                )
-            
-            # CHECK 2: Verify current user IS the supervisor
-            if leave.supervisor_id.id != self.env.user.id:
+            if not leave.supervisor_id or leave.supervisor_id.id != self.env.user.id:
                 raise ValidationError(
                     "Only the supervisor can approve this request."
                 )
             
-            # CHECK 3: Verify state is pending
             if leave.supervisor_state != 'pending':
                 raise ValidationError(
                     "This request is not pending supervisor approval."
@@ -72,10 +67,9 @@ class HrLeave(models.Model):
             
             leave.supervisor_state = 'approved'
             self._notify_hr_pending(leave)
-    
+
     def action_supervisor_reject(self):
         """Supervisor rejects the leave request"""
-        # ✅ CHECK: Verify current user IS the supervisor
         if not self.supervisor_id or self.supervisor_id.id != self.env.user.id:
             raise ValidationError(
                 "Only the supervisor can reject this request."
@@ -94,49 +88,35 @@ class HrLeave(models.Model):
         for leave in self:
             leave.supervisor_state = 'rejected'
             leave.rejection_reason = reason
-            leave.state = 'refuse'  # Final rejection state in Odoo
+            leave.state = 'refuse'
             
-            # Notify employee
             self._notify_employee_rejected(leave, 'supervisor')
 
+    # ============================================
     # HR APPROVAL METHODS
+    # ============================================
+    
     def action_hr_approve(self):
         """HR approves the leave request"""
         for leave in self:
-            # ✅ CHECK 1: Verify user is in HR group
-            if not self.env.user.has_group('hr.group_hr_manager'):
-                raise ValidationError(
-                    "Only HR Manager can approve this request."
-                )
-            
-            # ✅ CHECK 2: Verify supervisor already approved
             if leave.supervisor_state != 'approved':
                 raise ValidationError(
                     "Supervisor must approve first before HR can approve."
                 )
             
-            # ✅ CHECK 3: Verify state is pending
             if leave.hr_state != 'pending':
                 raise ValidationError(
                     "This request is not pending HR approval."
                 )
             
             leave.hr_state = 'approved'
-            leave.state = 'validate'  # Final approval state in Odoo
+            leave.state = 'validate'
             
-            # Notify employee and supervisor
             self._notify_employee_approved(leave)
             self._notify_supervisor_approved(leave)
 
-
     def action_hr_reject(self):
         """HR rejects the leave request"""
-        # ✅ CHECK: Verify user is in HR group
-        if not self.env.user.has_group('hr.group_hr_manager'):
-            raise ValidationError(
-                "Only HR Manager can reject this request."
-            )
-        
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'hr.leave.rejection',
@@ -148,38 +128,53 @@ class HrLeave(models.Model):
     def _hr_reject(self, reason):
         """Internal method to process HR rejection"""
         for leave in self:
+            if leave.hr_state != 'pending':
+                raise ValidationError(
+                    "This request is not pending HR rejection."
+                )
+            
             leave.hr_state = 'rejected'
             leave.rejection_reason = reason
-            leave.state = 'refuse'  # Final rejection state in Odoo
+            leave.state = 'refuse'
             
-            # Notify employee and supervisor
             self._notify_employee_rejected(leave, 'hr')
             self._notify_supervisor_rejected(leave)
 
+    # ============================================
     # NOTIFICATION METHODS
+    # ============================================
+    
     def _notify_employee_approved(self, leave):
         """Send approval notification to employee"""
-        template = self.env.ref(
-            'hr_holidays_sequential_approval.email_leave_approved',
-            raise_if_not_found=False
+        if not leave.employee_id or not leave.employee_id.user_id:
+            return
+        
+        body = "Your leave request has been approved by HR."
+        leave.message_post(
+            body=body,
+            subtype_xmlid='mail.mt_comment',
+            partner_ids=[leave.employee_id.user_id.partner_id.id]
         )
-        if template:
-            template.send_mail(leave.id, force_send=True)
 
     def _notify_employee_rejected(self, leave, rejected_by):
         """Send rejection notification to employee"""
-        template = self.env.ref(
-            f'hr_holidays_sequential_approval.email_leave_rejected_{rejected_by}',
-            raise_if_not_found=False
+        if not leave.employee_id or not leave.employee_id.user_id:
+            return
+        
+        rejected_by_text = "Supervisor" if rejected_by == 'supervisor' else "HR"
+        body = f"Your leave request has been rejected by {rejected_by_text}. Reason: {leave.rejection_reason}"
+        leave.message_post(
+            body=body,
+            subtype_xmlid='mail.mt_comment',
+            partner_ids=[leave.employee_id.user_id.partner_id.id]
         )
-        if template:
-            template.send_mail(leave.id, force_send=True)
 
     def _notify_supervisor_approved(self, leave):
         """Send approval notification to supervisor"""
         if not leave.supervisor_id:
             return
-        body = f"Your approved leave request has been further approved by HR."
+        
+        body = "Your approved leave request has been further approved by HR."
         leave.message_post(
             body=body,
             subtype_xmlid='mail.mt_comment',
@@ -190,6 +185,7 @@ class HrLeave(models.Model):
         """Send rejection notification to supervisor"""
         if not leave.supervisor_id:
             return
+        
         body = f"A leave request you approved has been rejected by HR. Reason: {leave.rejection_reason}"
         leave.message_post(
             body=body,
@@ -199,9 +195,12 @@ class HrLeave(models.Model):
 
     def _notify_hr_pending(self, leave):
         """Notify HR that supervisor has approved"""
-        hr_group = self.env.ref('hr.group_hr_manager')
-        partner_ids = [user.partner_id.id for user in hr_group.users]
-
+        hr_group = self.env.ref('hr.group_hr_manager', raise_if_not_found=False)
+        if not hr_group:
+            return
+        
+        partner_ids = [user.partner_id.id for user in hr_group.users if user.partner_id]
+        
         if partner_ids:
             leave.message_post(
                 body="Supervisor has approved leave request. Please review and approve.",
@@ -215,3 +214,25 @@ class HrLeave(models.Model):
         vals['supervisor_state'] = 'pending'
         vals['hr_state'] = 'pending'
         return super().create(vals)
+
+    # ============================================
+    # DISABLE DEFAULT APPROVAL METHODS
+    # ============================================
+
+    def action_approve(self):
+        """Override default approve - disable it"""
+        raise ValidationError(
+            "Please use 'Approve as Supervisor' or 'Approve as HR' buttons instead."
+        )
+
+    def action_refuse(self):
+        """Override default refuse - disable it"""
+        raise ValidationError(
+            "Please use 'Reject as Supervisor' or 'Reject as HR' buttons instead."
+        )
+
+    def action_validate(self):
+        """Override default validate - disable it"""
+        raise ValidationError(
+            "Validation must go through the sequential approval workflow."
+        )
