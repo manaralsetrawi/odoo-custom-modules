@@ -50,29 +50,31 @@
                             <div class="col-md-6">
                                 <h5 style="margin-bottom:15px;">Supervisor Approval</h5>
 
-                                <!-- Approve -->
-                                <button name="action_supervisor_approve"
-                                        type="object"
-                                        string="Approve"
-                                        class="btn btn-success"
-                                        icon="fa-check"
-                                        attrs="{'invisible': ['|',
-                                                            ('supervisor_state','not in',['pending','rejected']),
-                                                            ('supervisor_id','!=',uid)
-                                                            ]}"
-                                        style="width:100%; margin-bottom:10px;"/>
+                                    <!-- Approve -->
+                                    <button name="action_supervisor_approve"
+                                            type="object"
+                                            string="Approve"
+                                            class="btn btn-success"
+                                            icon="fa-check"
+                                            attrs="{'invisible': ['|','|',
+                                                                ('supervisor_state','not in',['pending','rejected']),
+                                                                ('supervisor_id','!=',uid),
+                                                                ('state','=','cancel')
+                                                                ]}"
+                                            style="width:100%; margin-bottom:10px;"/>
 
-                                <!-- Reject -->
-                                <button name="action_supervisor_reject"
-                                        type="object"
-                                        string="Reject"
-                                        class="btn btn-danger"
-                                        icon="fa-times"
-                                        attrs="{'invisible': ['|',
-                                                            ('supervisor_state','not in',['pending','approved']),
-                                                            ('supervisor_id','!=',uid)
-                                                            ]}"
-                                        style="width:100%;"/>
+                                    <!-- Reject -->
+                                    <button name="action_supervisor_reject"
+                                            type="object"
+                                            string="Reject"
+                                            class="btn btn-danger"
+                                            icon="fa-times"
+                                            attrs="{'invisible': ['|','|',
+                                                                ('supervisor_state','not in',['pending','approved']),
+                                                                ('supervisor_id','!=',uid),
+                                                                ('state','=','cancel')
+                                                                ]}"
+                                            style="width:100%;"/>
                             </div>
 
                             <!-- RIGHT SIDE: STATUS BADGE -->
