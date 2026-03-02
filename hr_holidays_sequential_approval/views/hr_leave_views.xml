@@ -64,7 +64,7 @@
                             type="object"
                             string="Approve as HR"
                             class="btn btn-success"
-                            groups="hr.group_hr_manager"
+                            groups="hr.group_hr_user"
                             invisible="hr_state != 'pending' or supervisor_state != 'approved'"/>
 
                     <!-- HR Reject Button - ONLY show to HR managers -->
@@ -72,7 +72,7 @@
                             type="object"
                             string="Reject as HR"
                             class="btn btn-danger"
-                            groups="hr.group_hr_manager"
+                            groups="hr.group_hr_user"
                             invisible="hr_state != 'pending' or supervisor_state != 'approved'"/>
 
                 </xpath>
