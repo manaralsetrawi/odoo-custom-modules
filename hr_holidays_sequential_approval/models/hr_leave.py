@@ -47,7 +47,7 @@ class HrLeave(models.Model):
         for leave in self:
             # Make sure it’s a res.users object, not employee
             leave.supervisor_id = leave.employee_id.parent_id.user_id if leave.employee_id and leave.employee_id.parent_id else False
-            
+
     @api.depends('employee_id.user_id')
     def _compute_user_flags(self):
         uid = self.env.user.id
@@ -224,13 +224,14 @@ class HrLeave(models.Model):
             # Reset supervisor decision
             leave.supervisor_state = 'pending'
             leave.rejection_reason = False
-            # Bring back to "to approve" properly
+
+            # If leave was fully approved, rollback to draft
             if leave.state in ('validate1', 'validate'):
-                super(HrLeave, leave).action_refuse()
-            # reconfirm (employee's submitted state)
+                super(HrLeave, leave).action_refuse()  # this rolls back the core approval
+
+            # If leave was refused by supervisor, just bring it back to pending
             if leave.state == 'refuse':
-                super(HrLeave, leave).action_confirm()
-        return True
+                leave.state = 'confirm'  # sets it back to "to approve" without calling action_confirm()
 
     def action_hr_reset(self):
         for leave in self:

@@ -53,11 +53,7 @@
                                         type="object"
                                         string="Approve"
                                         class="btn btn-success"
-                                        attrs="{'invisible': ['|','|',
-                                            ('supervisor_state','!=','pending'),
-                                            ('supervisor_id.user_id','!=',uid),
-                                            ('employee_id.user_id','=',uid)
-                                        ]}"
+                                        attrs="{'invisible': ['|','|', ('supervisor_state','!=','pending'), ('is_current_user_supervisor','=',False), ('is_current_user_employee','=',True)]}"
                                         style="width:100%; margin-bottom:10px;"/>
 
                                 <!-- Reject -->
@@ -65,11 +61,7 @@
                                         type="object"
                                         string="Reject"
                                         class="btn btn-danger"
-                                        attrs="{'invisible': ['|','|',
-                                            ('supervisor_state','!=','pending'),
-                                            ('supervisor_id.user_id','!=',uid),
-                                            ('employee_id.user_id','=',uid)
-                                        ]}"
+                                        attrs="{'invisible': ['|','|', ('supervisor_state','!=','pending'), ('is_current_user_supervisor','=',False), ('is_current_user_employee','=',True)]}"
                                         style="width:100%; margin-bottom:10px;"/>
 
                                 <!-- Reset -->
@@ -79,7 +71,7 @@
                                         class="btn btn-secondary"
                                         attrs="{'invisible': ['|','|',
                                             ('supervisor_state','=','pending'),
-                                            ('supervisor_id.user_id','!=',uid),
+                                            ('supervisor_id','!=',uid),
                                             ('employee_id.user_id','=',uid)
                                         ]}"
                                         style="width:100%;"/>
@@ -105,7 +97,7 @@
 
                     <div 
                          attrs="{'invisible': [('supervisor_state','!=','approved')]}"
-                         style="background-color: #f4fff7; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #00b341;">
+                         style="background-color: #f8fbff;; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #22749d;">
 
                         <div class="row">
 
