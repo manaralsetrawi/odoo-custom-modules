@@ -13,9 +13,9 @@
             <field name="arch" type="xml">
 
                 <!-- HIDE default Approve button -->
-                <xpath expr="//button[@name='action_approve']" position="attributes">
+                <!-- <xpath expr="//button[@name='action_approve']" position="attributes">
                     <attribute name="invisible">1</attribute>
-                </xpath>
+                </xpath> -->
 
                 <!-- HIDE default Refuse button -->
                 <!-- <xpath expr="//button[@name='action_refuse']" position="attributes">
@@ -23,9 +23,9 @@
                 </xpath> -->
 
                 <!-- HIDE default Validate button -->
-                <xpath expr="//button[@name='action_validate']" position="attributes">
+                <!-- <xpath expr="//button[@name='action_validate']" position="attributes">
                     <attribute name="invisible">1</attribute>
-                </xpath>
+                </xpath> -->
 
                 <!-- HIDE "To Approve" status field if it exists -->
                 <xpath expr="//field[@name='state']" position="attributes">
@@ -89,6 +89,11 @@
                         </div>
                     </div>
 
+                    <!-- Rejection Reason (only show if rejected) -->
+                    <!-- <div class="alert alert-danger" attrs="{'invisible': [('rejection_reason', '=', False)]}" style="margin-top: 15px;">
+                        <strong>Rejection Reason:</strong>
+                        <field name="rejection_reason" readonly="1" nolabel="1"/>
+                    </div> -->
                     
                     <!-- Hidden fields for backend logic -->
                     <field name="supervisor_state" invisible="1"/>

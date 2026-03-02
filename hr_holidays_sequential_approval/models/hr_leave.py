@@ -140,6 +140,8 @@ class HrLeave(models.Model):
             self._notify_employee_rejected(leave, 'hr')
             self._notify_supervisor_rejected(leave)
 
+
+
     # ============================================
     # NOTIFICATION METHODS
     # ============================================
@@ -225,11 +227,11 @@ class HrLeave(models.Model):
             "Please use 'Approve as Supervisor' or 'Approve as HR' buttons instead."
         )
 
-    def action_refuse(self):
-        """Override default refuse - disable it"""
-        raise ValidationError(
-            "Please use 'Reject as Supervisor' or 'Reject as HR' buttons instead."
-        )
+    # def action_refuse(self):
+    #     """Override default refuse - disable it"""
+    #     raise ValidationError(
+    #         "Please use 'Reject as Supervisor' or 'Reject as HR' buttons instead."
+    #     )
 
     def action_validate(self):
         """Override default validate - disable it"""
