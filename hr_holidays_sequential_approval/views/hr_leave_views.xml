@@ -36,15 +36,15 @@
                             <label class="form-label fw-bold">Supervisor Approval Status</label>
                             <div attrs="{'invisible': [('supervisor_state', '=', 'pending')]}">
                                 <span class="badge bg-success" invisible="supervisor_state != 'approved'">
-                                    <i class="fa fa-check-circle"></i> Supervisor Approved
+                                    <i class="fa fa-check-circle"></i> Approved
                                 </span>
                                 <span class="badge bg-danger" invisible="supervisor_state != 'rejected'">
-                                    <i class="fa fa-times-circle"></i> Supervisor Rejected
+                                    <i class="fa fa-times-circle"></i> Rejected
                                 </span>
                             </div>
                             <div attrs="{'invisible': [('supervisor_state', '!=', 'pending')]}">
                                 <span class="badge bg-warning text-dark">
-                                    <i class="fa fa-clock-o"></i> Pending Supervisor Approval
+                                    <i class="fa fa-clock-o"></i> Pending 
                                 </span>
                             </div>
                         </div>
@@ -54,15 +54,15 @@
                             <label class="form-label fw-bold">HR Approval Status</label>
                             <div attrs="{'invisible': [('hr_state', '=', 'pending')]}">
                                 <span class="badge bg-success" invisible="hr_state != 'approved'">
-                                    <i class="fa fa-check-circle"></i> HR Approved
+                                    <i class="fa fa-check-circle"></i> Approved
                                 </span>
                                 <span class="badge bg-danger" invisible="hr_state != 'rejected'">
-                                    <i class="fa fa-times-circle"></i> HR Rejected
+                                    <i class="fa fa-times-circle"></i> Rejected
                                 </span>
                             </div>
                             <div attrs="{'invisible': [('hr_state', '!=', 'pending')]}">
                                 <span class="badge bg-warning text-dark">
-                                    <i class="fa fa-clock-o"></i> Pending HR Approval
+                                    <i class="fa fa-clock-o"></i> Pending
                                 </span>
                             </div>
                         </div>
@@ -129,7 +129,7 @@
 
 
         <!-- ========================================
-             EXTEND LEAVE LIST VIEW - REMOVE BUTTONS
+             EXTEND LEAVE LIST VIEW - HIDE BUTTONS
              ======================================== -->
 
         <record id="view_hr_leave_tree_sequential" model="ir.ui.view">
@@ -138,18 +138,22 @@
             <field name="inherit_id" ref="hr_holidays.hr_leave_view_tree"/>
             <field name="arch" type="xml">
 
-                <!-- COMPLETELY REMOVE action_approve button from list -->
-                <xpath expr="//button[@name='action_approve']" position="replace"/>
+                <!-- Hide action_approve button from list -->
+                <xpath expr="//button[@name='action_approve']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
 
-                <!-- COMPLETELY REMOVE action_refuse button from list -->
-                <xpath expr="//button[@name='action_refuse']" position="replace"/>
+                <!-- Hide action_refuse button from list -->
+                <xpath expr="//button[@name='action_refuse']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
 
             </field>
         </record>
 
 
         <!-- ========================================
-             EXTEND LEAVE KANBAN VIEW - REMOVE BUTTONS
+             EXTEND LEAVE KANBAN VIEW - HIDE BUTTONS
              ======================================== -->
 
         <record id="view_hr_leave_kanban_sequential" model="ir.ui.view">
@@ -158,11 +162,15 @@
             <field name="inherit_id" ref="hr_holidays.hr_leave_view_kanban"/>
             <field name="arch" type="xml">
 
-                <!-- COMPLETELY REMOVE action_approve button from kanban -->
-                <xpath expr="//button[@name='action_approve']" position="replace"/>
+                <!-- Hide action_approve button in kanban -->
+                <xpath expr="//button[@name='action_approve']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
 
-                <!-- COMPLETELY REMOVE action_refuse button from kanban -->
-                <xpath expr="//button[@name='action_refuse']" position="replace"/>
+                <!-- Hide action_refuse button in kanban -->
+                <xpath expr="//button[@name='action_refuse']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
 
             </field>
         </record>
