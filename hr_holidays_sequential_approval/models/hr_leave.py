@@ -234,14 +234,14 @@ class HrLeave(models.Model):
     def action_supervisor_reset(self):
         for leave in self:
             leave._check_supervisor()
+            # Reset supervisor decision
             leave.supervisor_state = 'pending'
             leave.rejection_reason = False
 
-            if leave.state in ('validate1', 'validate'):
-                super(HrLeave, leave).action_refuse()
-            if leave.state == 'refuse':
-                # Bypass the core manager check using sudo()
-                leave.sudo().action_confirm()
+            # Reset the leave to draft if it was previously approved
+            if leave.state in ('validate1', 'validate', 'refuse'):
+                leave.action_draft()
+        return True
 
     def action_hr_reset(self):
         for leave in self:
