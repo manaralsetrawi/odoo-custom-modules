@@ -137,8 +137,12 @@
             <field name="inherit_id" ref="hr_holidays.hr_leave_view_tree"/>
             <field name="arch" type="xml">
 
-                <!-- Remove the whole "buttons" column (Approve/Refuse column) -->
-                <xpath expr="//td[contains(@class,'o_list_button')]" position="replace"/>
+                <!-- Remove list row Approve/Refuse buttons -->
+                <xpath expr="//button[@name='action_approve']" position="replace"/>
+                <xpath expr="//button[@name='action_refuse']" position="replace"/>
+
+                <!-- Some databases show Validate instead -->
+                <xpath expr="//button[@name='action_validate']" position="replace"/>
 
             </field>
         </record>
