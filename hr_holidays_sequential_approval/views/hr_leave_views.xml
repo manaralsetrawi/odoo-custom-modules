@@ -139,50 +139,25 @@
         <!-- ========================================
              EXTEND LEAVE KANBAN VIEW - HIDE BUTTONS
              ======================================== -->
-        <record id="view_hr_leave_kanban_sequential" model="ir.ui.view">
-            <field name="name">hr.leave.kanban.sequential</field>
-            <field name="model">hr.leave</field>
-            <field name="inherit_id" ref="hr_holidays.hr_leave_view_kanban"/>
-            <field name="arch" type="xml">
+            <record id="hr_leave_kanban_remove_default_buttons" model="ir.ui.view">
+                <field name="name">hr.leave.kanban.remove.default.buttons</field>
+                <field name="model">hr.leave</field>
+                <field name="inherit_id" ref="hr_holidays.hr_leave_view_kanban"/>
+                <field name="arch" type="xml">
 
-                <xpath expr="//button[@name='action_approve']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
+                    <!-- Remove Approve -->
+                    <xpath expr="//button[@name='action_approve']" position="replace"/>
 
-                <xpath expr="//button[@name='action_refuse']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
+                    <!-- Remove Validate (second approval) -->
+                    <xpath expr="//button[@name='action_validate']" position="replace"/>
 
-            </field>
-        </record>
+                    <!-- Remove Refuse -->
+                    <xpath expr="//button[@name='action_refuse']" position="replace"/>
 
-        <!-- ========================================
-             REJECTION WIZARD FORM
-             ======================================== -->
-        <record id="view_hr_leave_rejection_form" model="ir.ui.view">
-            <field name="name">hr.leave.rejection.form</field>
-            <field name="model">hr.leave.rejection</field>
-            <field name="arch" type="xml">
-                <form string="Reject Leave Request">
-                    <group>
-                        <field name="leave_id" readonly="1"/>
-                        <field name="rejection_by" invisible="1"/>
-                        <field name="rejection_reason"
-                               placeholder="Please provide a reason for rejection..."
-                               required="1"/>
-                    </group>
-                    <footer>
-                        <button name="action_reject"
-                                type="object"
-                                string="Confirm Rejection"
-                                class="btn btn-danger"/>
-                        <button string="Cancel"
-                                special="cancel"
-                                class="btn btn-secondary"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
+                </field>
+            </record>
+
+
 
     </data>
 </odoo>

@@ -10,6 +10,7 @@
     ],
     'data': [
         'views/hr_leave_views.xml',
+        'views/hr_leave_kanban_remove_buttons.xml',
     ],
     'installable': True,
     'application': False,
