@@ -71,8 +71,8 @@
                                         class="btn btn-secondary"
                                         attrs="{'invisible': ['|','|',
                                             ('supervisor_state','=','pending'),
-                                            ('supervisor_id','!=',uid),
-                                            ('employee_id.user_id','=',uid)
+                                            ('is_current_user_supervisor','=',False)
+                                            ('is_current_user_employee','=',True)
                                         ]}"
                                         style="width:100%;"/>
                             </div>
