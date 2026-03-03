@@ -53,27 +53,18 @@
                                         type="object"
                                         string="Approve"
                                         class="btn btn-success"
-                                        attrs="{'invisible': ['|',
-                                            ('supervisor_state','!=','pending'),
-                                            ('is_current_user_supervisor','=',False)
-                                        ]}"
-                                        style="width:100%; margin-bottom:2rem;"/>
+                                        invisible="supervisor_state != 'pending' or not is_current_user_supervisor"
+                                        style="width:100%; margin-bottom:20px;"/>
 
                                 <!-- Reject -->
                                 <button name="action_supervisor_reject"
                                         type="object"
                                         string="Reject"
                                         class="btn btn-danger"
-                                        attrs="{'invisible': ['|',
-                                            ('supervisor_state','!=','pending'),
-                                            ('is_current_user_supervisor','=',False)
-                                        ]}"
-                                        style="width:100%; margin-bottom:10px;"/>
+                                        invisible="supervisor_state != 'pending' or not is_current_user_supervisor"
+                                        style="width:100%; margin-bottom:20px;"/>
 
                                         
-                            <field name="is_current_user_supervisor" invisible="1"/>
-                            <field name="is_current_user_employee" invisible="1"/>
-                            <field name="is_current_user_hr" invisible="1"/>
 
                             </div>
 
@@ -110,10 +101,9 @@
                                     string="Approve"
                                     class="btn btn-success"
                                     groups="hr.group_hr_user"
-                                    attrs="{'invisible': ['|',
-                                                        ('hr_state','!=','pending'),
-                                                        ('supervisor_state','!=','approved')]}"
+                                    invisible="hr_state != 'pending' or supervisor_state != 'approved'"
                                     style="width:100%; margin-bottom:10px;"/>
+
 
                             <!-- HR Reject -->
                             <button name="action_hr_reject"
@@ -121,11 +111,8 @@
                                     string="Reject"
                                     class="btn btn-danger"
                                     groups="hr.group_hr_user"
-                                    attrs="{'invisible': ['|',
-                                                        ('hr_state','!=','pending'),
-                                                        ('supervisor_state','!=','approved')]}"
+                                    invisible="hr_state != 'pending' or supervisor_state != 'approved'"
                                     style="width:100%; margin-bottom:10px;"/>
-
 
                             </div>
 
@@ -143,24 +130,22 @@
                         </div>
                     </div>
 
-                                                    <!-- Reset -->
-                                <button name="action_reset_approval"
-                                        type="object"
-                                        string="Reset Decision"
-                                        class="btn btn-secondary"
-                                        group="hr.group_hr_manager"
-                                        attrs="{'invisible': ['|','|',
-                                            ('supervisor_state','=','pending'),
-                                            ('is_current_user_supervisor','=',False),
-                                            ('is_current_user_employee','=',True)
-                                        ]}"
-                                        style="width:100%;"/>
+                    <button name="action_reset_approval"
+                            type="object"
+                            string="Reset Decision"
+                            class="btn btn-secondary"
+                            groups="hr.group_hr_manager"
+                            invisible="supervisor_state == 'pending'"
+                            style="width:100%;"/>
 
 
                     <!-- Hidden technical fields -->
                     <field name="supervisor_state" invisible="1"/>
                     <field name="hr_state" invisible="1"/>
                     <field name="supervisor_id" invisible="1"/>
+                    <field name="is_current_user_supervisor" invisible="1"/>
+                    <field name="is_current_user_employee" invisible="1"/>
+                    <field name="is_current_user_hr" invisible="1"/>
 
                 </xpath>
             </field>

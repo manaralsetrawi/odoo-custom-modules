@@ -1,6 +1,7 @@
 # models/hr_leave.py
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, AccessError
+from odoo import models, fields, api, _
 
 class HrLeave(models.Model):
     _inherit = 'hr.leave'
@@ -48,7 +49,8 @@ class HrLeave(models.Model):
             # Make sure it’s a res.users object, not employee
             leave.supervisor_id = leave.employee_id.parent_id.user_id if leave.employee_id and leave.employee_id.parent_id else False
 
-    @api.depends('employee_id.user_id')
+    @api.depends('employee_id.user_id', 'supervisor_id')
+    @api.depends_context('uid')
     def _compute_user_flags(self):
         uid = self.env.user.id
         is_hr = self.env.user.has_group('hr_holidays.group_hr_holidays_user') or self.env.user.has_group('hr.group_hr_user')
@@ -57,6 +59,7 @@ class HrLeave(models.Model):
             leave.is_current_user_supervisor = bool(leave.supervisor_id and leave.supervisor_id.id == uid)
             leave.is_current_user_hr = is_hr
 
+            
     # ---------- Internal check helpers ----------
     def _check_supervisor(self):
         self.ensure_one()
@@ -86,7 +89,10 @@ class HrLeave(models.Model):
 
             leave._notify_hr_pending(leave)
             leave._notify_employee_status_change(leave, 'supervisor', 'approved')
-        return True
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
 
     def action_supervisor_reject(self):
         for leave in self:
@@ -105,7 +111,11 @@ class HrLeave(models.Model):
             # Notify HR and employee
             leave._notify_employee_rejected(leave, 'supervisor')
             leave._notify_employee_status_change(leave, 'supervisor', 'rejected')
-        return True
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
 
     def _supervisor_reject(self, reason):
         for leave in self:
