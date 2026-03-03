@@ -131,21 +131,24 @@
         <!-- ========================================
              EXTEND LEAVE LIST VIEW - HIDE BUTTONS
              ======================================== -->
+ <!-- 
+ 
         <record id="view_hr_leave_tree_sequential" model="ir.ui.view">
             <field name="name">hr.leave.tree.sequential</field>
             <field name="model">hr.leave</field>
             <field name="inherit_id" ref="hr_holidays.hr_leave_view_tree"/>
             <field name="arch" type="xml">
 
-                <!-- Remove list row Approve/Refuse buttons -->
+                Remove list row Approve/Refuse buttons
                 <xpath expr="//button[@name='action_approve']" position="replace"/>
                 <xpath expr="//button[@name='action_refuse']" position="replace"/>
 
-                <!-- Some databases show Validate instead -->
+                Some databases show Validate instead
                 <xpath expr="//button[@name='action_validate']" position="replace"/>
 
             </field>
         </record>
+  -->
 
         <!-- ========================================
              EXTEND LEAVE KANBAN VIEW - HIDE BUTTONS
