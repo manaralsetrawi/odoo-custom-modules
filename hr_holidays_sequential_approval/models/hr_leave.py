@@ -255,3 +255,21 @@ class HrLeave(models.Model):
                 super(HrLeave, leave).action_refuse()
                 super(HrLeave, leave).action_confirm()
         return True
+
+
+    def action_reset_approval(self):
+    for leave in self:
+        # Only HR Manager should reset
+        if not self.env.user.has_group('hr.group_hr_manager'):
+            raise ValidationError("Only HR Manager can reset approval.")
+
+        # Reset states
+        leave.state = 'confirm'
+        leave.supervisor_state = 'pending'
+        leave.hr_state = 'pending'
+        leave.rejection_reason = False
+
+        leave.message_post(
+            body="Approval workflow has been reset to pending by HR Manager.",
+            subtype_xmlid='mail.mt_comment'
+        )
