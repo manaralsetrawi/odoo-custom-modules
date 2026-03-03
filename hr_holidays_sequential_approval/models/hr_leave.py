@@ -230,32 +230,6 @@ class HrLeave(models.Model):
             vals.setdefault('hr_state', 'pending')
         return super().create(vals_list)
 
-    # (Optional) Reset helpers. Consider using core transitions instead of raw state sets.
-    def action_supervisor_reset(self):
-        for leave in self:
-            leave._check_supervisor()
-            # Reset supervisor decision
-            leave.supervisor_state = 'pending'
-            leave.rejection_reason = False
-
-            # Reset the leave to draft if it was previously approved
-            if leave.state in ('validate1', 'validate', 'refuse'):
-                leave.action_draft()
-        return True
-
-    def action_hr_reset(self):
-        for leave in self:
-            leave._check_hr()
-            if leave.hr_state not in ('approved', 'rejected'):
-                raise ValidationError(_("There is no HR decision to reset."))
-            leave.hr_state = 'pending'
-            leave.rejection_reason = False
-            # If it was fully validated, refuse then confirm to re-queue
-            if leave.state == 'validate':
-                super(HrLeave, leave).action_refuse()
-                super(HrLeave, leave).action_confirm()
-        return True
-
 
     def action_reset_approval(self):
         for leave in self:
