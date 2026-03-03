@@ -132,23 +132,7 @@
             </field>
         </record>
 
-        <!-- ========================================
-             EXTEND LEAVE LIST VIEW - HIDE BUTTONS
-             ======================================== -->
-             <!-- Remove default row buttons from the main list view -->
-            <record id="hr_leave_list_remove_default_buttons" model="ir.ui.view">
-                <field name="name">hr.leave.list.remove.default.buttons</field>
-                <field name="model">hr.leave</field>
-                <field name="inherit_id" ref="hr_holidays.hr_leave_view_tree"/>
-                <field name="arch" type="xml">
 
-                    <!-- Odoo 18 list root tag is <list> -->
-                    <xpath expr="//list/button[@name='action_approve']" position="replace"/>
-                    <xpath expr="//list/button[@name='action_validate']" position="replace"/>
-                    <xpath expr="//list/button[@name='action_refuse']" position="replace"/>
-
-                </field>
-            </record>
 
         <!-- ========================================
              EXTEND LEAVE KANBAN VIEW - HIDE BUTTONS
@@ -171,34 +155,6 @@
                 </field>
             </record>
 
-
-            <!-- <record id="hr_leave_calendar_remove_default_buttons" model="ir.ui.view">
-                <field name="name">hr.leave.calendar.remove.default.buttons</field>
-                <field name="model">hr.leave</field>
-                <field name="inherit_id" ref="hr_holidays.hr_leave_view_calendar"/>
-                <field name="arch" type="xml">
-
-                    <xpath expr="//button[@name='action_approve']" position="replace"/>
-                    <xpath expr="//button[@name='action_validate']" position="replace"/>
-                    <xpath expr="//button[@name='action_refuse']" position="replace"/>
-
-                </field>
-            </record>
-
-
-
-            <record id="hr_leave_calendar_remove_quick_actions" model="ir.ui.view">
-                <field name="name">hr.leave.calendar.remove.quick.actions</field>
-                <field name="model">hr.leave</field>
-                <field name="inherit_id" ref="hr_holidays.hr_leave_view_activity"/>
-                <field name="arch" type="xml">
-
-                    <xpath expr="//button[@name='action_approve']" position="replace"/>
-                    <xpath expr="//button[@name='action_validate']" position="replace"/>
-                    <xpath expr="//button[@name='action_refuse']" position="replace"/>
-
-                </field>
-            </record> -->
 
 
 
