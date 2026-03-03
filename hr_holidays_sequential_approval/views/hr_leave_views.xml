@@ -134,24 +134,24 @@
         <!-- ========================================
              EXTEND LEAVE KANBAN VIEW - HIDE BUTTONS
              ======================================== -->
-<record id="hr_leave_kanban_remove_default_buttons" model="ir.ui.view">
+<!-- <record id="hr_leave_kanban_remove_default_buttons" model="ir.ui.view">
     <field name="name">hr.leave.kanban.remove.default.buttons</field>
     <field name="model">hr.leave</field>
 
-    <!-- IMPORTANT: use the exact External ID shown in "Edit View: Kanban" -->
+  
     <field name="inherit_id" ref="hr_holidays.hr_leave_view_kanban"/>
 
     <field name="arch" type="xml">
-        <!-- Remove Approve -->
+ 
         <xpath expr="//t[@t-name='card']//button[@name='action_approve']" position="replace"/>
 
-        <!-- Remove Validate -->
+     
         <xpath expr="//t[@t-name='card']//button[@name='action_validate']" position="replace"/>
 
-        <!-- Remove Refuse -->
+     
         <xpath expr="//t[@t-name='card']//button[@name='action_refuse']" position="replace"/>
     </field>
-</record>
+</record> -->
 
 
 
