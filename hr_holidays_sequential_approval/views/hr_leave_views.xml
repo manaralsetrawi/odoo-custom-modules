@@ -65,7 +65,7 @@
                                         style="width:100%; margin-bottom:10px;"/>
 
                                 <!-- Reset -->
-                                <button name="action_supervisor_reset"
+                                <button name="action_reset_approval"
                                         type="object"
                                         string="Reset Decision"
                                         class="btn btn-secondary"
