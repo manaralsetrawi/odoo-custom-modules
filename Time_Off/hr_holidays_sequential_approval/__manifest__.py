@@ -3,7 +3,7 @@
     'version': '1.0',
     'summary': 'Two-step approval for leave requests (Supervisor → HR)',
     'category': 'Human Resources',
-    'author': 'Fatima Hasan',
+    'author': 'Fatima Hasan - NCST',
     'depends': [
         'hr_holidays',   # Required for hr.leave
         'mail',          # Required for chatter & notifications
