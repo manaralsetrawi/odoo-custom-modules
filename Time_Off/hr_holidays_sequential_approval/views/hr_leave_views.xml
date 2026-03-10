@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ========================================
+             EXTEND LEAVE FORM VIEW
+             ======================================== -->
+        <record id="view_hr_leave_form_sequential" model="ir.ui.view">
+            <field name="name">hr.leave.form.sequential</field>
+            <field name="model">hr.leave</field>
+            <field name="inherit_id" ref="hr_holidays.hr_leave_view_form"/>
+            <field name="arch" type="xml">
+
+                <!-- Hide default buttons -->
+                <xpath expr="//header//button[@name='action_approve']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//header//button[@name='action_validate']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//header//button[@name='action_refuse']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//header//button[@name='action_reset_confirm']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <!-- (Optional) hide state field if you want, but leave it in header -->
+                <xpath expr="//field[@name='state']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <!-- ✅ IMPORTANT: inject UI inside the SHEET (body), not after header state -->
+                <xpath expr="//sheet" position="inside">
+
+                    <!-- ===================== -->
+                    <!-- SUPERVISOR APPROVAL -->
+                    <!-- ===================== -->
+                    <div class="mt16 mb16">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body" style="border-left: 4px solid #0B2C3D;">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5 class="mb-0">Supervisor Approval</h5>
+
+                                    <field name="supervisor_state"
+                                           widget="badge"
+                                           decoration-success="supervisor_state == 'approved'"
+                                           decoration-warning="supervisor_state == 'pending'"
+                                           decoration-danger="supervisor_state == 'rejected'"
+                                           readonly="1"/>
+                                </div>
+
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button name="action_supervisor_approve"
+                                            type="object"
+                                            string="Approve"
+                                            class="btn btn-success"
+                                            invisible="supervisor_state != 'pending' or not is_current_user_supervisor"/>
+
+                                    <button name="action_supervisor_reject"
+                                            type="object"
+                                            string="Reject"
+                                            class="btn btn-danger"
+                                            invisible="supervisor_state != 'pending' or not is_current_user_supervisor"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===================== -->
+                    <!-- HR APPROVAL -->
+                    <!-- ===================== -->
+                    <div class="mb16"
+                         invisible="supervisor_state != 'approved'">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body" style="border-left: 4px solid #22749d;">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5 class="mb-0">HR Approval</h5>
+
+                                    <field name="hr_state"
+                                           widget="badge"
+                                           decoration-success="hr_state == 'approved'"
+                                           decoration-warning="hr_state == 'pending'"
+                                           decoration-danger="hr_state == 'rejected'"
+                                           readonly="1"/>
+                                </div>
+
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button name="action_hr_approve"
+                                            type="object"
+                                            string="Approve"
+                                            class="btn btn-success"
+                                            groups="hr.group_hr_user"
+                                            invisible="hr_state != 'pending' or supervisor_state != 'approved'"/>
+
+                                    <button name="action_hr_reject"
+                                            type="object"
+                                            string="Reject"
+                                            class="btn btn-danger"
+                                            groups="hr.group_hr_user"
+                                            invisible="hr_state != 'pending' or supervisor_state != 'approved'"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===================== -->
+                    <!-- RESET (HR MANAGER) -->
+                    <!-- ===================== -->
+                    <div class="mb16 d-flex justify-content-end">
+                        <button name="action_reset_approval"
+                                type="object"
+                                string="Reset Decision"
+                                class="btn btn-secondary"
+                                groups="hr.group_hr_manager"
+                                invisible="supervisor_state == 'pending'"/>
+                    </div>
+
+                    <!-- Hidden technical fields (must exist in form) -->
+                    <field name="supervisor_state" invisible="1"/>
+                    <field name="hr_state" invisible="1"/>
+                    <field name="supervisor_id" invisible="1"/>
+                    <field name="is_current_user_supervisor" invisible="1"/>
+                    <field name="is_current_user_employee" invisible="1"/>
+                    <field name="is_current_user_hr" invisible="1"/>
+
+                </xpath>
+
+            </field>
+        </record>
+
+
+
+        <!-- ========================================
+             EXTEND LEAVE KANBAN VIEW - HIDE BUTTONS
+             ======================================== -->
+<!-- <record id="hr_leave_kanban_remove_default_buttons" model="ir.ui.view">
+    <field name="name">hr.leave.kanban.remove.default.buttons</field>
+    <field name="model">hr.leave</field>
+
+  
+    <field name="inherit_id" ref="hr_holidays.hr_leave_view_kanban"/>
+
+    <field name="arch" type="xml">
+ 
+        <xpath expr="//t[@t-name='card']//button[@name='action_approve']" position="replace"/>
+
+     
+        <xpath expr="//t[@t-name='card']//button[@name='action_validate']" position="replace"/>
+
+     
+        <xpath expr="//t[@t-name='card']//button[@name='action_refuse']" position="replace"/>
+    </field>
+</record> -->
+
+
+
+
+
+
+
+    </data>
+</odoo>
