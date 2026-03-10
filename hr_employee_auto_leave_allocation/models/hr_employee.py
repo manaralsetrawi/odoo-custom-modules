@@ -38,7 +38,6 @@ class HrEmployee(models.Model):
                 sick_allocation = LeaveAllocation.create({
                     'name': f'Automatic Sick Leave Allocation - {self.name}',
                     'holiday_status_id': sick_leave_type.id,
-                    'holiday_type': 'employee',
                     'employee_id': self.id,
                     'allocation_type': 'accrual',
                     'accrual_plan_id': sick_leave_plan.id,
@@ -57,7 +56,6 @@ class HrEmployee(models.Model):
                 annual_allocation = LeaveAllocation.create({
                     'name': f'Automatic Annual Leave Allocation - {self.name}',
                     'holiday_status_id': annual_leave_type.id,
-                    'holiday_type': 'employee',
                     'employee_id': self.id,
                     'allocation_type': 'accrual',
                     'accrual_plan_id': annual_leave_plan.id,
