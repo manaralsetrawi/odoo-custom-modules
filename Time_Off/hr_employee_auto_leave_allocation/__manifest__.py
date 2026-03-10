@@ -3,7 +3,7 @@
     'version': '1.0',
     'summary': 'Automatically assign sick leave and annual leave accrual allocations to new employees',
     'category': 'Human Resources',
-    'author': 'Fatima Hasan',
+    'author': 'Fatima Hasan - NCST',
     'depends': ['hr', 'hr_holidays'],
     'data': [],
     'installable': True,
