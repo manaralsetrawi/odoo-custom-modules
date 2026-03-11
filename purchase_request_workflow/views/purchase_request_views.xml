@@ -31,8 +31,36 @@
                                 string="Submit"
                                 class="btn-primary"
                                 invisible="state != 'draft'"/>
+
+                        <button name="action_coordinator_approve"
+                                type="object"
+                                string="Coordinator Approve"
+                                class="btn-success"
+                                groups="purchase.group_pr_coordinator"
+                                invisible="state != 'waiting_coordinator'"/>
+
+                        <button name="action_principal_approve"
+                                type="object"
+                                string="Principal / Vice Principal Approve"
+                                class="btn-success"
+                                groups="purchase.group_principal,purchase.group_vice_principal"
+                                invisible="state != 'waiting_principal'"/>
+
+                        <button name="action_director_approve"
+                                type="object"
+                                string="Director Approve"
+                                class="btn-success"
+                                groups="purchase.group_department_director"
+                                invisible="state != 'waiting_director'"/>
+
+                        <button name="action_reject"
+                                type="object"
+                                string="Reject"
+                                class="btn-danger"
+                                invisible="state not in ('waiting_coordinator','waiting_principal','waiting_director','waiting_budget')"/>
+
                         <field name="state" widget="statusbar"
-                            statusbar_visible="draft,submitted,waiting_coordinator,waiting_principal,waiting_director,waiting_budget,approved,rejected"/>
+                            statusbar_visible="draft,waiting_coordinator,waiting_principal,waiting_director,waiting_budget,approved,rejected"/>
                     </header>
                     <sheet>
                         <group>
@@ -51,6 +79,24 @@
 
                         <group>
                             <field name="reason"/>
+                        </group>
+                        
+                        <group string="Approval Information">
+                            <group>
+                                <field name="coordinator_approved_by" readonly="1"/>
+                                <field name="coordinator_approved_date" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="principal_approved_by" readonly="1"/>
+                                <field name="principal_approved_date" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="director_approved_by" readonly="1"/>
+                                <field name="director_approved_date" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="rejection_reason"/>
+                            </group>
                         </group>
 
                         <notebook>

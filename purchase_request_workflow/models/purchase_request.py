@@ -84,6 +84,50 @@ class PurchaseRequest(models.Model):
         store=True,
     )
 
+    coordinator_approved_by = fields.Many2one(
+        'res.users',
+        string='Coordinator Approved By',
+        readonly=True,
+        tracking=True,
+    )
+
+    coordinator_approved_date = fields.Datetime(
+        string='Coordinator Approval Date',
+        readonly=True,
+        tracking=True,
+    )
+
+    principal_approved_by = fields.Many2one(
+        'res.users',
+        string='Principal / Vice Principal Approved By',
+        readonly=True,
+        tracking=True,
+    )
+
+    principal_approved_date = fields.Datetime(
+        string='Principal / Vice Principal Approval Date',
+        readonly=True,
+        tracking=True,
+    )
+
+    director_approved_by = fields.Many2one(
+        'res.users',
+        string='Department Director Approved By',
+        readonly=True,
+        tracking=True,
+    )
+
+    director_approved_date = fields.Datetime(
+        string='Department Director Approval Date',
+        readonly=True,
+        tracking=True,
+    )
+
+    rejection_reason = fields.Text(
+        string='Rejection Reason',
+        tracking=True,
+    )
+
     def action_submit(self):
         for rec in self:
             if not rec.line_ids:
@@ -98,6 +142,40 @@ class PurchaseRequest(models.Model):
             else:
                 rec.state = 'submitted'
                 rec.message_post(body='Purchase Request submitted.')
+
+
+    def action_coordinator_approve(self):
+        for rec in self:
+            if rec.state != 'waiting_coordinator':
+                continue
+            rec.state = 'waiting_principal'
+            rec.coordinator_approved_by = self.env.user
+            rec.coordinator_approved_date = fields.Datetime.now()
+            rec.message_post(body='Coordinator approved the Purchase Request.')
+
+    def action_principal_approve(self):
+        for rec in self:
+            if rec.state != 'waiting_principal':
+                continue
+            rec.state = 'waiting_budget'
+            rec.principal_approved_by = self.env.user
+            rec.principal_approved_date = fields.Datetime.now()
+            rec.message_post(body='Academic Principal / Vice Principal approved the Purchase Request.')
+
+    def action_director_approve(self):
+        for rec in self:
+            if rec.state != 'waiting_director':
+                continue
+            rec.state = 'waiting_budget'
+            rec.director_approved_by = self.env.user
+            rec.director_approved_date = fields.Datetime.now()
+            rec.message_post(body='Department Director approved the Purchase Request.')
+
+    def action_reject(self):
+        for rec in self:
+            rec.state = 'rejected'
+            rec.message_post(body='Purchase Request has been rejected.')
+
 
     @api.model
     def _default_requester(self):

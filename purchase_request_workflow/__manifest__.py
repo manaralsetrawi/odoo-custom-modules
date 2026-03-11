@@ -7,7 +7,6 @@
     'license': 'LGPL-3',
     'depends': ['base', 'mail', 'hr', 'purchase'],
     'data': [
-        'security/purchase_request_security.xml',
         'security/ir.model.access.csv',
         'data/sequence.xml',
         'views/purchase_request_views.xml',
