@@ -7,7 +7,7 @@
             <field name="name">purchase.request.tree</field>
             <field name="model">purchase.request</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name"/>
                     <field name="requester_id"/>
                     <field name="department_id"/>
@@ -15,7 +15,7 @@
                     <field name="required_date"/>
                     <field name="amount_total"/>
                     <field name="state"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -102,13 +102,13 @@
                         <notebook>
                             <page string="Request Lines">
                                 <field name="line_ids">
-                                    <tree editable="bottom">
+                                    <list editable="bottom">
                                         <field name="product_description"/>
                                         <field name="specifications"/>
                                         <field name="quantity"/>
                                         <field name="estimated_unit_price"/>
                                         <field name="subtotal" readonly="1"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>
@@ -127,7 +127,7 @@
         <record id="action_purchase_request" model="ir.actions.act_window">
             <field name="name">Purchase Requests</field>
             <field name="res_model">purchase.request</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
     </data>
