@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_purchase_order_form_inherit_ncst_procurement_execution" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit.ncst.procurement.execution</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add the related Purchase Request field near the vendor field
+                 so the procurement team can easily see which request this RFQ/PO belongs to. -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="purchase_request_id"/>
+            </xpath>
+
+            <!-- Add a small technical group for helper fields used in testing and future validations. -->
+            <xpath expr="//sheet" position="inside">
+                <group string="Procurement Execution">
+                    <field name="quotation_count_for_request" readonly="1"/>
+                    <field name="is_request_above_threshold" readonly="1"/>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
