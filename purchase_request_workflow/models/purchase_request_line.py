@@ -13,7 +13,7 @@ class PurchaseRequestLine(models.Model):
     )
 
     product_description = fields.Char(
-        string='Product / Item',
+        string='Item / Product',
         required=True,
     )
 

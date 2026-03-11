@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 
 
 class PurchaseRequest(models.Model):
@@ -83,6 +84,21 @@ class PurchaseRequest(models.Model):
         store=True,
     )
 
+    def action_submit(self):
+        for rec in self:
+            if not rec.line_ids:
+                raise ValidationError("Please add at least one request line before submitting.")
+
+            if rec.requester_category == 'teacher':
+                rec.state = 'waiting_coordinator'
+                rec.message_post(body='Purchase Request submitted and routed to Coordinator for approval.')
+            elif rec.requester_category == 'admin':
+                rec.state = 'waiting_director'
+                rec.message_post(body='Purchase Request submitted and routed to Department Director for approval.')
+            else:
+                rec.state = 'submitted'
+                rec.message_post(body='Purchase Request submitted.')
+
     @api.model
     def _default_requester(self):
         employee = self.env['hr.employee'].search([('user_id', '=', self.env.user.id)], limit=1)
@@ -92,3 +108,10 @@ class PurchaseRequest(models.Model):
     def _compute_amount_total(self):
         for rec in self:
             rec.amount_total = sum(rec.line_ids.mapped('subtotal'))
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', 'New') == 'New':
+                vals['name'] = self.env['ir.sequence'].next_by_code('purchase.request') or 'New'
+        return super().create(vals_list) 
