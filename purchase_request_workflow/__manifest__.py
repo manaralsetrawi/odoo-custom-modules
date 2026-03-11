@@ -5,13 +5,10 @@
     'category': 'Purchase',
     'author': 'Fatima Hasan - NCST',
     'license': 'LGPL-3',
-    'depends': ['base', 'mail', 'hr', 'purchase'],
+    'depends': ['purchase', 'hr', 'mail'],
     'data': [
-        'security/ir.model.access.csv',
-        'data/sequence.xml',
-        'views/purchase_request_views.xml',
-        'views/purchase_request_menus.xml',
+        'views/purchase_order_views.xml',
     ],
     'installable': True,
-    'application': True,
+    'application': False,
 }
