@@ -10,6 +10,7 @@
             'security/ir.model.access.csv',
             'data/purchase_request_sequence.xml',
             'views/purchase_request_views.xml',
+            'views/purchase_request_reject_wizard_views.xml',
             'views/purchase_request_menus.xml',
     ],
     'installable': True,
