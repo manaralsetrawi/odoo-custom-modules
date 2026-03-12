@@ -17,9 +17,9 @@ class PurchaseRequestLine(models.Model):
         string='Product',
     )
 
-    product_description = fields.Char(
-        string='Item / Product Description',
-    )
+    # product_description = fields.Char(
+    #     string='Item / Product Description',
+    # )
 
     specifications = fields.Text(
         string='Specifications',
