@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_stock_picking_form_inherit_purchase_execution_workflow" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.purchase.execution.workflow</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add a custom button for end user confirmation.
+                 This button supports the requirement that the end user must confirm receipt/compliance. -->
+            <xpath expr="//header" position="inside">
+                <button name="action_confirm_end_user_receipt"
+                        type="object"
+                        string="Confirm End User Receipt"
+                        class="btn-primary"
+                        invisible="state != 'done' or end_user_confirmed"/>
+            </xpath>
+
+            <!-- Add a dedicated section inside the receipt form for GRN and compliance information. -->
+            <xpath expr="//sheet" position="inside">
+                <group string="Goods Receipt Confirmation">
+                    <group>
+                        <field name="is_grn_required"/>
+                        <field name="end_user_confirmed" readonly="1"/>
+                        <field name="end_user_confirmed_by" readonly="1"/>
+                        <field name="end_user_confirmed_date" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="compliance_status"/>
+                        <field name="compliance_notes"
+                               placeholder="Add notes about item condition, missing quantity, or compliance issues..."/>
+                    </group>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

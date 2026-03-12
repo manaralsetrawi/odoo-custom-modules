@@ -6,7 +6,10 @@
     'author': 'Manar Alsetrawi',
     'depends': ['purchase', 'stock', 'account'], #later add the custom module name for the purchase request
     'data': [
+        'security/security.xml',
+        'security/ir.model.access.csv',
         'views/purchase_order_views.xml',
+        'views/stock_picking_views.xml',
     ],
     'installable': True,
     'application': False,
