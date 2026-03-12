@@ -6,14 +6,12 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
 
-            <!-- Add the related Purchase Request field near the vendor field.
-                 This helps procurement users know which request this RFQ/PO belongs to. -->
+            <!-- Link RFQ/PO to Purchase Request -->
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="purchase_request_id"/>
             </xpath>
 
-            <!-- Add a simple technical section for Phase 1 helper fields.
-                 These fields help in testing and later business validations. -->
+            <!-- Add a technical section for Phase 1 helper fields -->
             <xpath expr="//sheet" position="inside">
                 <group string="Procurement Execution - Phase 1">
                     <group>
@@ -25,6 +23,31 @@
                         <field name="is_multi_quotation_case" readonly="1"/>
                     </group>
                 </group>
+
+                <!-- Quotation evaluation and recommendation -->
+                <group string="Quotation Evaluation">
+                    <group>
+                        <field name="technical_evaluation"/>
+                        <field name="commercial_evaluation"/>
+                        <field name="meets_minimum_quotation_rule" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="is_recommended_vendor"/>
+                        <field name="recommendation_reason"
+                               placeholder="Explain why this supplier quotation is recommended..."/>
+                    </group>
+                    <field name="evaluation_notes"
+                           placeholder="Add technical and commercial evaluation notes here..."/>
+                </group>
+            </xpath>
+
+            <!-- Add a button to mark the quotation as recommended -->
+            <xpath expr="//header" position="inside">
+                <button name="action_mark_as_recommended"
+                        type="object"
+                        string="Mark as Recommended"
+                        class="btn-primary"
+                        invisible="not purchase_request_id"/>
             </xpath>
 
         </field>
