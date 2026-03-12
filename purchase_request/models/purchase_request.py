@@ -239,12 +239,15 @@ class PurchaseRequest(models.Model):
             rec.message_post(body="Budget verified by Finance. Purchase Request approved.")
 
     def action_reject(self):
-        for rec in self:
-            if rec.state not in ['waiting_coordinator', 'waiting_principal', 'waiting_director', 'waiting_budget']:
-                continue
+        self.ensure_one()
 
-            if not rec.rejection_reason:
-                raise UserError("Please enter the rejection reason before rejecting the request.")
-
-            rec.state = 'rejected'
-            rec.message_post(body=f"Purchase Request rejected. Reason: {rec.rejection_reason}")
+        return {
+            'name': 'Reject Purchase Request',
+            'type': 'ir.actions.act_window',
+            'res_model': 'purchase.request.reject.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_purchase_request_id': self.id,
+            },
+        }

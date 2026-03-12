@@ -14,7 +14,13 @@
                     <field name="requester_category"/>
                     <field name="required_date"/>
                     <field name="amount_total"/>
-                    <field name="state"/>
+                    
+                    <field name="state"
+                            widget="badge"
+                            decoration-info="state == 'draft'"
+                            decoration-warning="state in ('waiting_coordinator', 'waiting_principal', 'waiting_director', 'waiting_budget')"
+                            decoration-success="state == 'approved'"
+                            decoration-danger="state == 'rejected'"/>
                 </list>
             </field>
         </record>
@@ -66,6 +72,22 @@
                         <field name="state"
                                widget="statusbar"
                                statusbar_visible="draft,waiting_coordinator,waiting_principal,waiting_director,waiting_budget,approved,rejected"/>
+                        
+                        <field name="state"
+                                widget="statusbar"
+                                statusbar_visible="draft,waiting_coordinator,waiting_principal,waiting_budget,approved,rejected"
+                                invisible="requester_category != 'teacher'"/>
+
+                        <field name="state"
+                                widget="statusbar"
+                                statusbar_visible="draft,waiting_director,waiting_budget,approved,rejected"
+                                invisible="requester_category != 'admin'"/>
+                        
+                        <field name="state"
+                                widget="statusbar"
+                                statusbar_visible="draft,approved,rejected"
+                                invisible="requester_category in ('teacher','admin')"/>
+
                     </header>
 
                     <sheet>
@@ -137,7 +159,7 @@
                         </group>
 
                         <group string="Rejection Information">
-                            <field name="rejection_reason"/>
+                            <field name="rejection_reason" readonly="1"/>
                         </group>
 
                     </sheet>
