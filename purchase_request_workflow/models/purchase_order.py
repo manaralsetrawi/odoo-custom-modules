@@ -44,7 +44,7 @@ class PurchaseOrder(models.Model):
         [
             ('draft', 'Draft'),
             ('waiting_coordinator', 'Waiting Coordinator Approval'),
-            ('waiting_principal', 'Waiting Academic Principal / Vice Principal Approval'),
+            ('waiting_principal', 'Waiting Academic Principal'),
             ('waiting_director', 'Waiting Department Director Approval'),
             ('waiting_budget', 'Waiting Budget Verification'),
             ('approved', 'Approved'),
