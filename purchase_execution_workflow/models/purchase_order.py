@@ -7,7 +7,7 @@ class PurchaseOrder(models.Model):
     # Link each RFQ / PO to the related Purchase Request created in purchase request custom module.
     # This is the base field that allows traceability between request and procurement flow.
     purchase_request_id = fields.Many2one(
-        'purchase.request',
+        'purchase.request', #later REPLACE with the actual model name of the purchase request in the custom module
         string='Purchase Request',
         tracking=True,
         help='Related purchase request for this quotation or purchase order.'
