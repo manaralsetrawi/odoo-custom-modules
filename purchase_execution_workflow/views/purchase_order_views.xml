@@ -6,12 +6,12 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
 
-            <!-- Link RFQ/PO to Purchase Request -->
+            <!--link quotation to Purchase Request -->
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="purchase_request_id"/>
             </xpath>
 
-            <!-- Add a technical section for Phase 1 helper fields -->
+            <!--helper fields for testing and later validations -->
             <xpath expr="//sheet" position="inside">
                 <group string="Procurement Execution - Phase 1">
                     <group>
@@ -24,7 +24,7 @@
                     </group>
                 </group>
 
-                <!-- Quotation evaluation and recommendation -->
+                <!-- quotation review -->
                 <group string="Quotation Evaluation">
                     <group>
                         <field name="technical_evaluation"/>
@@ -32,7 +32,7 @@
                         <field name="meets_minimum_quotation_rule" readonly="1"/>
                     </group>
                     <group>
-                        <field name="is_recommended_vendor"/>
+                        <field name="is_recommended_vendor" readonly="1"/>
                         <field name="recommendation_reason"
                                placeholder="Explain why this supplier quotation is recommended..."/>
                     </group>
@@ -41,13 +41,13 @@
                 </group>
             </xpath>
 
-            <!-- Add a button to mark the quotation as recommended -->
+            <!-- Button to mark the current quotation as the selected vendor -->
             <xpath expr="//header" position="inside">
                 <button name="action_mark_as_recommended"
                         type="object"
                         string="Mark as Recommended"
                         class="btn-primary"
-                        invisible="not purchase_request_id"/>
+                        invisible="not purchase_request_id or state != 'draft'"/>
             </xpath>
 
         </field>
