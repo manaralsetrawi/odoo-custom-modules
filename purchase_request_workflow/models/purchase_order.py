@@ -99,7 +99,7 @@ class PurchaseOrder(models.Model):
         tracking=True,
     )
 
-    budget_available_amount = fields.Float(
+    budget_available = fields.Float(
         string='Available Budget',
         tracking=True,
     )
@@ -128,27 +128,42 @@ class PurchaseOrder(models.Model):
         tracking=True,
     )
 
+    pr_estimated_total = fields.Float(
+        string='PR Estimated Total',
+        compute='_compute_pr_total',
+        store=True,
+    )
 
-    budget_available = fields.Float(string="Available Budget")
-    budget_verified = fields.Boolean(string="Budget Verified", readonly=True)
-    budget_verified_by = fields.Many2one('res.users', string="Budget Verified By", readonly=True)
-    budget_verified_date = fields.Datetime(string="Budget Verification Date", readonly=True)
+    @api.depends('order_line.price_subtotal')
+    def _compute_pr_total(self):
+        for order in self:
+            order.pr_estimated_total = sum(order.order_line.mapped('price_subtotal'))
+
+    @api.model
+    def _default_requester(self):
+        employee = self.env['hr.employee'].search(
+            [('user_id', '=', self.env.user.id)],
+            limit=1
+        )
+        return employee.id if employee else False
+
+    @api.onchange('requester_id')
+    def _onchange_requester(self):
+        for rec in self:
+            if rec.requester_id:
+                rec.department_id = rec.requester_id.department_id
 
     def action_submit_pr(self):
         for rec in self:
-
             if not rec.requester_category:
                 raise UserError("Please select the requester category before submitting.")
 
             if rec.requester_category == 'teacher':
                 rec.pr_state = 'waiting_coordinator'
-
             elif rec.requester_category == 'admin':
                 rec.pr_state = 'waiting_director'
 
             rec.message_post(body="Purchase Request submitted for approval.")
-
-
 
     def action_coordinator_approve(self):
         for rec in self:
@@ -169,17 +184,16 @@ class PurchaseOrder(models.Model):
             rec.principal_approved_by = self.env.user
             rec.principal_approved_date = fields.Datetime.now()
             rec.message_post(body="Purchase Request approved by Academic Principal / Vice Principal.")
-            
 
     def action_director_approve(self):
-    for rec in self:
-        if rec.pr_state != 'waiting_director':
-            continue
+        for rec in self:
+            if rec.pr_state != 'waiting_director':
+                continue
 
-        rec.pr_state = 'waiting_budget'
-        rec.director_approved_by = self.env.user
-        rec.director_approved_date = fields.Datetime.now()
-        rec.message_post(body="Purchase Request approved by Department Director.")
+            rec.pr_state = 'waiting_budget'
+            rec.director_approved_by = self.env.user
+            rec.director_approved_date = fields.Datetime.now()
+            rec.message_post(body="Purchase Request approved by Department Director.")
 
     def action_reject_pr(self):
         for rec in self:
@@ -192,47 +206,16 @@ class PurchaseOrder(models.Model):
             rec.pr_state = 'rejected'
             rec.message_post(body=f"Purchase Request rejected. Reason: {rec.rejection_reason}")
 
-
     def action_verify_budget(self):
-    for rec in self:
-
-        if rec.pr_state != 'waiting_budget':
-            continue
-
-        if rec.budget_available < rec.amount_total:
-            raise UserError("Budget is insufficient for this purchase request.")
-
-        rec.budget_verified = True
-        rec.budget_verified_by = self.env.user
-        rec.budget_verified_date = fields.Datetime.now()
-
-        rec.pr_state = 'approved'
-
-        rec.message_post(body="Budget verified by Finance. Purchase Request approved.")
-
-
-    @api.model
-    def _default_requester(self):
-        employee = self.env['hr.employee'].search(
-            [('user_id', '=', self.env.user.id)],
-            limit=1
-        )
-        return employee.id if employee else False
-
-    @api.onchange('requester_id')
-    def _onchange_requester(self):
         for rec in self:
-            if rec.requester_id:
-                rec.department_id = rec.requester_id.department_id
+            if rec.pr_state != 'waiting_budget':
+                continue
 
-    
-    amount_total = fields.Float(
-    string="PR Estimated Total",
-    compute="_compute_pr_total",
-    store=True
-    )
+            if rec.budget_available < rec.pr_estimated_total:
+                raise UserError("Budget is insufficient for this purchase request.")
 
-    @api.depends('order_line.price_subtotal')
-    def _compute_pr_total(self):
-        for order in self:
-            order.amount_total = sum(order.order_line.mapped('price_subtotal'))
+            rec.budget_verified = True
+            rec.budget_verified_by = self.env.user
+            rec.budget_verified_date = fields.Datetime.now()
+            rec.pr_state = 'approved'
+            rec.message_post(body="Budget verified by Finance. Purchase Request approved.")
