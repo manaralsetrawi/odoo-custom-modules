@@ -1,0 +1,169 @@
+from odoo import models, fields, api
+
+
+class PurchaseRequest(models.Model):
+    _name = 'purchase.request'
+    _description = 'Purchase Request'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'id desc'
+
+    name = fields.Char(
+        string='PR Number',
+        required=True,
+        copy=False,
+        readonly=True,
+        default='New',
+        tracking=True,
+    )
+
+    requester_id = fields.Many2one(
+        'hr.employee',
+        string='Requester',
+        required=True,
+        tracking=True,
+        default=lambda self: self._default_requester(),
+    )
+
+    department_id = fields.Many2one(
+        'hr.department',
+        string='Department',
+        related='requester_id.department_id',
+        store=True,
+        readonly=True,
+        tracking=True,
+    )
+
+    requester_category = fields.Selection(
+        [
+            ('teacher', 'Teacher'),
+            ('admin', 'Administrative Staff'),
+        ],
+        string='Requester Category',
+        required=True,
+        tracking=True,
+    )
+
+    required_date = fields.Date(
+        string='Required Date',
+        required=True,
+        tracking=True,
+    )
+
+    request_reason = fields.Text(
+        string='Reason',
+        required=True,
+        tracking=True,
+    )
+
+    state = fields.Selection(
+        [
+            ('draft', 'Draft'),
+            ('waiting_coordinator', 'Waiting Coordinator Approval'),
+            ('waiting_principal', 'Waiting Academic Principal Approval'),
+            ('waiting_director', 'Waiting Department Director Approval'),
+            ('waiting_budget', 'Waiting Budget Verification'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+        ],
+        string='Status',
+        default='draft',
+        tracking=True,
+    )
+
+    line_ids = fields.One2many(
+        'purchase.request.line',
+        'request_id',
+        string='Request Lines',
+    )
+
+    amount_total = fields.Float(
+        string='Total Amount',
+        compute='_compute_amount_total',
+        store=True,
+    )
+
+    coordinator_approved_by = fields.Many2one(
+        'res.users',
+        string='Coordinator Approved By',
+        readonly=True,
+        tracking=True,
+    )
+
+    coordinator_approved_date = fields.Datetime(
+        string='Coordinator Approval Date',
+        readonly=True,
+        tracking=True,
+    )
+
+    principal_approved_by = fields.Many2one(
+        'res.users',
+        string='Principal Approved By',
+        readonly=True,
+        tracking=True,
+    )
+
+    principal_approved_date = fields.Datetime(
+        string='Principal Approval Date',
+        readonly=True,
+        tracking=True,
+    )
+
+    director_approved_by = fields.Many2one(
+        'res.users',
+        string='Department Director Approved By',
+        readonly=True,
+        tracking=True,
+    )
+
+    director_approved_date = fields.Datetime(
+        string='Department Director Approval Date',
+        readonly=True,
+        tracking=True,
+    )
+
+    rejection_reason = fields.Text(
+        string='Rejection Reason',
+        tracking=True,
+    )
+
+    budget_available_amount = fields.Float(
+        string='Available Budget',
+        tracking=True,
+    )
+
+    budget_verified = fields.Boolean(
+        string='Budget Verified',
+        readonly=True,
+        tracking=True,
+    )
+
+    budget_verified_by = fields.Many2one(
+        'res.users',
+        string='Budget Verified By',
+        readonly=True,
+        tracking=True,
+    )
+
+    budget_verified_date = fields.Datetime(
+        string='Budget Verification Date',
+        readonly=True,
+        tracking=True,
+    )
+
+    budget_note = fields.Text(
+        string='Budget Verification Note',
+        tracking=True,
+    )
+
+    @api.model
+    def _default_requester(self):
+        employee = self.env['hr.employee'].search(
+            [('user_id', '=', self.env.user.id)],
+            limit=1
+        )
+        return employee.id if employee else False
+
+    @api.depends('line_ids.subtotal')
+    def _compute_amount_total(self):
+        for rec in self:
+            rec.amount_total = sum(rec.line_ids.mapped('subtotal'))
