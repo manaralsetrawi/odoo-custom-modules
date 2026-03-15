@@ -55,13 +55,13 @@
                                 type="object"
                                 string="Department Director Approve"
                                 class="btn-success"
-                                invisible="state != 'waiting_director'"/>
+                                invisible="state != 'waiting_director' or not is_current_user_department_manager"/>
 
                         <button name="action_verify_budget"
                                 type="object"
                                 string="Verify Budget"
                                 class="btn-primary"
-                                invisible="state != 'waiting_budget'"/>
+                                invisible="state != 'waiting_budget' or not is_current_user_finance"/>
 
                         <button name="action_reject"
                                 type="object"
@@ -87,6 +87,9 @@
                     </header>
 
                     <sheet>
+                        
+                        <field name="is_current_user_department_manager" invisible="1"/>
+                        <field name="is_current_user_finance" invisible="1"/>   
 
                         <div class="oe_title">
                             <h1>
@@ -144,7 +147,7 @@
                             </group>
                         </group>
 
-                        <group string="Budget Verification" invisible="state not in ('waiting_budget', 'approved')">
+                        <group string="Budget Verification" invisible="state not in ('waiting_budget', 'approved') or not is_current_user_finance">
                             <group>
                                 <field name="budget_available_amount" readonly="state != 'waiting_budget'"/>
                                 <field name="budget_verified" readonly="1"/>
