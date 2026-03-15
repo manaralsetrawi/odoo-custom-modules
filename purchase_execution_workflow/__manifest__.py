@@ -5,7 +5,6 @@
     'category': 'Purchase',
     'depends': ['purchase', 'stock', 'account', 'purchase_request'],
 'data': [
-    'security/ir.model.access.csv',
     'views/purchase_order_views.xml',
     'views/stock_picking_views.xml',
 ],
