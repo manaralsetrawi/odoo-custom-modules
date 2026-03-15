@@ -43,13 +43,13 @@
                                 type="object"
                                 string="Coordinator Approve"
                                 class="btn-success"
-                                invisible="state != 'waiting_coordinator'"/>
+                                invisible="state != 'waiting_coordinator' or not is_current_user_coordinator"/>
 
                         <button name="action_principal_approve"
                                 type="object"
                                 string="Principal / Vice Principal Approve"
                                 class="btn-success"
-                                invisible="state != 'waiting_principal'"/>
+                                invisible="state != 'waiting_principal' or not is_current_user_principal"/>
 
                         <button name="action_director_approve"
                                 type="object"
@@ -90,7 +90,8 @@
                         
                         <field name="is_current_user_department_manager" invisible="1"/>
                         <field name="is_current_user_finance" invisible="1"/>   
-
+                        <field name="is_current_user_coordinator" invisible="1"/>
+                        <field name="is_current_user_principal" invisible="1"/>
                         <div class="oe_title">
                             <h1>
                                 <field name="name" readonly="1"/>

@@ -168,6 +168,17 @@ class PurchaseRequest(models.Model):
         compute='_compute_user_access_flags',
     )
 
+
+    is_current_user_coordinator = fields.Boolean(
+        string='Is Current User Coordinator',
+        compute='_compute_user_access_flags',
+    )
+
+    is_current_user_principal = fields.Boolean(
+        string='Is Current User Principal',
+        compute='_compute_user_access_flags',
+    )
+
     @api.model
     def _default_requester(self):
         employee = self.env['hr.employee'].search(
@@ -220,6 +231,9 @@ class PurchaseRequest(models.Model):
                 and current_employee.department_id.id == 2
             )
 
+            rec.is_current_user_coordinator = 81 in current_user.groups_id.ids
+            rec.is_current_user_principal = 87 in current_user.groups_id.ids
+
 
     def action_submit(self):
         for rec in self:
@@ -243,15 +257,22 @@ class PurchaseRequest(models.Model):
             if rec.state != 'waiting_coordinator':
                 continue
 
+        if 81 not in self.env.user.groups_id.ids:
+            raise UserError("Only Coordinator users can approve at this stage.")
+
             rec.state = 'waiting_principal'
             rec.coordinator_approved_by = self.env.user
             rec.coordinator_approved_date = fields.Datetime.now()
             rec.message_post(body="Purchase Request approved by Coordinator.")
     
+
     def action_principal_approve(self):
         for rec in self:
             if rec.state != 'waiting_principal':
                 continue
+
+            if 87 not in self.env.user.groups_id.ids:
+                raise UserError("Only Academic Principal users can approve at this stage.")
 
             rec.state = 'waiting_budget'
             rec.principal_approved_by = self.env.user
