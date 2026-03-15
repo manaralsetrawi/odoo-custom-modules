@@ -21,8 +21,9 @@ class PurchaseRequest(models.Model):
         'hr.employee',
         string='Requester',
         required=True,
-        tracking=True,
         default=lambda self: self._default_requester(),
+        readonly=True,
+        tracking=True
     )
 
     department_id = fields.Many2one(
@@ -162,7 +163,7 @@ class PurchaseRequest(models.Model):
             [('user_id', '=', self.env.user.id)],
             limit=1
         )
-        return employee.id if employee else False
+        return employee.id
 
     @api.depends('line_ids.subtotal')
     def _compute_amount_total(self):
@@ -174,6 +175,15 @@ class PurchaseRequest(models.Model):
         if vals.get('name', 'New') == 'New':
             vals['name'] = self.env['ir.sequence'].next_by_code('purchase.request') or 'New'
         return super().create(vals)
+
+
+    @api.onchange('requester_id')
+    def _onchange_requester(self):
+        if self.requester_id and self.requester_id.department_id:
+            if 'Academic' in self.requester_id.department_id.name:
+                self.requester_category = 'teacher'
+            else:
+                self.requester_category = 'admin'
     
 
     def action_submit(self):
@@ -251,3 +261,26 @@ class PurchaseRequest(models.Model):
                 'default_purchase_request_id': self.id,
             },
         }
+
+
+    def write(self, vals):
+
+        for rec in self:
+
+            # Prevent changing requester completely
+            if 'requester_id' in vals:
+                raise UserError("Requester cannot be changed. It is automatically assigned to the logged-in user.")
+
+            protected_fields = {
+                'requester_category',
+                'required_date',
+                'request_reason',
+                'line_ids',
+            }
+
+            if rec.state != 'draft' and protected_fields.intersection(vals.keys()):
+                raise UserError(
+                    "You cannot modify request details after submission."
+                )
+
+        return super().write(vals)
