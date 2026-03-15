@@ -16,7 +16,6 @@
 
             <!-- ============================================================
                  MAIN CUSTOM SECTIONS
-                 Added inside the purchase order form sheet
                  ============================================================ -->
             <xpath expr="//sheet" position="inside">
 
@@ -68,6 +67,23 @@
                            placeholder="Enter financial rejection reason here if the quotation is rejected..."/>
                 </group>
 
+                <!-- ========================================================
+                     PHASE 4 - Purchase Order issuance and vendor acknowledgment
+                     ======================================================== -->
+                <group string="Vendor Acknowledgment">
+                    <group>
+                        <field name="is_confirmed_purchase_order" readonly="1"/>
+                        <field name="vendor_ack_required"/>
+                        <field name="vendor_ack_received" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="vendor_ack_recorded_by" readonly="1"/>
+                        <field name="vendor_ack_date" readonly="1"/>
+                    </group>
+                    <field name="vendor_ack_notes"
+                           placeholder="Add notes about vendor confirmation or acknowledgment here..."/>
+                </group>
+
             </xpath>
 
             <!-- ============================================================
@@ -75,33 +91,38 @@
                  ============================================================ -->
             <xpath expr="//header" position="inside">
 
-                <!-- Phase 2: mark one quotation as the recommended vendor -->
+                <!-- Phase 2 -->
                 <button name="action_mark_as_recommended"
                         type="object"
                         string="Mark as Recommended"
                         class="btn-primary"
                         invisible="not purchase_request_id or state != 'draft'"/>
 
-                <!-- Phase 3: send quotation to financial approval -->
+                <!-- Phase 3 -->
                 <button name="action_submit_financial_approval"
                         type="object"
                         string="Submit for Financial Approval"
                         class="btn-primary"
                         invisible="state != 'draft' or not is_recommended_vendor or financial_approval_state == 'approved'"/>
 
-                <!-- Phase 3: approve quotation financially -->
                 <button name="action_financial_approve"
                         type="object"
                         string="Financially Approve"
                         class="btn-success"
                         invisible="financial_approval_state != 'to_approve'"/>
 
-                <!-- Phase 3: reject quotation financially -->
                 <button name="action_financial_reject"
                         type="object"
                         string="Financially Reject"
                         class="btn-danger"
                         invisible="financial_approval_state != 'to_approve'"/>
+
+                <!-- Phase 4 -->
+                <button name="action_mark_vendor_acknowledged"
+                        type="object"
+                        string="Mark Vendor Acknowledged"
+                        class="btn-primary"
+                        invisible="state != 'purchase' or vendor_ack_received"/>
 
             </xpath>
 

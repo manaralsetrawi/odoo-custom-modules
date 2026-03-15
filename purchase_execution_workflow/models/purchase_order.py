@@ -398,3 +398,103 @@ class PurchaseOrder(models.Model):
         self._check_recommended_vendor_selected()
         self._check_financial_approval_completed()
         return super().button_confirm()
+    
+    from odoo import api, fields, models
+from odoo.exceptions import ValidationError
+
+
+class PurchaseOrder(models.Model):
+    _inherit = 'purchase.order'
+
+    # -------------------------------------------------------------------------
+    # PURCHASE ORDER ISSUANCE AND VENDOR ACKNOWLEDGMENT
+    # -------------------------------------------------------------------------
+
+    # Marks whether vendor acknowledgment is required for this PO.
+    # Vendor acknowledgment is required after issuing the PO.
+    vendor_ack_required = fields.Boolean(
+        string='Vendor Acknowledgment Required',
+        default=True,
+        tracking=True,
+        help='Indicates whether vendor acknowledgment is required for this purchase order.'
+    )
+
+    # Shows whether the vendor has acknowledged the PO.
+    vendor_ack_received = fields.Boolean(
+        string='Vendor Acknowledged',
+        tracking=True,
+        help='Checked when the vendor acknowledges the purchase order.'
+    )
+
+    # Stores the user who recorded the vendor acknowledgment.
+    vendor_ack_recorded_by = fields.Many2one(
+        'res.users',
+        string='Acknowledgment Recorded By',
+        readonly=True,
+        tracking=True,
+        help='User who recorded the vendor acknowledgment.'
+    )
+
+    # Stores the date/time when acknowledgment was recorded.
+    vendor_ack_date = fields.Datetime(
+        string='Acknowledgment Date',
+        readonly=True,
+        tracking=True,
+        help='Date and time when vendor acknowledgment was recorded.'
+    )
+
+    # Optional notes about the acknowledgment.
+    vendor_ack_notes = fields.Text(
+        string='Vendor Acknowledgment Notes',
+        help='Notes related to vendor acknowledgment of the purchase order.'
+    )
+
+    # Helper field for testing and UI visibility.
+    # True when the document is already a confirmed Purchase Order.
+    is_confirmed_purchase_order = fields.Boolean(
+        string='Is Confirmed Purchase Order',
+        compute='_compute_is_confirmed_purchase_order',
+        help='Technical helper showing whether this record is already a confirmed Purchase Order.'
+    )
+
+    @api.depends('state')
+    def _compute_is_confirmed_purchase_order(self):
+        # In purchase.order, state = "purchase" means confirmed Purchase Order.
+        for order in self:
+            order.is_confirmed_purchase_order = order.state == 'purchase'
+
+    def action_mark_vendor_acknowledged(self):
+        """
+        Mark the purchase order as acknowledged by the vendor.
+
+        Logic:
+        - the document must already be a confirmed PO
+        - acknowledgment should only be recorded once
+        """
+        for order in self:
+            if order.state != 'purchase':
+                raise ValidationError(
+                    'Vendor acknowledgment can only be recorded after the quotation is confirmed as a Purchase Order.'
+                )
+
+            if order.vendor_ack_received:
+                raise ValidationError(
+                    'Vendor acknowledgment has already been recorded for this Purchase Order.'
+                )
+
+            order.vendor_ack_received = True
+            order.vendor_ack_recorded_by = self.env.user
+            order.vendor_ack_date = fields.Datetime.now()
+
+    def _check_vendor_acknowledgment_if_required(self):
+        """
+        Future helper for later phases.
+
+        You may use this later if you want to block another step
+        until vendor acknowledgment is recorded.
+        """
+        for order in self:
+            if order.vendor_ack_required and not order.vendor_ack_received:
+                raise ValidationError(
+                    'Vendor acknowledgment is required before continuing this purchase process.'
+                )
