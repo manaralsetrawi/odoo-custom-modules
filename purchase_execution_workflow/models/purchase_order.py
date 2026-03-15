@@ -240,3 +240,161 @@ class PurchaseOrder(models.Model):
         self._check_evaluation_completion()
         self._check_recommended_vendor_selected()
         return super().button_confirm()
+    
+    from odoo import api, fields, models
+from odoo.exceptions import ValidationError
+
+
+class PurchaseOrder(models.Model):
+    _inherit = 'purchase.order'
+
+    # -------------------------------------------------------------------------
+    # FINANCIAL APPROVAL ROUTING
+    # -------------------------------------------------------------------------
+
+    # Current financial approval state for this quotation / purchase order.
+    financial_approval_state = fields.Selection([
+        ('not_required', 'Not Required'),
+        ('to_approve', 'Waiting for Approval'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ],
+        string='Financial Approval Status',
+        default='not_required',
+        tracking=True,
+        help='Financial approval status based on the total quotation amount.'
+    )
+
+    # Stores which approval level is required based on the total amount.
+    required_financial_approval_level = fields.Selection([
+        ('finance_director', 'Director of Finance'),
+        ('deputy_ceo', 'Deputy CEO'),
+        ('ceo', 'CEO'),
+    ],
+        string='Required Financial Approval',
+        compute='_compute_required_financial_approval_level',
+        store=True,
+        tracking=True,
+        help='Required financial approver level based on the total amount.'
+    )
+
+    # Stores the user who approved the quotation financially.
+    financial_approved_by = fields.Many2one(
+        'res.users',
+        string='Financially Approved By',
+        readonly=True,
+        tracking=True,
+        help='User who approved this quotation in the financial approval step.'
+    )
+
+    # Stores the approval date/time.
+    financial_approved_date = fields.Datetime(
+        string='Financial Approval Date',
+        readonly=True,
+        tracking=True,
+        help='Date and time when financial approval was completed.'
+    )
+
+    # Stores rejection reason if the quotation is rejected during financial approval.
+    financial_rejection_reason = fields.Text(
+        string='Financial Rejection Reason',
+        tracking=True,
+        help='Reason entered when the quotation is rejected in the financial approval step.'
+    )
+
+    @api.depends('amount_total')
+    def _compute_required_financial_approval_level(self):
+        """
+        Determine the required approval level from the PM rules:
+
+        - up to 5,000 -> Director of Finance
+        - 5,001 to 9,999 -> Deputy CEO
+        - 10,000 and above -> CEO
+        """
+        for order in self:
+            if order.amount_total <= 5000:
+                order.required_financial_approval_level = 'finance_director'
+            elif order.amount_total <= 9999:
+                order.required_financial_approval_level = 'deputy_ceo'
+            else:
+                order.required_financial_approval_level = 'ceo'
+
+    def action_submit_financial_approval(self):
+        """
+        Send the quotation to the financial approval stage.
+
+        This should only happen after:
+        - PR link exists
+        - quotation rule is satisfied
+        - evaluations are completed
+        - quotation is marked as recommended
+        """
+        for order in self:
+            # Reuse earlier phase checks before financial routing starts.
+            order._check_minimum_quotation_requirement()
+            order._check_evaluation_completion()
+            order._check_recommended_vendor_selected()
+
+            order.financial_approval_state = 'to_approve'
+            order.financial_rejection_reason = False
+
+    def action_financial_approve(self):
+        """
+        Mark the quotation as financially approved.
+        """
+        for order in self:
+            if order.financial_approval_state != 'to_approve':
+                raise ValidationError(
+                    'Only quotations waiting for financial approval can be approved.'
+                )
+
+            order.financial_approval_state = 'approved'
+            order.financial_approved_by = self.env.user
+            order.financial_approved_date = fields.Datetime.now()
+            order.financial_rejection_reason = False
+
+    def action_financial_reject(self):
+        """
+        Mark the quotation as financially rejected.
+
+        For now, this method requires the rejection reason field
+        to be filled before clicking the reject button.
+        """
+        for order in self:
+            if order.financial_approval_state != 'to_approve':
+                raise ValidationError(
+                    'Only quotations waiting for financial approval can be rejected.'
+                )
+
+            if not order.financial_rejection_reason:
+                raise ValidationError(
+                    'Please enter the financial rejection reason before rejecting this quotation.'
+                )
+
+            order.financial_approval_state = 'rejected'
+            order.financial_approved_by = False
+            order.financial_approved_date = False
+
+    def _check_financial_approval_completed(self):
+        """
+        Ensure financial approval is completed before confirming the PO.
+        """
+        for order in self:
+            if order.financial_approval_state != 'approved':
+                raise ValidationError(
+                    'Financial approval must be completed before confirming this Purchase Order.'
+                )
+
+    def button_confirm(self):
+        """
+        Final confirmation gate.
+
+        Enforce:
+        - Phase 2 checks
+        - Phase 3 financial approval must be approved
+        """
+        self._check_minimum_quotation_requirement()
+        self._check_evaluation_completion()
+        self._check_recommended_vendor_selected()
+        self._check_financial_approval_completed()
+        return super().button_confirm()

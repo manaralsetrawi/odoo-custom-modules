@@ -6,13 +6,23 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
 
-            <!--link quotation to Purchase Request -->
+            <!-- ============================================================
+                 PHASE 1
+                 Link each RFQ / PO to the related Purchase Request
+                 ============================================================ -->
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="purchase_request_id"/>
             </xpath>
 
-            <!--helper fields for testing and later validations -->
+            <!-- ============================================================
+                 MAIN CUSTOM SECTIONS
+                 Added inside the purchase order form sheet
+                 ============================================================ -->
             <xpath expr="//sheet" position="inside">
+
+                <!-- ========================================================
+                     PHASE 1 - Purchase Request link + quotation helpers
+                     ======================================================== -->
                 <group string="Procurement Execution - Phase 1">
                     <group>
                         <field name="has_purchase_request" readonly="1"/>
@@ -24,7 +34,9 @@
                     </group>
                 </group>
 
-                <!-- quotation review -->
+                <!-- ========================================================
+                     PHASE 2 - Quotation evaluation and recommendation
+                     ======================================================== -->
                 <group string="Quotation Evaluation">
                     <group>
                         <field name="technical_evaluation"/>
@@ -39,15 +51,58 @@
                     <field name="evaluation_notes"
                            placeholder="Add technical and commercial evaluation notes here..."/>
                 </group>
+
+                <!-- ========================================================
+                     PHASE 3 - Financial approval routing and tracking
+                     ======================================================== -->
+                <group string="Financial Approval">
+                    <group>
+                        <field name="required_financial_approval_level" readonly="1"/>
+                        <field name="financial_approval_state" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="financial_approved_by" readonly="1"/>
+                        <field name="financial_approved_date" readonly="1"/>
+                    </group>
+                    <field name="financial_rejection_reason"
+                           placeholder="Enter financial rejection reason here if the quotation is rejected..."/>
+                </group>
+
             </xpath>
 
-            <!-- Button to mark the current quotation as the selected vendor -->
+            <!-- ============================================================
+                 HEADER BUTTONS
+                 ============================================================ -->
             <xpath expr="//header" position="inside">
+
+                <!-- Phase 2: mark one quotation as the recommended vendor -->
                 <button name="action_mark_as_recommended"
                         type="object"
                         string="Mark as Recommended"
                         class="btn-primary"
                         invisible="not purchase_request_id or state != 'draft'"/>
+
+                <!-- Phase 3: send quotation to financial approval -->
+                <button name="action_submit_financial_approval"
+                        type="object"
+                        string="Submit for Financial Approval"
+                        class="btn-primary"
+                        invisible="state != 'draft' or not is_recommended_vendor or financial_approval_state == 'approved'"/>
+
+                <!-- Phase 3: approve quotation financially -->
+                <button name="action_financial_approve"
+                        type="object"
+                        string="Financially Approve"
+                        class="btn-success"
+                        invisible="financial_approval_state != 'to_approve'"/>
+
+                <!-- Phase 3: reject quotation financially -->
+                <button name="action_financial_reject"
+                        type="object"
+                        string="Financially Reject"
+                        class="btn-danger"
+                        invisible="financial_approval_state != 'to_approve'"/>
+
             </xpath>
 
         </field>

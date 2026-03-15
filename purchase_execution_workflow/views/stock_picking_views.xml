@@ -6,8 +6,8 @@
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
 
-            <!-- Add a custom button for end user confirmation.
-                 This button supports the requirement that the end user must confirm receipt/compliance. -->
+            <!-- Add a button to confirm the receipt from the end-user side.
+                 The button appears only after the receipt is completed and before user confirmation is done. -->
             <xpath expr="//header" position="inside">
                 <button name="action_confirm_end_user_receipt"
                         type="object"
@@ -16,7 +16,7 @@
                         invisible="state != 'done' or end_user_confirmed"/>
             </xpath>
 
-            <!-- Add a dedicated section inside the receipt form for GRN and compliance information. -->
+            <!-- Add a custom section for GRN / compliance confirmation details. -->
             <xpath expr="//sheet" position="inside">
                 <group string="Goods Receipt Confirmation">
                     <group>
@@ -28,7 +28,7 @@
                     <group>
                         <field name="compliance_status"/>
                         <field name="compliance_notes"
-                               placeholder="Add notes about item condition, missing quantity, or compliance issues..."/>
+                               placeholder="Add notes about item condition, missing quantity, damage, or compliance issues..."/>
                     </group>
                 </group>
             </xpath>
