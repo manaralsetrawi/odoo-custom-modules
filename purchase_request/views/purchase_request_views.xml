@@ -14,7 +14,7 @@
                     <field name="requester_category"/>
                     <field name="required_date"/>
                     <field name="amount_total"/>
-                    
+
                     <field name="state"
                             widget="badge"
                             decoration-info="state == 'draft'"
@@ -68,10 +68,6 @@
                                 string="Reject"
                                 class="btn-danger"
                                 invisible="state not in ('waiting_coordinator','waiting_principal','waiting_director','waiting_budget')"/>
-
-                        <field name="state"
-                               widget="statusbar"
-                               statusbar_visible="draft,waiting_coordinator,waiting_principal,waiting_director,waiting_budget,approved,rejected"/>
                         
                         <field name="state"
                                 widget="statusbar"
@@ -100,45 +96,49 @@
 
                         <group string="Purchase Request Information">
                             <group>
-                                <field name="requester_id"/>
+                                <field name="requester_id" readonly="1"/>
                                 <field name="department_id" readonly="1"/>
-                                <field name="requester_category"/>
+                                <field name="requester_category" readonly="state != 'draft'"/>
                             </group>
                             <group>
-                                <field name="required_date"/>
+                                <field name="required_date" readonly="state != 'draft'"/>
                                 <field name="amount_total" readonly="1"/>
                             </group>
                         </group>
 
                         <group string="Request Reason">
-                            <field name="request_reason"/>
+                            <field name="request_reason" readonly="state != 'draft'"/>
                         </group>
 
                         <notebook>
                             <page string="Request Lines">
-                                <field name="line_ids">
-                                    <list editable="bottom">
-                                        <field name="product_id"/>
+                                <field name="line_ids" readonly="state != 'draft'">
+                                    <list editable="bottom" delete="state == 'draft'">
+                                        <field name="product_id" readonly="parent.state != 'draft'"/>
                                         <!-- <field name="product_description"/> -->
-                                        <field name="specifications"/>
-                                        <field name="quantity"/>
-                                        <field name="estimated_unit_price"/>
+                                        <field name="specifications" readonly="parent.state != 'draft'"/>
+                                        <field name="quantity" readonly="parent.state != 'draft'"/>
+                                        <field name="estimated_unit_price" readonly="parent.state != 'draft'"/>
                                         <field name="subtotal" readonly="1"/>
                                     </list>
                                 </field>
                             </page>
                         </notebook>
 
-                        <group string="Approval Information">
-                            <group>
+                        <group string="Approval Information" 
+                               invisible="not coordinator_approved_by and not principal_approved_by and not director_approved_by">
+                            
+                            <group invisible="not coordinator_approved_by">
                                 <field name="coordinator_approved_by" readonly="1"/>
                                 <field name="coordinator_approved_date" readonly="1"/>
                             </group>
-                            <group>
+                            
+                            <group invisible="not principal_approved_by">
                                 <field name="principal_approved_by" readonly="1"/>
                                 <field name="principal_approved_date" readonly="1"/>
                             </group>
-                            <group>
+                            
+                            <group invisible="not director_approved_by">
                                 <field name="director_approved_by" readonly="1"/>
                                 <field name="director_approved_date" readonly="1"/>
                             </group>
@@ -158,7 +158,7 @@
                             </group>
                         </group>
 
-                        <group string="Rejection Information">
+                        <group string="Rejection Information" invisible="not rejection_reason">
                             <field name="rejection_reason" readonly="1"/>
                         </group>
 
