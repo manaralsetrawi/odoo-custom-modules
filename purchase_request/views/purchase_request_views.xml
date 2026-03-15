@@ -43,25 +43,25 @@
                                 type="object"
                                 string="Coordinator Approve"
                                 class="btn-success"
-                                invisible="state != 'waiting_coordinator'"/>
+                                invisible="state != 'waiting_coordinator' or not is_current_user_coordinator"/>
 
                         <button name="action_principal_approve"
                                 type="object"
                                 string="Principal / Vice Principal Approve"
                                 class="btn-success"
-                                invisible="state != 'waiting_principal'"/>
+                                invisible="state != 'waiting_principal' or not is_current_user_principal"/>
 
                         <button name="action_director_approve"
                                 type="object"
                                 string="Department Director Approve"
                                 class="btn-success"
-                                invisible="state != 'waiting_director'"/>
+                                invisible="state != 'waiting_director' or not is_current_user_department_manager"/>
 
                         <button name="action_verify_budget"
                                 type="object"
                                 string="Verify Budget"
                                 class="btn-primary"
-                                invisible="state != 'waiting_budget'"/>
+                                invisible="state != 'waiting_budget' or not is_current_user_finance"/>
 
                         <button name="action_reject"
                                 type="object"
@@ -87,7 +87,11 @@
                     </header>
 
                     <sheet>
-
+                        
+                        <field name="is_current_user_department_manager" invisible="1"/>
+                        <field name="is_current_user_finance" invisible="1"/>   
+                        <field name="is_current_user_coordinator" invisible="1"/>
+                        <field name="is_current_user_principal" invisible="1"/>
                         <div class="oe_title">
                             <h1>
                                 <field name="name" readonly="1"/>
@@ -144,9 +148,9 @@
                             </group>
                         </group>
 
-                        <group string="Budget Verification">
+                        <group string="Budget Verification" invisible="state not in ('waiting_budget', 'approved') or not is_current_user_finance">
                             <group>
-                                <field name="budget_available_amount"/>
+                                <field name="budget_available_amount" readonly="state != 'waiting_budget'"/>
                                 <field name="budget_verified" readonly="1"/>
                             </group>
                             <group>
@@ -154,8 +158,9 @@
                                 <field name="budget_verified_date" readonly="1"/>
                             </group>
                             <group>
-                                <field name="budget_note"/>
+                                <field name="budget_note" readonly="state != 'waiting_budget'"/>
                             </group>
+                            
                         </group>
 
                         <group string="Rejection Information" invisible="not rejection_reason">

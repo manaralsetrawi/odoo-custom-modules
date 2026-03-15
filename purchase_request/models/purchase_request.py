@@ -157,6 +157,28 @@ class PurchaseRequest(models.Model):
         tracking=True,
     )
 
+
+    is_current_user_department_manager = fields.Boolean(
+        string='Is Current User Department Manager',
+        compute='_compute_user_access_flags',
+    )
+
+    is_current_user_finance = fields.Boolean(
+        string='Is Current User Finance',
+        compute='_compute_user_access_flags',
+    )
+
+
+    is_current_user_coordinator = fields.Boolean(
+        string='Is Current User Coordinator',
+        compute='_compute_user_access_flags',
+    )
+
+    is_current_user_principal = fields.Boolean(
+        string='Is Current User Principal',
+        compute='_compute_user_access_flags',
+    )
+
     @api.model
     def _default_requester(self):
         employee = self.env['hr.employee'].search(
@@ -180,11 +202,38 @@ class PurchaseRequest(models.Model):
     @api.onchange('requester_id')
     def _onchange_requester(self):
         if self.requester_id and self.requester_id.department_id:
-            if 'Academic' in self.requester_id.department_id.name:
+            if self.requester_id.department_id.id == 8:
                 self.requester_category = 'teacher'
             else:
                 self.requester_category = 'admin'
-    
+
+
+
+
+    def _compute_user_access_flags(self):
+        current_user = self.env.user
+        current_employee = self.env['hr.employee'].search(
+            [('user_id', '=', current_user.id)],
+            limit=1
+        )
+
+        for rec in self:
+            rec.is_current_user_department_manager = bool(
+                rec.department_id
+                and rec.department_id.manager_id
+                and rec.department_id.manager_id.user_id
+                and rec.department_id.manager_id.user_id == current_user
+            )
+
+            rec.is_current_user_finance = bool(
+                current_employee
+                and current_employee.department_id
+                and current_employee.department_id.id == 2
+            )
+
+            rec.is_current_user_coordinator = 81 in current_user.groups_id.ids
+            rec.is_current_user_principal = 87 in current_user.groups_id.ids
+
 
     def action_submit(self):
         for rec in self:
@@ -208,15 +257,22 @@ class PurchaseRequest(models.Model):
             if rec.state != 'waiting_coordinator':
                 continue
 
+        if 81 not in self.env.user.groups_id.ids:
+            raise UserError("Only Coordinator users can approve at this stage.")
+
             rec.state = 'waiting_principal'
             rec.coordinator_approved_by = self.env.user
             rec.coordinator_approved_date = fields.Datetime.now()
             rec.message_post(body="Purchase Request approved by Coordinator.")
     
+
     def action_principal_approve(self):
         for rec in self:
             if rec.state != 'waiting_principal':
                 continue
+
+            if 87 not in self.env.user.groups_id.ids:
+                raise UserError("Only Academic Principal users can approve at this stage.")
 
             rec.state = 'waiting_budget'
             rec.principal_approved_by = self.env.user
@@ -228,16 +284,35 @@ class PurchaseRequest(models.Model):
         for rec in self:
             if rec.state != 'waiting_director':
                 continue
+            
+            if not rec.department_id or not rec.department_id.manager_id or not rec.department_id.manager_id.user_id:
+                raise UserError("This request's department does not have a manager with a linked user.")
+
+            if rec.department_id.manager_id.user_id != self.env.user:
+                raise UserError("Only the manager of the request department can approve this request.")
 
             rec.state = 'waiting_budget'
             rec.director_approved_by = self.env.user
             rec.director_approved_date = fields.Datetime.now()
             rec.message_post(body="Purchase Request approved by Department Director.")
 
+
+
     def action_verify_budget(self):
+        current_employee = self.env['hr.employee'].search(
+            [('user_id', '=', self.env.user.id)],
+            limit=1
+        )
+
         for rec in self:
             if rec.state != 'waiting_budget':
                 continue
+
+            if not current_employee or not current_employee.department_id:
+                raise UserError("The current user is not linked to an employee with a department.")
+
+            if current_employee.department_id.id != 2:
+                raise UserError("Only employees in the Finance & Accounting department can verify budget.")
 
             if rec.budget_available_amount < rec.amount_total:
                 raise UserError("Budget is insufficient for this purchase request.")
@@ -247,6 +322,8 @@ class PurchaseRequest(models.Model):
             rec.budget_verified_date = fields.Datetime.now()
             rec.state = 'approved'
             rec.message_post(body="Budget verified by Finance. Purchase Request approved.")
+
+
 
     def action_reject(self):
         self.ensure_one()
