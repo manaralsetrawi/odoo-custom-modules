@@ -144,9 +144,9 @@
                             </group>
                         </group>
 
-                        <group string="Budget Verification">
+                        <group string="Budget Verification" invisible="state not in ('waiting_budget', 'approved')">
                             <group>
-                                <field name="budget_available_amount"/>
+                                <field name="budget_available_amount" readonly="state != 'waiting_budget'"/>
                                 <field name="budget_verified" readonly="1"/>
                             </group>
                             <group>
@@ -154,8 +154,9 @@
                                 <field name="budget_verified_date" readonly="1"/>
                             </group>
                             <group>
-                                <field name="budget_note"/>
+                                <field name="budget_note" readonly="state != 'waiting_budget'"/>
                             </group>
+                            
                         </group>
 
                         <group string="Rejection Information" invisible="not rejection_reason">
