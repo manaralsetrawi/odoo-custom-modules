@@ -179,6 +179,12 @@ class PurchaseRequest(models.Model):
         compute='_compute_user_access_flags',
     )
 
+
+    is_current_user_can_reject = fields.Boolean(
+        string='Can Current User Reject',
+        compute='_compute_user_access_flags',
+    )
+
     @api.model
     def _default_requester(self):
         employee = self.env['hr.employee'].search(
@@ -233,7 +239,13 @@ class PurchaseRequest(models.Model):
 
             rec.is_current_user_coordinator = 81 in current_user.groups_id.ids
             rec.is_current_user_principal = 87 in current_user.groups_id.ids
-
+           
+            rec.is_current_user_can_reject = (
+                (rec.state == 'waiting_coordinator' and rec.is_current_user_coordinator)
+                or (rec.state == 'waiting_principal' and rec.is_current_user_principal)
+                or (rec.state == 'waiting_director' and rec.is_current_user_department_manager)
+                or (rec.state == 'waiting_budget' and rec.is_current_user_finance)
+            )
 
     def action_submit(self):
         for rec in self:
@@ -327,6 +339,10 @@ class PurchaseRequest(models.Model):
 
     def action_reject(self):
         self.ensure_one()
+
+        if not self.is_current_user_can_reject:
+            raise UserError("You are not allowed to reject this request at the current stage.")
+
 
         return {
             'name': 'Reject Purchase Request',

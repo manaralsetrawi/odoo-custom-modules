@@ -21,10 +21,14 @@ class PurchaseRequestRejectWizard(models.TransientModel):
     def action_confirm_reject(self):
         self.ensure_one()
 
+        request = self.purchase_request_id
+
+        if not request.is_current_user_can_reject:
+            raise UserError("You are not allowed to reject this request at the current stage.")
+
         if not self.rejection_reason:
             raise UserError("Please enter the rejection reason.")
 
-        request = self.purchase_request_id
         request.write({
             'state': 'rejected',
             'rejection_reason': self.rejection_reason,
