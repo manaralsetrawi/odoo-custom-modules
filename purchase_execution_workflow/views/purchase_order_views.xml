@@ -19,9 +19,7 @@
                  ============================================================ -->
             <xpath expr="//sheet" position="inside">
 
-                <!-- ========================================================
-                     PHASE 1 - Purchase Request link + quotation helpers
-                     ======================================================== -->
+                <!-- Phase 1 -->
                 <group string="Procurement Execution - Phase 1">
                     <group>
                         <field name="has_purchase_request" readonly="1"/>
@@ -33,9 +31,7 @@
                     </group>
                 </group>
 
-                <!-- ========================================================
-                     PHASE 2 - Quotation evaluation and recommendation
-                     ======================================================== -->
+                <!-- Phase 2 -->
                 <group string="Quotation Evaluation">
                     <group>
                         <field name="technical_evaluation"/>
@@ -51,9 +47,7 @@
                            placeholder="Add technical and commercial evaluation notes here..."/>
                 </group>
 
-                <!-- ========================================================
-                     PHASE 3 - Financial approval routing and tracking
-                     ======================================================== -->
+                <!-- Phase 3 -->
                 <group string="Financial Approval">
                     <group>
                         <field name="required_financial_approval_level" readonly="1"/>
@@ -67,9 +61,7 @@
                            placeholder="Enter financial rejection reason here if the quotation is rejected..."/>
                 </group>
 
-                <!-- ========================================================
-                     PHASE 4 - Purchase Order issuance and vendor acknowledgment
-                     ======================================================== -->
+                <!-- Phase 4 -->
                 <group string="Vendor Acknowledgment">
                     <group>
                         <field name="is_confirmed_purchase_order" readonly="1"/>
@@ -82,6 +74,24 @@
                     </group>
                     <field name="vendor_ack_notes"
                            placeholder="Add notes about vendor confirmation or acknowledgment here..."/>
+                </group>
+
+                <!-- Phase 6 -->
+                <group string="Billing and Payment Tracking">
+                    <group>
+                        <field name="vendor_bill_count" readonly="1"/>
+                        <field name="verified_vendor_bill_count" readonly="1"/>
+                        <field name="all_vendor_bills_verified" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="payment_status_summary" readonly="1"/>
+                        <field name="ready_for_procurement_closure" readonly="1"/>
+                        <field name="procurement_closure_state" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="procurement_closed_by" readonly="1"/>
+                        <field name="procurement_closed_date" readonly="1"/>
+                    </group>
                 </group>
 
             </xpath>
@@ -123,6 +133,13 @@
                         string="Mark Vendor Acknowledged"
                         class="btn-primary"
                         invisible="state != 'purchase' or vendor_ack_received"/>
+
+                <!-- Phase 6 -->
+                <button name="action_mark_procurement_closed"
+                        type="object"
+                        string="Mark Procurement Closed"
+                        class="btn-success"
+                        invisible="state != 'purchase' or procurement_closure_state == 'closed'"/>
 
             </xpath>
 

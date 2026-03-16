@@ -6,12 +6,10 @@ class AccountMove(models.Model):
     _inherit = 'account.move'
 
     # -------------------------------------------------------------------------
-    # VENDOR BILL VERIFICATION AND 3-WAY MATCHING SUPPORT
+    # PHASE 5 - VENDOR BILL VERIFICATION AND 3-WAY MATCHING SUPPORT
     # -------------------------------------------------------------------------
 
     # Link the vendor bill to a purchase order.
-    # In Odoo, vendor bills are stored in account.move, while the purchasing
-    # document is purchase.order. This field gives direct traceability.
     purchase_order_id = fields.Many2one(
         'purchase.order',
         string='Related Purchase Order',
@@ -19,8 +17,7 @@ class AccountMove(models.Model):
         help='Purchase Order linked to this vendor bill.'
     )
 
-    # Related helper field to show the Purchase Request through the linked PO.
-    # This completes the traceability chain:
+    # Related helper field to complete the traceability chain:
     # Purchase Request -> Purchase Order -> Vendor Bill
     purchase_request_id = fields.Many2one(
         'purchase.request',
@@ -31,7 +28,7 @@ class AccountMove(models.Model):
         help='Purchase Request linked indirectly through the related Purchase Order.'
     )
 
-    # Tracks the custom verification state of the vendor bill.
+    # Custom verification state before payment processing.
     invoice_verification_status = fields.Selection([
         ('pending', 'Pending'),
         ('verified', 'Verified'),
@@ -43,7 +40,7 @@ class AccountMove(models.Model):
         help='Custom verification status for the vendor bill before payment processing.'
     )
 
-    # Stores who verified the invoice.
+    # Stores who verified the vendor bill.
     invoice_verified_by = fields.Many2one(
         'res.users',
         string='Invoice Verified By',
@@ -52,7 +49,7 @@ class AccountMove(models.Model):
         help='User who verified this vendor bill.'
     )
 
-    # Stores when the invoice was verified.
+    # Stores when the verification happened.
     invoice_verified_date = fields.Datetime(
         string='Invoice Verified Date',
         readonly=True,
@@ -60,25 +57,59 @@ class AccountMove(models.Model):
         help='Date and time when this vendor bill was verified.'
     )
 
-    # Stores rejection reason if invoice verification fails.
+    # Stores rejection reason if the vendor bill is rejected.
     invoice_rejection_reason = fields.Text(
         string='Invoice Rejection Reason',
         tracking=True,
         help='Reason entered if the vendor bill is rejected during verification.'
     )
 
-    # Helper field for UI and testing.
-    # True when this account.move is a vendor bill.
+    # Technical helper: true when the record is a vendor bill.
     is_vendor_bill = fields.Boolean(
         string='Is Vendor Bill',
         compute='_compute_is_vendor_bill',
         help='Technical helper showing whether this record is a vendor bill.'
     )
 
+    # -------------------------------------------------------------------------
+    # PHASE 6 - PAYMENT TRACKING HELPER
+    # -------------------------------------------------------------------------
+
+    # Business-friendly payment tracking status derived from Odoo's native payment_state.
+    payment_tracking_status = fields.Selection([
+        ('not_paid', 'Not Paid'),
+        ('partial', 'Partially Paid'),
+        ('in_payment', 'In Payment'),
+        ('paid', 'Paid'),
+        ('reversed', 'Reversed'),
+        ('unknown', 'Unknown'),
+    ],
+        string='Payment Tracking Status',
+        compute='_compute_payment_tracking_status',
+        help='Business-friendly payment status derived from the standard Odoo payment state.'
+    )
+
     @api.depends('move_type')
     def _compute_is_vendor_bill(self):
         for move in self:
             move.is_vendor_bill = move.move_type == 'in_invoice'
+
+    @api.depends('payment_state')
+    def _compute_payment_tracking_status(self):
+        # Map Odoo's native payment_state into a clear business-facing field.
+        for move in self:
+            if move.payment_state == 'not_paid':
+                move.payment_tracking_status = 'not_paid'
+            elif move.payment_state == 'partial':
+                move.payment_tracking_status = 'partial'
+            elif move.payment_state == 'in_payment':
+                move.payment_tracking_status = 'in_payment'
+            elif move.payment_state == 'paid':
+                move.payment_tracking_status = 'paid'
+            elif move.payment_state == 'reversed':
+                move.payment_tracking_status = 'reversed'
+            else:
+                move.payment_tracking_status = 'unknown'
 
     def _check_vendor_bill_link(self):
         """
@@ -97,8 +128,7 @@ class AccountMove(models.Model):
 
     def _check_vendor_matches_po(self):
         """
-        Simple consistency check:
-        the vendor bill vendor should match the linked Purchase Order vendor.
+        The vendor on the bill must match the linked Purchase Order vendor.
         """
         for move in self:
             if move.purchase_order_id and move.partner_id != move.purchase_order_id.partner_id:
@@ -108,22 +138,13 @@ class AccountMove(models.Model):
 
     def _check_bill_quantities_against_received_quantities(self):
         """
-        Basic custom verification for Phase 5.
-
-        Rule:
-        The total billed quantity for products should not exceed the total
-        received quantity on the linked Purchase Order.
-
-        Notes:
-        - This is a simplified custom verification layer.
-        - Odoo 18 already provides native 3-way matching support, so this method
-          should be treated as an additional business validation, not a replacement.
+        Basic custom verification layer:
+        billed quantity must not exceed received quantity.
         """
         for move in self:
             if not move.purchase_order_id:
                 continue
 
-            # Build a map of received quantities from purchase order lines.
             received_qty_by_product = {}
             for po_line in move.purchase_order_id.order_line:
                 if po_line.product_id:
@@ -131,7 +152,6 @@ class AccountMove(models.Model):
                         received_qty_by_product.get(po_line.product_id.id, 0.0) + po_line.qty_received
                     )
 
-            # Compare vendor bill lines against received quantities.
             billed_qty_by_product = {}
             for line in move.invoice_line_ids:
                 if line.product_id:
@@ -148,13 +168,7 @@ class AccountMove(models.Model):
 
     def action_verify_vendor_bill(self):
         """
-        Mark the vendor bill as verified.
-
-        Verification checks:
-        - must be a vendor bill
-        - must be linked to a Purchase Order
-        - vendor must match the PO vendor
-        - billed quantities must not exceed received quantities
+        Mark the vendor bill as verified after custom invoice checks.
         """
         for move in self:
             move._check_vendor_bill_link()
@@ -168,7 +182,7 @@ class AccountMove(models.Model):
 
     def action_reject_vendor_bill(self):
         """
-        Reject the vendor bill during custom verification.
+        Reject the vendor bill during verification.
         """
         for move in self:
             move._check_vendor_bill_link()

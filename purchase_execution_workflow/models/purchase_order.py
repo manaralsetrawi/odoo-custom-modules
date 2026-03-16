@@ -516,3 +516,193 @@ class PurchaseOrder(models.Model):
                 ('purchase_order_id', '=', order.id),
                 ('move_type', '=', 'in_invoice')
             ])
+
+    # -------------------------------------------------------------------------
+    # PHASE 6 - PAYMENT TRACKING AND PROCUREMENT CLOSURE
+    # -------------------------------------------------------------------------
+
+    # All vendor bills linked to this Purchase Order through the custom account.move field.
+    vendor_bill_ids = fields.One2many(
+        'account.move',
+        'purchase_order_id',
+        string='Vendor Bills',
+        help='Vendor bills linked to this Purchase Order.'
+    )
+
+    # Count linked vendor bills.
+    vendor_bill_count = fields.Integer(
+        string='Vendor Bill Count',
+        compute='_compute_vendor_bill_metrics',
+        help='Number of vendor bills linked to this Purchase Order.'
+    )
+
+    # Count verified vendor bills.
+    verified_vendor_bill_count = fields.Integer(
+        string='Verified Vendor Bill Count',
+        compute='_compute_vendor_bill_metrics',
+        help='Number of verified vendor bills linked to this Purchase Order.'
+    )
+
+    # True when all linked vendor bills are verified.
+    all_vendor_bills_verified = fields.Boolean(
+        string='All Vendor Bills Verified',
+        compute='_compute_vendor_bill_metrics',
+        help='True when all linked vendor bills are verified.'
+    )
+
+    # Summary of the payment situation across linked vendor bills.
+    payment_status_summary = fields.Selection([
+        ('no_bill', 'No Vendor Bill'),
+        ('unpaid', 'Unpaid'),
+        ('partial', 'Partially Paid'),
+        ('in_payment', 'In Payment'),
+        ('paid', 'Paid'),
+    ],
+        string='Payment Status Summary',
+        compute='_compute_payment_status_summary',
+        help='Summary of payment progress across linked vendor bills.'
+    )
+
+    # Indicates whether the whole procurement cycle is ready to be closed.
+    ready_for_procurement_closure = fields.Boolean(
+        string='Ready for Procurement Closure',
+        compute='_compute_ready_for_procurement_closure',
+        help='True when vendor acknowledgment, receipt confirmation, bill verification, and payment are all completed.'
+    )
+
+    # Final closure state for the procurement cycle.
+    procurement_closure_state = fields.Selection([
+        ('open', 'Open'),
+        ('closed', 'Closed'),
+    ],
+        string='Procurement Closure Status',
+        default='open',
+        tracking=True,
+        help='Final closure state of the procurement cycle.'
+    )
+
+    # Stores who closed the procurement cycle.
+    procurement_closed_by = fields.Many2one(
+        'res.users',
+        string='Procurement Closed By',
+        readonly=True,
+        tracking=True,
+        help='User who marked the procurement cycle as closed.'
+    )
+
+    # Stores when the procurement cycle was closed.
+    procurement_closed_date = fields.Datetime(
+        string='Procurement Closed Date',
+        readonly=True,
+        tracking=True,
+        help='Date and time when the procurement cycle was closed.'
+    )
+
+    @api.depends('vendor_bill_ids.invoice_verification_status')
+    def _compute_vendor_bill_metrics(self):
+        for order in self:
+            bills = order.vendor_bill_ids.filtered(lambda m: m.move_type == 'in_invoice')
+            order.vendor_bill_count = len(bills)
+            order.verified_vendor_bill_count = len(
+                bills.filtered(lambda m: m.invoice_verification_status == 'verified')
+            )
+            order.all_vendor_bills_verified = bool(bills) and all(
+                bill.invoice_verification_status == 'verified' for bill in bills
+            )
+
+    @api.depends('vendor_bill_ids.payment_state')
+    def _compute_payment_status_summary(self):
+        for order in self:
+            bills = order.vendor_bill_ids.filtered(lambda m: m.move_type == 'in_invoice')
+
+            if not bills:
+                order.payment_status_summary = 'no_bill'
+                continue
+
+            payment_states = set(bills.mapped('payment_state'))
+
+            if payment_states == {'paid'}:
+                order.payment_status_summary = 'paid'
+            elif 'in_payment' in payment_states:
+                order.payment_status_summary = 'in_payment'
+            elif 'partial' in payment_states:
+                order.payment_status_summary = 'partial'
+            else:
+                order.payment_status_summary = 'unpaid'
+
+    @api.depends(
+        'state',
+        'vendor_ack_required',
+        'vendor_ack_received',
+        'picking_ids.state',
+        'picking_ids.end_user_confirmed',
+        'vendor_bill_ids.invoice_verification_status',
+        'vendor_bill_ids.payment_state',
+    )
+    def _compute_ready_for_procurement_closure(self):
+        """
+        A Purchase Order is ready to close when:
+        - it is already confirmed
+        - vendor acknowledgment is done if required
+        - all incoming receipts are done
+        - all GRN/end-user confirmations are done
+        - at least one vendor bill exists
+        - all vendor bills are verified
+        - all vendor bills are paid
+        """
+        for order in self:
+            ready = True
+
+            # PO must be confirmed first.
+            if order.state != 'purchase':
+                ready = False
+
+            # Vendor acknowledgment must be completed if required.
+            if order.vendor_ack_required and not order.vendor_ack_received:
+                ready = False
+
+            # All incoming receipts should be done and confirmed by end user when GRN is required.
+            incoming_pickings = order.picking_ids.filtered(lambda p: p.picking_type_id.code == 'incoming')
+            if not incoming_pickings:
+                ready = False
+            else:
+                for picking in incoming_pickings:
+                    if picking.state != 'done':
+                        ready = False
+                        break
+                    if picking.is_grn_required and not picking.end_user_confirmed:
+                        ready = False
+                        break
+
+            # Vendor bills must exist and all be verified.
+            bills = order.vendor_bill_ids.filtered(lambda m: m.move_type == 'in_invoice')
+            if not bills:
+                ready = False
+            else:
+                if not all(bill.invoice_verification_status == 'verified' for bill in bills):
+                    ready = False
+                if not all(bill.payment_state == 'paid' for bill in bills):
+                    ready = False
+
+            order.ready_for_procurement_closure = ready
+
+    def _check_ready_for_procurement_closure(self):
+        """
+        Prevent closing the procurement cycle too early.
+        """
+        for order in self:
+            if not order.ready_for_procurement_closure:
+                raise ValidationError(
+                    'This procurement cycle cannot be closed yet. Please complete vendor acknowledgment, receipt confirmation, invoice verification, and payment first.'
+                )
+
+    def action_mark_procurement_closed(self):
+        """
+        Mark the procurement cycle as fully completed.
+        """
+        for order in self:
+            order._check_ready_for_procurement_closure()
+
+            order.procurement_closure_state = 'closed'
+            order.procurement_closed_by = self.env.user
+            order.procurement_closed_date = fields.Datetime.now()
