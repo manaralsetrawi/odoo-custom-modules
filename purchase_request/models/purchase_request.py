@@ -222,6 +222,7 @@ class PurchaseRequest(models.Model):
 
 
     @api.depends(
+        'state',
         'requester_id',
         'requester_id.user_id',
         'department_id',
@@ -240,18 +241,28 @@ class PurchaseRequest(models.Model):
             if rec.requester_id and rec.requester_id.user_id:
                 users |= rec.requester_id.user_id
 
+            # while still draft, only requester can see it
+            if rec.state == 'draft':
+                rec.allowed_user_ids = [(6, 0, users.ids)]
+                continue
+
+            # after submission, expand visibility by route
             if rec.requester_category == 'admin':
-                # department manager can see admin requests for their department
                 if rec.department_id and rec.department_id.manager_id and rec.department_id.manager_id.user_id:
                     users |= rec.department_id.manager_id.user_id
 
             elif rec.requester_category == 'teacher':
-                # coordinators and principals can see teacher requests
                 users |= coordinator_users
                 users |= principal_users
 
-            rec.allowed_user_ids = [(6, 0, users.ids)]
+            # optional: finance can see requests once they reach budget stage or later
+            if rec.state in ('waiting_budget', 'approved'):
+                finance_users = self.env['res.users'].search([
+                    ('employee_ids.department_id', '=', 2)
+                ])
+                users |= finance_users
 
+            rec.allowed_user_ids = [(6, 0, users.ids)]
 
     def _compute_user_access_flags(self):
         current_user = self.env.user
@@ -306,8 +317,8 @@ class PurchaseRequest(models.Model):
             if rec.state != 'waiting_coordinator':
                 continue
 
-        if 81 not in self.env.user.groups_id.ids:
-            raise UserError("Only Coordinator users can approve at this stage.")
+            if 81 not in self.env.user.groups_id.ids:
+                raise UserError("Only Coordinator users can approve at this stage.")
 
             rec.state = 'waiting_principal'
             rec.coordinator_approved_by = self.env.user
