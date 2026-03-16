@@ -317,8 +317,8 @@ class PurchaseRequest(models.Model):
             if rec.state != 'waiting_coordinator':
                 continue
 
-        if 81 not in self.env.user.groups_id.ids:
-            raise UserError("Only Coordinator users can approve at this stage.")
+            if 81 not in self.env.user.groups_id.ids:
+                raise UserError("Only Coordinator users can approve at this stage.")
 
             rec.state = 'waiting_principal'
             rec.coordinator_approved_by = self.env.user
