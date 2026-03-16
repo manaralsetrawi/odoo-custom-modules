@@ -8,6 +8,7 @@
     'depends': ['base', 'mail', 'hr', 'purchase'],
     'data': [
             'security/ir.model.access.csv',
+            'security/purchase_request_rules.xml',
             'data/purchase_request_sequence.xml',
             'views/purchase_request_views.xml',
             'views/purchase_request_reject_wizard_views.xml',

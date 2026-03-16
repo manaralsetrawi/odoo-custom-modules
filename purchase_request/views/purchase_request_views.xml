@@ -67,7 +67,7 @@
                                 type="object"
                                 string="Reject"
                                 class="btn-danger"
-                                invisible="state not in ('waiting_coordinator','waiting_principal','waiting_director','waiting_budget')"/>
+                                invisible="state not in ('waiting_coordinator','waiting_principal','waiting_director','waiting_budget') or not is_current_user_can_reject"/>
                         
                         <field name="state"
                                 widget="statusbar"
@@ -92,6 +92,8 @@
                         <field name="is_current_user_finance" invisible="1"/>   
                         <field name="is_current_user_coordinator" invisible="1"/>
                         <field name="is_current_user_principal" invisible="1"/>
+                        <field name="is_current_user_can_reject" invisible="1"/>
+                        
                         <div class="oe_title">
                             <h1>
                                 <field name="name" readonly="1"/>
