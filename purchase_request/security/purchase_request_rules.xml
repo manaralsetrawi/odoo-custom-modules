@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="purchase_request_rule_visibility" model="ir.rule">
+            <field name="name">Purchase Request Visibility</field>
+            <field name="model_id" ref="model_purchase_request"/>
+            <field name="domain_force">[('allowed_user_ids', 'in', [user.id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+    </data>
+</odoo>

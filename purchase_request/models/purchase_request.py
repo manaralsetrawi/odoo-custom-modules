@@ -185,6 +185,13 @@ class PurchaseRequest(models.Model):
         compute='_compute_user_access_flags',
     )
 
+    allowed_user_ids = fields.Many2many(
+        'res.users',
+        string='Allowed Users',
+        compute='_compute_allowed_user_ids',
+        store=True,
+    )
+
     @api.model
     def _default_requester(self):
         employee = self.env['hr.employee'].search(
@@ -214,6 +221,36 @@ class PurchaseRequest(models.Model):
                 self.requester_category = 'admin'
 
 
+    @api.depends(
+        'requester_id',
+        'requester_id.user_id',
+        'department_id',
+        'department_id.manager_id',
+        'department_id.manager_id.user_id',
+        'requester_category',
+    )
+    def _compute_allowed_user_ids(self):
+        coordinator_users = self.env['res.users'].search([('groups_id', 'in', [81])])
+        principal_users = self.env['res.users'].search([('groups_id', 'in', [87])])
+
+        for rec in self:
+            users = self.env['res.users']
+
+            # requester can always see own request
+            if rec.requester_id and rec.requester_id.user_id:
+                users |= rec.requester_id.user_id
+
+            if rec.requester_category == 'admin':
+                # department manager can see admin requests for their department
+                if rec.department_id and rec.department_id.manager_id and rec.department_id.manager_id.user_id:
+                    users |= rec.department_id.manager_id.user_id
+
+            elif rec.requester_category == 'teacher':
+                # coordinators and principals can see teacher requests
+                users |= coordinator_users
+                users |= principal_users
+
+            rec.allowed_user_ids = [(6, 0, users.ids)]
 
 
     def _compute_user_access_flags(self):
