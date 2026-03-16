@@ -124,7 +124,7 @@
                                         <!-- <field name="product_description"/> -->
                                         <field name="specifications" readonly="parent.state != 'draft'"/>
                                         <field name="quantity" readonly="parent.state != 'draft'"/>
-                                        <field name="estimated_unit_price" readonly="parent.state != 'draft'"/>
+                                        <field name="estimated_unit_price" readonly="1"/>
                                         <field name="subtotal" readonly="1"/>
                                     </list>
                                 </field>
