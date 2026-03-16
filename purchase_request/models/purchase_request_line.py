@@ -53,5 +53,4 @@ class PurchaseRequestLine(models.Model):
     def _onchange_product_id(self):
         for line in self:
             if line.product_id:
-                line.product_description = line.product_id.display_name
                 line.estimated_unit_price = line.product_id.standard_price or 0.0
