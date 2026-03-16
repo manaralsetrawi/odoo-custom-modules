@@ -498,3 +498,21 @@ class PurchaseOrder(models.Model):
                 raise ValidationError(
                     'Vendor acknowledgment is required before continuing this purchase process.'
                 )
+            
+    # -------------------------------------------------------------------------
+    # PHASE 5 - PURCHASE ORDER SIDE BILL TRACKING
+    # -------------------------------------------------------------------------
+
+    vendor_bill_count = fields.Integer(
+        string='Vendor Bill Count',
+        compute='_compute_vendor_bill_count',
+        help='Number of vendor bills linked to this Purchase Order through the custom field.'
+    )
+
+    @api.depends()
+    def _compute_vendor_bill_count(self):
+        for order in self:
+            order.vendor_bill_count = self.env['account.move'].search_count([
+                ('purchase_order_id', '=', order.id),
+                ('move_type', '=', 'in_invoice')
+            ])
