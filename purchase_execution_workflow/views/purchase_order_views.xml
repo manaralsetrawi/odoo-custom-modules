@@ -6,20 +6,14 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
 
-            <!-- ============================================================
-                 PHASE 1
-                 Link each RFQ / PO to the related Purchase Request
-                 ============================================================ -->
+            <!-- Phase 1 -->
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="purchase_request_id"/>
             </xpath>
 
-            <!-- ============================================================
-                 MAIN CUSTOM SECTIONS
-                 ============================================================ -->
+            <!-- Main sections -->
             <xpath expr="//sheet" position="inside">
 
-                <!-- Phase 1 -->
                 <group string="Procurement Execution - Phase 1">
                     <group>
                         <field name="has_purchase_request" readonly="1"/>
@@ -31,7 +25,6 @@
                     </group>
                 </group>
 
-                <!-- Phase 2 -->
                 <group string="Quotation Evaluation">
                     <group>
                         <field name="technical_evaluation"/>
@@ -47,7 +40,6 @@
                            placeholder="Add technical and commercial evaluation notes here..."/>
                 </group>
 
-                <!-- Phase 3 -->
                 <group string="Financial Approval">
                     <group>
                         <field name="required_financial_approval_level" readonly="1"/>
@@ -61,7 +53,6 @@
                            placeholder="Enter financial rejection reason here if the quotation is rejected..."/>
                 </group>
 
-                <!-- Phase 4 -->
                 <group string="Vendor Acknowledgment">
                     <group>
                         <field name="is_confirmed_purchase_order" readonly="1"/>
@@ -76,7 +67,6 @@
                            placeholder="Add notes about vendor confirmation or acknowledgment here..."/>
                 </group>
 
-                <!-- Phase 6 -->
                 <group string="Billing and Payment Tracking">
                     <group>
                         <field name="vendor_bill_count" readonly="1"/>
@@ -96,49 +86,49 @@
 
             </xpath>
 
-            <!-- ============================================================
-                 HEADER BUTTONS
-                 ============================================================ -->
+            <!-- Header buttons -->
             <xpath expr="//header" position="inside">
 
-                <!-- Phase 2 -->
                 <button name="action_mark_as_recommended"
                         type="object"
                         string="Mark as Recommended"
                         class="btn-primary"
+                        groups="purchase_execution_workflow.group_procurement_officer"
                         invisible="not purchase_request_id or state != 'draft'"/>
 
-                <!-- Phase 3 -->
                 <button name="action_submit_financial_approval"
                         type="object"
                         string="Submit for Financial Approval"
                         class="btn-primary"
+                        groups="purchase_execution_workflow.group_procurement_officer"
                         invisible="state != 'draft' or not is_recommended_vendor or financial_approval_state == 'approved'"/>
 
                 <button name="action_financial_approve"
                         type="object"
                         string="Financially Approve"
                         class="btn-success"
+                        groups="purchase_execution_workflow.group_finance_director,purchase_execution_workflow.group_deputy_ceo,purchase_execution_workflow.group_ceo"
                         invisible="financial_approval_state != 'to_approve'"/>
 
                 <button name="action_financial_reject"
                         type="object"
                         string="Financially Reject"
                         class="btn-danger"
+                        groups="purchase_execution_workflow.group_finance_director,purchase_execution_workflow.group_deputy_ceo,purchase_execution_workflow.group_ceo"
                         invisible="financial_approval_state != 'to_approve'"/>
 
-                <!-- Phase 4 -->
                 <button name="action_mark_vendor_acknowledged"
                         type="object"
                         string="Mark Vendor Acknowledged"
                         class="btn-primary"
+                        groups="purchase_execution_workflow.group_procurement_officer"
                         invisible="state != 'purchase' or vendor_ack_received"/>
 
-                <!-- Phase 6 -->
                 <button name="action_mark_procurement_closed"
                         type="object"
                         string="Mark Procurement Closed"
                         class="btn-success"
+                        groups="purchase_execution_workflow.group_procurement_officer"
                         invisible="state != 'purchase' or procurement_closure_state == 'closed'"/>
 
             </xpath>

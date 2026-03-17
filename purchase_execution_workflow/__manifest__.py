@@ -5,6 +5,7 @@
     'category': 'Purchase',
     'depends': ['purchase', 'stock', 'account', 'purchase_request'],
     'data': [
+        'security/security.xml',
         'views/purchase_order_views.xml',
         'views/stock_picking_views.xml',
         'views/account_move_views.xml',

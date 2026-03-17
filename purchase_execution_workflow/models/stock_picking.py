@@ -1,6 +1,5 @@
 from odoo import fields, models
-from odoo.exceptions import ValidationError
-
+from odoo.exceptions import AccessError, ValidationError
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
@@ -66,6 +65,8 @@ class StockPicking(models.Model):
         - compliance status must not stay pending
         - once confirmed, store the current user and current date/time
         """
+        
+        self._check_end_user_receiver_access()
         for picking in self:
             if picking.state != 'done':
                 raise ValidationError(
@@ -80,3 +81,12 @@ class StockPicking(models.Model):
             picking.end_user_confirmed = True
             picking.end_user_confirmed_by = self.env.user
             picking.end_user_confirmed_date = fields.Datetime.now()
+
+    def _check_end_user_receiver_access(self):
+        """
+        Only authorized end-user receivers should confirm goods receipt compliance.
+        """
+        if not self.env.user.has_group('purchase_execution_workflow.group_end_user_receiver'):
+            raise AccessError(
+                'Only an End User Receiver can confirm receipt compliance.'
+            )

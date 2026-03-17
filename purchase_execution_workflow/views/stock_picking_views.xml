@@ -6,17 +6,15 @@
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
 
-            <!-- Add a button to confirm the receipt from the end-user side.
-                 The button appears only after the receipt is completed and before user confirmation is done. -->
             <xpath expr="//header" position="inside">
                 <button name="action_confirm_end_user_receipt"
                         type="object"
                         string="Confirm End User Receipt"
                         class="btn-primary"
+                        groups="purchase_execution_workflow.group_end_user_receiver"
                         invisible="state != 'done' or end_user_confirmed"/>
             </xpath>
 
-            <!-- Add a custom section for GRN / compliance confirmation details. -->
             <xpath expr="//sheet" position="inside">
                 <group string="Goods Receipt Confirmation">
                     <group>

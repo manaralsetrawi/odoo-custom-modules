@@ -1,6 +1,5 @@
 from odoo import api, fields, models
-from odoo.exceptions import ValidationError
-
+from odoo.exceptions import ValidationError,AccessError
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
@@ -156,7 +155,8 @@ class PurchaseOrder(models.Model):
         - technical evaluation must be accepted
         - commercial evaluation must be accepted
         - only one quotation should stay recommended for the same PR
-        """
+        """ 
+        self._check_procurement_officer_access()
         for order in self:
             if not order.purchase_request_id:
                 raise ValidationError(
@@ -329,6 +329,7 @@ class PurchaseOrder(models.Model):
         - evaluations are completed
         - quotation is marked as recommended
         """
+        self._check_procurement_officer_access()
         for order in self:
             # Reuse earlier phase checks before financial routing starts.
             order._check_minimum_quotation_requirement()
@@ -342,6 +343,7 @@ class PurchaseOrder(models.Model):
         """
         Mark the quotation as financially approved.
         """
+        self._check_financial_approver_access()
         for order in self:
             if order.financial_approval_state != 'to_approve':
                 raise ValidationError(
@@ -360,6 +362,7 @@ class PurchaseOrder(models.Model):
         For now, this method requires the rejection reason field
         to be filled before clicking the reject button.
         """
+        self._check_financial_approver_access()
         for order in self:
             if order.financial_approval_state != 'to_approve':
                 raise ValidationError(
@@ -471,6 +474,7 @@ class PurchaseOrder(models.Model):
         - the document must already be a confirmed PO
         - acknowledgment should only be recorded once
         """
+        self._check_procurement_officer_access()
         for order in self:
             if order.state != 'purchase':
                 raise ValidationError(
@@ -700,6 +704,7 @@ class PurchaseOrder(models.Model):
         """
         Mark the procurement cycle as fully completed.
         """
+        self._check_procurement_officer_access()
         for order in self:
             order._check_ready_for_procurement_closure()
 
@@ -753,3 +758,40 @@ def button_confirm(self):
     self._check_procurement_validations()
 
     return super().button_confirm()
+
+    # -------------------------------------------------------------------------
+    # ACCESS RIGHTS HELPERS
+    # -------------------------------------------------------------------------
+
+    def _check_procurement_officer_access(self):
+        """
+        Only Procurement Officer users should handle procurement workflow actions
+        like recommendation, financial submission, vendor acknowledgment, and closure.
+        """
+        if not self.env.user.has_group('purchase_execution_workflow.group_procurement_officer'):
+            raise AccessError(
+                'Only a Procurement Officer can perform this action.'
+            )
+
+    def _check_financial_approver_access(self):
+        """
+        Only the correct financial approver should approve/reject based on amount.
+        """
+        for order in self:
+            if order.required_financial_approval_level == 'finance_director':
+                if not self.env.user.has_group('purchase_execution_workflow.group_finance_director'):
+                    raise AccessError(
+                        'Only the Director of Finance can approve or reject this quotation.'
+                    )
+
+            elif order.required_financial_approval_level == 'deputy_ceo':
+                if not self.env.user.has_group('purchase_execution_workflow.group_deputy_ceo'):
+                    raise AccessError(
+                        'Only the Deputy CEO can approve or reject this quotation.'
+                    )
+
+            elif order.required_financial_approval_level == 'ceo':
+                if not self.env.user.has_group('purchase_execution_workflow.group_ceo'):
+                    raise AccessError(
+                        'Only the CEO can approve or reject this quotation.'
+                    )

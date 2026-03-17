@@ -1,6 +1,5 @@
 from odoo import api, fields, models
-from odoo.exceptions import ValidationError
-
+from odoo.exceptions import AccessError, ValidationError
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -170,6 +169,7 @@ class AccountMove(models.Model):
         """
         Mark the vendor bill as verified after custom invoice checks.
         """
+        self._check_invoice_verifier_access()
         for move in self:
             move._check_vendor_bill_link()
             move._check_vendor_matches_po()
@@ -184,6 +184,7 @@ class AccountMove(models.Model):
         """
         Reject the vendor bill during verification.
         """
+        self._check_invoice_verifier_access()
         for move in self:
             move._check_vendor_bill_link()
 
@@ -195,3 +196,12 @@ class AccountMove(models.Model):
             move.invoice_verification_status = 'rejected'
             move.invoice_verified_by = False
             move.invoice_verified_date = False
+
+    def _check_invoice_verifier_access(self):
+        """
+        Only authorized users should verify or reject vendor bills.
+        """
+        if not self.env.user.has_group('purchase_execution_workflow.group_invoice_verifier'):
+            raise AccessError(
+                'Only an Invoice Verifier can verify or reject vendor bills.'
+            )
