@@ -232,7 +232,7 @@ class PurchaseRequest(models.Model):
     )
     def _compute_allowed_user_ids(self):
         coordinator_users = self.env['res.users'].search([('groups_id', 'in', [81])])
-        principal_users = self.env['res.users'].search([('groups_id', 'in', [87])])
+        principal_users = self.env['res.users'].search([('groups_id', 'in', [96])])
 
         for rec in self:
             users = self.env['res.users']
@@ -286,7 +286,7 @@ class PurchaseRequest(models.Model):
             )
 
             rec.is_current_user_coordinator = 81 in current_user.groups_id.ids
-            rec.is_current_user_principal = 87 in current_user.groups_id.ids
+            rec.is_current_user_principal = 96 in current_user.groups_id.ids
            
             rec.is_current_user_can_reject = (
                 (rec.state == 'waiting_coordinator' and rec.is_current_user_coordinator)
@@ -331,7 +331,7 @@ class PurchaseRequest(models.Model):
             if rec.state != 'waiting_principal':
                 continue
 
-            if 87 not in self.env.user.groups_id.ids:
+            if 96 not in self.env.user.groups_id.ids:
                 raise UserError("Only Academic Principal users can approve at this stage.")
 
             rec.state = 'waiting_budget'
