@@ -706,3 +706,50 @@ class PurchaseOrder(models.Model):
             order.procurement_closure_state = 'closed'
             order.procurement_closed_by = self.env.user
             order.procurement_closed_date = fields.Datetime.now()
+
+
+def _check_procurement_validations(self):
+    """
+    (Improvements):
+    Enforce key business rules before confirming Purchase Order.
+    """
+
+    for order in self:
+
+        # --------------------------------------------------
+        # 1) PR MUST BE APPROVED BEFORE PO CONFIRMATION
+        # --------------------------------------------------
+        if order.purchase_request_id:
+            #adjust 'approved' later if purchase request module uses different state
+            if order.purchase_request_id.state != 'approved':
+                raise ValidationError(
+                    "The Purchase Request must be approved before confirming the Purchase Order."
+                )
+
+        # --------------------------------------------------
+        # 2) MINIMUM 3 QUOTATIONS IF > 1000 BD
+        # --------------------------------------------------
+        if order.amount_total > 1000:
+
+            if order.quotation_count_for_request < 3:
+                raise ValidationError(
+                    "At least 3 quotations are required for purchases above 1000 BD."
+                )
+
+        # --------------------------------------------------
+        # 3) MUST SELECT RECOMMENDED VENDOR
+        # --------------------------------------------------
+        if not order.is_recommended_vendor:
+            raise ValidationError(
+                "You must mark this quotation as recommended before confirming the Purchase Order."
+            )
+        
+def button_confirm(self):
+    """
+    Override standard confirm to enforce procurement rules.
+    """
+
+    # Apply validations BEFORE confirming
+    self._check_procurement_validations()
+
+    return super().button_confirm()
