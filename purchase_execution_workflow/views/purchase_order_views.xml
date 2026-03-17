@@ -15,7 +15,7 @@
             <xpath expr="//sheet" position="inside">
 
                 <!-- Purchase Request and quotation summary -->
-                <group string="Purchase Request & Quotation Overview"
+                <group string="Purchase Request &amp; Quotation Overview"
                        invisible="not purchase_request_id">
                     <group>
                         <field name="quotation_count_for_request" readonly="1"/>
@@ -29,7 +29,7 @@
                 </group>
 
                 <!-- Quotation evaluation -->
-                <group string="Quotation Evaluation & Recommendation"
+                <group string="Quotation Evaluation &amp; Recommendation"
                        invisible="not purchase_request_id">
                     <group>
                         <field name="technical_evaluation"/>
