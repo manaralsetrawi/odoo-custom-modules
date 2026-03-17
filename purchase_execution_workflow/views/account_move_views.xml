@@ -6,6 +6,7 @@
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
 
+            <!-- Invoice verification section -->
             <xpath expr="//sheet" position="inside">
                 <group string="Invoice Verification"
                        invisible="move_type != 'in_invoice'">
@@ -23,10 +24,11 @@
                         <field name="is_vendor_bill" readonly="1"/>
                     </group>
                     <field name="invoice_rejection_reason"
-                           placeholder="Enter invoice rejection reason here if the vendor bill is rejected..."/>
+                           placeholder="Enter the reason if this vendor bill is rejected..."/>
                 </group>
             </xpath>
 
+            <!-- Header buttons -->
             <xpath expr="//header" position="inside">
                 <button name="action_verify_vendor_bill"
                         type="object"

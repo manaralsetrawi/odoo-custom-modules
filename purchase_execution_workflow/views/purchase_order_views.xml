@@ -6,41 +6,47 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
 
-            <!-- Phase 1 -->
+            <!-- Show related Purchase Request near the vendor field -->
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="purchase_request_id"/>
             </xpath>
 
-            <!-- Main sections -->
+            <!-- Main custom sections -->
             <xpath expr="//sheet" position="inside">
 
-                <group string="Procurement Execution - Phase 1">
+                <!-- Purchase Request and quotation summary -->
+                <group string="Purchase Request & Quotation Overview"
+                       invisible="not purchase_request_id">
                     <group>
-                        <field name="has_purchase_request" readonly="1"/>
                         <field name="quotation_count_for_request" readonly="1"/>
+                        <field name="is_above_quotation_threshold" readonly="1"/>
                     </group>
                     <group>
-                        <field name="is_above_quotation_threshold" readonly="1"/>
-                        <field name="is_multi_quotation_case" readonly="1"/>
+                        <field name="has_purchase_request" invisible="1"/>
+                        <field name="is_multi_quotation_case" invisible="1"/>
+                        <field name="meets_minimum_quotation_rule" readonly="1"/>
                     </group>
                 </group>
 
-                <group string="Quotation Evaluation">
+                <!-- Quotation evaluation -->
+                <group string="Quotation Evaluation & Recommendation"
+                       invisible="not purchase_request_id">
                     <group>
                         <field name="technical_evaluation"/>
                         <field name="commercial_evaluation"/>
-                        <field name="meets_minimum_quotation_rule" readonly="1"/>
                     </group>
                     <group>
                         <field name="is_recommended_vendor" readonly="1"/>
                         <field name="recommendation_reason"
-                               placeholder="Explain why this supplier quotation is recommended..."/>
+                               placeholder="Explain why this supplier is selected (price, quality, delivery, etc.)"/>
                     </group>
                     <field name="evaluation_notes"
-                           placeholder="Add technical and commercial evaluation notes here..."/>
+                           placeholder="Summarize the technical and commercial comparison between suppliers..."/>
                 </group>
 
-                <group string="Financial Approval">
+                <!-- Financial approval -->
+                <group string="Financial Approval Workflow"
+                       invisible="not purchase_request_id">
                     <group>
                         <field name="required_financial_approval_level" readonly="1"/>
                         <field name="financial_approval_state" readonly="1"/>
@@ -50,10 +56,12 @@
                         <field name="financial_approved_date" readonly="1"/>
                     </group>
                     <field name="financial_rejection_reason"
-                           placeholder="Enter financial rejection reason here if the quotation is rejected..."/>
+                           placeholder="Enter the reason if this quotation is rejected during financial approval..."/>
                 </group>
 
-                <group string="Vendor Acknowledgment">
+                <!-- Vendor acknowledgment -->
+                <group string="Vendor Acknowledgment"
+                       invisible="state != 'purchase'">
                     <group>
                         <field name="is_confirmed_purchase_order" readonly="1"/>
                         <field name="vendor_ack_required"/>
@@ -64,10 +72,12 @@
                         <field name="vendor_ack_date" readonly="1"/>
                     </group>
                     <field name="vendor_ack_notes"
-                           placeholder="Add notes about vendor confirmation or acknowledgment here..."/>
+                           placeholder="Add confirmation details received from the vendor..."/>
                 </group>
 
-                <group string="Billing and Payment Tracking">
+                <!-- Billing and payment tracking -->
+                <group string="Billing and Payment Tracking"
+                       invisible="state != 'purchase'">
                     <group>
                         <field name="vendor_bill_count" readonly="1"/>
                         <field name="verified_vendor_bill_count" readonly="1"/>
@@ -91,14 +101,14 @@
 
                 <button name="action_mark_as_recommended"
                         type="object"
-                        string="Mark as Recommended"
+                        string="Select Recommended Vendor"
                         class="btn-primary"
                         groups="purchase_execution_workflow.group_procurement_officer"
                         invisible="not purchase_request_id or state != 'draft'"/>
 
                 <button name="action_submit_financial_approval"
                         type="object"
-                        string="Submit for Financial Approval"
+                        string="Send for Financial Approval"
                         class="btn-primary"
                         groups="purchase_execution_workflow.group_procurement_officer"
                         invisible="state != 'draft' or not is_recommended_vendor or financial_approval_state == 'approved'"/>
@@ -119,14 +129,14 @@
 
                 <button name="action_mark_vendor_acknowledged"
                         type="object"
-                        string="Mark Vendor Acknowledged"
+                        string="Record Vendor Acknowledgment"
                         class="btn-primary"
                         groups="purchase_execution_workflow.group_procurement_officer"
                         invisible="state != 'purchase' or vendor_ack_received"/>
 
                 <button name="action_mark_procurement_closed"
                         type="object"
-                        string="Mark Procurement Closed"
+                        string="Close Procurement Process"
                         class="btn-success"
                         groups="purchase_execution_workflow.group_procurement_officer"
                         invisible="state != 'purchase' or procurement_closure_state == 'closed'"/>

@@ -6,17 +6,20 @@
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
 
+            <!-- End user receipt confirmation button -->
             <xpath expr="//header" position="inside">
                 <button name="action_confirm_end_user_receipt"
                         type="object"
-                        string="Confirm End User Receipt"
+                        string="Confirm Receipt Compliance"
                         class="btn-primary"
                         groups="purchase_execution_workflow.group_end_user_receiver"
                         invisible="state != 'done' or end_user_confirmed"/>
             </xpath>
 
+            <!-- Goods receipt confirmation section -->
             <xpath expr="//sheet" position="inside">
-                <group string="Goods Receipt Confirmation">
+                <group string="Goods Receipt Confirmation"
+                       invisible="picking_type_id.code != 'incoming'">
                     <group>
                         <field name="is_grn_required"/>
                         <field name="end_user_confirmed" readonly="1"/>
@@ -26,7 +29,7 @@
                     <group>
                         <field name="compliance_status"/>
                         <field name="compliance_notes"
-                               placeholder="Add notes about item condition, missing quantity, damage, or compliance issues..."/>
+                               placeholder="Describe any issues (damage, missing items, or confirm full compliance)..."/>
                     </group>
                 </group>
             </xpath>
