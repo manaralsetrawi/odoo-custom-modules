@@ -228,17 +228,26 @@ class PurchaseRequest(models.Model):
                 self.requester_category = 'admin'
 
     @api.depends(
-        'state',
-        'requester_id',
-        'requester_id.user_id',
-        'department_id',
-        'department_id.manager_id',
-        'department_id.manager_id.user_id',
-        'requester_category',
+    'state',
+    'requester_id',
+    'requester_id.user_id',
+    'department_id',
+    'department_id.manager_id',
+    'department_id.manager_id.user_id',
+    'requester_category',
     )
     def _compute_allowed_user_ids(self):
         coordinator_users = self.env['res.users'].search([('groups_id', 'in', [81])])
         principal_users = self.env['res.users'].search([('groups_id', 'in', [96])])
+        finance_users = self.env['res.users'].search([('employee_ids.department_id', '=', 2)])
+        procurement_users = self.env['res.users'].search([('employee_ids.department_id', '=', 5)])
+
+
+        procurement_officer_users = self.env['res.users'].search([('groups_id', 'in', [90])])
+        director_finance_users = self.env['res.users'].search([('groups_id', 'in', [91])])
+        deputy_ceo_users = self.env['res.users'].search([('groups_id', 'in', [92])])
+        ceo_users = self.env['res.users'].search([('groups_id', 'in', [93])])
+
 
         for rec in self:
             users = self.env['res.users']
@@ -261,14 +270,19 @@ class PurchaseRequest(models.Model):
                 users |= coordinator_users
                 users |= principal_users
 
-            # optional: finance can see requests once they reach budget stage or later
+            # finance can see requests at budget stage and after approval
             if rec.state in ('waiting_budget', 'approved'):
-                finance_users = self.env['res.users'].search([
-                    ('employee_ids.department_id', '=', 2)
-                ])
                 users |= finance_users
 
+            # procurement can see approved requests
+            if rec.state == 'approved':
+                users |= procurement_officer_users
+                users |= director_finance_users
+                users |= deputy_ceo_users
+                users |= ceo_users
+
             rec.allowed_user_ids = [(6, 0, users.ids)]
+
 
     def _compute_user_access_flags(self):
         current_user = self.env.user
