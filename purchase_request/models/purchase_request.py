@@ -43,6 +43,7 @@ class PurchaseRequest(models.Model):
         string='Requester Category',
         required=True,
         tracking=True,
+        default=lambda self: self._default_requester_category(),
     )
 
     required_date = fields.Date(
@@ -211,15 +212,20 @@ class PurchaseRequest(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_code('purchase.request') or 'New'
         return super().create(vals)
 
+    @api.model
+    def _default_requester_category(self):
+        if 79 in self.env.user.groups_id.ids:
+            return 'teacher'
+        return 'admin'
+
 
     @api.onchange('requester_id')
     def _onchange_requester(self):
-        if self.requester_id and self.requester_id.department_id:
-            if self.requester_id.department_id.id == 8:
+        if self.requester_id and self.requester_id.user_id:
+            if 79 in self.requester_id.user_id.groups_id.ids:
                 self.requester_category = 'teacher'
             else:
                 self.requester_category = 'admin'
-
 
     @api.depends(
         'state',
