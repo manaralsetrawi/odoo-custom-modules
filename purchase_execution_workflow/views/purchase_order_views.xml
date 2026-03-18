@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_purchase_order_form_inherit_purchase_execution_workflow" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit.purchase.execution.workflow</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Show related Purchase Request near the vendor field -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="purchase_request_id"/>
+            </xpath>
+
+            <!-- Main custom sections -->
+            <xpath expr="//sheet" position="inside">
+
+                <!-- Purchase Request and quotation summary -->
+                <group string="Purchase Request &amp; Quotation Overview"
+                       invisible="not purchase_request_id">
+                    <group>
+                        <field name="quotation_count_for_request" readonly="1"/>
+                        <field name="is_above_quotation_threshold" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="has_purchase_request" invisible="1"/>
+                        <field name="is_multi_quotation_case" invisible="1"/>
+                        <field name="meets_minimum_quotation_rule" readonly="1"/>
+                    </group>
+                </group>
+
+                <!-- Quotation evaluation -->
+                <group string="Quotation Evaluation &amp; Recommendation"
+                       invisible="not purchase_request_id">
+                    <group>
+                        <field name="technical_evaluation"/>
+                        <field name="commercial_evaluation"/>
+                    </group>
+                    <group>
+                        <field name="is_recommended_vendor" readonly="1"/>
+                        <field name="recommendation_reason"
+                               placeholder="Explain why this supplier is selected (price, quality, delivery, etc.)"/>
+                    </group>
+                    <field name="evaluation_notes"
+                           placeholder="Summarize the technical and commercial comparison between suppliers..."/>
+                </group>
+
+                <!-- Financial approval -->
+                <group string="Financial Approval Workflow"
+                       invisible="not purchase_request_id">
+                    <group>
+                        <field name="required_financial_approval_level" readonly="1"/>
+                        <field name="financial_approval_state" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="financial_approved_by" readonly="1"/>
+                        <field name="financial_approved_date" readonly="1"/>
+                    </group>
+                    <field name="financial_rejection_reason"
+                           placeholder="Enter the reason if this quotation is rejected during financial approval..."/>
+                </group>
+
+                <!-- Vendor acknowledgment -->
+                <group string="Vendor Acknowledgment"
+                       invisible="state != 'purchase'">
+                    <group>
+                        <field name="is_confirmed_purchase_order" readonly="1"/>
+                        <field name="vendor_ack_required"/>
+                        <field name="vendor_ack_received" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="vendor_ack_recorded_by" readonly="1"/>
+                        <field name="vendor_ack_date" readonly="1"/>
+                    </group>
+                    <field name="vendor_ack_notes"
+                           placeholder="Add confirmation details received from the vendor..."/>
+                </group>
+
+                <!-- Billing and payment tracking -->
+                <group string="Billing and Payment Tracking"
+                       invisible="state != 'purchase'">
+                    <group>
+                        <field name="vendor_bill_count" readonly="1"/>
+                        <field name="verified_vendor_bill_count" readonly="1"/>
+                        <field name="all_vendor_bills_verified" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="payment_status_summary" readonly="1"/>
+                        <field name="ready_for_procurement_closure" readonly="1"/>
+                        <field name="procurement_closure_state" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="procurement_closed_by" readonly="1"/>
+                        <field name="procurement_closed_date" readonly="1"/>
+                    </group>
+                </group>
+
+            </xpath>
+
+            <!-- Header buttons -->
+            <xpath expr="//header" position="inside">
+
+                <button name="action_mark_as_recommended"
+                        type="object"
+                        string="Select Recommended Vendor"
+                        class="btn-primary"
+                        groups="purchase_execution_workflow.group_procurement_officer"
+                        invisible="not purchase_request_id or state != 'draft'"/>
+
+                <button name="action_submit_financial_approval"
+                        type="object"
+                        string="Send for Financial Approval"
+                        class="btn-primary"
+                        groups="purchase_execution_workflow.group_procurement_officer"
+                        invisible="state != 'draft' or not is_recommended_vendor or financial_approval_state == 'approved'"/>
+
+                <button name="action_financial_approve"
+                        type="object"
+                        string="Financially Approve"
+                        class="btn-success"
+                        groups="purchase_execution_workflow.group_finance_director,purchase_execution_workflow.group_deputy_ceo,purchase_execution_workflow.group_ceo"
+                        invisible="financial_approval_state != 'to_approve'"/>
+
+                <button name="action_financial_reject"
+                        type="object"
+                        string="Financially Reject"
+                        class="btn-danger"
+                        groups="purchase_execution_workflow.group_finance_director,purchase_execution_workflow.group_deputy_ceo,purchase_execution_workflow.group_ceo"
+                        invisible="financial_approval_state != 'to_approve'"/>
+
+                <button name="action_mark_vendor_acknowledged"
+                        type="object"
+                        string="Record Vendor Acknowledgment"
+                        class="btn-primary"
+                        groups="purchase_execution_workflow.group_procurement_officer"
+                        invisible="state != 'purchase' or vendor_ack_received"/>
+
+                <button name="action_mark_procurement_closed"
+                        type="object"
+                        string="Close Procurement Process"
+                        class="btn-success"
+                        groups="purchase_execution_workflow.group_procurement_officer"
+                        invisible="state != 'purchase' or procurement_closure_state == 'closed'"/>
+
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

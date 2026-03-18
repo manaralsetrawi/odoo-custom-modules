@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_purchase_order_form_inherit_pr_workflow" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit.pr.workflow</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+
+                <!-- ============================= -->
+                <!-- HEADER BUTTONS + PR STATUSBAR -->
+                <!-- ============================= -->
+                <xpath expr="//header" position="inside">
+
+                    <button name="action_submit_pr"
+                            type="object"
+                            string="Submit Purchase Request"
+                            class="btn-primary"
+                            invisible="pr_state != 'draft'"/>
+
+                    <button name="action_coordinator_approve"
+                            type="object"
+                            string="Coordinator Approve"
+                            class="btn-success"
+                            invisible="pr_state != 'waiting_coordinator'"/>
+
+                    <button name="action_principal_approve"
+                            type="object"
+                            string="Principal Approve"
+                            class="btn-success"
+                            invisible="pr_state != 'waiting_principal'"/>
+
+                    <button name="action_director_approve"
+                            type="object"
+                            string="Department Director Approve"
+                            class="btn-success"
+                            invisible="pr_state != 'waiting_director'"/>
+
+                    <button name="action_verify_budget"
+                            type="object"
+                            string="Verify Budget"
+                            class="btn-primary"
+                            invisible="pr_state != 'waiting_budget'"/>
+
+                    <button name="action_reject_pr"
+                            type="object"
+                            string="Reject"
+                            class="btn-danger"
+                            invisible="pr_state not in ('waiting_coordinator','waiting_principal','waiting_director','waiting_budget')"/>
+
+                    <field name="pr_state"
+                           widget="statusbar"
+                           statusbar_visible="draft,waiting_coordinator,waiting_principal,waiting_director,waiting_budget,approved,rejected"/>
+
+                </xpath>
+
+                <!-- ============================= -->
+                <!-- PURCHASE REQUEST INFORMATION -->
+                <!-- ============================= -->
+                <xpath expr="//sheet/group" position="before">
+
+                    <group string="Purchase Request Information">
+                        <group>
+                            <field name="requester_id"/>
+                            <field name="department_id" readonly="1"/>
+                            <field name="requester_category"/>
+                        </group>
+                        <group>
+                            <field name="required_date"/>
+                        </group>
+                    </group>
+
+                    <group string="Request Reason">
+                        <field name="request_reason"/>
+                    </group>
+
+                </xpath>
+
+                <!-- ============================= -->
+                <!-- BUDGET VERIFICATION -->
+                <!-- ============================= -->
+                <xpath expr="//sheet" position="inside">
+
+                    <group string="Budget Verification">
+                        <group>
+                            <field name="budget_available"/>
+                            <field name="budget_verified" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="budget_verified_by" readonly="1"/>
+                            <field name="budget_verified_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Approval Information">
+
+                        <group>
+                            <field name="coordinator_approved_by" readonly="1"/>
+                            <field name="coordinator_approved_date" readonly="1"/>
+                        </group>
+
+                        <group>
+                            <field name="principal_approved_by" readonly="1"/>
+                            <field name="principal_approved_date" readonly="1"/>
+                        </group>
+
+                        <group>
+                            <field name="director_approved_by" readonly="1"/>
+                            <field name="director_approved_date" readonly="1"/>
+                        </group>
+
+                    </group>
+
+                </xpath>
+
+                <!-- ============================= -->
+                <!-- REJECTION INFORMATION -->
+                <!-- ============================= -->
+                <xpath expr="//sheet" position="inside">
+
+                    <group string="Rejection Information">
+                        <field name="rejection_reason"/>
+                    </group>
+
+                </xpath>
+
+                <!-- ============================= -->
+                <!-- ORDER LINE SPECIFICATIONS -->
+                <!-- ============================= -->
+                <xpath expr="//field[@name='order_line']/list/field[@name='name']" position="after">
+                    <field name="specifications"/>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']/form//page[@name='notes']/field[@name='name']" position="after">
+                    <field name="specifications"/>
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>

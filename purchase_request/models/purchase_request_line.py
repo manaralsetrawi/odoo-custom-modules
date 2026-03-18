@@ -12,10 +12,14 @@ class PurchaseRequestLine(models.Model):
         ondelete='cascade',
     )
 
-    product_description = fields.Char(
-        string='Product / Item',
-        required=True,
+    product_id = fields.Many2one(
+        'product.product',
+        string='Product',
     )
+
+    # product_description = fields.Char(
+    #     string='Item / Product Description',
+    # )
 
     specifications = fields.Text(
         string='Specifications',
@@ -28,7 +32,7 @@ class PurchaseRequestLine(models.Model):
     )
 
     estimated_unit_price = fields.Float(
-        string='Estimated Unit Price',
+        string='Unit Price',
         required=True,
         default=0.0,
     )
@@ -43,3 +47,10 @@ class PurchaseRequestLine(models.Model):
     def _compute_subtotal(self):
         for line in self:
             line.subtotal = line.quantity * line.estimated_unit_price
+    
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        for line in self:
+            if line.product_id:
+                line.estimated_unit_price = line.product_id.standard_price or 0.0
