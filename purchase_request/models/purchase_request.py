@@ -193,6 +193,12 @@ class PurchaseRequest(models.Model):
         store=True,
     )
 
+
+    is_current_user_can_create_pr = fields.Boolean(
+        string='Can Current User Create Purchase Request',
+        compute='_compute_user_access_flags',
+    )
+
     @api.model
     def _default_requester(self):
         employee = self.env['hr.employee'].search(
@@ -208,24 +214,41 @@ class PurchaseRequest(models.Model):
     
     @api.model
     def create(self, vals):
+        user_group_ids = self.env.user.groups_id.ids
+
+        if 79 not in user_group_ids and 61 not in user_group_ids:
+            raise UserError("Only users in the Teacher or Administrator groups can create a Purchase Request.")
+
         if vals.get('name', 'New') == 'New':
             vals['name'] = self.env['ir.sequence'].next_by_code('purchase.request') or 'New'
+
         return super().create(vals)
 
     @api.model
     def _default_requester_category(self):
-        if 79 in self.env.user.groups_id.ids:
+        user_group_ids = self.env.user.groups_id.ids
+
+        if 79 in user_group_ids:
             return 'teacher'
-        return 'admin'
+        elif 61 in user_group_ids:
+            return 'admin'
+        return False
 
 
     @api.onchange('requester_id')
     def _onchange_requester(self):
         if self.requester_id and self.requester_id.user_id:
-            if 79 in self.requester_id.user_id.groups_id.ids:
+            requester_group_ids = self.requester_id.user_id.groups_id.ids
+
+            if 79 in requester_group_ids:
                 self.requester_category = 'teacher'
-            else:
+            elif 61 in requester_group_ids:
                 self.requester_category = 'admin'
+            else:
+                self.requester_category = False
+
+
+
 
     @api.depends(
     'state',
@@ -314,6 +337,8 @@ class PurchaseRequest(models.Model):
                 or (rec.state == 'waiting_director' and rec.is_current_user_department_manager)
                 or (rec.state == 'waiting_budget' and rec.is_current_user_finance)
             )
+
+            rec.is_current_user_can_create_pr = 79 in current_user.groups_id.ids or 61 in current_user.groups_id.ids
 
     def action_submit(self):
         for rec in self:
@@ -431,6 +456,9 @@ class PurchaseRequest(models.Model):
             # Prevent changing requester completely
             if 'requester_id' in vals:
                 raise UserError("Requester cannot be changed. It is automatically assigned to the logged-in user.")
+
+            if 'requester_category' in vals:
+                raise UserError("Requester Category cannot be changed manually. It is assigned automatically.")
 
             protected_fields = {
                 'requester_category',
