@@ -59,30 +59,16 @@ class PurchaseRequestLine(models.Model):
     
 
     @api.model
-    def get_view(self, view_id=None, view_type='form', **options):
-        res = super().get_view(view_id=view_id, view_type=view_type, **options)
-
+    def create(self, vals):
         user_group_ids = self.env.user.groups_id.ids
-        can_create = 79 in user_group_ids or 61 in user_group_ids
-
-        if view_type in ['list', 'form']:
-            arch = etree.fromstring(res['arch'])
-            arch.set('create', 'true' if can_create else 'false')
-            res['arch'] = etree.tostring(arch, encoding='unicode')
-
-        return res
+        if 79 not in user_group_ids and 61 not in user_group_ids:
+            raise UserError("Only users in the Teacher or Administrator groups can add request lines.")
+        return super().create(vals)
 
     @api.model
-        def create(self, vals):
+    def check_access_rights(self, operation, raise_exception=True):
+        if operation == 'create':
             user_group_ids = self.env.user.groups_id.ids
-            if 79 not in user_group_ids and 61 not in user_group_ids:
-                raise UserError("Only users in the Teacher or Administrator groups can add request lines.")
-            return super().create(vals)
-
-        @api.model
-        def check_access_rights(self, operation, raise_exception=True):
-            if operation == 'create':
-                user_group_ids = self.env.user.groups_id.ids
-                if 79 in user_group_ids or 61 in user_group_ids:
-                    return True
-            return super().check_access_rights(operation, raise_exception=raise_exception)
+            if 79 in user_group_ids or 61 in user_group_ids:
+                return True
+        return super().check_access_rights(operation, raise_exception=raise_exception)
