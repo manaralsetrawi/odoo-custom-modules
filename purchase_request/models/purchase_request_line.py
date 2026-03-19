@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 
 
 class PurchaseRequestLine(models.Model):
@@ -54,3 +55,19 @@ class PurchaseRequestLine(models.Model):
         for line in self:
             if line.product_id:
                 line.estimated_unit_price = line.product_id.standard_price or 0.0
+    
+
+    @api.model
+    def create(self, vals):
+        user_group_ids = self.env.user.groups_id.ids
+        if 79 not in user_group_ids and 61 not in user_group_ids:
+            raise UserError("Only users in the Teacher or Administrator groups can add request lines.")
+        return super().create(vals)
+
+    @api.model
+    def check_access_rights(self, operation, raise_exception=True):
+        if operation == 'create':
+            user_group_ids = self.env.user.groups_id.ids
+            if 79 in user_group_ids or 61 in user_group_ids:
+                return True
+        return super().check_access_rights(operation, raise_exception=raise_exception)
