@@ -256,9 +256,9 @@ class PurchaseRequest(models.Model):
         user_group_ids = self.env.user.groups_id.ids
         can_create = 79 in user_group_ids or 61 in user_group_ids
 
-        if not can_create and view_type in ['list', 'form']:
+        if view_type in ['list', 'form']:
             arch = etree.fromstring(res['arch'])
-            arch.set('create', 'false')
+            arch.set('create', 'true' if can_create else 'false')
             res['arch'] = etree.tostring(arch, encoding='unicode')
 
         return res
@@ -489,6 +489,7 @@ class PurchaseRequest(models.Model):
         return super().write(vals)
     
 
+    @api.model
     def check_access_rights(self, operation, raise_exception=True):
         if operation == 'create':
             user_group_ids = self.env.user.groups_id.ids
