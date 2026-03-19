@@ -2,3 +2,9 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_purchase_request_user,purchase.request.user,model_purchase_request,base.group_user,1,1,0,0
 access_purchase_request_line_user,purchase.request.line.user,model_purchase_request_line,base.group_user,1,1,0,0
 access_purchase_request_reject_wizard,purchase.request.reject.wizard,model_purchase_request_reject_wizard,base.group_user,1,1,1,1
+
+access_purchase_request_teacher,purchase.request.teacher,model_purchase_request,purchase_request.group_purchase_request_teacher,1,1,1,0
+access_purchase_request_line_teacher,purchase.request.line.teacher,model_purchase_request_line,purchase_request.group_purchase_request_teacher,1,1,1,0
+
+access_purchase_request_admin,purchase.request.admin,model_purchase_request,purchase_request.group_purchase_request_admin,1,1,1,0
+access_purchase_request_line_admin,purchase.request.line.admin,model_purchase_request_line,purchase_request.group_purchase_request_admin,1,1,1,0
