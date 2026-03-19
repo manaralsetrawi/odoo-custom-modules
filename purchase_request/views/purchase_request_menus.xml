@@ -5,7 +5,7 @@
         <menuitem id="menu_purchase_request_root"
                   name="Purchase Requests"
                   sequence="10"
-                  groups="base.group_user"/>
+                  groups="purchase_request.group_purchase_request_teacher,purchase_request.group_purchase_request_admin"/>
 
         <menuitem id="menu_purchase_request"
                   name="Purchase Requests"

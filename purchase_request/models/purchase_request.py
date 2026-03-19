@@ -214,10 +214,9 @@ class PurchaseRequest(models.Model):
     
     @api.model
     def create(self, vals):
-        if not (
-            self.env.user.has_group('purchase_request.group_purchase_request_teacher')
-            or self.env.user.has_group('purchase_request.group_purchase_request_admin')
-        ):
+        user_group_ids = self.env.user.groups_id.ids
+
+        if 79 not in user_group_ids and 61 not in user_group_ids:
             raise UserError("Only users in the Teacher or Administrator groups can create a Purchase Request.")
 
         if vals.get('name', 'New') == 'New':
@@ -227,9 +226,11 @@ class PurchaseRequest(models.Model):
 
     @api.model
     def _default_requester_category(self):
-        if self.env.user.has_group('purchase_request.group_purchase_request_teacher'):
+        user_group_ids = self.env.user.groups_id.ids
+
+        if 79 in user_group_ids:
             return 'teacher'
-        elif self.env.user.has_group('purchase_request.group_purchase_request_admin'):
+        elif 61 in user_group_ids:
             return 'admin'
         return False
 
@@ -237,11 +238,11 @@ class PurchaseRequest(models.Model):
     @api.onchange('requester_id')
     def _onchange_requester(self):
         if self.requester_id and self.requester_id.user_id:
-            user = self.requester_id.user_id
+            requester_group_ids = self.requester_id.user_id.groups_id.ids
 
-            if user.has_group('purchase_request.group_purchase_request_teacher'):
+            if 79 in requester_group_ids:
                 self.requester_category = 'teacher'
-            elif user.has_group('purchase_request.group_purchase_request_admin'):
+            elif 61 in requester_group_ids:
                 self.requester_category = 'admin'
             else:
                 self.requester_category = False
@@ -337,10 +338,8 @@ class PurchaseRequest(models.Model):
                 or (rec.state == 'waiting_budget' and rec.is_current_user_finance)
             )
 
-            rec.is_current_user_can_create_pr = (
-                current_user.has_group('purchase_request.group_purchase_request_teacher')
-                or current_user.has_group('purchase_request.group_purchase_request_admin')
-            )
+            rec.is_current_user_can_create_pr = 79 in current_user.groups_id.ids or 61 in current_user.groups_id.ids
+
     def action_submit(self):
         for rec in self:
             if not rec.line_ids:
