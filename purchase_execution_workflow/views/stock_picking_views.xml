@@ -6,20 +6,19 @@
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
 
-            <!-- Header button for end-user receipt confirmation -->
+            <!-- Keep the button simple for now.
+                 Access is already enforced in Python, so no need to hide it by groups here. -->
             <xpath expr="//header" position="inside">
                 <button name="action_confirm_end_user_receipt"
                         type="object"
                         string="Confirm Receipt Compliance"
                         class="btn-primary"
-                        groups="purchase_execution_workflow.group_end_user_receiver"
                         invisible="state != 'done' or end_user_confirmed"/>
             </xpath>
 
-            <!-- Add a dedicated tab for goods receipt confirmation -->
+            <!-- Add a dedicated tab so the custom fields always appear clearly -->
             <xpath expr="//notebook" position="inside">
-                <page string="Goods Receipt Confirmation"
-                      invisible="picking_type_id.code != 'incoming'">
+                <page string="Goods Receipt Confirmation">
                     <group>
                         <group>
                             <field name="is_grn_required"/>
