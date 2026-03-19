@@ -607,7 +607,7 @@ class PurchaseOrder(models.Model):
     # SAFE FIELD WRITE PROTECTION
     # -------------------------------------------------------------------------
 
-      def write(self, vals):
+    def write(self, vals):
         procurement_editable_fields = {
             'technical_evaluation',
             'commercial_evaluation',
