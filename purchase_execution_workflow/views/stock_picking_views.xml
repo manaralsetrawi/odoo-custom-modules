@@ -16,22 +16,24 @@
                         invisible="state != 'done' or end_user_confirmed"/>
             </xpath>
 
-            <!-- Goods receipt confirmation section -->
-            <xpath expr="//sheet" position="inside">
-                <group string="Goods Receipt Confirmation"
-                       invisible="picking_type_id.code != 'incoming'">
+            <!-- Add a dedicated tab for goods receipt confirmation -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Goods Receipt Confirmation"
+                      invisible="picking_type_id.code != 'incoming'">
                     <group>
-                        <field name="is_grn_required"/>
-                        <field name="end_user_confirmed" readonly="1"/>
-                        <field name="end_user_confirmed_by" readonly="1"/>
-                        <field name="end_user_confirmed_date" readonly="1"/>
+                        <group>
+                            <field name="is_grn_required"/>
+                            <field name="end_user_confirmed" readonly="1"/>
+                            <field name="end_user_confirmed_by" readonly="1"/>
+                            <field name="end_user_confirmed_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="compliance_status"/>
+                            <field name="compliance_notes"
+                                   placeholder="Describe any issues such as damage, missing items, or confirm that the delivery is fully compliant..."/>
+                        </group>
                     </group>
-                    <group>
-                        <field name="compliance_status"/>
-                        <field name="compliance_notes"
-                               placeholder="Describe any issues such as damage, missing items, or confirm that the delivery is fully compliant..."/>
-                    </group>
-                </group>
+                </page>
             </xpath>
 
         </field>
