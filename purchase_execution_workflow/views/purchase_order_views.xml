@@ -14,6 +14,7 @@
             <!-- Main custom sections -->
             <xpath expr="//sheet" position="inside">
 
+                <!-- UI POLISH: clearer business-facing section title -->
                 <group string="Purchase Request &amp; Quotation Overview"
                        invisible="not purchase_request_id">
                     <group>
@@ -21,12 +22,14 @@
                         <field name="is_above_quotation_threshold" readonly="1"/>
                     </group>
                     <group>
+                        <!-- UI POLISH: hide technical helper fields from end users -->
                         <field name="has_purchase_request" invisible="1"/>
                         <field name="is_multi_quotation_case" invisible="1"/>
                         <field name="meets_minimum_quotation_rule" readonly="1"/>
                     </group>
                 </group>
 
+                <!-- UI POLISH: clearer business-facing section title -->
                 <group string="Quotation Evaluation &amp; Recommendation"
                        invisible="not purchase_request_id">
                     <group>
@@ -34,56 +37,71 @@
                         <field name="commercial_evaluation"/>
                     </group>
                     <group>
+                        <!-- UI POLISH: keep system/computed status fields clearly read-only -->
                         <field name="is_recommended_vendor" readonly="1"/>
+                        <!-- UI POLISH: clearer user guidance through placeholder -->
                         <field name="recommendation_reason"
                                placeholder="Explain why this supplier is selected (price, quality, delivery, etc.)"/>
                     </group>
+                    <!-- UI POLISH: clearer user guidance through placeholder -->
                     <field name="evaluation_notes"
                            placeholder="Summarize the technical and commercial comparison between suppliers..."/>
                 </group>
 
+                <!-- UI POLISH: clearer business-facing section title -->
                 <group string="Financial Approval Workflow"
                        invisible="not purchase_request_id">
                     <group>
+                        <!-- UI POLISH: keep workflow tracking fields clearly read-only -->
                         <field name="required_financial_approval_level" readonly="1"/>
                         <field name="financial_approval_state" readonly="1"/>
                     </group>
                     <group>
+                        <!-- UI POLISH: keep workflow tracking fields clearly read-only -->
                         <field name="financial_approved_by" readonly="1"/>
                         <field name="financial_approved_date" readonly="1"/>
                     </group>
+                    <!-- UI POLISH: clearer user guidance through placeholder -->
                     <field name="financial_rejection_reason"
                            placeholder="Enter the reason if this quotation is rejected during financial approval..."/>
                 </group>
 
+                <!-- UI POLISH: clearer business-facing section title -->
                 <group string="Vendor Acknowledgment"
                        invisible="state != 'purchase'">
                     <group>
+                        <!-- UI POLISH: keep workflow tracking fields clearly read-only -->
                         <field name="is_confirmed_purchase_order" readonly="1"/>
                         <field name="vendor_ack_required"/>
                         <field name="vendor_ack_received" readonly="1"/>
                     </group>
                     <group>
+                        <!-- UI POLISH: keep workflow tracking fields clearly read-only -->
                         <field name="vendor_ack_recorded_by" readonly="1"/>
                         <field name="vendor_ack_date" readonly="1"/>
                     </group>
+                    <!-- UI POLISH: clearer user guidance through placeholder -->
                     <field name="vendor_ack_notes"
                            placeholder="Add confirmation details received from the vendor..."/>
                 </group>
 
+                <!-- UI POLISH: clearer business-facing section title -->
                 <group string="Billing and Payment Tracking"
                        invisible="state != 'purchase'">
                     <group>
+                        <!-- UI POLISH: keep tracking fields clearly read-only -->
                         <field name="vendor_bill_count" readonly="1"/>
                         <field name="verified_vendor_bill_count" readonly="1"/>
                         <field name="all_vendor_bills_verified" readonly="1"/>
                     </group>
                     <group>
+                        <!-- UI POLISH: keep tracking fields clearly read-only -->
                         <field name="payment_status_summary" readonly="1"/>
                         <field name="ready_for_procurement_closure" readonly="1"/>
                         <field name="procurement_closure_state" readonly="1"/>
                     </group>
                     <group>
+                        <!-- UI POLISH: keep tracking fields clearly read-only -->
                         <field name="procurement_closed_by" readonly="1"/>
                         <field name="procurement_closed_date" readonly="1"/>
                     </group>
@@ -94,6 +112,7 @@
             <!-- Header buttons -->
             <xpath expr="//header" position="inside">
 
+                <!-- UI POLISH: confirmation popup before important action -->
                 <button name="action_mark_as_recommended"
                         type="object"
                         string="Select Recommended Vendor"
@@ -102,6 +121,7 @@
                         invisible="not purchase_request_id or state != 'draft'"
                         confirm="Are you sure you want to select this quotation as the recommended vendor?"/>
 
+                <!-- UI POLISH: confirmation popup before important action -->
                 <button name="action_submit_financial_approval"
                         type="object"
                         string="Send for Financial Approval"
@@ -110,6 +130,7 @@
                         invisible="state != 'draft' or not is_recommended_vendor or financial_approval_state == 'approved'"
                         confirm="Are you sure you want to send this quotation for financial approval?"/>
 
+                <!-- UI POLISH: confirmation popup before important action -->
                 <button name="action_financial_approve"
                         type="object"
                         string="Financially Approve"
@@ -118,6 +139,7 @@
                         invisible="financial_approval_state != 'to_approve'"
                         confirm="Are you sure you want to approve this quotation financially?"/>
 
+                <!-- UI POLISH: confirmation popup before important action -->
                 <button name="action_financial_reject"
                         type="object"
                         string="Financially Reject"
@@ -126,6 +148,7 @@
                         invisible="financial_approval_state != 'to_approve'"
                         confirm="Are you sure you want to reject this quotation financially?"/>
 
+                <!-- UI POLISH: confirmation popup before important action -->
                 <button name="action_mark_vendor_acknowledged"
                         type="object"
                         string="Record Vendor Acknowledgment"
@@ -134,6 +157,7 @@
                         invisible="state != 'purchase' or vendor_ack_received"
                         confirm="Are you sure you want to record vendor acknowledgment for this purchase order?"/>
 
+                <!-- UI POLISH: confirmation popup before important action -->
                 <button name="action_mark_procurement_closed"
                         type="object"
                         string="Close Procurement Process"
