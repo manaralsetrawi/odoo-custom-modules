@@ -283,6 +283,20 @@ class PurchaseOrder(models.Model):
     )
 
     # -------------------------------------------------------------------------
+    # SAFE UI EDITABILITY HELPERS
+    # -------------------------------------------------------------------------
+
+    can_edit_procurement_fields = fields.Boolean(
+        compute='_compute_role_edit_permissions',
+        help='Technical helper to allow Procurement Officer to edit selected procurement fields only.',
+    )
+
+    can_edit_financial_rejection = fields.Boolean(
+        compute='_compute_role_edit_permissions',
+        help='Technical helper to allow financial approvers to edit financial rejection reason only.',
+    )
+
+    # -------------------------------------------------------------------------
     # COMPUTE METHODS
     # -------------------------------------------------------------------------
 
@@ -367,6 +381,23 @@ class PurchaseOrder(models.Model):
                 order.payment_status_summary = 'partial'
             else:
                 order.payment_status_summary = 'unpaid'
+
+    @api.depends_context('uid')
+    def _compute_role_edit_permissions(self):
+        user = self.env.user
+
+        is_procurement_officer = user.has_group(
+            'purchase_execution_workflow.group_procurement_officer'
+        )
+        is_financial_approver = (
+            user.has_group('purchase_execution_workflow.group_finance_director')
+            or user.has_group('purchase_execution_workflow.group_deputy_ceo')
+            or user.has_group('purchase_execution_workflow.group_ceo')
+        )
+
+        for order in self:
+            order.can_edit_procurement_fields = is_procurement_officer
+            order.can_edit_financial_rejection = is_financial_approver
 
     @api.depends(
         'state',
@@ -543,6 +574,48 @@ class PurchaseOrder(models.Model):
                 raise ValidationError(
                     'This procurement cycle cannot be closed yet. Please complete vendor acknowledgment, receipt confirmation, invoice verification, and payment first.'
                 )
+
+    # -------------------------------------------------------------------------
+    # SAFE FIELD WRITE PROTECTION
+    # -------------------------------------------------------------------------
+
+    def write(self, vals):
+        procurement_editable_fields = {
+            'technical_evaluation',
+            'commercial_evaluation',
+            'recommendation_reason',
+            'evaluation_notes',
+            'vendor_ack_required',
+            'vendor_ack_notes',
+        }
+        finance_editable_fields = {
+            'financial_rejection_reason',
+        }
+
+        protected_fields = procurement_editable_fields | finance_editable_fields
+        touched_protected_fields = set(vals.keys()) & protected_fields
+
+        if touched_protected_fields and not self.env.is_superuser():
+            allowed_fields = set()
+
+            if self.env.user.has_group('purchase_execution_workflow.group_procurement_officer'):
+                allowed_fields |= procurement_editable_fields
+
+            if (
+                self.env.user.has_group('purchase_execution_workflow.group_finance_director')
+                or self.env.user.has_group('purchase_execution_workflow.group_deputy_ceo')
+                or self.env.user.has_group('purchase_execution_workflow.group_ceo')
+            ):
+                allowed_fields |= finance_editable_fields
+
+            forbidden_fields = touched_protected_fields - allowed_fields
+            if forbidden_fields:
+                raise AccessError(
+                    'You are not allowed to edit these fields: %s'
+                    % ', '.join(sorted(forbidden_fields))
+                )
+
+        return super().write(vals)
 
     # -------------------------------------------------------------------------
     # ACTION METHODS

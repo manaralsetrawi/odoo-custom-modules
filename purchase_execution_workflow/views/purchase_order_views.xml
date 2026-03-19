@@ -14,6 +14,12 @@
             <!-- Main custom sections -->
             <xpath expr="//sheet" position="inside">
 
+                <!-- Invisible helper fields for safe field editability -->
+                <group invisible="1">
+                    <field name="can_edit_procurement_fields"/>
+                    <field name="can_edit_financial_rejection"/>
+                </group>
+
                 <!-- UI POLISH: clearer business-facing section title -->
                 <group string="Purchase Request &amp; Quotation Overview"
                        invisible="not purchase_request_id">
@@ -33,18 +39,22 @@
                 <group string="Quotation Evaluation &amp; Recommendation"
                        invisible="not purchase_request_id">
                     <group>
-                        <field name="technical_evaluation"/>
-                        <field name="commercial_evaluation"/>
+                        <field name="technical_evaluation"
+                               readonly="not can_edit_procurement_fields"/>
+                        <field name="commercial_evaluation"
+                               readonly="not can_edit_procurement_fields"/>
                     </group>
                     <group>
                         <!-- UI POLISH: keep system/computed status fields clearly read-only -->
                         <field name="is_recommended_vendor" readonly="1"/>
                         <!-- UI POLISH: clearer user guidance through placeholder -->
                         <field name="recommendation_reason"
+                               readonly="not can_edit_procurement_fields"
                                placeholder="Explain why this supplier is selected (price, quality, delivery, etc.)"/>
                     </group>
                     <!-- UI POLISH: clearer user guidance through placeholder -->
                     <field name="evaluation_notes"
+                           readonly="not can_edit_procurement_fields"
                            placeholder="Summarize the technical and commercial comparison between suppliers..."/>
                 </group>
 
@@ -63,6 +73,7 @@
                     </group>
                     <!-- UI POLISH: clearer user guidance through placeholder -->
                     <field name="financial_rejection_reason"
+                           readonly="not can_edit_financial_rejection"
                            placeholder="Enter the reason if this quotation is rejected during financial approval..."/>
                 </group>
 
@@ -72,7 +83,8 @@
                     <group>
                         <!-- UI POLISH: keep workflow tracking fields clearly read-only -->
                         <field name="is_confirmed_purchase_order" readonly="1"/>
-                        <field name="vendor_ack_required"/>
+                        <field name="vendor_ack_required"
+                               readonly="not can_edit_procurement_fields"/>
                         <field name="vendor_ack_received" readonly="1"/>
                     </group>
                     <group>
@@ -82,6 +94,7 @@
                     </group>
                     <!-- UI POLISH: clearer user guidance through placeholder -->
                     <field name="vendor_ack_notes"
+                           readonly="not can_edit_procurement_fields"
                            placeholder="Add confirmation details received from the vendor..."/>
                 </group>
 
