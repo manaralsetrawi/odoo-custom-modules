@@ -3,15 +3,16 @@
     <data>
 
         <menuitem id="menu_purchase_request_root"
-                  name="Purchase Requests"
-                  sequence="10"
-                  groups="purchase_request.group_purchase_request_teacher,purchase_request.group_purchase_request_admin"/>
+                name="Purchase Requests"
+                sequence="10"
+                groups="base.group_user"/>
 
         <menuitem id="menu_purchase_request"
-                  name="Purchase Requests"
-                  parent="menu_purchase_request_root"
-                  action="action_purchase_request"
-                  sequence="10"/>
+                name="Purchase Requests"
+                parent="menu_purchase_request_root"
+                action="action_purchase_request"
+                sequence="10"
+                groups="base.group_user"/>
 
     </data>
 </odoo>

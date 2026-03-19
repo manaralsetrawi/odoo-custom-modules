@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 from odoo.exceptions import UserError
+from lxml import etree
 
 
 class PurchaseRequest(models.Model):
@@ -248,6 +249,19 @@ class PurchaseRequest(models.Model):
                 self.requester_category = False
 
 
+    @api.model
+    def get_view(self, view_id=None, view_type='form', **options):
+        res = super().get_view(view_id=view_id, view_type=view_type, **options)
+
+        user_group_ids = self.env.user.groups_id.ids
+        can_create = 79 in user_group_ids or 61 in user_group_ids
+
+        if not can_create and view_type in ['list', 'form']:
+            arch = etree.fromstring(res['arch'])
+            arch.set('create', 'false')
+            res['arch'] = etree.tostring(arch, encoding='unicode')
+
+        return res
 
 
     @api.depends(
