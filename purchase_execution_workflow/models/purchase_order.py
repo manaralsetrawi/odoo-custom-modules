@@ -259,6 +259,30 @@ class PurchaseOrder(models.Model):
     )
 
     # -------------------------------------------------------------------------
+    # UI IMPROVEMENT - WORKFLOW PROGRESS STATUS
+    # -------------------------------------------------------------------------
+
+    workflow_progress_status = fields.Selection(
+        [
+            ('draft', 'Draft'),
+            ('under_evaluation', 'Under Evaluation'),
+            ('recommended', 'Recommended Vendor Selected'),
+            ('waiting_finance', 'Waiting for Financial Approval'),
+            ('finance_approved', 'Financially Approved'),
+            ('po_issued', 'Purchase Order Issued'),
+            ('vendor_acknowledged', 'Vendor Acknowledged'),
+            ('receipt_confirmed', 'Receipt Confirmed'),
+            ('invoice_verified', 'Invoice Verified'),
+            ('paid', 'Paid'),
+            ('closed', 'Closed'),
+        ],
+        string='Workflow Progress',
+        compute='_compute_workflow_progress_status',
+        store=True,
+        help='Shows the current procurement workflow progress for this RFQ/PO.',
+    )
+
+    # -------------------------------------------------------------------------
     # COMPUTE METHODS
     # -------------------------------------------------------------------------
 
@@ -346,6 +370,47 @@ class PurchaseOrder(models.Model):
 
     @api.depends(
         'state',
+        'purchase_request_id',
+        'is_recommended_vendor',
+        'financial_approval_state',
+        'vendor_ack_received',
+        'picking_ids.end_user_confirmed',
+        'vendor_bill_ids.invoice_verification_status',
+        'vendor_bill_ids.payment_state',
+        'procurement_closure_state',
+    )
+    def _compute_workflow_progress_status(self):
+        for order in self:
+            incoming_pickings = order.picking_ids.filtered(lambda p: p.picking_type_id.code == 'incoming')
+            bills = order.vendor_bill_ids.filtered(lambda m: m.move_type == 'in_invoice')
+
+            if order.procurement_closure_state == 'closed':
+                order.workflow_progress_status = 'closed'
+            elif bills and all(bill.payment_state == 'paid' for bill in bills):
+                order.workflow_progress_status = 'paid'
+            elif bills and all(bill.invoice_verification_status == 'verified' for bill in bills):
+                order.workflow_progress_status = 'invoice_verified'
+            elif incoming_pickings and all(
+                p.end_user_confirmed for p in incoming_pickings if p.state == 'done'
+            ):
+                order.workflow_progress_status = 'receipt_confirmed'
+            elif order.vendor_ack_received:
+                order.workflow_progress_status = 'vendor_acknowledged'
+            elif order.state == 'purchase':
+                order.workflow_progress_status = 'po_issued'
+            elif order.financial_approval_state == 'approved':
+                order.workflow_progress_status = 'finance_approved'
+            elif order.financial_approval_state == 'to_approve':
+                order.workflow_progress_status = 'waiting_finance'
+            elif order.is_recommended_vendor:
+                order.workflow_progress_status = 'recommended'
+            elif order.purchase_request_id:
+                order.workflow_progress_status = 'under_evaluation'
+            else:
+                order.workflow_progress_status = 'draft'
+
+    @api.depends(
+        'state',
         'vendor_ack_required',
         'vendor_ack_received',
         'picking_ids.state',
@@ -399,11 +464,9 @@ class PurchaseOrder(models.Model):
             if order.required_financial_approval_level == 'finance_director':
                 if not self.env.user.has_group('purchase_execution_workflow.group_finance_director'):
                     raise AccessError('Only the Director of Finance can approve or reject this quotation.')
-
             elif order.required_financial_approval_level == 'deputy_ceo':
                 if not self.env.user.has_group('purchase_execution_workflow.group_deputy_ceo'):
                     raise AccessError('Only the Deputy CEO can approve or reject this quotation.')
-
             elif order.required_financial_approval_level == 'ceo':
                 if not self.env.user.has_group('purchase_execution_workflow.group_ceo'):
                     raise AccessError('Only the CEO can approve or reject this quotation.')
@@ -414,19 +477,16 @@ class PurchaseOrder(models.Model):
 
     def _check_procurement_validations(self):
         for order in self:
-            # PR must be approved before PO confirmation
             if order.purchase_request_id and order.purchase_request_id.state != 'approved':
                 raise ValidationError(
                     'The Purchase Request must be approved before confirming the Purchase Order.'
                 )
 
-            # Minimum 3 quotations if > 1000 BD
             if order.amount_total > 1000 and order.quotation_count_for_request < 3:
                 raise ValidationError(
                     'At least 3 quotations are required for purchases above 1000 BD.'
                 )
 
-            # Must select recommended vendor
             if not order.is_recommended_vendor:
                 raise ValidationError(
                     'You must mark this quotation as recommended before confirming the Purchase Order.'

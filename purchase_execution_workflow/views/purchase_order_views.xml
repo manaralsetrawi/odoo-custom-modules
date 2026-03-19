@@ -14,7 +14,6 @@
             <!-- Main custom sections -->
             <xpath expr="//sheet" position="inside">
 
-                <!-- Purchase Request and quotation summary -->
                 <group string="Purchase Request &amp; Quotation Overview"
                        invisible="not purchase_request_id">
                     <group>
@@ -28,7 +27,6 @@
                     </group>
                 </group>
 
-                <!-- Quotation evaluation -->
                 <group string="Quotation Evaluation &amp; Recommendation"
                        invisible="not purchase_request_id">
                     <group>
@@ -44,7 +42,6 @@
                            placeholder="Summarize the technical and commercial comparison between suppliers..."/>
                 </group>
 
-                <!-- Financial approval -->
                 <group string="Financial Approval Workflow"
                        invisible="not purchase_request_id">
                     <group>
@@ -59,7 +56,6 @@
                            placeholder="Enter the reason if this quotation is rejected during financial approval..."/>
                 </group>
 
-                <!-- Vendor acknowledgment -->
                 <group string="Vendor Acknowledgment"
                        invisible="state != 'purchase'">
                     <group>
@@ -75,7 +71,6 @@
                            placeholder="Add confirmation details received from the vendor..."/>
                 </group>
 
-                <!-- Billing and payment tracking -->
                 <group string="Billing and Payment Tracking"
                        invisible="state != 'purchase'">
                     <group>
@@ -104,43 +99,67 @@
                         string="Select Recommended Vendor"
                         class="btn-primary"
                         groups="purchase_execution_workflow.group_procurement_officer"
-                        invisible="not purchase_request_id or state != 'draft'"/>
+                        invisible="not purchase_request_id or state != 'draft'"
+                        confirm="Are you sure you want to select this quotation as the recommended vendor?"/>
 
                 <button name="action_submit_financial_approval"
                         type="object"
                         string="Send for Financial Approval"
                         class="btn-primary"
                         groups="purchase_execution_workflow.group_procurement_officer"
-                        invisible="state != 'draft' or not is_recommended_vendor or financial_approval_state == 'approved'"/>
+                        invisible="state != 'draft' or not is_recommended_vendor or financial_approval_state == 'approved'"
+                        confirm="Are you sure you want to send this quotation for financial approval?"/>
 
                 <button name="action_financial_approve"
                         type="object"
                         string="Financially Approve"
                         class="btn-success"
                         groups="purchase_execution_workflow.group_finance_director,purchase_execution_workflow.group_deputy_ceo,purchase_execution_workflow.group_ceo"
-                        invisible="financial_approval_state != 'to_approve'"/>
+                        invisible="financial_approval_state != 'to_approve'"
+                        confirm="Are you sure you want to approve this quotation financially?"/>
 
                 <button name="action_financial_reject"
                         type="object"
                         string="Financially Reject"
                         class="btn-danger"
                         groups="purchase_execution_workflow.group_finance_director,purchase_execution_workflow.group_deputy_ceo,purchase_execution_workflow.group_ceo"
-                        invisible="financial_approval_state != 'to_approve'"/>
+                        invisible="financial_approval_state != 'to_approve'"
+                        confirm="Are you sure you want to reject this quotation financially?"/>
 
                 <button name="action_mark_vendor_acknowledged"
                         type="object"
                         string="Record Vendor Acknowledgment"
                         class="btn-primary"
                         groups="purchase_execution_workflow.group_procurement_officer"
-                        invisible="state != 'purchase' or vendor_ack_received"/>
+                        invisible="state != 'purchase' or vendor_ack_received"
+                        confirm="Are you sure you want to record vendor acknowledgment for this purchase order?"/>
 
                 <button name="action_mark_procurement_closed"
                         type="object"
                         string="Close Procurement Process"
                         class="btn-success"
-                        groups="purchase_execution_workflow.group_procurement_officer"
-                        invisible="state != 'purchase' or procurement_closure_state == 'closed'"/>
+                        invisible="state != 'purchase' or procurement_closure_state == 'closed'"
+                        confirm="Are you sure you want to close this procurement process?"/>
+            </xpath>
 
+        </field>
+    </record>
+
+    <record id="view_purchase_order_tree_inherit_purchase_execution_workflow" model="ir.ui.view">
+        <field name="name">purchase.order.tree.inherit.purchase.execution.workflow</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//tree" position="attributes">
+                <attribute name="decoration-warning">workflow_progress_status == 'waiting_finance'</attribute>
+                <attribute name="decoration-success">workflow_progress_status in ('paid', 'closed')</attribute>
+                <attribute name="decoration-info">workflow_progress_status in ('po_issued', 'vendor_acknowledged', 'invoice_verified')</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="purchase_request_id" optional="show"/>
+                <field name="workflow_progress_status" optional="show"/>
             </xpath>
 
         </field>
