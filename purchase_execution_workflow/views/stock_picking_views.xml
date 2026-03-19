@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
 
-            <!-- End user receipt confirmation button -->
+            <!-- Header button for end-user receipt confirmation -->
             <xpath expr="//header" position="inside">
                 <button name="action_confirm_end_user_receipt"
                         type="object"
@@ -29,7 +29,7 @@
                     <group>
                         <field name="compliance_status"/>
                         <field name="compliance_notes"
-                               placeholder="Describe any issues (damage, missing items, or confirm full compliance)..."/>
+                               placeholder="Describe any issues such as damage, missing items, or confirm that the delivery is fully compliant..."/>
                     </group>
                 </group>
             </xpath>
