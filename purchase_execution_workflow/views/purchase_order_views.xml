@@ -143,22 +143,55 @@
                         invisible="state != 'draft' or not is_recommended_vendor or financial_approval_state == 'approved'"
                         confirm="Are you sure you want to send this quotation for financial approval?"/>
 
-                <!-- UI POLISH: confirmation popup before important action -->
+                <!-- Finance Director -->
                 <button name="action_financial_approve"
                         type="object"
                         string="Financially Approve"
                         class="btn-success"
-                        groups="purchase_execution_workflow.group_finance_director,purchase_execution_workflow.group_deputy_ceo,purchase_execution_workflow.group_ceo"
-                        invisible="financial_approval_state != 'to_approve'"
+                        groups="purchase_execution_workflow.group_finance_director"
+                        invisible="financial_approval_state != 'to_approve' or required_financial_approval_level != 'finance_director'"
                         confirm="Are you sure you want to approve this quotation financially?"/>
 
-                <!-- UI POLISH: confirmation popup before important action -->
                 <button name="action_financial_reject"
                         type="object"
                         string="Financially Reject"
                         class="btn-danger"
-                        groups="purchase_execution_workflow.group_finance_director,purchase_execution_workflow.group_deputy_ceo,purchase_execution_workflow.group_ceo"
-                        invisible="financial_approval_state != 'to_approve'"
+                        groups="purchase_execution_workflow.group_finance_director"
+                        invisible="financial_approval_state != 'to_approve' or required_financial_approval_level != 'finance_director'"
+                        confirm="Are you sure you want to reject this quotation financially?"/>
+
+                <!-- Deputy CEO -->
+                <button name="action_financial_approve"
+                        type="object"
+                        string="Financially Approve"
+                        class="btn-success"
+                        groups="purchase_execution_workflow.group_deputy_ceo"
+                        invisible="financial_approval_state != 'to_approve' or required_financial_approval_level != 'deputy_ceo'"
+                        confirm="Are you sure you want to approve this quotation financially?"/>
+
+                <button name="action_financial_reject"
+                        type="object"
+                        string="Financially Reject"
+                        class="btn-danger"
+                        groups="purchase_execution_workflow.group_deputy_ceo"
+                        invisible="financial_approval_state != 'to_approve' or required_financial_approval_level != 'deputy_ceo'"
+                        confirm="Are you sure you want to reject this quotation financially?"/>
+
+                <!-- CEO -->
+                <button name="action_financial_approve"
+                        type="object"
+                        string="Financially Approve"
+                        class="btn-success"
+                        groups="purchase_execution_workflow.group_ceo"
+                        invisible="financial_approval_state != 'to_approve' or required_financial_approval_level != 'ceo'"
+                        confirm="Are you sure you want to approve this quotation financially?"/>
+
+                <button name="action_financial_reject"
+                        type="object"
+                        string="Financially Reject"
+                        class="btn-danger"
+                        groups="purchase_execution_workflow.group_ceo"
+                        invisible="financial_approval_state != 'to_approve' or required_financial_approval_level != 'ceo'"
                         confirm="Are you sure you want to reject this quotation financially?"/>
 
                 <!-- UI POLISH: confirmation popup before important action -->
