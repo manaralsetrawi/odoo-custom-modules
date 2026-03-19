@@ -144,24 +144,4 @@
 
         </field>
     </record>
-
-    <record id="view_purchase_order_tree_inherit_purchase_execution_workflow" model="ir.ui.view">
-        <field name="name">purchase.order.tree.inherit.purchase.execution.workflow</field>
-        <field name="model">purchase.order</field>
-        <field name="inherit_id" ref="purchase.purchase_order_tree"/>
-        <field name="arch" type="xml">
-
-            <xpath expr="//tree" position="attributes">
-                <attribute name="decoration-warning">workflow_progress_status == 'waiting_finance'</attribute>
-                <attribute name="decoration-success">workflow_progress_status in ('paid', 'closed')</attribute>
-                <attribute name="decoration-info">workflow_progress_status in ('po_issued', 'vendor_acknowledged', 'invoice_verified')</attribute>
-            </xpath>
-
-            <xpath expr="//field[@name='partner_id']" position="after">
-                <field name="purchase_request_id" optional="show"/>
-                <field name="workflow_progress_status" optional="show"/>
-            </xpath>
-
-        </field>
-    </record>
 </odoo>
