@@ -607,7 +607,7 @@ class PurchaseOrder(models.Model):
     # SAFE FIELD WRITE PROTECTION
     # -------------------------------------------------------------------------
 
-    def write(self, vals):
+      def write(self, vals):
         procurement_editable_fields = {
             'technical_evaluation',
             'commercial_evaluation',
@@ -628,6 +628,11 @@ class PurchaseOrder(models.Model):
 
             if self.env.user.has_group('purchase_execution_workflow.group_procurement_officer'):
                 allowed_fields |= procurement_editable_fields
+
+                # Safe exception:
+                # Procurement Officer can clear financial rejection reason only
+                if vals.get('financial_rejection_reason') is False:
+                    allowed_fields.add('financial_rejection_reason')
 
             if (
                 self.env.user.has_group('purchase_execution_workflow.group_finance_director')
