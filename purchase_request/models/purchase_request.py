@@ -487,3 +487,11 @@ class PurchaseRequest(models.Model):
                 )
 
         return super().write(vals)
+    
+
+    def check_access_rights(self, operation, raise_exception=True):
+        if operation == 'create':
+            user_group_ids = self.env.user.groups_id.ids
+            if 79 in user_group_ids or 61 in user_group_ids:
+                return True
+        return super().check_access_rights(operation, raise_exception=raise_exception)
