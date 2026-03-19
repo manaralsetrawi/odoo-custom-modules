@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, Command
 from odoo.exceptions import AccessError, ValidationError
 
 
@@ -314,6 +314,34 @@ class PurchaseOrder(models.Model):
                 ])
             else:
                 order.quotation_count_for_request = 0
+
+    @api.onchange('purchase_request_id')
+    def _onchange_purchase_request_id_fill_order_lines(self):
+        for order in self:
+            if not order.purchase_request_id:
+                order.order_line = [Command.clear()]
+                continue
+
+            new_lines = [Command.clear()]
+
+            for pr_line in order.purchase_request_id.line_ids:
+                if not pr_line.product_id:
+                    continue
+
+                line_name = pr_line.product_id.display_name
+                if pr_line.specifications:
+                    line_name = f"{line_name}\nSpecifications: {pr_line.specifications}"
+
+                new_lines.append(Command.create({
+                    'product_id': pr_line.product_id.id,
+                    'name': line_name,
+                    'product_qty': pr_line.quantity,
+                    'product_uom': pr_line.product_id.uom_po_id.id or pr_line.product_id.uom_id.id,
+                    'price_unit': 0.0,
+                    'date_planned': fields.Datetime.now(),
+                }))
+
+            order.order_line = new_lines
 
     @api.depends('amount_total')
     def _compute_is_above_quotation_threshold(self):
