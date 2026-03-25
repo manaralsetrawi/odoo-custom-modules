@@ -1,0 +1,65 @@
+/* Soft neutral */
+.o_field_badge[value="draft"] {
+    background-color: #f2f2f2 !important;
+    color: #555 !important;
+}
+
+/* Light blue */
+.o_field_badge[value="under_evaluation"] {
+    background-color: #e3f2fd !important;
+    color: #1565c0 !important;
+}
+
+/* Soft purple */
+.o_field_badge[value="recommended"] {
+    background-color: #f3e5f5 !important;
+    color: #7b1fa2 !important;
+}
+
+/* Soft orange */
+.o_field_badge[value="waiting_finance"] {
+    background-color: #fff3e0 !important;
+    color: #ef6c00 !important;
+}
+
+/* Light teal */
+.o_field_badge[value="finance_approved"] {
+    background-color: #e0f2f1 !important;
+    color: #00695c !important;
+}
+
+/* Light blue-grey */
+.o_field_badge[value="po_issued"] {
+    background-color: #eceff1 !important;
+    color: #37474f !important;
+}
+
+/* Light cyan */
+.o_field_badge[value="vendor_acknowledged"] {
+    background-color: #e0f7fa !important;
+    color: #00838f !important;
+}
+
+/* Light green */
+.o_field_badge[value="receipt_confirmed"] {
+    background-color: #e8f5e9 !important;
+    color: #2e7d32 !important;
+}
+
+/* Light indigo */
+.o_field_badge[value="invoice_verified"] {
+    background-color: #e8eaf6 !important;
+    color: #3949ab !important;
+}
+
+/* Soft green (different from Odoo default strong green) */
+.o_field_badge[value="paid"] {
+    background-color: #dcedc8 !important;
+    color: #558b2f !important;
+}
+
+/* Light grey for closed */
+.o_field_badge[value="closed"] {
+    background-color: #eeeeee !important;
+    color: #616161 !important;
+}

@@ -10,6 +10,11 @@
         'views/stock_picking_views.xml',
         'views/account_move_views.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'purchase_execution_workflow/static/src/css/workflow_status.css',
+        ],
+    },
     'installable': True,
     'application': False,
 }
