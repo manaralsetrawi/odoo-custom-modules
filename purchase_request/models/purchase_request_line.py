@@ -72,3 +72,16 @@ class PurchaseRequestLine(models.Model):
             if 79 in user_group_ids or 61 in user_group_ids:
                 return True
         return super().check_access_rights(operation, raise_exception=raise_exception) 
+
+
+    def unlink(self):
+        user_group_ids = self.env.user.groups_id.ids
+
+        for line in self:
+            if 79 not in user_group_ids and 61 not in user_group_ids:
+                raise UserError("Only users in the Teacher or Administrator groups can delete request lines.")
+
+            if line.request_id.state != 'draft':
+                raise UserError("You cannot delete request lines unless the purchase request is in draft.")
+
+        return super().unlink()

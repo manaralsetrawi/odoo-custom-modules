@@ -418,30 +418,34 @@ class PurchaseRequest(models.Model):
 
 
     def action_verify_budget(self):
+        self.ensure_one()
+
         current_employee = self.env['hr.employee'].search(
             [('user_id', '=', self.env.user.id)],
             limit=1
         )
 
-        for rec in self:
-            if rec.state != 'waiting_budget':
-                continue
+        if self.state != 'waiting_budget':
+            raise UserError("This purchase request is not waiting for budget verification.")
 
-            if not current_employee or not current_employee.department_id:
-                raise UserError("The current user is not linked to an employee with a department.")
+        if not current_employee or not current_employee.department_id:
+            raise UserError("The current user is not linked to an employee with a department.")
 
-            if current_employee.department_id.id != 2:
-                raise UserError("Only employees in the Finance & Accounting department can verify budget.")
+        if current_employee.department_id.id != 2:
+            raise UserError("Only employees in the Finance & Accounting department can verify budget.")
 
-            if rec.budget_available_amount < rec.amount_total:
-                raise UserError("Budget is insufficient for this purchase request.")
-
-            rec.budget_verified = True
-            rec.budget_verified_by = self.env.user
-            rec.budget_verified_date = fields.Datetime.now()
-            rec.state = 'approved'
-            rec.message_post(body="Budget verified by Finance. Purchase Request approved.")
-
+        return {
+            'name': 'Verify Budget',
+            'type': 'ir.actions.act_window',
+            'res_model': 'purchase.request.budget.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_purchase_request_id': self.id,
+                'default_available_budget': self.budget_available_amount,
+                'default_budget_note': self.budget_note,
+            },
+        }
 
 
     def action_reject(self):
@@ -488,6 +492,19 @@ class PurchaseRequest(models.Model):
 
         return super().write(vals)
     
+
+    def unlink(self):
+        user_group_ids = self.env.user.groups_id.ids
+
+        for rec in self:
+            if 79 not in user_group_ids and 61 not in user_group_ids:
+                raise UserError("Only users in the Teacher or Administrator groups can delete purchase requests.")
+
+            if rec.state != 'draft':
+                raise UserError("Only draft purchase requests can be deleted.")
+
+        return super().unlink()
+
 
     @api.model
     def check_access_rights(self, operation, raise_exception=True):

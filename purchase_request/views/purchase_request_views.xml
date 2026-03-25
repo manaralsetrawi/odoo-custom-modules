@@ -152,7 +152,7 @@
 
                         <group string="Budget Verification" invisible="state not in ('waiting_budget', 'approved') or not is_current_user_finance">
                             <group>
-                                <field name="budget_available_amount" readonly="state != 'waiting_budget'"/>
+                                <field name="budget_available_amount" readonly="1"/>
                                 <field name="budget_verified" readonly="1"/>
                             </group>
                             <group>
