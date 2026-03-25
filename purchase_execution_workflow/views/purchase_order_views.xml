@@ -124,6 +124,11 @@
 
             <!-- Header buttons -->
             <xpath expr="//header" position="inside">
+            <!-- UI POLISH: status bar to clearly show overall workflow progress -->
+            <field name="workflow_progress_status"
+            widget="statusbar"
+            readonly="1"
+            statusbar_visible="draft,under_evaluation,recommended,waiting_finance,finance_approved,po_issued,vendor_acknowledged,receipt_confirmed,invoice_verified,paid,closed"/>
 
                 <!-- UI POLISH: confirmation popup before important action -->
                 <button name="action_mark_as_recommended"
