@@ -308,7 +308,7 @@ class PurchaseRequest(models.Model):
                 users |= principal_users
 
             # finance can see requests at budget stage and after approval
-            if rec.state in ('waiting_budget', 'approved'):
+            if rec.state in ('waiting_budget', 'approved','rejected'):
                 users |= finance_users
 
             # procurement can see approved requests
