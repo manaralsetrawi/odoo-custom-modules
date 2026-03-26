@@ -15,12 +15,14 @@
                     <field name="required_date"/>
                     <field name="amount_total"/>
 
+
                     <field name="state"
                             widget="badge"
                             decoration-info="state == 'draft'"
                             decoration-warning="state in ('waiting_coordinator', 'waiting_principal', 'waiting_director', 'waiting_budget')"
                             decoration-success="state == 'approved'"
                             decoration-danger="state == 'rejected'"/>
+                    <field name="allowed_user_ids" widget="many2many_tags"/>
                 </list>
             </field>
         </record>
@@ -150,7 +152,7 @@
                             </group>
                         </group>
 
-                        <group string="Budget Verification" invisible="state not in ('waiting_budget', 'approved') or not is_current_user_finance">
+                        <group string="Budget Verification" invisible="state not in ('waiting_budget', 'approved')">
                             <group>
                                 <field name="budget_available_amount" readonly="1"/>
                                 <field name="budget_verified" readonly="1"/>
@@ -160,7 +162,7 @@
                                 <field name="budget_verified_date" readonly="1"/>
                             </group>
                             <group>
-                                <field name="budget_note" readonly="state != 'waiting_budget'"/>
+                                <field name="budget_note" readonly="1"/>
                             </group>
                             
                         </group>
