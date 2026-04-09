@@ -88,21 +88,25 @@
     </record>
 
         <!-- Add finance review status column to customer invoice list view -->
-    <record id="view_out_invoice_tree_inherit_finance_review" model="ir.ui.view">
-        <field name="name">account.move.out.invoice.tree.finance.review</field>
-        <field name="model">account.move</field>
-        <field name="inherit_id" ref="account.view_out_invoice_tree"/>
-        <field name="arch" type="xml">
+<record id="view_out_invoice_tree_inherit_finance_review" model="ir.ui.view">
+    <field name="name">account.move.out.invoice.tree.finance.review</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+    <field name="arch" type="xml">
 
-            <!-- Add the review status after the invoice date -->
-            <xpath expr="//list/field[@name='invoice_date']" position="after">
-                <field name="finance_review_state"
-                       string="Finance Review Status"
-                       widget="badge"
-                       optional="show"/>
-            </xpath>
+        <!-- Add a colored finance review status badge after invoice date -->
+        <xpath expr="//list/field[@name='invoice_date']" position="after">
+            <field name="finance_review_state"
+                   string="Finance Review Status"
+                   widget="badge"
+                   optional="show"
+                   decoration-muted="finance_review_state == 'draft'"
+                   decoration-warning="finance_review_state == 'submitted'"
+                   decoration-success="finance_review_state == 'approved'"
+                   decoration-danger="finance_review_state == 'rejected'"/>
+        </xpath>
 
-        </field>
-    </record>
+    </field>
+</record>
 
 </odoo>
