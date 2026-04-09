@@ -70,6 +70,7 @@ class BudgetDepartment(models.Model):
         store=True,
         currency_field='currency_id',
     )
+
     state = fields.Selection(
         [
             ('draft', 'Draft'),
@@ -107,42 +108,31 @@ class BudgetDepartment(models.Model):
         readonly=True,
     )
 
-    @api.model
-    def create(self, vals):
-        # Auto-assign the active general budget if not provided
-        if not vals.get('general_budget_id'):
-            active_budget = self.env['budget.general'].search([
-                ('state', '=', 'active'),
-            ], order='period_start desc, id desc', limit=1)
-
-            if not active_budget:
-                raise ValidationError(
-                    'No active general budget was found. Please ask the Finance Manager to prepare the yearly budget pool.'
-                )
-
-            vals['general_budget_id'] = active_budget.id
-        else:
-            active_budget = self.env['budget.general'].browse(
-                vals['general_budget_id'])
-
-        # Auto-generate name if not provided
-        if not vals.get('name'):
-            department_name = 'Department'
-            if vals.get('department_id'):
-                department = self.env['hr.department'].browse(
-                    vals['department_id'])
-                department_name = department.name or 'Department'
-
-            budget_year = ''
-            if active_budget and active_budget.period_start:
-                budget_year = active_budget.period_start.year
-
-            vals['name'] = f'{department_name} Budget {budget_year}'
-
-        return super().create(vals)
-
     @api.depends('general_budget_id', 'department_id', 'allocated_amount', 'state')
     def _compute_budget_summary(self):
+        for record in self:
+            record._update_budget_summary_values()
+
+    @api.onchange('general_budget_id', 'department_id', 'allocated_amount')
+    def _onchange_budget_summary(self):
+        for record in self:
+            record._update_budget_summary_values()
+
+    @api.onchange('department_id')
+    def _onchange_department_id_set_active_budget(self):
+        for record in self:
+            active_budget = record.general_budget_id
+            if not active_budget:
+                active_budget = self.env['budget.general'].search([
+                    ('state', '=', 'active'),
+                ], order='period_start desc, id desc', limit=1)
+
+            if active_budget:
+                record.general_budget_id = active_budget
+
+            record._update_budget_summary_values()
+
+    def _update_budget_summary_values(self):
         for record in self:
             general_remaining = 0.0
             current_department_total = 0.0
@@ -157,12 +147,10 @@ class BudgetDepartment(models.Model):
                 approved_budgets = active_budget.department_budget_ids.filtered(
                     lambda d: d.state == 'approved' and d.id != record.id
                 )
-                total_approved = sum(
-                    approved_budgets.mapped('allocated_amount'))
+                total_approved = sum(approved_budgets.mapped('allocated_amount'))
 
                 if record.state == 'approved':
-                    general_remaining = active_budget.total_amount - \
-                        total_approved - (record.allocated_amount or 0.0)
+                    general_remaining = active_budget.total_amount - total_approved - (record.allocated_amount or 0.0)
                 else:
                     general_remaining = active_budget.total_amount - total_approved
 
@@ -170,31 +158,26 @@ class BudgetDepartment(models.Model):
                 current_department_budgets = active_budget.department_budget_ids.filtered(
                     lambda d: d.department_id == record.department_id and d.state == 'approved' and d.id != record.id
                 )
-                current_department_total = sum(
-                    current_department_budgets.mapped('allocated_amount'))
+                current_department_total = sum(current_department_budgets.mapped('allocated_amount'))
 
             record.general_budget_remaining = general_remaining
 
             if record.state == 'approved':
-                record.current_department_budget = current_department_total + \
-                    (record.allocated_amount or 0.0)
-                record.new_department_budget = current_department_total + \
-                    (record.allocated_amount or 0.0)
+                final_department_budget = current_department_total + (record.allocated_amount or 0.0)
+                record.current_department_budget = final_department_budget
+                record.new_department_budget = final_department_budget
             else:
                 record.current_department_budget = current_department_total
-                record.new_department_budget = current_department_total + \
-                    (record.allocated_amount or 0.0)
+                record.new_department_budget = current_department_total + (record.allocated_amount or 0.0)
 
     @api.depends('allocated_amount', 'reservation_ids.amount', 'reservation_ids.state')
     def _compute_budget_usage(self):
         for record in self:
             reserved = sum(
-                record.reservation_ids.filtered(
-                    lambda r: r.state == 'reserved').mapped('amount')
+                record.reservation_ids.filtered(lambda r: r.state == 'reserved').mapped('amount')
             )
             used = sum(
-                record.reservation_ids.filtered(
-                    lambda r: r.state == 'used').mapped('amount')
+                record.reservation_ids.filtered(lambda r: r.state == 'used').mapped('amount')
             )
             record.reserved_amount = reserved
             record.used_amount = used
@@ -204,8 +187,7 @@ class BudgetDepartment(models.Model):
     def _check_allocated_amount(self):
         for record in self:
             if record.allocated_amount <= 0:
-                raise ValidationError(
-                    'Department allocated amount must be greater than zero.')
+                raise ValidationError('Department allocated amount must be greater than zero.')
 
     @api.constrains('department_id', 'general_budget_id', 'state')
     def _check_unique_department_budget(self):
@@ -234,22 +216,49 @@ class BudgetDepartment(models.Model):
             other_approved_budgets = record.general_budget_id.department_budget_ids.filtered(
                 lambda d: d.id != record.id and d.state == 'approved'
             )
-            other_allocated_total = sum(
-                other_approved_budgets.mapped('allocated_amount'))
+            other_allocated_total = sum(other_approved_budgets.mapped('allocated_amount'))
             allowed_balance = record.general_budget_id.total_amount - other_allocated_total
 
-            # Submitted and approved allocations must both respect the remaining pool
             if record.state in ['submitted', 'approved'] and record.allocated_amount > allowed_balance:
                 raise ValidationError(
                     'The allocated amount exceeds the remaining general budget.'
                 )
+
+    @api.model
+    def create(self, vals):
+        if not vals.get('general_budget_id'):
+            active_budget = self.env['budget.general'].search([
+                ('state', '=', 'active'),
+            ], order='period_start desc, id desc', limit=1)
+
+            if not active_budget:
+                raise ValidationError(
+                    'No active general budget was found. Please ask the Finance Manager to prepare the yearly budget pool.'
+                )
+
+            vals['general_budget_id'] = active_budget.id
+        else:
+            active_budget = self.env['budget.general'].browse(vals['general_budget_id'])
+
+        if not vals.get('name'):
+            department_name = 'Department'
+            if vals.get('department_id'):
+                department = self.env['hr.department'].browse(vals['department_id'])
+                department_name = department.name or 'Department'
+
+            budget_year = ''
+            if active_budget and active_budget.period_start:
+                budget_year = active_budget.period_start.year
+
+            vals['name'] = f'{department_name} Budget {budget_year}'
+
+        return super().create(vals)
 
     def action_submit(self):
         for record in self:
             if record.state != 'draft':
                 continue
 
-            # If the Finance Manager created/submits it, approve directly
             if self.env.user.has_group('ncst_budget_management.group_budget_finance_manager'):
                 record.state = 'approved'
                 record.approved_by = self.env.user
@@ -259,8 +268,7 @@ class BudgetDepartment(models.Model):
 
     def action_approve(self):
         if not self.env.user.has_group('ncst_budget_management.group_budget_finance_manager'):
-            raise ValidationError(
-                'Only the Finance Manager can approve department budgets.')
+            raise ValidationError('Only the Finance Manager can approve department budgets.')
 
         for record in self:
             if record.state != 'submitted':
@@ -271,8 +279,7 @@ class BudgetDepartment(models.Model):
 
     def action_reject(self):
         if not self.env.user.has_group('ncst_budget_management.group_budget_finance_manager'):
-            raise ValidationError(
-                'Only the Finance Manager can reject department budgets.')
+            raise ValidationError('Only the Finance Manager can reject department budgets.')
 
         for record in self:
             if record.state != 'submitted':
@@ -282,20 +289,8 @@ class BudgetDepartment(models.Model):
     def action_reset_to_draft(self):
         for record in self:
             if record.state == 'approved':
-                raise ValidationError(
-                    'Approved budget allocations cannot be reset to draft.')
+                raise ValidationError('Approved budget allocations cannot be reset to draft.')
 
             record.state = 'draft'
             record.approved_by = False
             record.approval_date = False
-
-    @api.onchange('department_id')
-    def _onchange_department_id_set_active_budget(self):
-        for record in self:
-            if not record.general_budget_id:
-                active_budget = self.env['budget.general'].search([
-                    ('state', '=', 'active'),
-                ], order='period_start desc, id desc', limit=1)
-
-                if active_budget:
-                    record.general_budget_id = active_budget
