@@ -7,12 +7,12 @@
         <field name="model">budget.department</field>
         <field name="arch" type="xml">
             <list>
-                <field name="department_id"/>
-                <field name="allocated_amount" string="Budget to Assign"/>
-                <field name="general_budget_remaining" string="General Remaining"/>
-                <field name="current_department_budget" string="Current Dept Budget"/>
-                <field name="new_department_budget" string="After Assignment"/>
-                <field name="state"/>
+                <field name="department_id" string="Department"/>
+                <field name="allocated_amount" string="Assign Amount"/>
+                <field name="general_budget_remaining" string="Pool Remaining"/>
+                <field name="current_department_budget" string="Current Budget"/>
+                <field name="new_department_budget" string="After Assign"/>
+                <field name="state" widget="badge"/>
             </list>
         </field>
     </record>
