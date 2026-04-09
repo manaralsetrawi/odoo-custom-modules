@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 from odoo.exceptions import UserError
+from lxml import etree
 
 
 class PurchaseRequest(models.Model):
@@ -193,6 +194,12 @@ class PurchaseRequest(models.Model):
         store=True,
     )
 
+
+    is_current_user_can_create_pr = fields.Boolean(
+        string='Can Current User Create Purchase Request',
+        compute='_compute_user_access_flags',
+    )
+
     @api.model
     def _default_requester(self):
         employee = self.env['hr.employee'].search(
@@ -208,37 +215,76 @@ class PurchaseRequest(models.Model):
     
     @api.model
     def create(self, vals):
+        user_group_ids = self.env.user.groups_id.ids
+
+        if 79 not in user_group_ids and 61 not in user_group_ids:
+            raise UserError("Only users in the Teacher or Administrator groups can create a Purchase Request.")
+
         if vals.get('name', 'New') == 'New':
             vals['name'] = self.env['ir.sequence'].next_by_code('purchase.request') or 'New'
+
         return super().create(vals)
 
     @api.model
     def _default_requester_category(self):
-        if 79 in self.env.user.groups_id.ids:
+        user_group_ids = self.env.user.groups_id.ids
+
+        if 79 in user_group_ids:
             return 'teacher'
-        return 'admin'
+        elif 61 in user_group_ids:
+            return 'admin'
+        return False
 
 
     @api.onchange('requester_id')
     def _onchange_requester(self):
         if self.requester_id and self.requester_id.user_id:
-            if 79 in self.requester_id.user_id.groups_id.ids:
+            requester_group_ids = self.requester_id.user_id.groups_id.ids
+
+            if 79 in requester_group_ids:
                 self.requester_category = 'teacher'
-            else:
+            elif 61 in requester_group_ids:
                 self.requester_category = 'admin'
+            else:
+                self.requester_category = False
+
+
+    @api.model
+    def get_view(self, view_id=None, view_type='form', **options):
+        res = super().get_view(view_id=view_id, view_type=view_type, **options)
+
+        user_group_ids = self.env.user.groups_id.ids
+        can_create = 79 in user_group_ids or 61 in user_group_ids
+
+        if view_type in ['list', 'form']:
+            arch = etree.fromstring(res['arch'])
+            arch.set('create', 'true' if can_create else 'false')
+            res['arch'] = etree.tostring(arch, encoding='unicode')
+
+        return res
+
 
     @api.depends(
-        'state',
-        'requester_id',
-        'requester_id.user_id',
-        'department_id',
-        'department_id.manager_id',
-        'department_id.manager_id.user_id',
-        'requester_category',
+    'state',
+    'requester_id',
+    'requester_id.user_id',
+    'department_id',
+    'department_id.manager_id',
+    'department_id.manager_id.user_id',
+    'requester_category',
     )
     def _compute_allowed_user_ids(self):
         coordinator_users = self.env['res.users'].search([('groups_id', 'in', [81])])
         principal_users = self.env['res.users'].search([('groups_id', 'in', [96])])
+        finance_users = self.env['res.users'].search([('employee_ids.department_id', '=', 2)])
+        procurement_users = self.env['res.users'].search([('employee_ids.department_id', '=', 5)])
+
+
+        procurement_officer_users = self.env['res.users'].search([('groups_id', 'in', [90])])
+        director_finance_users = self.env['res.users'].search([('groups_id', 'in', [91])])
+        deputy_ceo_users = self.env['res.users'].search([('groups_id', 'in', [92])])
+        ceo_users = self.env['res.users'].search([('groups_id', 'in', [93])])
+
 
         for rec in self:
             users = self.env['res.users']
@@ -261,14 +307,19 @@ class PurchaseRequest(models.Model):
                 users |= coordinator_users
                 users |= principal_users
 
-            # optional: finance can see requests once they reach budget stage or later
-            if rec.state in ('waiting_budget', 'approved'):
-                finance_users = self.env['res.users'].search([
-                    ('employee_ids.department_id', '=', 2)
-                ])
+            # finance can see requests at budget stage and after approval
+            if rec.state in ('waiting_budget', 'approved','rejected'):
                 users |= finance_users
 
+            # procurement can see approved requests
+            if rec.state == 'approved':
+                users |= procurement_officer_users
+                users |= director_finance_users
+                users |= deputy_ceo_users
+                users |= ceo_users
+
             rec.allowed_user_ids = [(6, 0, users.ids)]
+
 
     def _compute_user_access_flags(self):
         current_user = self.env.user
@@ -300,6 +351,8 @@ class PurchaseRequest(models.Model):
                 or (rec.state == 'waiting_director' and rec.is_current_user_department_manager)
                 or (rec.state == 'waiting_budget' and rec.is_current_user_finance)
             )
+
+            rec.is_current_user_can_create_pr = 79 in current_user.groups_id.ids or 61 in current_user.groups_id.ids
 
     def action_submit(self):
         for rec in self:
@@ -365,30 +418,34 @@ class PurchaseRequest(models.Model):
 
 
     def action_verify_budget(self):
+        self.ensure_one()
+
         current_employee = self.env['hr.employee'].search(
             [('user_id', '=', self.env.user.id)],
             limit=1
         )
 
-        for rec in self:
-            if rec.state != 'waiting_budget':
-                continue
+        if self.state != 'waiting_budget':
+            raise UserError("This purchase request is not waiting for budget verification.")
 
-            if not current_employee or not current_employee.department_id:
-                raise UserError("The current user is not linked to an employee with a department.")
+        if not current_employee or not current_employee.department_id:
+            raise UserError("The current user is not linked to an employee with a department.")
 
-            if current_employee.department_id.id != 2:
-                raise UserError("Only employees in the Finance & Accounting department can verify budget.")
+        if current_employee.department_id.id != 2:
+            raise UserError("Only employees in the Finance & Accounting department can verify budget.")
 
-            if rec.budget_available_amount < rec.amount_total:
-                raise UserError("Budget is insufficient for this purchase request.")
-
-            rec.budget_verified = True
-            rec.budget_verified_by = self.env.user
-            rec.budget_verified_date = fields.Datetime.now()
-            rec.state = 'approved'
-            rec.message_post(body="Budget verified by Finance. Purchase Request approved.")
-
+        return {
+            'name': 'Verify Budget',
+            'type': 'ir.actions.act_window',
+            'res_model': 'purchase.request.budget.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_purchase_request_id': self.id,
+                'default_available_budget': self.budget_available_amount,
+                'default_budget_note': self.budget_note,
+            },
+        }
 
 
     def action_reject(self):
@@ -418,6 +475,9 @@ class PurchaseRequest(models.Model):
             if 'requester_id' in vals:
                 raise UserError("Requester cannot be changed. It is automatically assigned to the logged-in user.")
 
+            if 'requester_category' in vals:
+                raise UserError("Requester Category cannot be changed manually. It is assigned automatically.")
+
             protected_fields = {
                 'requester_category',
                 'required_date',
@@ -431,3 +491,25 @@ class PurchaseRequest(models.Model):
                 )
 
         return super().write(vals)
+    
+
+    def unlink(self):
+        user_group_ids = self.env.user.groups_id.ids
+
+        for rec in self:
+            if 79 not in user_group_ids and 61 not in user_group_ids:
+                raise UserError("Only users in the Teacher or Administrator groups can delete purchase requests.")
+
+            if rec.state != 'draft':
+                raise UserError("Only draft purchase requests can be deleted.")
+
+        return super().unlink()
+
+
+    @api.model
+    def check_access_rights(self, operation, raise_exception=True):
+        if operation == 'create':
+            user_group_ids = self.env.user.groups_id.ids
+            if 79 in user_group_ids or 61 in user_group_ids:
+                return True
+        return super().check_access_rights(operation, raise_exception=raise_exception)
