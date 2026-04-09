@@ -45,3 +45,21 @@ class ResUsers(models.Model):
                     raise ValidationError(
                         f"A user with the name '{record.name}' already exists."
                     )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            # Auto-generate email/login on create too
+            if vals.get("name"):
+                generated_email = self._generate_email_from_name(vals["name"])
+                if generated_email:
+                    if not vals.get("login"):
+                        vals["login"] = generated_email
+                    if not vals.get("email"):
+                        vals["email"] = generated_email
+
+            # Auto-set default password if none was provided
+            if not vals.get("password"):
+                vals["password"] = "NCST@1234"
+
+        return super().create(vals_list)
