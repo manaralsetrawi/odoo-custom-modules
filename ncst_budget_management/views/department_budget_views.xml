@@ -9,10 +9,13 @@
             <list>
                 <field name="department_id" string="Department"/>
                 <field name="allocated_amount" string="Assign Amount"/>
-                <field name="general_budget_remaining" string="Pool Remaining"/>
                 <field name="current_department_budget" string="Current Budget"/>
-                <field name="new_department_budget" string="After Assign"/>
-                <field name="state" widget="badge"/>
+                <field name="state"
+                       widget="badge"
+                       decoration-muted="state == 'draft'"
+                       decoration-warning="state == 'submitted'"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'rejected'"/>
             </list>
         </field>
     </record>
@@ -40,7 +43,7 @@
                     <button name="action_reject"
                             string="Reject"
                             type="object"
-                            class="btn-secondary"
+                            class="btn-danger"
                             invisible="state != 'submitted'"
                             groups="ncst_budget_management.group_budget_finance_manager"/>
 
@@ -59,9 +62,9 @@
                             <field name="allocated_amount" string="Budget to Assign" readonly="state in ['submitted', 'approved', 'rejected']"/>
                         </group>
                         <group>
-                            <field name="general_budget_remaining" readonly="1"/>
-                            <field name="current_department_budget" readonly="1"/>
-                            <field name="new_department_budget" readonly="1"/>
+                            <field name="general_budget_remaining" string="General Budget Remaining" readonly="1"/>
+                            <field name="current_department_budget" string="Current Department Budget" readonly="1"/>
+                            <field name="new_department_budget" string="Department Budget After Assignment" readonly="1"/>
                         </group>
                     </group>
 
@@ -93,7 +96,7 @@
                 Create your first department budget allocation
             </p>
             <p>
-                Select a department, enter the budget amount to assign, and review the current and updated budget values before submission or approval.
+                Select a department, enter the budget amount to assign, and review the current budget values before submission or approval.
             </p>
         </field>
     </record>
