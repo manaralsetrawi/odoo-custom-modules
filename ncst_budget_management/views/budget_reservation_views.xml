@@ -9,11 +9,9 @@
             <list>
                 <field name="name"/>
                 <field name="date"/>
-                <field name="general_budget_id"/>
                 <field name="department_id"/>
-                <field name="department_budget_id"/>
-                <field name="request_ref"/>
                 <field name="amount"/>
+                <field name="request_ref"/>
                 <field name="state"/>
             </list>
         </field>
@@ -76,6 +74,15 @@
         <field name="name">Budget Reservations</field>
         <field name="res_model">budget.reservation</field>
         <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first budget reservation
+            </p>
+            <p>
+                Budget reservations temporarily reserve an amount from a department budget
+                before it is finally used or released.
+            </p>
+        </field>
     </record>
 
 </odoo>

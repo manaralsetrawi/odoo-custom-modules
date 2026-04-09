@@ -8,12 +8,12 @@
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
-                <field name="general_budget_id"/>
                 <field name="department_id"/>
-                <field name="allocated_amount"/>
-                <field name="reserved_amount"/>
-                <field name="used_amount"/>
-                <field name="remaining_balance"/>
+                <field name="general_budget_id"/>
+                <field name="allocated_amount" string="Allocated"/>
+                <field name="reserved_amount" string="Reserved"/>
+                <field name="used_amount" string="Used"/>
+                <field name="remaining_balance" string="Remaining"/>
                 <field name="state"/>
             </list>
         </field>
@@ -83,6 +83,15 @@
         <field name="name">Department Budgets</field>
         <field name="res_model">budget.department</field>
         <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first department budget
+            </p>
+            <p>
+                Department budgets are allocations taken from the general budget and assigned
+                to individual departments for controlled spending and reservation tracking.
+            </p>
+        </field>
     </record>
 
 </odoo>
