@@ -8,44 +8,47 @@
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
 
-            <!-- Add workflow buttons in the header -->
+            <!-- Add workflow buttons in the header for CUSTOMER INVOICES only -->
             <xpath expr="//header" position="inside">
 
                 <button name="action_submit_finance_review"
                         type="object"
                         string="Submit"
                         class="btn-primary"
-                        invisible="move_type not in ('out_invoice', 'in_invoice') or state != 'draft' or finance_review_state != 'draft'"/>
+                        invisible="move_type != 'out_invoice' or state != 'draft' or finance_review_state != 'draft'"/>
 
                 <button name="action_approve_finance_review"
                         type="object"
                         string="Approve"
                         class="btn-success"
-                        invisible="move_type not in ('out_invoice', 'in_invoice') or state != 'draft' or finance_review_state != 'submitted'"/>
+                        invisible="move_type != 'out_invoice' or state != 'draft' or finance_review_state != 'submitted'"/>
 
                 <button name="action_reject_finance_review"
                         type="object"
                         string="Reject"
                         class="btn-secondary"
-                        invisible="move_type not in ('out_invoice', 'in_invoice') or state != 'draft' or finance_review_state != 'submitted'"/>
+                        invisible="move_type != 'out_invoice' or state != 'draft' or finance_review_state != 'submitted'"/>
 
                 <button name="action_reset_finance_review_to_draft"
                         type="object"
                         string="Return to Draft"
                         class="btn-secondary"
-                        invisible="move_type not in ('out_invoice', 'in_invoice') or state != 'draft' or finance_review_state == 'draft'"/>
+                        invisible="move_type != 'out_invoice' or state != 'draft' or finance_review_state == 'draft'"/>
 
             </xpath>
 
-            <!-- Show the workflow fields near invoice date -->
+            <!-- Show workflow fields only on customer invoices -->
             <xpath expr="//field[@name='invoice_date']" position="after">
-                <field name="finance_review_state" readonly="1"/>
+                <field name="finance_review_state"
+                       readonly="1"
+                       invisible="move_type != 'out_invoice'"/>
+
                 <field name="finance_reject_reason"
                        placeholder="Optional rejection reason..."
-                       invisible="finance_review_state != 'rejected'"/>
+                       invisible="move_type != 'out_invoice' or finance_review_state != 'rejected'"/>
             </xpath>
 
         </field>
     </record>
 
-</odoo> 
+</odoo>
