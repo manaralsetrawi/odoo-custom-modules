@@ -59,17 +59,33 @@ class AccountMove(models.Model):
     )
 
     # -------------------------------------------------------------------------
-    # Helper
+    # Helper methods
     # -------------------------------------------------------------------------
 
     def _is_review_target_document(self):
         """
         Apply this workflow only to customer invoices.
-        Vendor bills are excluded to avoid conflict with the
-        existing vendor bill verification workflow.
+        Vendor bills are excluded to avoid conflict with existing logic.
         """
         self.ensure_one()
         return self.move_type == 'out_invoice'
+
+    def _check_finance_invoice_user_group(self):
+        """Allow only invoice user / reviewer groups to submit invoices."""
+        if not (
+            self.env.user.has_group('finance_review_workflow.group_finance_invoice_user') or
+            self.env.user.has_group('finance_review_workflow.group_finance_invoice_reviewer')
+        ):
+            raise ValidationError(
+                _("You do not have permission to submit invoices for finance review.")
+            )
+
+    def _check_finance_invoice_reviewer_group(self):
+        """Allow only reviewer group to approve, reject, or reset review."""
+        if not self.env.user.has_group('finance_review_workflow.group_finance_invoice_reviewer'):
+            raise ValidationError(
+                _("Only the Finance Invoice Reviewer can perform this action.")
+            )
 
     # -------------------------------------------------------------------------
     # Review actions
@@ -77,6 +93,8 @@ class AccountMove(models.Model):
 
     def action_submit_finance_review(self):
         """Submit draft customer invoice for finance review."""
+        self._check_finance_invoice_user_group()
+
         for move in self:
             if not move._is_review_target_document():
                 continue
@@ -95,12 +113,14 @@ class AccountMove(models.Model):
                 'finance_review_state': 'submitted',
                 'finance_submitted_by': self.env.user.id,
                 'finance_submitted_on': fields.Datetime.now(),
-                # Clear old reason when invoice is re-submitted
+                # Clear old rejection reason when resubmitting
                 'finance_reject_reason': False,
             })
 
     def action_approve_finance_review(self):
         """Approve a submitted customer invoice."""
+        self._check_finance_invoice_reviewer_group()
+
         for move in self:
             if not move._is_review_target_document():
                 continue
@@ -123,6 +143,8 @@ class AccountMove(models.Model):
 
     def action_reject_finance_review(self):
         """Reject a submitted customer invoice."""
+        self._check_finance_invoice_reviewer_group()
+
         for move in self:
             if not move._is_review_target_document():
                 continue
@@ -144,7 +166,9 @@ class AccountMove(models.Model):
             })
 
     def action_reset_finance_review_to_draft(self):
-        """Return finance review status to Draft."""
+        """Return finance review status back to Draft."""
+        self._check_finance_invoice_reviewer_group()
+
         for move in self:
             if not move._is_review_target_document():
                 continue
@@ -165,7 +189,7 @@ class AccountMove(models.Model):
     def action_post(self):
         """
         Prevent posting customer invoices unless they are approved.
-        Other accounting entries and vendor bills are not affected.
+        Vendor bills and other move types are ignored.
         """
         for move in self:
             if move._is_review_target_document() and move.finance_review_state != 'approved':
