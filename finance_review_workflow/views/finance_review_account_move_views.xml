@@ -8,31 +8,30 @@
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
 
-            <!-- Add review action buttons in the header -->
+            <!-- Review action buttons in header -->
             <xpath expr="//header" position="inside">
 
-                <!-- Submit button: shown only for draft customer invoices in draft review state -->
+                <!-- Show only for draft customer invoices -->
                 <button name="action_submit_finance_review"
                         type="object"
                         string="Submit for Review"
                         class="btn-primary"
                         invisible="move_type != 'out_invoice' or state != 'draft' or finance_review_state != 'draft'"/>
 
-                <!-- Approve button: shown only after submission -->
+                <!-- Show after invoice is submitted for review -->
                 <button name="action_approve_finance_review"
                         type="object"
                         string="Approve"
                         class="btn-success"
                         invisible="move_type != 'out_invoice' or state != 'draft' or finance_review_state != 'submitted'"/>
 
-                <!-- Reject button: shown only after submission -->
                 <button name="action_reject_finance_review"
                         type="object"
                         string="Reject"
                         class="btn-secondary"
                         invisible="move_type != 'out_invoice' or state != 'draft' or finance_review_state != 'submitted'"/>
 
-                <!-- Return to Draft: shown for submitted / rejected / approved while invoice is still draft -->
+                <!-- Allow returning review back to draft while invoice is still draft -->
                 <button name="action_reset_finance_review_to_draft"
                         type="object"
                         string="Return to Draft"
@@ -41,7 +40,7 @@
 
             </xpath>
 
-            <!-- Show review status right after invoice date -->
+            <!-- Show workflow status clearly near invoice date -->
             <xpath expr="//field[@name='invoice_date']" position="after">
                 <field name="finance_review_state"
                        widget="statusbar"
@@ -50,26 +49,39 @@
                        invisible="move_type != 'out_invoice'"/>
             </xpath>
 
-            <!-- Add a dedicated Finance Review section in Other Info -->
-            <xpath expr="//page[@name='other_info']//group" position="after">
-                <group string="Finance Review" invisible="move_type != 'out_invoice'">
+            <!-- Add separate Finance Review tab next to Other Info -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Finance Review" invisible="move_type != 'out_invoice'">
 
                     <group>
-                        <field name="finance_submitted_by" readonly="1"/>
-                        <field name="finance_submitted_on" readonly="1"/>
-                        <field name="finance_approved_by" readonly="1"/>
-                        <field name="finance_approved_on" readonly="1"/>
+                        <group string="Review Status">
+                            <field name="finance_review_state" readonly="1"/>
+                            <field name="finance_reject_reason"
+                                   placeholder="Enter the reason if the invoice is rejected..."
+                                   invisible="finance_review_state != 'rejected'"/>
+                        </group>
                     </group>
 
                     <group>
-                        <field name="finance_rejected_by" readonly="1"/>
-                        <field name="finance_rejected_on" readonly="1"/>
-                        <field name="finance_reject_reason"
-                               placeholder="Enter the reason if the invoice is rejected..."
-                               invisible="finance_review_state != 'rejected'"/>
+                        <group string="Submission Details">
+                            <field name="finance_submitted_by" readonly="1"/>
+                            <field name="finance_submitted_on" readonly="1"/>
+                        </group>
+
+                        <group string="Approval Details">
+                            <field name="finance_approved_by" readonly="1"/>
+                            <field name="finance_approved_on" readonly="1"/>
+                        </group>
                     </group>
 
-                </group>
+                    <group>
+                        <group string="Rejection Details">
+                            <field name="finance_rejected_by" readonly="1"/>
+                            <field name="finance_rejected_on" readonly="1"/>
+                        </group>
+                    </group>
+
+                </page>
             </xpath>
 
         </field>
