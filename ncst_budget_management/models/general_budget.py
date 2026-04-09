@@ -1,3 +1,5 @@
+from datetime import date
+
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
@@ -7,17 +9,32 @@ class BudgetGeneral(models.Model):
     _description = 'General Budget'
     _order = 'period_start desc, id desc'
 
+    def _default_period_start(self):
+        today = fields.Date.today()
+        return date(today.year, 1, 1)
+
+    def _default_period_end(self):
+        today = fields.Date.today()
+        return date(today.year, 12, 31)
+
+    def _default_budget_name(self):
+        today = fields.Date.today()
+        return f'Budget Pool {today.year}'
+
     name = fields.Char(
         string='Budget Name',
         required=True,
+        default=lambda self: self._default_budget_name(),
     )
     period_start = fields.Date(
         string='Period Start',
         required=True,
+        default=lambda self: self._default_period_start(),
     )
     period_end = fields.Date(
         string='Period End',
         required=True,
+        default=lambda self: self._default_period_end(),
     )
     currency_id = fields.Many2one(
         'res.currency',
@@ -28,7 +45,7 @@ class BudgetGeneral(models.Model):
     total_amount = fields.Monetary(
         string='Total General Budget',
         required=True,
-        default=50000.0,
+        default=1.0,
         currency_field='currency_id',
     )
     allocated_amount = fields.Monetary(
@@ -83,7 +100,8 @@ class BudgetGeneral(models.Model):
     @api.depends('total_amount', 'department_budget_ids.allocated_amount', 'department_budget_ids.state')
     def _compute_budget_amounts(self):
         for record in self:
-            approved_budgets = record.department_budget_ids.filtered(lambda d: d.state == 'approved')
+            approved_budgets = record.department_budget_ids.filtered(
+                lambda d: d.state == 'approved')
             allocated = sum(approved_budgets.mapped('allocated_amount'))
             record.allocated_amount = allocated
             record.remaining_amount = record.total_amount - allocated
@@ -92,13 +110,15 @@ class BudgetGeneral(models.Model):
     def _check_period_dates(self):
         for record in self:
             if record.period_end < record.period_start:
-                raise ValidationError('Period end date cannot be earlier than period start date.')
+                raise ValidationError(
+                    'Period end date cannot be earlier than period start date.')
 
     @api.constrains('total_amount')
     def _check_total_amount(self):
         for record in self:
             if record.total_amount <= 0:
-                raise ValidationError('The general budget amount must be greater than zero.')
+                raise ValidationError(
+                    'The general budget amount must be greater than zero.')
 
     @api.constrains('period_start', 'period_end', 'company_id')
     def _check_period_overlap(self):
@@ -144,19 +164,41 @@ class BudgetGeneral(models.Model):
     @api.model
     def create(self, vals):
         if not vals.get('period_start'):
-            raise ValidationError('Period Start is required to create the yearly budget pool.')
+            vals['period_start'] = self._default_period_start()
 
         period_start = fields.Date.to_date(vals['period_start'])
         year = period_start.year
 
-        vals['name'] = f'Budget Pool {year}'
-        vals['period_start'] = fields.Date.to_date(f'{year}-01-01')
-        vals['period_end'] = fields.Date.to_date(f'{year}-12-31')
+        vals['name'] = vals.get('name') or f'Budget Pool {year}'
+        vals['period_start'] = date(year, 1, 1)
+        vals['period_end'] = date(year, 12, 31)
 
         if not vals.get('total_amount'):
             vals['total_amount'] = 50000.0
 
         return super().create(vals)
+
+    @api.model
+    def _auto_create_yearly_budget(self):
+        today = fields.Date.today()
+        year = today.year
+        start_date = date(year, 1, 1)
+        end_date = date(year, 12, 31)
+
+        existing_budget = self.search([
+            ('period_start', '=', start_date),
+            ('period_end', '=', end_date),
+            ('company_id', '=', self.env.company.id),
+        ], limit=1)
+
+        if not existing_budget:
+            self.create({
+                'period_start': start_date,
+                'company_id': self.env.company.id,
+                'currency_id': self.env.company.currency_id.id,
+                'total_amount': 50000.0,
+                'state': 'active',
+            })
 
     def action_activate(self):
         for record in self:

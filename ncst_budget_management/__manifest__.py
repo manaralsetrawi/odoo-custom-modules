@@ -23,6 +23,7 @@ Custom module for:
     ],
     'data': [
         'data/budget_sequence.xml',
+        'data/budget_cron.xml',
         'security/budget_security.xml',
         'security/ir.model.access.csv',
         'views/general_budget_views.xml',
