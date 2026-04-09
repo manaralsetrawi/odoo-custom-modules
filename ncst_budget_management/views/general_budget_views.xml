@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view -->
-    <record id="view_budget_general_tree" model="ir.ui.view">
-        <field name="name">budget.general.tree</field>
+    <!-- List view -->
+    <record id="view_budget_general_list" model="ir.ui.view">
+        <field name="name">budget.general.list</field>
         <field name="model">budget.general</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="period_start"/>
                 <field name="period_end"/>
@@ -14,7 +14,7 @@
                 <field name="allocated_amount"/>
                 <field name="remaining_amount"/>
                 <field name="state"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -62,7 +62,7 @@
                     <notebook>
                         <page string="Department Budgets">
                             <field name="department_budget_ids" readonly="1">
-                                <tree>
+                                <list>
                                     <field name="name"/>
                                     <field name="department_id"/>
                                     <field name="allocated_amount"/>
@@ -70,7 +70,7 @@
                                     <field name="used_amount"/>
                                     <field name="remaining_balance"/>
                                     <field name="state"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
@@ -83,7 +83,7 @@
     <record id="action_budget_general" model="ir.actions.act_window">
         <field name="name">General Budgets</field>
         <field name="res_model">budget.general</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
 </odoo>
