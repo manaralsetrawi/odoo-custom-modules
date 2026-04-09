@@ -53,8 +53,9 @@ class BudgetDepartment(models.Model):
     state = fields.Selection(
         [
             ('draft', 'Draft'),
-            ('active', 'Active'),
-            ('closed', 'Closed'),
+            ('submitted', 'Submitted'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
         ],
         string='Status',
         default='draft',
@@ -69,6 +70,21 @@ class BudgetDepartment(models.Model):
         related='general_budget_id.company_id',
         string='Company',
         store=True,
+    )
+    requested_by = fields.Many2one(
+        'res.users',
+        string='Requested By',
+        default=lambda self: self.env.user,
+        readonly=True,
+    )
+    approved_by = fields.Many2one(
+        'res.users',
+        string='Approved By',
+        readonly=True,
+    )
+    approval_date = fields.Datetime(
+        string='Approval Date',
+        readonly=True,
     )
 
     @api.depends('allocated_amount', 'reservation_ids.amount', 'reservation_ids.state')
@@ -97,6 +113,7 @@ class BudgetDepartment(models.Model):
                 ('id', '!=', record.id),
                 ('general_budget_id', '=', record.general_budget_id.id),
                 ('department_id', '=', record.department_id.id),
+                ('state', '!=', 'rejected'),
             ], limit=1)
 
             if existing_budget:
@@ -104,37 +121,62 @@ class BudgetDepartment(models.Model):
                     'This department already has a budget under the selected general budget.'
                 )
 
-    @api.constrains('allocated_amount', 'general_budget_id')
+    @api.constrains('allocated_amount', 'general_budget_id', 'state')
     def _check_general_budget_limit(self):
         for record in self:
             if not record.general_budget_id:
                 continue
 
-            other_department_budgets = record.general_budget_id.department_budget_ids.filtered(
-                lambda d: d.id != record.id
+            # Only approved budgets should consume the general budget pool
+            other_approved_budgets = record.general_budget_id.department_budget_ids.filtered(
+                lambda d: d.id != record.id and d.state == 'approved'
             )
-            other_allocated_total = sum(other_department_budgets.mapped('allocated_amount'))
+            other_allocated_total = sum(other_approved_budgets.mapped('allocated_amount'))
             allowed_balance = record.general_budget_id.total_amount - other_allocated_total
 
-            if record.allocated_amount > allowed_balance:
+            if record.state == 'approved' and record.allocated_amount > allowed_balance:
                 raise ValidationError(
                     'The allocated amount exceeds the remaining general budget.'
                 )
 
-    def action_activate(self):
+    def action_submit(self):
         for record in self:
             if record.state != 'draft':
                 continue
-            record.state = 'active'
 
-    def action_close(self):
+            # If the Finance Manager created/submits it, approve directly
+            if self.env.user.has_group('ncst_budget_management.group_budget_finance_manager'):
+                record.state = 'approved'
+                record.approved_by = self.env.user
+                record.approval_date = fields.Datetime.now()
+            else:
+                record.state = 'submitted'
+
+
+    def action_approve(self):
+        if not self.env.user.has_group('ncst_budget_management.group_budget_finance_manager'):
+            raise ValidationError('Only the Finance Manager can approve department budgets.')
+
         for record in self:
-            if record.state != 'active':
+            if record.state != 'submitted':
                 continue
-            record.state = 'closed'
+            record.state = 'approved'
+            record.approved_by = self.env.user
+            record.approval_date = fields.Datetime.now()
+
+
+    def action_reject(self):
+        if not self.env.user.has_group('ncst_budget_management.group_budget_finance_manager'):
+            raise ValidationError('Only the Finance Manager can reject department budgets.')
+
+        for record in self:
+            if record.state != 'submitted':
+                continue
+            record.state = 'rejected'
+
 
     def action_reset_to_draft(self):
         for record in self:
-            if record.state == 'closed':
-                continue
             record.state = 'draft'
+            record.approved_by = False
+            record.approval_date = False

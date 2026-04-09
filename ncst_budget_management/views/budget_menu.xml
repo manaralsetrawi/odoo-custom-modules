@@ -6,17 +6,7 @@
         id="menu_budget_management_root"
         name="Budget Management"
         sequence="10"
-        groups="ncst_budget_management.group_budget_finance_manager"
-    />
-
-    <!-- General Budgets menu -->
-    <menuitem
-        id="menu_budget_general"
-        name="General Budgets"
-        parent="menu_budget_management_root"
-        action="action_budget_general"
-        sequence="1"
-        groups="ncst_budget_management.group_budget_finance_manager"
+        groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
     />
 
     <!-- Department Budgets menu -->
@@ -25,8 +15,8 @@
         name="Department Budgets"
         parent="menu_budget_management_root"
         action="action_budget_department"
-        sequence="2"
-        groups="ncst_budget_management.group_budget_finance_manager"
+        sequence="1"
+        groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
     />
 
     <!-- Budget Reservations menu -->
@@ -35,8 +25,8 @@
         name="Reservations"
         parent="menu_budget_management_root"
         action="action_budget_reservation"
-        sequence="3"
-        groups="ncst_budget_management.group_budget_finance_manager"
+        sequence="2"
+        groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
     />
 
 </odoo>
