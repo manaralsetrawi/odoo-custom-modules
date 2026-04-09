@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Tree view -->
+    <record id="view_budget_general_tree" model="ir.ui.view">
+        <field name="name">budget.general.tree</field>
+        <field name="model">budget.general</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="total_amount"/>
+                <field name="allocated_amount"/>
+                <field name="remaining_amount"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_budget_general_form" model="ir.ui.view">
+        <field name="name">budget.general.form</field>
+        <field name="model">budget.general</field>
+        <field name="arch" type="xml">
+            <form string="General Budget">
+                <header>
+                    <button name="action_activate"
+                            string="Activate"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_close"
+                            string="Close"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state != 'active'"/>
+                    <button name="action_reset_to_draft"
+                            string="Reset to Draft"
+                            type="object"
+                            invisible="state == 'closed' or state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,closed"/>
+                </header>
+
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                            <field name="company_id" readonly="1"/>
+                            <field name="currency_id"/>
+                        </group>
+                        <group>
+                            <field name="total_amount"/>
+                            <field name="allocated_amount" readonly="1"/>
+                            <field name="remaining_amount" readonly="1"/>
+                            <field name="created_by" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Department Budgets">
+                            <field name="department_budget_ids" readonly="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="department_id"/>
+                                    <field name="allocated_amount"/>
+                                    <field name="reserved_amount"/>
+                                    <field name="used_amount"/>
+                                    <field name="remaining_balance"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_budget_general" model="ir.actions.act_window">
+        <field name="name">General Budgets</field>
+        <field name="res_model">budget.general</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

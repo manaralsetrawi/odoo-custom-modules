@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Finance Manager group for budget management -->
+    <record id="group_budget_finance_manager" model="res.groups">
+        <field name="name">Budget Finance Manager</field>
+        <field name="category_id" ref="base.module_category_accounting_accounting"/>
+    </record>
+
+</odoo>
