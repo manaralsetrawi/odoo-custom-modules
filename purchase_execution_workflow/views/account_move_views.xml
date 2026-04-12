@@ -22,6 +22,13 @@
                     <group>
                         <field name="is_vendor_bill" readonly="1"/>
                     </group>
+                    <group>
+                        <field name="allow_advance_payment_exception"/>
+                    </group>
+                <!-- improvement fields for advance payment exception handling -->
+                    <field name="advance_payment_reason"
+                        placeholder="Enter the reason for allowing invoice verification before full receipt..."
+                        invisible="not allow_advance_payment_exception"/>
                     <field name="invoice_rejection_reason"
                            placeholder="Enter the reason if this vendor bill is rejected..."/>
                 </group>
