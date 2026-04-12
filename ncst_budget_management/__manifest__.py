@@ -29,6 +29,7 @@ Custom module for:
         'views/general_budget_views.xml',
         'views/department_budget_views.xml',
         'views/budget_reservation_views.xml',
+        'views/hr_department_budget_views.xml',
         'views/budget_menu.xml',
     ],
     'installable': True,
