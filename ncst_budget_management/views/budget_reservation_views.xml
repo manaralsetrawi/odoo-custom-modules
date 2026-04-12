@@ -153,9 +153,9 @@
                     <group string="Reservation Information">
                         <group>
                             <field name="name" readonly="1"/>
-                            <field name="date" readonly="state in ['submitted', 'reserved', 'used', 'cancelled']"/>
-                            <field name="department_budget_id" readonly="state in ['submitted', 'reserved', 'used', 'cancelled']"/>
-                            <field name="department_id" readonly="1"/>
+                            <field name="date" readonly="1"/>
+                            <field name="department_id" readonly="state in ['submitted', 'reserved', 'used', 'cancelled']"/>
+                            <field name="department_budget_id" readonly="1"/>
                         </group>
 
                         <group>

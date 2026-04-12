@@ -22,26 +22,23 @@ class BudgetReservation(models.Model):
     general_budget_id = fields.Many2one(
         'budget.general',
         string='General Budget',
-        required=True,
-        ondelete='cascade',
-    )
-    department_budget_id = fields.Many2one(
-        'budget.department',
-        string='Department Budget',
-        required=True,
+        readonly=True,
         ondelete='cascade',
     )
     department_id = fields.Many2one(
         'hr.department',
         string='Department',
-        related='department_budget_id.department_id',
-        store=True,
+        required=True,
+    )
+    department_budget_id = fields.Many2one(
+        'budget.department',
+        string='Department Budget',
         readonly=True,
+        ondelete='cascade',
     )
     currency_id = fields.Many2one(
-        related='department_budget_id.currency_id',
+        'res.currency',
         string='Currency',
-        store=True,
         readonly=True,
     )
     amount = fields.Monetary(
@@ -69,7 +66,6 @@ class BudgetReservation(models.Model):
         required=True,
     )
 
-    # logs
     created_by = fields.Many2one(
         'res.users',
         string='Created By',
@@ -122,23 +118,42 @@ class BudgetReservation(models.Model):
         readonly=True,
     )
 
+    @api.onchange('department_id')
+    def _onchange_department_id(self):
+        for record in self:
+            record.department_budget_id = False
+            record.general_budget_id = False
+            record.currency_id = False
+
+            if not record.department_id:
+                return
+
+            department_budget = self.env['budget.department'].search([
+                ('department_id', '=', record.department_id.id),
+                ('state', '=', 'approved'),
+            ], order='id desc', limit=1)
+
+            if department_budget:
+                record.department_budget_id = department_budget.id
+                record.general_budget_id = department_budget.general_budget_id.id if department_budget.general_budget_id else False
+                record.currency_id = department_budget.currency_id.id if department_budget.currency_id else False
+
     @api.model
     def create(self, vals):
-        if not vals.get('general_budget_id') and vals.get('department_budget_id'):
-            department_budget = self.env['budget.department'].browse(vals['department_budget_id'])
-            vals['general_budget_id'] = department_budget.general_budget_id.id
+        if vals.get('department_id') and not vals.get('department_budget_id'):
+            department_budget = self.env['budget.department'].search([
+                ('department_id', '=', vals['department_id']),
+                ('state', '=', 'approved'),
+            ], order='id desc', limit=1)
 
-        if not vals.get('general_budget_id'):
-            active_budget = self.env['budget.general'].search([
-                ('state', '=', 'active'),
-            ], order='period_start desc, id desc', limit=1)
-
-            if not active_budget:
+            if not department_budget:
                 raise ValidationError(
-                    'No active general budget was found. Please ask the Finance Manager to prepare the yearly budget pool.'
+                    'No approved department budget was found for the selected department.'
                 )
 
-            vals['general_budget_id'] = active_budget.id
+            vals['department_budget_id'] = department_budget.id
+            vals['general_budget_id'] = department_budget.general_budget_id.id if department_budget.general_budget_id else False
+            vals['currency_id'] = department_budget.currency_id.id if department_budget.currency_id else False
 
         if vals.get('department_budget_id'):
             department_budget = self.env['budget.department'].browse(vals['department_budget_id'])
@@ -173,12 +188,21 @@ class BudgetReservation(models.Model):
             if record.state != 'draft':
                 continue
 
-            if self.env.user.has_group('ncst_budget_management.group_budget_finance_manager'):
-                if record.amount > record.department_budget_id.remaining_balance:
-                    raise ValidationError(
-                        'The reservation amount exceeds the available department budget balance.'
-                    )
+            if not record.department_id:
+                raise ValidationError('Please select a department.')
 
+            if not record.department_budget_id:
+                raise ValidationError('No approved department budget was found for the selected department.')
+
+            if record.amount <= 0:
+                raise ValidationError('Reservation amount must be greater than zero.')
+
+            if record.amount > record.department_budget_id.remaining_balance:
+                raise ValidationError(
+                    'The reservation amount exceeds the available department budget balance.'
+                )
+
+            if self.env.user.has_group('ncst_budget_management.group_budget_finance_manager'):
                 record.state = 'reserved'
                 record.submitted_by = self.env.user
                 record.submitted_date = fields.Datetime.now()
