@@ -45,7 +45,7 @@ class BudgetGeneral(models.Model):
     total_amount = fields.Monetary(
         string='Total General Budget',
         required=True,
-        default=1.0,
+        default=50000.0,
         currency_field='currency_id',
     )
     allocated_amount = fields.Monetary(
@@ -67,7 +67,7 @@ class BudgetGeneral(models.Model):
             ('closed', 'Closed'),
         ],
         string='Status',
-        default='active',
+        default='draft',
         required=True,
     )
     department_budget_ids = fields.One2many(
@@ -101,7 +101,8 @@ class BudgetGeneral(models.Model):
     def _compute_budget_amounts(self):
         for record in self:
             approved_budgets = record.department_budget_ids.filtered(
-                lambda d: d.state == 'approved')
+                lambda d: d.state == 'approved'
+            )
             allocated = sum(approved_budgets.mapped('allocated_amount'))
             record.allocated_amount = allocated
             record.remaining_amount = record.total_amount - allocated
@@ -110,15 +111,13 @@ class BudgetGeneral(models.Model):
     def _check_period_dates(self):
         for record in self:
             if record.period_end < record.period_start:
-                raise ValidationError(
-                    'Period end date cannot be earlier than period start date.')
+                raise ValidationError('Period end date cannot be earlier than period start date.')
 
     @api.constrains('total_amount')
     def _check_total_amount(self):
         for record in self:
             if record.total_amount <= 0:
-                raise ValidationError(
-                    'The general budget amount must be greater than zero.')
+                raise ValidationError('The general budget amount must be greater than zero.')
 
     @api.constrains('period_start', 'period_end', 'company_id')
     def _check_period_overlap(self):
@@ -199,6 +198,12 @@ class BudgetGeneral(models.Model):
                 'total_amount': 50000.0,
                 'state': 'active',
             })
+
+    def action_submit(self):
+        for record in self:
+            if record.state != 'draft':
+                continue
+            record.state = 'active'
 
     def action_activate(self):
         for record in self:
