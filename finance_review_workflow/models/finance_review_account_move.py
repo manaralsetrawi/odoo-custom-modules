@@ -58,6 +58,55 @@ class AccountMove(models.Model):
         copy=False,
     )
 
+     # -------------------------------------------------------------------------
+# AP / AR exception control fields
+# -------------------------------------------------------------------------
+
+    # Main exception result shown to the user
+    finance_exception_status = fields.Selection([
+        ('valid', 'Valid'),
+        ('has_issue', 'Has Issue'),
+        ('blocked', 'Blocked'),
+    ], string='Exception Status', default='valid', copy=False, tracking=True)
+
+    # Human-readable summary of detected issues
+    finance_exception_summary = fields.Text(
+        string='Exception Summary',
+        readonly=True,
+        copy=False,
+)
+
+    # Helper flags for each validation rule
+    finance_missing_due_date = fields.Boolean(
+        string='Missing Due Date',
+        readonly=True,
+        copy=False,
+)
+
+    finance_missing_tax = fields.Boolean(
+        string='Missing Tax',
+        readonly=True,
+        copy=False,
+)
+
+    finance_missing_vendor_ref = fields.Boolean(
+        string='Missing Vendor Reference',
+        readonly=True,
+        copy=False,
+)
+
+    finance_duplicate_vendor_ref = fields.Boolean(
+        string='Duplicate Vendor Bill Reference',
+        readonly=True,
+        copy=False,
+)
+
+    finance_invalid_date_sequence = fields.Boolean(
+        string='Invoice Date Later Than Due Date',
+        readonly=True,
+        copy=False,
+)   
+
     # -------------------------------------------------------------------------
     # Helper methods
     # -------------------------------------------------------------------------
@@ -86,6 +135,100 @@ class AccountMove(models.Model):
             raise ValidationError(
                 _("Only the Finance Invoice Reviewer can perform this action.")
             )
+        
+    def _is_exception_target_document(self):
+        """
+        Apply exception checks only to customer invoices and vendor bills.
+        This keeps the logic away from journal entries and other move types.
+        """
+        self.ensure_one()
+        return self.move_type in ('out_invoice', 'in_invoice')
+    
+    def _run_finance_exception_checks(self):
+        """
+        Run AP/AR exception checks and update the exception fields.
+        This method is intentionally independent from procurement verification
+        logic to avoid conflicts with the existing purchase workflow.
+        """
+        for move in self:
+        # Skip non-target documents safely
+            if not move._is_exception_target_document():
+                continue
+
+        issues = []
+        status = 'valid'
+
+        # Reset all helper flags before checking again
+        vals = {
+            'finance_missing_due_date': False,
+            'finance_missing_tax': False,
+            'finance_missing_vendor_ref': False,
+            'finance_duplicate_vendor_ref': False,
+            'finance_invalid_date_sequence': False,
+            'finance_exception_summary': False,
+            'finance_exception_status': 'valid',
+        }
+
+        # -------------------------------------------------------------
+        # 1) Missing due date
+        # -------------------------------------------------------------
+        if not move.invoice_date_due:
+            vals['finance_missing_due_date'] = True
+            issues.append("Missing due date.")
+            status = 'blocked'
+
+        # -------------------------------------------------------------
+        # 2) Missing tax on invoice/bill lines
+        # -------------------------------------------------------------
+        real_lines = move.invoice_line_ids.filtered(lambda l: not l.display_type)
+
+        has_tax = any(line.tax_ids for line in real_lines)
+
+        if real_lines and not has_tax:
+            vals['finance_missing_tax'] = True
+            issues.append("Missing tax on document lines.")
+            if status != 'blocked':
+                status = 'has_issue'
+
+        # -------------------------------------------------------------
+        # 3) Missing vendor reference (vendor bills only)
+        # -------------------------------------------------------------
+        if move.move_type == 'in_invoice' and not move.ref:
+            vals['finance_missing_vendor_ref'] = True
+            issues.append("Missing vendor reference.")
+            status = 'blocked'
+
+        # -------------------------------------------------------------
+        # 4) Duplicate vendor bill reference (vendor bills only)
+        # -------------------------------------------------------------
+        if move.move_type == 'in_invoice' and move.ref and move.partner_id:
+            duplicate_bill = self.search([
+                ('id', '!=', move.id),
+                ('move_type', '=', 'in_invoice'),
+                ('partner_id', '=', move.partner_id.id),
+                ('ref', '=', move.ref),
+                ('state', '!=', 'cancel'),
+            ], limit=1)
+
+            if duplicate_bill:
+                vals['finance_duplicate_vendor_ref'] = True
+                issues.append("Duplicate vendor bill reference found.")
+                status = 'blocked'
+
+        # -------------------------------------------------------------
+        # 5) Invoice date later than due date
+        # -------------------------------------------------------------
+        if move.invoice_date and move.invoice_date_due:
+            if move.invoice_date > move.invoice_date_due:
+                vals['finance_invalid_date_sequence'] = True
+                issues.append("Invoice date is later than due date.")
+                status = 'blocked'
+
+        # Final result
+        vals['finance_exception_status'] = status
+        vals['finance_exception_summary'] = "\n".join(issues) if issues else "No exception found."
+
+        move.write(vals)
 
     # -------------------------------------------------------------------------
     # Review actions
@@ -182,19 +325,45 @@ class AccountMove(models.Model):
                 'finance_review_state': 'draft',
             })
 
+    def action_check_finance_exceptions(self):
+        """
+        Manual button to run AP/AR exception checks.
+        Useful for user review before posting.
+        """
+        self._run_finance_exception_checks()
+
     # -------------------------------------------------------------------------
     # Posting restriction
     # -------------------------------------------------------------------------
 
     def action_post(self):
         """
-        Prevent posting customer invoices unless they are approved.
-        Vendor bills and other move types are ignored.
+        1) Block customer invoice posting unless finance review is approved.
+        2) Block invoice/bill posting if AP/AR exception status is blocked.
+
+        This keeps the finance review workflow and exception control separate.
         """
         for move in self:
+        # -------------------------------------------------------------
+        # Feature 1: invoice review workflow
+        # Only for customer invoices
+        # -------------------------------------------------------------
             if move._is_review_target_document() and move.finance_review_state != 'approved':
                 raise ValidationError(
-                    _("You cannot post this invoice until it is approved.")
+                _("You cannot post this invoice until it is approved.")
+            )
+
+        # -------------------------------------------------------------
+        # Feature 2: AP/AR exception control
+        # Applies to customer invoices and vendor bills
+        # -------------------------------------------------------------
+        if move._is_exception_target_document():
+            # Re-run checks before posting to ensure latest values
+            move._run_finance_exception_checks()
+
+            if move.finance_exception_status == 'blocked':
+                raise ValidationError(
+                    _("You cannot post this document because it has blocked AP/AR exceptions. Please fix them first.")
                 )
 
         return super().action_post()
