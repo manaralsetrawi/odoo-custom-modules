@@ -165,6 +165,12 @@
                             <field name="approval_date" readonly="1" invisible="state != 'approved'"/>
                             <field name="rejected_by" readonly="1" invisible="state != 'rejected'"/>
                             <field name="rejection_date" readonly="1" invisible="state != 'rejected'"/>
+                            <field name="approved_by" readonly="1" invisible="state != 'approved'"/>
+                            <field name="approval_date" readonly="1" invisible="state != 'approved'"/>
+                            <field name="rejected_by" readonly="1" invisible="state != 'rejected'"/>
+                            <field name="rejection_date" readonly="1" invisible="state != 'rejected'"/>
+                            <field name="rejection_reason" readonly="1" invisible="state != 'rejected'"/>
+
                         </group>
                     </group>
 
