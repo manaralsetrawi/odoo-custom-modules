@@ -151,11 +151,20 @@
                         <group>
                             <field name="department_id" readonly="state in ['submitted', 'approved', 'rejected']"/>
                             <field name="allocated_amount" string="Budget to Assign" readonly="state in ['submitted', 'approved', 'rejected']"/>
+                            <field name="request_date" readonly="1"/>
+                            <field name="rejection_reason"
+                                readonly="state != 'submitted'"
+                                invisible="state not in ['submitted', 'rejected']"/>
                         </group>
+
                         <group>
                             <field name="general_budget_remaining" string="General Budget Remaining" readonly="1"/>
                             <field name="current_department_budget" string="Current Department Budget" readonly="1"/>
                             <field name="new_department_budget" string="Department Budget After Assignment" readonly="1"/>
+                            <field name="approved_by" readonly="1" invisible="state != 'approved'"/>
+                            <field name="approval_date" readonly="1" invisible="state != 'approved'"/>
+                            <field name="rejected_by" readonly="1" invisible="state != 'rejected'"/>
+                            <field name="rejection_date" readonly="1" invisible="state != 'rejected'"/>
                         </group>
                     </group>
 
@@ -165,8 +174,6 @@
                         <field name="general_budget_id"/>
                         <field name="company_id"/>
                         <field name="requested_by"/>
-                        <field name="approved_by"/>
-                        <field name="approval_date"/>
                         <field name="reserved_amount"/>
                         <field name="used_amount"/>
                         <field name="remaining_balance"/>
