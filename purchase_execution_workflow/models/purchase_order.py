@@ -89,6 +89,11 @@ class PurchaseOrder(models.Model):
         compute="_compute_meets_minimum_quotation_rule",
         help="True when the required number of quotations is available for this Purchase Request.",
     )
+    #improvement: add a field to capture justification when minimum quotation rule is not met for purchases above BD 1000
+    quotation_exception_reason = fields.Text(
+        string="Quotation Exception Justification",
+        help="Required justification when fewer than 3 quotations are available for purchases above BD 1000.",
+    )
 
     # -------------------------------------------------------------------------
     # PHASE 3 - FINANCIAL APPROVAL ROUTING
@@ -362,6 +367,7 @@ class PurchaseOrder(models.Model):
         "purchase_request_id",
         "quotation_count_for_request",
         "is_above_quotation_threshold",
+        "quotation_exception_reason",
     )
     def _compute_meets_minimum_quotation_rule(self):
         for order in self:
@@ -369,10 +375,10 @@ class PurchaseOrder(models.Model):
                 order.meets_minimum_quotation_rule = False
             elif not order.is_above_quotation_threshold:
                 order.meets_minimum_quotation_rule = True
+            elif order.quotation_count_for_request >= 3:
+                order.meets_minimum_quotation_rule = True
             else:
-                order.meets_minimum_quotation_rule = (
-                    order.quotation_count_for_request >= 3
-                )
+                order.meets_minimum_quotation_rule = bool(order.quotation_exception_reason)
 
     @api.depends("amount_total")
     def _compute_required_financial_approval_level(self):
@@ -573,6 +579,7 @@ class PurchaseOrder(models.Model):
     # VALIDATION HELPERS
     # -------------------------------------------------------------------------
 
+    #imrovement: added validation to consider the new quotation exception reason field when minimum quotation rule is not met for purchases above BD 1000
     def _check_procurement_validations(self):
         for order in self:
             if (
@@ -583,16 +590,20 @@ class PurchaseOrder(models.Model):
                     "The Purchase Request must be approved before confirming the Purchase Order."
                 )
 
-            if order.amount_total > 1000 and order.quotation_count_for_request < 3:
+            if (
+                order.amount_total > 1000
+                and order.quotation_count_for_request < 3
+                and not order.quotation_exception_reason
+            ):
                 raise ValidationError(
-                    "At least 3 quotations are required for purchases above 1000 BD."
+                    "At least 3 quotations are required for purchases above 1000 BD, or a justification must be entered."
                 )
 
             if not order.is_recommended_vendor:
                 raise ValidationError(
                     "You must mark this quotation as recommended before confirming the Purchase Order."
                 )
-
+    #improvement: extracted minimum quotation requirement check into a separate method to be reused in both action_submit_financial_approval and button_confirm
     def _check_minimum_quotation_requirement(self):
         for order in self:
             if not order.purchase_request_id:
@@ -603,9 +614,10 @@ class PurchaseOrder(models.Model):
             if (
                 order.is_above_quotation_threshold
                 and order.quotation_count_for_request < 3
+                and not order.quotation_exception_reason
             ):
                 raise ValidationError(
-                    "At least 3 quotations are required for purchase requests above BD 1000."
+                    "At least 3 quotations are required for purchase requests above BD 1000, or a justification must be entered."
                 )
 
     def _check_evaluation_completion(self):
@@ -653,6 +665,7 @@ class PurchaseOrder(models.Model):
     # -------------------------------------------------------------------------
 
     def write(self, vals):
+        #improvement: add quotation_exception_reason to the list of protected fields and apply same edit rules as financial rejection reason since it can only be edited when the RFQ is above the quotation threshold and minimum quotation rule is not met
         procurement_editable_fields = {
             "technical_evaluation",
             "commercial_evaluation",
@@ -660,6 +673,7 @@ class PurchaseOrder(models.Model):
             "evaluation_notes",
             "vendor_ack_required",
             "vendor_ack_notes",
+            "quotation_exception_reason",
         }
         finance_editable_fields = {
             "financial_rejection_reason",
