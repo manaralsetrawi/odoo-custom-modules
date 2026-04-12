@@ -98,6 +98,13 @@ class BudgetDepartment(models.Model):
         default=lambda self: self.env.user,
         readonly=True,
     )
+
+    request_date = fields.Date(
+        string='Request Date',
+        default=fields.Date.context_today,
+        readonly=True,
+    )
+
     approved_by = fields.Many2one(
         'res.users',
         string='Approved By',

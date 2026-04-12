@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_department_budget_kanban" model="ir.ui.view">
+        <field name="name">hr.department.budget.kanban</field>
+        <field name="model">hr.department</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="current_budget_amount"/>
+                <field name="approved_allocation_count"/>
+
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click"
+                             style="background: white; border-radius: 16px; border: 1px solid #e2e6ea; padding: 18px 20px; margin-bottom: 8px;">
+                            <div style="font-size: 12px; color: #9ca3af; margin-bottom: 4px;">Department Budget Overview</div>
+                            <div style="font-size: 18px; font-weight: 700; color: #1e3a5f; margin-bottom: 14px;">
+                                <field name="name"/>
+                            </div>
+
+                            <div style="display: flex; gap: 10px;">
+                                <div style="flex: 1; background: #f8fafc; border: 1px solid #e2e6ea; border-radius: 10px; padding: 12px;">
+                                    <div style="font-size: 10px; color: #9ca3af; margin-bottom: 4px;">Current Budget</div>
+                                    <div style="font-size: 18px; font-weight: 700; color: #1e3a5f;">
+                                        <field name="current_budget_amount"/>
+                                    </div>
+                                </div>
+
+                                <div style="flex: 1; background: #f8fafc; border: 1px solid #e2e6ea; border-radius: 10px; padding: 12px;">
+                                    <div style="font-size: 10px; color: #9ca3af; margin-bottom: 4px;">Approved Allocations</div>
+                                    <div style="font-size: 18px; font-weight: 700; color: #1e3a5f;">
+                                        <field name="approved_allocation_count"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_hr_department_budget_overview" model="ir.actions.act_window">
+        <field name="name">Department Budget Overview</field>
+        <field name="res_model">hr.department</field>
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+
+</odoo>
