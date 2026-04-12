@@ -197,24 +197,6 @@ class BudgetDepartment(models.Model):
                 raise ValidationError(
                     'Department allocated amount must be greater than zero.')
 
-    @api.constrains('department_id', 'general_budget_id', 'state')
-    def _check_unique_department_budget(self):
-        for record in self:
-            if not record.department_id or not record.general_budget_id:
-                continue
-
-            existing_budget = self.search([
-                ('id', '!=', record.id),
-                ('general_budget_id', '=', record.general_budget_id.id),
-                ('department_id', '=', record.department_id.id),
-                ('state', '=', 'approved'),
-            ], limit=1)
-
-            if existing_budget and record.state == 'approved':
-                raise ValidationError(
-                    'This department already has an approved budget allocation for the selected yearly budget.'
-                )
-
     @api.model
     def create(self, vals):
         if not vals.get('general_budget_id'):
