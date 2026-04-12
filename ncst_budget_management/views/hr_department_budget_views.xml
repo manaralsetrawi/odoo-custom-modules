@@ -5,6 +5,7 @@
     <record id="view_hr_department_budget_kanban" model="ir.ui.view">
         <field name="name">hr.department.budget.kanban</field>
         <field name="model">hr.department</field>
+        <field name="priority" eval="99"/>
         <field name="arch" type="xml">
             <kanban create="0" edit="0" delete="0" quick_create="0" class="o_kanban_mobile">
                 <field name="name"/>
@@ -14,6 +15,7 @@
                 <templates>
                     <t t-name="card">
                         <div style="background: transparent; border-radius: 18px; border: 1px solid #d9dee3; box-shadow: none; padding: 20px; margin-bottom: 10px;">
+
                             <!-- Header -->
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                                 <div>
@@ -61,6 +63,7 @@
         <field name="name">Department Budget Overview</field>
         <field name="res_model">hr.department</field>
         <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_hr_department_budget_kanban"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 No department budget overview available
