@@ -9,7 +9,7 @@
             <kanban  edit="0" delete="0" class="o_kanban_mobile">
                 <templates>
                     <t t-name="card">
-                        <div class="oe_kanban_global_click o_kanban_record">
+                       <div class="oe_kanban_global_click o_kanban_record" style="width: 100%; max-width: 900px; margin: 0 auto;">
                             <div class="rounded-4 border bg-white shadow-sm p-4">
 
                                 <!-- Top header -->
@@ -30,8 +30,8 @@
                                 </div>
 
                                 <!-- Main stat cards -->
-                                <div class="row g-3 mb-4">
-                                    <div class="col-12 col-md-4">
+                                <div class="row g-3 mb-4 justify-content-between">
+                                    <div style="flex: 1; min-width: 180px;">
                                         <div class="rounded-4 border p-4 h-100 bg-light">
                                             <div class="text-muted small text-uppercase mb-2">Total Budget</div>
                                             <div class="fw-bold fs-2">
@@ -40,7 +40,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-12 col-md-4">
+                                    <div style="flex: 1; min-width: 180px;">
                                         <div class="rounded-4 border p-4 h-100 bg-light">
                                             <div class="text-muted small text-uppercase mb-2">Allocated Budget</div>
                                             <div class="fw-bold fs-2">
@@ -49,7 +49,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-12 col-md-4">
+                                    <div style="flex: 1; min-width: 180px;">
                                         <div class="rounded-4 border p-4 h-100 bg-success-subtle">
                                             <div class="text-success small text-uppercase mb-2">Remaining Budget</div>
                                             <div class="fw-bold fs-2 text-success">
