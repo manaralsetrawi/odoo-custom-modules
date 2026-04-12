@@ -155,13 +155,11 @@
                             <field name="name" readonly="1"/>
                             <field name="date" readonly="1"/>
                             <field name="department_id" readonly="state in ['submitted', 'reserved', 'used', 'cancelled']"/>
-                            <field name="department_budget_id" readonly="1"/>
+                            <field name="department_budget_amount" readonly="1"/>
                         </group>
 
                         <group>
                             <field name="amount" readonly="state in ['submitted', 'reserved', 'used', 'cancelled']"/>
-                            <field name="request_ref" readonly="state in ['submitted', 'reserved', 'used', 'cancelled']"/>
-                            <field name="general_budget_id" readonly="1"/>
                             <field name="currency_id" readonly="1"/>
                         </group>
                     </group>
