@@ -13,8 +13,7 @@
 
                 <templates>
                     <t t-name="card">
-                        <div style="background: white; border-radius: 18px; border: 1px solid #d9dee3; box-shadow: 0 4px 14px rgba(0,0,0,0.05); padding: 20px; margin-bottom: 10px;">
-
+                        <div style="background: transparent; border-radius: 18px; border: 1px solid #d9dee3; box-shadow: none; padding: 20px; margin-bottom: 10px;">
                             <!-- Header -->
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                                 <div>

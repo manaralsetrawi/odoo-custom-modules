@@ -20,7 +20,7 @@
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_global_click"
-                             style="background: white; border-radius: 16px; border: 1px solid #e2e6ea; padding: 18px 20px; margin-bottom: 4px;">
+                             style="background: transparent; border-radius: 16px; padding: 18px 20px; margin-bottom: 4px;">
 
                             <!-- Header -->
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 8px;">
@@ -152,25 +152,19 @@
                             <field name="department_id" readonly="state in ['submitted', 'approved', 'rejected']"/>
                             <field name="allocated_amount" string="Budget to Assign" readonly="state in ['submitted', 'approved', 'rejected']"/>
                             <field name="request_date" readonly="1"/>
-                            <field name="rejection_reason"
-                                readonly="state != 'submitted'"
-                                invisible="state not in ['submitted', 'rejected']"/>
                         </group>
 
                         <group>
                             <field name="general_budget_remaining" string="General Budget Remaining" readonly="1"/>
                             <field name="current_department_budget" string="Current Department Budget" readonly="1"/>
                             <field name="new_department_budget" string="Department Budget After Assignment" readonly="1"/>
+
                             <field name="approved_by" readonly="1" invisible="state != 'approved'"/>
                             <field name="approval_date" readonly="1" invisible="state != 'approved'"/>
-                            <field name="rejected_by" readonly="1" invisible="state != 'rejected'"/>
-                            <field name="rejection_date" readonly="1" invisible="state != 'rejected'"/>
-                            <field name="approved_by" readonly="1" invisible="state != 'approved'"/>
-                            <field name="approval_date" readonly="1" invisible="state != 'approved'"/>
+
                             <field name="rejected_by" readonly="1" invisible="state != 'rejected'"/>
                             <field name="rejection_date" readonly="1" invisible="state != 'rejected'"/>
                             <field name="rejection_reason" readonly="1" invisible="state != 'rejected'"/>
-
                         </group>
                     </group>
 
