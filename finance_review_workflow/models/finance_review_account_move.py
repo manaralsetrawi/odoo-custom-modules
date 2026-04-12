@@ -105,6 +105,48 @@ class AccountMove(models.Model):
         string='Invoice Date Later Than Due Date',
         readonly=True,
         copy=False,
+)
+    
+# -------------------------------------------------------------------------
+# Vendor bill readiness check fields
+# -------------------------------------------------------------------------
+
+    # Final readiness result for vendor bills
+    finance_readiness_status = fields.Selection([
+        ('incomplete', 'Incomplete'),
+        ('ready', 'Ready for Review'),
+    ], string='Readiness Status', default='incomplete', copy=False, tracking=True)
+
+    # User-friendly summary of missing required information
+    finance_readiness_summary = fields.Text(
+        string='Readiness Summary',
+        readonly=True,
+        copy=False,
+)
+
+    # Helper flags for each readiness rule
+    finance_missing_bill_reference = fields.Boolean(
+        string='Missing Vendor Bill Reference',
+        readonly=True,
+        copy=False,
+)
+
+    finance_missing_bill_tax = fields.Boolean(
+        string='Missing Tax',
+        readonly=True,
+        copy=False,
+)
+
+    finance_missing_payment_term = fields.Boolean(
+        string='Missing Payment Term',
+        readonly=True,
+        copy=False,
+)
+
+    finance_missing_attachment = fields.Boolean(
+        string='Missing Attachment',
+        readonly=True,
+        copy=False,
 )   
 
     # -------------------------------------------------------------------------
@@ -229,6 +271,15 @@ class AccountMove(models.Model):
         vals['finance_exception_summary'] = "\n".join(issues) if issues else "No exception found."
 
         move.write(vals)
+    # Added a helper method to determine if the document is a vendor bill for readiness checks    
+    def _is_vendor_bill_readiness_target(self):
+        """
+        Apply readiness check only to vendor bills.
+        This keeps the feature separate from customer invoice review logic.
+        """
+        self.ensure_one()
+        return self.move_type == 'in_invoice'
+    
 
     # -------------------------------------------------------------------------
     # Review actions
@@ -332,6 +383,81 @@ class AccountMove(models.Model):
         """
         self._run_finance_exception_checks()
 
+    def _run_vendor_bill_readiness_check(self):
+        """
+        Check whether the vendor bill is complete enough for review.
+
+        This logic is separate from the existing procurement invoice verification
+        workflow, so it does not replace or modify that logic.
+        """
+        Attachment = self.env['ir.attachment']
+
+        for move in self:
+            # Ignore non-vendor-bill records safely
+            if not move._is_vendor_bill_readiness_target():
+                continue
+
+        issues = []
+        status = 'ready'
+
+        # Reset readiness fields before rechecking
+        vals = {
+            'finance_missing_bill_reference': False,
+            'finance_missing_bill_tax': False,
+            'finance_missing_payment_term': False,
+            'finance_missing_attachment': False,
+            'finance_readiness_summary': False,
+            'finance_readiness_status': 'ready',
+        }
+
+        # -------------------------------------------------------------
+        # 1) Vendor bill reference
+        # -------------------------------------------------------------
+        if not move.ref:
+            vals['finance_missing_bill_reference'] = True
+            issues.append("Vendor bill reference is missing.")
+            status = 'incomplete'
+
+        # -------------------------------------------------------------
+        # 2) Tax on real vendor bill lines
+        # -------------------------------------------------------------
+        real_lines = move.invoice_line_ids.filtered(lambda l: not l.display_type)
+        has_tax = any(line.tax_ids for line in real_lines)
+
+        if real_lines and not has_tax:
+            vals['finance_missing_bill_tax'] = True
+            issues.append("Tax is missing on vendor bill lines.")
+            status = 'incomplete'
+
+        # -------------------------------------------------------------
+        # 3) Payment term
+        # -------------------------------------------------------------
+        if not move.invoice_payment_term_id:
+            vals['finance_missing_payment_term'] = True
+            issues.append("Payment term is missing.")
+            status = 'incomplete'
+
+        # -------------------------------------------------------------
+        # 4) Attachment
+        # -------------------------------------------------------------
+        attachment_count = Attachment.search_count([
+            ('res_model', '=', 'account.move'),
+            ('res_id', '=', move.id),
+        ])
+
+        if attachment_count == 0:
+            vals['finance_missing_attachment'] = True
+            issues.append("Required attachment is missing.")
+            status = 'incomplete'
+
+        # Final readiness result
+        vals['finance_readiness_status'] = status
+        vals['finance_readiness_summary'] = (
+            "\n".join(issues) if issues else "Vendor bill is ready for review."
+        )
+
+        move.write(vals)
+
     # -------------------------------------------------------------------------
     # Posting restriction
     # -------------------------------------------------------------------------
@@ -367,3 +493,10 @@ class AccountMove(models.Model):
                 )
 
         return super().action_post()
+    
+    def action_check_vendor_bill_readiness(self):
+        """
+        Manual button to check whether the vendor bill is complete enough
+        for review.
+        """
+        self._run_vendor_bill_readiness_check()

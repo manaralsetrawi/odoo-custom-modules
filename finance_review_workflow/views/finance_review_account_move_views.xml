@@ -49,6 +49,12 @@
         class="btn-secondary"
         invisible="move_type not in ('out_invoice', 'in_invoice') or state != 'draft'"/>
 
+    <button name="action_check_vendor_bill_readiness"
+        type="object"
+        string="Check Readiness"
+        class="btn-secondary"
+        invisible="move_type != 'in_invoice' or state != 'draft'"/>
+
 </xpath>
 
             <!-- Show workflow status clearly near invoice date -->
@@ -115,7 +121,27 @@
             <field name="finance_duplicate_vendor_ref" readonly="1"/>
         </group>
     </group>
-        </page>  
+        </page>
+
+    <page string="Vendor Bill Readiness" invisible="move_type != 'in_invoice'">
+
+    <group>
+        <group string="Readiness Result">
+            <field name="finance_readiness_status" readonly="1"/>
+            <field name="finance_readiness_summary" readonly="1"/>
+        </group>
+    </group>
+
+    <group>
+        <group string="Main Checks">
+            <field name="finance_missing_bill_reference" readonly="1"/>
+            <field name="finance_missing_bill_tax" readonly="1"/>
+            <field name="finance_missing_payment_term" readonly="1"/>
+            <field name="finance_missing_attachment" readonly="1"/>
+        </group>
+    </group>
+
+    </page>  
             </xpath>
 
         </field>
@@ -146,6 +172,24 @@
                     decoration-success="finance_exception_status == 'valid'"
                     decoration-warning="finance_exception_status == 'has_issue'"
                     decoration-danger="finance_exception_status == 'blocked'"/>
+        </xpath>
+
+    </field>
+</record>
+<record id="view_in_invoice_tree_inherit_finance_readiness" model="ir.ui.view">
+    <field name="name">account.move.in.invoice.tree.finance.readiness</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_in_invoice_tree"/>
+    <field name="arch" type="xml">
+
+        <!-- Add readiness status after bill date -->
+        <xpath expr="//list/field[@name='invoice_date']" position="after">
+            <field name="finance_readiness_status"
+                   string="Readiness Status"
+                   widget="badge"
+                   optional="show"
+                   decoration-danger="finance_readiness_status == 'incomplete'"
+                   decoration-success="finance_readiness_status == 'ready'"/>
         </xpath>
 
     </field>
