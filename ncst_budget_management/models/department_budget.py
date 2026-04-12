@@ -9,7 +9,7 @@ class BudgetDepartment(models.Model):
 
     name = fields.Char(
         string='Department Budget Name',
-        required=True,
+        required=False,
     )
     general_budget_id = fields.Many2one(
         'budget.general',
