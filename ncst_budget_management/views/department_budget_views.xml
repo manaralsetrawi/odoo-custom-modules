@@ -23,14 +23,13 @@
                             <div style="border: 1px solid #d9dee3; border-radius: 20px; background: white; box-shadow: 0 4px 14px rgba(0,0,0,0.06); padding: 20px;">
 
                                 <!-- Header -->
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 8px;">
                                     <div>
                                         <div style="color: #6b7280; font-size: 13px; margin-bottom: 4px;">Department Budget Allocation</div>
-                                        <div style="font-size: 20px; font-weight: 700; color: #243b53;">
+                                        <div style="font-size: 20px; font-weight: 700; color: #243b53; word-break: break-word;">
                                             <field name="department_id"/>
                                         </div>
                                     </div>
-
                                     <div>
                                         <field name="state"
                                                widget="badge"
@@ -42,47 +41,47 @@
                                 </div>
 
                                 <!-- Main stat cards -->
-                                <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px;">
-                                    <div style="border: 1px solid #d9dee3; border-radius: 18px; background: #f8fafc; padding: 18px; min-height: 120px; display: flex; flex-direction: column; justify-content: center;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 16px;">
+                                    <div style="border: 1px solid #d9dee3; border-radius: 18px; background: #f8fafc; padding: 16px 18px;">
                                         <div style="font-size: 12px; text-transform: uppercase; color: #6b7280; margin-bottom: 8px; letter-spacing: 0.4px;">
                                             Assign Amount
                                         </div>
-                                        <div style="font-size: 28px; font-weight: 700; color: #243b53; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <div style="font-size: 22px; font-weight: 700; color: #243b53; word-break: break-word;">
                                             <field name="allocated_amount"/>
                                         </div>
                                     </div>
 
-                                    <div style="border: 1px solid #d9dee3; border-radius: 18px; background: #f8fafc; padding: 18px; min-height: 120px; display: flex; flex-direction: column; justify-content: center;">
+                                    <div style="border: 1px solid #d9dee3; border-radius: 18px; background: #f8fafc; padding: 16px 18px;">
                                         <div style="font-size: 12px; text-transform: uppercase; color: #6b7280; margin-bottom: 8px; letter-spacing: 0.4px;">
                                             Current Budget
                                         </div>
-                                        <div style="font-size: 28px; font-weight: 700; color: #243b53; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <div style="font-size: 22px; font-weight: 700; color: #243b53; word-break: break-word;">
                                             <field name="current_department_budget"/>
                                         </div>
                                     </div>
 
-                                    <div style="border: 1px solid #cfe8d4; border-radius: 18px; background: #eaf6ec; padding: 18px; min-height: 120px; display: flex; flex-direction: column; justify-content: center;">
+                                    <div style="border: 1px solid #cfe8d4; border-radius: 18px; background: #eaf6ec; padding: 16px 18px;">
                                         <div style="font-size: 12px; text-transform: uppercase; color: #198754; margin-bottom: 8px; letter-spacing: 0.4px;">
                                             After Assignment
                                         </div>
-                                        <div style="font-size: 28px; font-weight: 700; color: #198754; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <div style="font-size: 22px; font-weight: 700; color: #198754; word-break: break-word;">
                                             <field name="new_department_budget"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Bottom details -->
-                                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
                                     <div style="border: 1px solid #d9dee3; border-radius: 18px; background: white; padding: 16px;">
                                         <div style="color: #6b7280; font-size: 12px; margin-bottom: 8px;">General Budget Remaining</div>
-                                        <div style="font-weight: 700; color: #243b53; font-size: 20px;">
+                                        <div style="font-weight: 700; color: #243b53; font-size: 18px; word-break: break-word;">
                                             <field name="general_budget_remaining"/>
                                         </div>
                                     </div>
 
                                     <div style="border: 1px solid #d9dee3; border-radius: 18px; background: white; padding: 16px;">
                                         <div style="color: #6b7280; font-size: 12px; margin-bottom: 8px;">Requested By</div>
-                                        <div style="font-weight: 600; color: #243b53;">
+                                        <div style="font-weight: 600; color: #243b53; word-break: break-word;">
                                             <field name="requested_by"/>
                                         </div>
                                     </div>
