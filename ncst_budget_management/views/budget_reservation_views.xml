@@ -16,73 +16,73 @@
                 <field name="created_by"/>
                 <field name="created_date"/>
 
-        <templates>
-            <t t-name="card">
-                <!-- Root div must be plain, no custom styles -->
-                <div class="oe_kanban_global_click">
-                    <!-- Your styled card goes INSIDE here -->
-                    <div style="background: white; border-radius: 16px; border: 1px solid #e2e6ea; padding: 18px 20px;">
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click"
+                             style="background: transparent; border-radius: 16px; padding: 18px 20px; margin-bottom: 4px;">
 
-                        <!-- Header -->
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 8px;">
-                            <div>
-                                <div style="font-size: 11px; color: #9ca3af; margin-bottom: 3px;">Budget Reservation</div>
-                                <div style="font-size: 17px; font-weight: 700; color: #1e3a5f;">
-                                    <field name="name"/>
+                            <!-- Header -->
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 8px;">
+                                <div>
+                                    <div style="font-size: 11px; color: #9ca3af; margin-bottom: 3px;">Budget Reservation</div>
+                                    <div style="font-size: 17px; font-weight: 700; color: #1e3a5f;">
+                                        <field name="name"/>
+                                    </div>
+                                </div>
+                                <div style="flex-shrink: 0;">
+                                    <field name="state" widget="badge"
+                                           decoration-muted="state == 'draft'"
+                                           decoration-warning="state == 'submitted'"
+                                           decoration-info="state == 'reserved'"
+                                           decoration-success="state == 'used'"
+                                           decoration-danger="state == 'cancelled'"/>
                                 </div>
                             </div>
-                            <div style="flex-shrink: 0;">
-                                <field name="state" widget="badge"
-                                    decoration-muted="state == 'draft'"
-                                    decoration-warning="state == 'submitted'"
-                                    decoration-info="state == 'reserved'"
-                                    decoration-success="state == 'used'"
-                                    decoration-danger="state == 'cancelled'"/>
+
+                            <!-- Stats row -->
+                            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                <div style="flex: 1; min-width: 0; background: #f8fafc; border: 1px solid #e2e6ea; border-radius: 10px; padding: 10px 12px;">
+                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af; margin-bottom: 4px;">Department</div>
+                                    <div style="font-size: 14px; font-weight: 700; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="department_id"/>
+                                    </div>
+                                </div>
+
+                                <div style="flex: 1; min-width: 0; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 10px 12px;">
+                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #059669; margin-bottom: 4px;">Amount</div>
+                                    <div style="font-size: 14px; font-weight: 700; color: #059669; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="amount"/>
+                                    </div>
+                                </div>
                             </div>
+
+                            <!-- Meta row -->
+                            <div style="display: flex; gap: 8px;">
+                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
+                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Request Ref</div>
+                                    <div style="font-size: 12px; font-weight: 600; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="request_ref"/>
+                                    </div>
+                                </div>
+
+                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
+                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Created By</div>
+                                    <div style="font-size: 12px; font-weight: 600; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="created_by"/>
+                                    </div>
+                                </div>
+
+                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
+                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Created On</div>
+                                    <div style="font-size: 12px; font-weight: 600; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="created_date"/>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
-
-                        <!-- Stats row -->
-                        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                            <div style="flex: 1; min-width: 0; background: #f8fafc; border: 1px solid #e2e6ea; border-radius: 10px; padding: 10px 12px;">
-                                <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af; margin-bottom: 4px;">Department</div>
-                                <div style="font-size: 14px; font-weight: 700; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                    <field name="department_id"/>
-                                </div>
-                            </div>
-                            <div style="flex: 1; min-width: 0; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 10px 12px;">
-                                <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #059669; margin-bottom: 4px;">Amount</div>
-                                <div style="font-size: 14px; font-weight: 700; color: #059669; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                    <field name="amount"/>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Meta row -->
-                        <div style="display: flex; gap: 8px;">
-                            <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
-                                <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Request Ref</div>
-                                <div style="font-size: 12px; font-weight: 600; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                    <field name="request_ref"/>
-                                </div>
-                            </div>
-                            <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
-                                <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Created By</div>
-                                <div style="font-size: 12px; font-weight: 600; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                    <field name="created_by"/>
-                                </div>
-                            </div>
-                            <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
-                                <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Created On</div>
-                                <div style="font-size: 12px; font-weight: 600; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                    <field name="created_date"/>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </t>
-        </templates>
+                    </t>
+                </templates>
             </kanban>
         </field>
     </record>
