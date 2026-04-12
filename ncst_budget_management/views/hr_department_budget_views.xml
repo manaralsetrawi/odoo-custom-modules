@@ -14,7 +14,7 @@
 
                 <templates>
                     <t t-name="card">
-                        <div style="background: transparent; border-radius: 18px; border: 1px solid #d9dee3; box-shadow: none; padding: 20px; margin-bottom: 10px;">
+                        <div style="background: transparent; border-radius: 18px; box-shadow: none; padding: 20px; margin-bottom: 10px;">
 
                             <!-- Header -->
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">

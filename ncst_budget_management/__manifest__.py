@@ -31,6 +31,7 @@ Custom module for:
         'views/budget_reservation_views.xml',
         'views/hr_department_budget_views.xml',
         'views/budget_department_reject_wizard_views.xml',
+        'views/budget_reservation_cancel_wizard_views.xml',
         'views/budget_menu.xml',
     ],
     'installable': True,
