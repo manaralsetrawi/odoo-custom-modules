@@ -115,6 +115,20 @@ class BudgetDepartment(models.Model):
         readonly=True,
     )
 
+
+    rejected_by = fields.Many2one(
+        'res.users',
+        string='Rejected By',
+        readonly=True,
+    )
+    rejection_date = fields.Datetime(
+        string='Rejection Date',
+        readonly=True,
+    )
+    rejection_reason = fields.Text(
+        string='Rejection Reason',
+    )
+
     @api.depends('general_budget_id', 'department_id', 'allocated_amount', 'state')
     def _compute_budget_summary(self):
         for record in self:
@@ -268,7 +282,13 @@ class BudgetDepartment(models.Model):
         for record in self:
             if record.state != 'submitted':
                 continue
+
+            if not record.rejection_reason:
+                raise ValidationError('Please enter a rejection reason before rejecting the request.')
+
             record.state = 'rejected'
+            record.rejected_by = self.env.user
+            record.rejection_date = fields.Datetime.now()
 
     def action_reset_to_draft(self):
         for record in self:
@@ -279,3 +299,6 @@ class BudgetDepartment(models.Model):
             record.state = 'draft'
             record.approved_by = False
             record.approval_date = False
+            record.rejected_by = False
+            record.rejection_date = False
+            record.rejection_reason = False
