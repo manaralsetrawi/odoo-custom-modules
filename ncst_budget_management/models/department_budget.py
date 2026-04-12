@@ -127,6 +127,7 @@ class BudgetDepartment(models.Model):
     )
     rejection_reason = fields.Text(
         string='Rejection Reason',
+        readonly=True,
     )
 
     @api.depends('general_budget_id', 'department_id', 'allocated_amount', 'state')
@@ -276,25 +277,29 @@ class BudgetDepartment(models.Model):
 
     def action_reject(self):
         if not self.env.user.has_group('ncst_budget_management.group_budget_finance_manager'):
-            raise ValidationError(
-                'Only the Finance Manager can reject department budgets.')
+            raise ValidationError('Only the Finance Manager can reject department budgets.')
 
-        for record in self:
-            if record.state != 'submitted':
-                continue
+        self.ensure_one()
 
-            if not record.rejection_reason:
-                raise ValidationError('Please enter a rejection reason before rejecting the request.')
+        if self.state != 'submitted':
+            return
 
-            record.state = 'rejected'
-            record.rejected_by = self.env.user
-            record.rejection_date = fields.Datetime.now()
-
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Reject Budget Request',
+            'res_model': 'budget.department.reject.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_department_budget_id': self.id,
+            },
+        }
+    
+    
     def action_reset_to_draft(self):
         for record in self:
             if record.state == 'approved':
-                raise ValidationError(
-                    'Approved budget allocations cannot be reset to draft.')
+                raise ValidationError('Approved budget allocations cannot be reset to draft.')
 
             record.state = 'draft'
             record.approved_by = False
