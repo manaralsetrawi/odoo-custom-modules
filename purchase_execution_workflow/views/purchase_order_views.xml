@@ -5,10 +5,10 @@
         <field name="model">purchase.order</field>
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
-        
+
             <!-- Restrict vendor selection to companies with supplier rank -->
             <xpath expr="//field[@name='partner_id']" position="attributes">
-                <attribute name="domain">[('supplier_rank', '&gt;', 0), ('company_type', '=', 'company')]</attribute>
+                <attribute name="domain">[('supplier_rank', '&gt;', 0), ('is_company', '=', True)]</attribute>
             </xpath>
             <!-- Show related Purchase Request near the vendor field -->
             <xpath expr="//field[@name='partner_id']" position="after">
