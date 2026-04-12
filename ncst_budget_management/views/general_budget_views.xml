@@ -19,70 +19,60 @@
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_global_click o_kanban_record"
-                             style="width: 100%; max-width: 1100px; margin: 0 auto 16px auto; display: block;">
-                            <div style="border: 1px solid #d9dee3; border-radius: 20px; background: white; box-shadow: 0 4px 14px rgba(0,0,0,0.06); padding: 20px;">
+                            style="width: 100%; max-width: 1100px; margin: 0 auto 12px auto; display: block;">
+                            <div style="border: 1px solid #d9dee3; border-radius: 16px; background: white; padding: 14px 16px;">
 
                                 <!-- Header -->
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 8px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; flex-wrap: wrap;">
                                     <div>
-                                        <div style="color: #6b7280; font-size: 13px; margin-bottom: 4px;">Yearly Budget Pool</div>
-                                        <div style="font-size: 20px; font-weight: 700; color: #243b53; word-break: break-word;">
+                                        <div style="color: #6b7280; font-size: 11px; margin-bottom: 2px;">Yearly Budget Pool</div>
+                                        <div style="font-size: 16px; font-weight: 700; color: #243b53;">
                                             <field name="name"/>
                                         </div>
                                     </div>
-                                    <div>
-                                        <field name="state"
-                                               widget="badge"
-                                               decoration-muted="state == 'draft'"
-                                               decoration-success="state == 'active'"
-                                               decoration-danger="state == 'closed'"/>
-                                    </div>
+                                    <field name="state"
+                                        widget="badge"
+                                        decoration-muted="state == 'draft'"
+                                        decoration-success="state == 'active'"
+                                        decoration-danger="state == 'closed'"/>
                                 </div>
 
-                                <!-- Budget stat cards -->
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 16px;">
-                                    <div style="border: 1px solid #d9dee3; border-radius: 18px; background: #f8fafc; padding: 16px 18px;">
-                                        <div style="font-size: 12px; text-transform: uppercase; color: #6b7280; margin-bottom: 8px; letter-spacing: 0.4px;">
-                                            Total Budget
-                                        </div>
-                                        <div style="font-size: 22px; font-weight: 700; color: #243b53; word-break: break-word;">
+                                <!-- Stat row -->
+                                <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                    <div style="flex: 1; border: 1px solid #d9dee3; border-radius: 10px; background: #f8fafc; padding: 10px 12px;">
+                                        <div style="font-size: 10px; text-transform: uppercase; color: #6b7280; margin-bottom: 4px; letter-spacing: 0.4px;">Total Budget</div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #243b53;">
                                             <field name="total_amount"/>
                                         </div>
                                     </div>
 
-                                    <div style="border: 1px solid #d9dee3; border-radius: 18px; background: #f8fafc; padding: 16px 18px;">
-                                        <div style="font-size: 12px; text-transform: uppercase; color: #6b7280; margin-bottom: 8px; letter-spacing: 0.4px;">
-                                            Allocated Budget
-                                        </div>
-                                        <div style="font-size: 22px; font-weight: 700; color: #243b53; word-break: break-word;">
+                                    <div style="flex: 1; border: 1px solid #d9dee3; border-radius: 10px; background: #f8fafc; padding: 10px 12px;">
+                                        <div style="font-size: 10px; text-transform: uppercase; color: #6b7280; margin-bottom: 4px; letter-spacing: 0.4px;">Allocated</div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #243b53;">
                                             <field name="allocated_amount"/>
                                         </div>
                                     </div>
 
-                                    <div style="border: 1px solid #cfe8d4; border-radius: 18px; background: #eaf6ec; padding: 16px 18px;">
-                                        <div style="font-size: 12px; text-transform: uppercase; color: #198754; margin-bottom: 8px; letter-spacing: 0.4px;">
-                                            Remaining Budget
-                                        </div>
-                                        <div style="font-size: 22px; font-weight: 700; color: #198754; word-break: break-word;">
+                                    <div style="flex: 1; border: 1px solid #cfe8d4; border-radius: 10px; background: #eaf6ec; padding: 10px 12px;">
+                                        <div style="font-size: 10px; text-transform: uppercase; color: #198754; margin-bottom: 4px; letter-spacing: 0.4px;">Remaining</div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #198754;">
                                             <field name="remaining_amount"/>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Bottom details -->
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
-                                    <div style="border: 1px solid #d9dee3; border-radius: 18px; background: white; padding: 16px;">
-                                        <div style="color: #6b7280; font-size: 12px; margin-bottom: 8px;">Budget Period</div>
-                                        <div style="font-weight: 600; color: #243b53; word-break: break-word;">
-                                            <field name="period_start"/>
-                                            <span> – </span>
-                                            <field name="period_end"/>
+                                <!-- Bottom row -->
+                                <div style="display: flex; gap: 8px;">
+                                    <div style="flex: 1; border: 1px solid #d9dee3; border-radius: 10px; background: white; padding: 8px 12px;">
+                                        <div style="color: #6b7280; font-size: 10px; margin-bottom: 2px;">Budget Period</div>
+                                        <div style="font-weight: 600; color: #243b53; font-size: 13px;">
+                                            <field name="period_start"/> – <field name="period_end"/>
                                         </div>
                                     </div>
 
-                                    <div style="border: 1px solid #d9dee3; border-radius: 18px; background: white; padding: 16px;">
-                                        <div style="color: #6b7280; font-size: 12px; margin-bottom: 8px;">Created By</div>
-                                        <div style="font-weight: 600; color: #243b53; word-break: break-word;">
+                                    <div style="flex: 1; border: 1px solid #d9dee3; border-radius: 10px; background: white; padding: 8px 12px;">
+                                        <div style="color: #6b7280; font-size: 10px; margin-bottom: 2px;">Created By</div>
+                                        <div style="font-weight: 600; color: #243b53; font-size: 13px;">
                                             <field name="created_by"/>
                                         </div>
                                     </div>
