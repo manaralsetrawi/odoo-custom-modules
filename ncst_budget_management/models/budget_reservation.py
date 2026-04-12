@@ -41,6 +41,15 @@ class BudgetReservation(models.Model):
         string='Currency',
         readonly=True,
     )
+
+    department_budget_amount = fields.Monetary(
+    string='Department Budget',
+    related='department_budget_id.remaining_balance',
+    currency_field='currency_id',
+    readonly=True,
+    )
+    
+    
     amount = fields.Monetary(
         string='Reservation Amount',
         required=True,
