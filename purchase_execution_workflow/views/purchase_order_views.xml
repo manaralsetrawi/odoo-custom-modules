@@ -10,6 +10,10 @@
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="purchase_request_id"/>
             </xpath>
+            <!-- Restrict vendor selection to companies with supplier rank -->
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="domain">[('supplier_rank', '&gt;', 0), ('company_type', '=', 'company')]</attribute>
+            </xpath>
 
             <!-- Main custom sections -->
             <xpath expr="//sheet" position="inside">
