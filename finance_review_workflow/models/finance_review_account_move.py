@@ -58,9 +58,9 @@ class AccountMove(models.Model):
         copy=False,
     )
 
-     # -------------------------------------------------------------------------
-# AP / AR exception control fields
-# -------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
+    # AP / AR exception control fields
+    # -------------------------------------------------------------------------
 
     # Main exception result shown to the user
     finance_exception_status = fields.Selection([
@@ -105,11 +105,11 @@ class AccountMove(models.Model):
         string='Invoice Date Later Than Due Date',
         readonly=True,
         copy=False,
-)
-    
-# -------------------------------------------------------------------------
-# Vendor bill readiness check fields
-# -------------------------------------------------------------------------
+    )
+
+    # -------------------------------------------------------------------------
+    # Vendor bill readiness check fields
+    # -------------------------------------------------------------------------
 
     # Final readiness result for vendor bills
     finance_readiness_status = fields.Selection([
@@ -147,7 +147,7 @@ class AccountMove(models.Model):
         string='Missing Attachment',
         readonly=True,
         copy=False,
-)   
+    )
 
     # -------------------------------------------------------------------------
     # Helper methods
@@ -193,84 +193,84 @@ class AccountMove(models.Model):
         logic to avoid conflicts with the existing purchase workflow.
         """
         for move in self:
-        # Skip non-target documents safely
+            # Skip non-target documents safely
             if not move._is_exception_target_document():
                 continue
 
-        issues = []
-        status = 'valid'
+            issues = []
+            status = 'valid'
 
-        # Reset all helper flags before checking again
-        vals = {
-            'finance_missing_due_date': False,
-            'finance_missing_tax': False,
-            'finance_missing_vendor_ref': False,
-            'finance_duplicate_vendor_ref': False,
-            'finance_invalid_date_sequence': False,
-            'finance_exception_summary': False,
-            'finance_exception_status': 'valid',
-        }
+            # Reset all helper flags before checking again
+            vals = {
+                'finance_missing_due_date': False,
+                'finance_missing_tax': False,
+                'finance_missing_vendor_ref': False,
+                'finance_duplicate_vendor_ref': False,
+                'finance_invalid_date_sequence': False,
+                'finance_exception_summary': False,
+                'finance_exception_status': 'valid',
+            }
 
-        # -------------------------------------------------------------
-        # 1) Missing due date
-        # -------------------------------------------------------------
-        if not move.invoice_date_due:
-            vals['finance_missing_due_date'] = True
-            issues.append("Missing due date.")
-            status = 'blocked'
-
-        # -------------------------------------------------------------
-        # 2) Missing tax on invoice/bill lines
-        # -------------------------------------------------------------
-        real_lines = move.invoice_line_ids.filtered(lambda l: not l.display_type)
-
-        has_tax = any(line.tax_ids for line in real_lines)
-
-        if real_lines and not has_tax:
-            vals['finance_missing_tax'] = True
-            issues.append("Missing tax on document lines.")
-            if status != 'blocked':
-                status = 'has_issue'
-
-        # -------------------------------------------------------------
-        # 3) Missing vendor reference (vendor bills only)
-        # -------------------------------------------------------------
-        if move.move_type == 'in_invoice' and not move.ref:
-            vals['finance_missing_vendor_ref'] = True
-            issues.append("Missing vendor reference.")
-            status = 'blocked'
-
-        # -------------------------------------------------------------
-        # 4) Duplicate vendor bill reference (vendor bills only)
-        # -------------------------------------------------------------
-        if move.move_type == 'in_invoice' and move.ref and move.partner_id:
-            duplicate_bill = self.search([
-                ('id', '!=', move.id),
-                ('move_type', '=', 'in_invoice'),
-                ('partner_id', '=', move.partner_id.id),
-                ('ref', '=', move.ref),
-                ('state', '!=', 'cancel'),
-            ], limit=1)
-
-            if duplicate_bill:
-                vals['finance_duplicate_vendor_ref'] = True
-                issues.append("Duplicate vendor bill reference found.")
+            # -------------------------------------------------------------
+            # 1) Missing due date
+            # -------------------------------------------------------------
+            if not move.invoice_date_due:
+                vals['finance_missing_due_date'] = True
+                issues.append("Missing due date.")
                 status = 'blocked'
 
-        # -------------------------------------------------------------
-        # 5) Invoice date later than due date
-        # -------------------------------------------------------------
-        if move.invoice_date and move.invoice_date_due:
-            if move.invoice_date > move.invoice_date_due:
-                vals['finance_invalid_date_sequence'] = True
-                issues.append("Invoice date is later than due date.")
+            # -------------------------------------------------------------
+            # 2) Missing tax on invoice/bill lines
+            # -------------------------------------------------------------
+            real_lines = move.invoice_line_ids.filtered(lambda l: not l.display_type)
+
+            has_tax = any(line.tax_ids for line in real_lines)
+
+            if real_lines and not has_tax:
+                vals['finance_missing_tax'] = True
+                issues.append("Missing tax on document lines.")
+                if status != 'blocked':
+                    status = 'has_issue'
+
+            # -------------------------------------------------------------
+            # 3) Missing vendor reference (vendor bills only)
+            # -------------------------------------------------------------
+            if move.move_type == 'in_invoice' and not move.ref:
+                vals['finance_missing_vendor_ref'] = True
+                issues.append("Missing vendor reference.")
                 status = 'blocked'
 
-        # Final result
-        vals['finance_exception_status'] = status
-        vals['finance_exception_summary'] = "\n".join(issues) if issues else "No exception found."
+            # -------------------------------------------------------------
+            # 4) Duplicate vendor bill reference (vendor bills only)
+            # -------------------------------------------------------------
+            if move.move_type == 'in_invoice' and move.ref and move.partner_id:
+                duplicate_bill = self.search([
+                    ('id', '!=', move.id),
+                    ('move_type', '=', 'in_invoice'),
+                    ('partner_id', '=', move.partner_id.id),
+                    ('ref', '=', move.ref),
+                    ('state', '!=', 'cancel'),
+                ], limit=1)
 
-        move.write(vals)
+                if duplicate_bill:
+                    vals['finance_duplicate_vendor_ref'] = True
+                    issues.append("Duplicate vendor bill reference found.")
+                    status = 'blocked'
+
+            # -------------------------------------------------------------
+            # 5) Invoice date later than due date
+            # -------------------------------------------------------------
+            if move.invoice_date and move.invoice_date_due:
+                if move.invoice_date > move.invoice_date_due:
+                    vals['finance_invalid_date_sequence'] = True
+                    issues.append("Invoice date is later than due date.")
+                    status = 'blocked'
+
+            # Final result
+            vals['finance_exception_status'] = status
+            vals['finance_exception_summary'] = "\n".join(issues) if issues else "No exception found."
+
+            move.write(vals)
     # Added a helper method to determine if the document is a vendor bill for readiness checks    
     def _is_vendor_bill_readiness_target(self):
         """
@@ -397,66 +397,66 @@ class AccountMove(models.Model):
             if not move._is_vendor_bill_readiness_target():
                 continue
 
-        issues = []
-        status = 'ready'
+            issues = []
+            status = 'ready'
 
-        # Reset readiness fields before rechecking
-        vals = {
-            'finance_missing_bill_reference': False,
-            'finance_missing_bill_tax': False,
-            'finance_missing_payment_term': False,
-            'finance_missing_attachment': False,
-            'finance_readiness_summary': False,
-            'finance_readiness_status': 'ready',
-        }
+            # Reset readiness fields before rechecking
+            vals = {
+                'finance_missing_bill_reference': False,
+                'finance_missing_bill_tax': False,
+                'finance_missing_payment_term': False,
+                'finance_missing_attachment': False,
+                'finance_readiness_summary': False,
+                'finance_readiness_status': 'ready',
+            }
 
-        # -------------------------------------------------------------
-        # 1) Vendor bill reference
-        # -------------------------------------------------------------
-        if not move.ref:
-            vals['finance_missing_bill_reference'] = True
-            issues.append("Vendor bill reference is missing.")
-            status = 'incomplete'
+            # -------------------------------------------------------------
+            # 1) Vendor bill reference
+            # -------------------------------------------------------------
+            if not move.ref:
+                vals['finance_missing_bill_reference'] = True
+                issues.append("Vendor bill reference is missing.")
+                status = 'incomplete'
 
-        # -------------------------------------------------------------
-        # 2) Tax on real vendor bill lines
-        # -------------------------------------------------------------
-        real_lines = move.invoice_line_ids.filtered(lambda l: not l.display_type)
-        has_tax = any(line.tax_ids for line in real_lines)
+            # -------------------------------------------------------------
+            # 2) Tax on real vendor bill lines
+            # -------------------------------------------------------------
+            real_lines = move.invoice_line_ids.filtered(lambda l: not l.display_type)
+            has_tax = any(line.tax_ids for line in real_lines)
 
-        if real_lines and not has_tax:
-            vals['finance_missing_bill_tax'] = True
-            issues.append("Tax is missing on vendor bill lines.")
-            status = 'incomplete'
+            if real_lines and not has_tax:
+                vals['finance_missing_bill_tax'] = True
+                issues.append("Tax is missing on vendor bill lines.")
+                status = 'incomplete'
 
-        # -------------------------------------------------------------
-        # 3) Payment term
-        # -------------------------------------------------------------
-        if not move.invoice_payment_term_id:
-            vals['finance_missing_payment_term'] = True
-            issues.append("Payment term is missing.")
-            status = 'incomplete'
+            # -------------------------------------------------------------
+            # 3) Payment term
+            # -------------------------------------------------------------
+            if not move.invoice_payment_term_id:
+                vals['finance_missing_payment_term'] = True
+                issues.append("Payment term is missing.")
+                status = 'incomplete'
 
-        # -------------------------------------------------------------
-        # 4) Attachment
-        # -------------------------------------------------------------
-        attachment_count = Attachment.search_count([
-            ('res_model', '=', 'account.move'),
-            ('res_id', '=', move.id),
-        ])
+            # -------------------------------------------------------------
+            # 4) Attachment
+            # -------------------------------------------------------------
+            attachment_count = Attachment.search_count([
+                ('res_model', '=', 'account.move'),
+                ('res_id', '=', move.id),
+            ])
 
-        if attachment_count == 0:
-            vals['finance_missing_attachment'] = True
-            issues.append("Required attachment is missing.")
-            status = 'incomplete'
+            if attachment_count == 0:
+                vals['finance_missing_attachment'] = True
+                issues.append("Required attachment is missing.")
+                status = 'incomplete'
 
-        # Final readiness result
-        vals['finance_readiness_status'] = status
-        vals['finance_readiness_summary'] = (
-            "\n".join(issues) if issues else "Vendor bill is ready for review."
-        )
+            # Final readiness result
+            vals['finance_readiness_status'] = status
+            vals['finance_readiness_summary'] = (
+                "\n".join(issues) if issues else "Vendor bill is ready for review."
+            )
 
-        move.write(vals)
+            move.write(vals)
 
     # -------------------------------------------------------------------------
     # Posting restriction
@@ -470,27 +470,27 @@ class AccountMove(models.Model):
         This keeps the finance review workflow and exception control separate.
         """
         for move in self:
-        # -------------------------------------------------------------
-        # Feature 1: invoice review workflow
-        # Only for customer invoices
-        # -------------------------------------------------------------
+            # -------------------------------------------------------------
+            # Feature 1: invoice review workflow
+            # Only for customer invoices
+            # -------------------------------------------------------------
             if move._is_review_target_document() and move.finance_review_state != 'approved':
                 raise ValidationError(
-                _("You cannot post this invoice until it is approved.")
-            )
-
-        # -------------------------------------------------------------
-        # Feature 2: AP/AR exception control
-        # Applies to customer invoices and vendor bills
-        # -------------------------------------------------------------
-        if move._is_exception_target_document():
-            # Re-run checks before posting to ensure latest values
-            move._run_finance_exception_checks()
-
-            if move.finance_exception_status == 'blocked':
-                raise ValidationError(
-                    _("You cannot post this document because it has blocked AP/AR exceptions. Please fix them first.")
+                    _("You cannot post this invoice until it is approved.")
                 )
+
+            # -------------------------------------------------------------
+            # Feature 2: AP/AR exception control
+            # Applies to customer invoices and vendor bills
+            # -------------------------------------------------------------
+            if move._is_exception_target_document():
+                # Re-run checks before posting to ensure latest values
+                move._run_finance_exception_checks()
+
+                if move.finance_exception_status == 'blocked':
+                    raise ValidationError(
+                        _("You cannot post this document because it has blocked AP/AR exceptions. Please fix them first.")
+                    )
 
         return super().action_post()
     
