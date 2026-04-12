@@ -20,7 +20,7 @@
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_global_click"
-                             style="background: white; border-radius: 16px; border: 1px solid #e2e6ea; padding: 18px 20px; margin-bottom: 4px;">
+                             style="background: transparent; border-radius: 16px; padding: 18px 20px; margin-bottom: 4px;">
 
                             <!-- Header -->
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 8px;">
