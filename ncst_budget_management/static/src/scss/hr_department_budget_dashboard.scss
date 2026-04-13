@@ -129,3 +129,513 @@
         padding: 0.85rem 0.9rem;
     }
 }
+
+
+
+/* =========================
+   Budget Summary Kanban
+   ========================= */
+
+.o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.ncst_budget_summary_card) {
+    background-color: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0.65rem !important;
+    border-radius: 0 !important;
+}
+
+.ncst_budget_summary_card {
+    background: #ffffff;
+    border: 0.0625rem solid #e6ebf2;
+    border-radius: 1.6rem;
+    box-shadow: 0 0.25rem 1rem rgba(15, 23, 42, 0.05);
+    padding: 1.15rem;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.95rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ncst_budget_summary_card:hover {
+    transform: translateY(-0.0625rem);
+    box-shadow: 0 0.4rem 1.2rem rgba(15, 23, 42, 0.07);
+}
+
+.ncst_budget_summary_header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.ncst_budget_summary_header_main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.ncst_budget_summary_label {
+    font-size: 0.68rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.35;
+}
+
+.ncst_budget_summary_name {
+    font-size: clamp(0.95rem, 1.1vw, 1.2rem);
+    font-weight: 700;
+    color: #1e3a5f;
+    line-height: 1.3;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.ncst_budget_summary_badge_wrap {
+    flex: 0 0 auto;
+}
+
+.ncst_budget_summary_stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.ncst_budget_summary_stat {
+    flex: 1 1 11rem;
+    min-width: 0;
+    border-radius: 1.15rem;
+    padding: 0.9rem 1rem;
+    border: 0.0625rem solid transparent;
+}
+
+.ncst_budget_summary_stat_soft {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+.ncst_budget_summary_stat_primary {
+    background: #f2f7fd;
+    border-color: #d9e7f8;
+}
+
+.ncst_budget_summary_stat_label {
+    font-size: 0.68rem;
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.35;
+    color: #64748b;
+}
+
+.ncst_budget_summary_stat_primary .ncst_budget_summary_stat_label {
+    color: #4f7fb6;
+}
+
+.ncst_budget_summary_stat_value {
+    font-size: clamp(1rem, 1.2vw, 1.4rem);
+    font-weight: 700;
+    line-height: 1.25;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    color: #1e3a5f;
+}
+
+.ncst_budget_summary_stat_primary .ncst_budget_summary_stat_value {
+    color: #0f4c81;
+}
+
+.ncst_budget_summary_meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.ncst_budget_summary_meta_box {
+    flex: 1 1 13rem;
+    min-width: 0;
+    background: #ffffff;
+    border: 0.0625rem solid #e8edf3;
+    border-radius: 1.05rem;
+    padding: 0.85rem 1rem;
+}
+
+.ncst_budget_summary_meta_label {
+    font-size: 0.68rem;
+    color: #94a3b8;
+    margin-bottom: 0.3rem;
+    line-height: 1.35;
+}
+
+.ncst_budget_summary_meta_value {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #1e3a5f;
+    line-height: 1.4;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 768px) {
+    .o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.ncst_budget_summary_card) {
+        margin: 0.5rem !important;
+    }
+
+    .ncst_budget_summary_card {
+        padding: 1rem;
+        border-radius: 1.35rem;
+    }
+
+    .ncst_budget_summary_stat,
+    .ncst_budget_summary_meta_box {
+        padding: 0.85rem 0.9rem;
+    }
+}
+
+
+
+/* =========================
+   Budget Reservation Kanban
+   ========================= */
+
+.o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.ncst_budget_reservation_card) {
+    background-color: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0.65rem !important;
+    border-radius: 0 !important;
+}
+
+.ncst_budget_reservation_card {
+    background: #ffffff;
+    border: 0.0625rem solid #e6ebf2;
+    border-radius: 1.6rem;
+    box-shadow: 0 0.25rem 1rem rgba(15, 23, 42, 0.05);
+    padding: 1.15rem;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.95rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ncst_budget_reservation_card:hover {
+    transform: translateY(-0.0625rem);
+    box-shadow: 0 0.4rem 1.2rem rgba(15, 23, 42, 0.07);
+}
+
+.ncst_budget_reservation_header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.ncst_budget_reservation_header_main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.ncst_budget_reservation_label {
+    font-size: 0.68rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.35;
+}
+
+.ncst_budget_reservation_name {
+    font-size: clamp(0.95rem, 1.1vw, 1.2rem);
+    font-weight: 700;
+    color: #1e3a5f;
+    line-height: 1.3;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.ncst_budget_reservation_badge_wrap {
+    flex: 0 0 auto;
+}
+
+.ncst_budget_reservation_stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.ncst_budget_reservation_stat {
+    flex: 1 1 12rem;
+    min-width: 0;
+    border-radius: 1.15rem;
+    padding: 0.9rem 1rem;
+    border: 0.0625rem solid transparent;
+}
+
+.ncst_budget_reservation_stat_soft {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+.ncst_budget_reservation_stat_primary {
+    background: #f2f7fd;
+    border-color: #d9e7f8;
+}
+
+.ncst_budget_reservation_stat_label {
+    font-size: 0.68rem;
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.35;
+    color: #64748b;
+}
+
+.ncst_budget_reservation_stat_primary .ncst_budget_reservation_stat_label {
+    color: #4f7fb6;
+}
+
+.ncst_budget_reservation_stat_value {
+    font-size: clamp(1rem, 1.2vw, 1.4rem);
+    font-weight: 700;
+    line-height: 1.25;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    color: #1e3a5f;
+}
+
+.ncst_budget_reservation_stat_primary .ncst_budget_reservation_stat_value {
+    color: #0f4c81;
+}
+
+.ncst_budget_reservation_meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.ncst_budget_reservation_meta_box {
+    flex: 1 1 12rem;
+    min-width: 0;
+    background: #ffffff;
+    border: 0.0625rem solid #e8edf3;
+    border-radius: 1.05rem;
+    padding: 0.85rem 1rem;
+}
+
+.ncst_budget_reservation_meta_label {
+    font-size: 0.68rem;
+    color: #94a3b8;
+    margin-bottom: 0.3rem;
+    line-height: 1.35;
+}
+
+.ncst_budget_reservation_meta_value {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #1e3a5f;
+    line-height: 1.4;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 768px) {
+    .o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.ncst_budget_reservation_card) {
+        margin: 0.5rem !important;
+    }
+
+    .ncst_budget_reservation_card {
+        padding: 1rem;
+        border-radius: 1.35rem;
+    }
+
+    .ncst_budget_reservation_stat,
+    .ncst_budget_reservation_meta_box {
+        padding: 0.85rem 0.9rem;
+    }
+}
+
+
+
+/* =========================
+   Department Budget Kanban
+   ========================= */
+
+.o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.ncst_budget_department_card) {
+    background-color: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0.65rem !important;
+    border-radius: 0 !important;
+}
+
+.ncst_budget_department_card {
+    background: #ffffff;
+    border: 0.0625rem solid #e6ebf2;
+    border-radius: 1.6rem;
+    box-shadow: 0 0.25rem 1rem rgba(15, 23, 42, 0.05);
+    padding: 1.15rem;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.95rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ncst_budget_department_card:hover {
+    transform: translateY(-0.0625rem);
+    box-shadow: 0 0.4rem 1.2rem rgba(15, 23, 42, 0.07);
+}
+
+.ncst_budget_department_header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.ncst_budget_department_header_main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.ncst_budget_department_label {
+    font-size: 0.68rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.35;
+}
+
+.ncst_budget_department_name {
+    font-size: clamp(0.95rem, 1.1vw, 1.2rem);
+    font-weight: 700;
+    color: #1e3a5f;
+    line-height: 1.3;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.ncst_budget_department_badge_wrap {
+    flex: 0 0 auto;
+}
+
+.ncst_budget_department_stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.ncst_budget_department_stat {
+    flex: 1 1 11rem;
+    min-width: 0;
+    border-radius: 1.15rem;
+    padding: 0.9rem 1rem;
+    border: 0.0625rem solid transparent;
+}
+
+.ncst_budget_department_stat_soft {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+.ncst_budget_department_stat_primary {
+    background: #f2f7fd;
+    border-color: #d9e7f8;
+}
+
+.ncst_budget_department_stat_label {
+    font-size: 0.68rem;
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.35;
+    color: #64748b;
+}
+
+.ncst_budget_department_stat_primary .ncst_budget_department_stat_label {
+    color: #4f7fb6;
+}
+
+.ncst_budget_department_stat_value {
+    font-size: clamp(1rem, 1.2vw, 1.4rem);
+    font-weight: 700;
+    line-height: 1.25;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    color: #1e3a5f;
+}
+
+.ncst_budget_department_stat_primary .ncst_budget_department_stat_value {
+    color: #0f4c81;
+}
+
+.ncst_budget_department_meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.ncst_budget_department_meta_box {
+    flex: 1 1 12rem;
+    min-width: 0;
+    background: #ffffff;
+    border: 0.0625rem solid #e8edf3;
+    border-radius: 1.05rem;
+    padding: 0.85rem 1rem;
+}
+
+.ncst_budget_department_meta_label {
+    font-size: 0.68rem;
+    color: #94a3b8;
+    margin-bottom: 0.3rem;
+    line-height: 1.35;
+}
+
+.ncst_budget_department_meta_value {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #1e3a5f;
+    line-height: 1.4;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 768px) {
+    .o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.ncst_budget_department_card) {
+        margin: 0.5rem !important;
+    }
+
+    .ncst_budget_department_card {
+        padding: 1rem;
+        border-radius: 1.35rem;
+    }
+
+    .ncst_budget_department_stat,
+    .ncst_budget_department_meta_box {
+        padding: 0.85rem 0.9rem;
+    }
+}
