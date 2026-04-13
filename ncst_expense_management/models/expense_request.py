@@ -95,6 +95,11 @@ class ExpenseRequest(models.Model):
         copy=False,
     )
 
+    can_manager_approve = fields.Boolean(
+    string='Can Manager Approve',
+    compute='_compute_can_manager_approve',
+    )
+
     submitted_by = fields.Many2one('res.users', string='Submitted By', readonly=True)
     submitted_date = fields.Datetime(string='Submitted On', readonly=True)
 
@@ -110,6 +115,16 @@ class ExpenseRequest(models.Model):
     rejected_by = fields.Many2one('res.users', string='Rejected By', readonly=True)
     rejected_date = fields.Datetime(string='Rejected Date', readonly=True)
     rejection_reason = fields.Text(string='Rejection Reason', readonly=True)
+
+
+    @api.depends('state', 'manager_user_id')
+    def _compute_can_manager_approve(self):
+        for record in self:
+            record.can_manager_approve = (
+                record.state == 'submitted'
+                and record.manager_user_id
+                and record.manager_user_id.id == self.env.user.id
+            )
 
     @api.model
     def _default_employee(self):
@@ -180,6 +195,42 @@ class ExpenseRequest(models.Model):
             record.state = 'approved_finance'
             record.finance_approved_by = self.env.user
             record.finance_approval_date = fields.Datetime.now()
+
+    def action_manager_reject(self):
+        for record in self:
+            if record.state != 'submitted':
+                continue
+
+            if not record.manager_user_id or record.manager_user_id != self.env.user:
+                raise ValidationError('Only the employee manager can reject this expense request.')
+
+            if not record.rejection_reason:
+                raise ValidationError('Please enter a rejection reason before rejecting the expense request.')
+
+            record.state = 'rejected'
+            record.rejected_by = self.env.user
+            record.rejected_date = fields.Datetime.now()
+
+
+    def action_open_manager_reject_wizard(self):
+        self.ensure_one()
+
+        if self.state != 'submitted':
+            raise ValidationError('Only submitted expense requests can be rejected.')
+
+        if not self.manager_user_id or self.manager_user_id != self.env.user:
+            raise ValidationError('Only the employee manager can reject this expense request.')
+
+        return {
+            'name': 'Reject Expense Request',
+            'type': 'ir.actions.act_window',
+            'res_model': 'expense.reject.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_expense_request_id': self.id,
+            },
+        }
 
     def action_mark_paid(self):
         for record in self:

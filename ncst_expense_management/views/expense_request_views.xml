@@ -123,10 +123,16 @@
                             invisible="state != 'draft'"/>
 
                     <button name="action_manager_approve"
-                            string="Manager Approve"
+                            string="Approve Requsest"
                             type="object"
                             class="btn-success"
-                            invisible="state != 'submitted'"/>
+                            invisible="not can_manager_approve"/>
+
+                    <button name="action_open_manager_reject_wizard"
+                            string="Manager Reject"
+                            type="object"
+                            class="btn-danger"
+                            invisible="not can_manager_approve"/>
 
                     <button name="action_finance_approve"
                             string="Finance Approve"
@@ -200,6 +206,8 @@
                         </group>
                     </group>
                 </sheet>
+
+                <field name="can_manager_approve" invisible="1"/>
             </form>
         </field>
     </record>
