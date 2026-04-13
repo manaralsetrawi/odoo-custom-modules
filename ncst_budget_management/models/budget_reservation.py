@@ -1,5 +1,5 @@
-from odoo import api, fields, models
-from odoo.exceptions import ValidationError
+from odoo import api, fields, models # type: ignore
+from odoo.exceptions import ValidationError # type: ignore
 
 
 class BudgetReservation(models.Model):
@@ -79,6 +79,16 @@ class BudgetReservation(models.Model):
         string='Status',
         default='draft',
         required=True,
+    )
+
+    can_cancel = fields.Boolean(
+    string='Can Cancel',
+    compute='_compute_action_access',
+    )
+
+    can_mark_used = fields.Boolean(
+        string='Can Mark Used',
+        compute='_compute_action_access',
     )
 
     created_by = fields.Many2one(
@@ -220,6 +230,15 @@ class BudgetReservation(models.Model):
                 )
 
 
+    def _compute_action_access(self):
+        for record in self:
+            is_manager = self.env.user.has_group('ncst_budget_management.group_budget_finance_manager')
+            is_creator = record.created_by == self.env.user
+
+            record.can_cancel = record.state == 'reserved' and (is_creator or is_manager)
+            record.can_mark_used = record.state == 'reserved' and (is_creator or is_manager)
+
+
     def action_submit(self):
         for record in self:
             if record.state != 'draft':
@@ -268,10 +287,13 @@ class BudgetReservation(models.Model):
 
 
     def action_mark_used(self):
-        if not self.env.user.has_group('ncst_budget_management.group_budget_finance_manager'):
-            raise ValidationError('Only the Finance Manager can mark reservations as used.')
-
         for record in self:
+            is_manager = self.env.user.has_group('ncst_budget_management.group_budget_finance_manager')
+            is_creator = record.created_by == self.env.user
+
+            if not (is_manager or is_creator):
+                raise ValidationError('Only the reservation creator or the Finance Manager can mark this reservation as used.')
+
             if record.state != 'reserved':
                 continue
 
@@ -281,7 +303,13 @@ class BudgetReservation(models.Model):
 
     def action_cancel_reservation(self):
         for record in self:
-            if record.state not in ['draft', 'submitted', 'reserved']:
+            is_manager = self.env.user.has_group('ncst_budget_management.group_budget_finance_manager')
+            is_creator = record.created_by == self.env.user
+
+            if not (is_manager or is_creator):
+                raise ValidationError('Only the reservation creator or the Finance Manager can cancel this reservation.')
+
+            if record.state != 'reserved':
                 continue
 
             return {

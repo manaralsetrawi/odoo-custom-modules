@@ -118,19 +118,19 @@
                             class="btn-success"
                             invisible="state != 'submitted'"
                             groups="ncst_budget_management.group_budget_finance_manager"/>
-
+                    
                     <button name="action_mark_used"
                             string="Mark as Used"
                             type="object"
                             class="btn-secondary"
-                            invisible="state != 'reserved'"
-                            groups="ncst_budget_management.group_budget_finance_manager"/>
+                            invisible="not can_mark_used"/>
+
 
                     <button name="action_cancel_reservation"
                             string="Cancel"
                             type="object"
                             class="btn-danger"
-                            invisible="state not in ['draft', 'submitted', 'reserved']"/>
+                            invisible="not can_cancel"/>
 
                     <button name="action_reset_to_draft"
                             string="Reset to Draft"
@@ -161,8 +161,6 @@
 
                     <group string="Tracking Information">
                         <group>
-                            <field name="created_by" readonly="1"/>
-                            <field name="created_date" readonly="1"/>
                             <field name="submitted_by" readonly="1" invisible="state not in ['submitted', 'reserved', 'used', 'cancelled']"/>
                             <field name="submitted_date" readonly="1" invisible="state not in ['submitted', 'reserved', 'used', 'cancelled']"/>
                             <field name="reserved_by" readonly="1" invisible="state not in ['reserved', 'used', 'cancelled']"/>
@@ -178,6 +176,9 @@
                         </group>
                     </group>
                 </sheet>
+
+                <field name="can_cancel" invisible="1"/>
+                <field name="can_mark_used" invisible="1"/>
             </form>
         </field>
     </record>

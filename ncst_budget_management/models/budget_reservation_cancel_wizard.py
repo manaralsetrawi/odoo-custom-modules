@@ -1,5 +1,5 @@
-from odoo import fields, models
-from odoo.exceptions import ValidationError
+from odoo import fields, models # type: ignore
+from odoo.exceptions import ValidationError # type: ignore
 
 
 class BudgetReservationCancelWizard(models.TransientModel):
@@ -22,8 +22,14 @@ class BudgetReservationCancelWizard(models.TransientModel):
         if not self.budget_reservation_id:
             raise ValidationError('No reservation record was found.')
 
-        if self.budget_reservation_id.state not in ['draft', 'submitted', 'reserved']:
-            raise ValidationError('Only draft, submitted, or reserved reservations can be cancelled.')
+        is_manager = self.env.user.has_group('ncst_budget_management.group_budget_finance_manager')
+        is_creator = self.budget_reservation_id.created_by == self.env.user
+
+        if not (is_manager or is_creator):
+            raise ValidationError('Only the reservation creator or the Finance Manager can cancel this reservation.')
+
+        if self.budget_reservation_id.state != 'reserved':
+            raise ValidationError('Only reserved reservations can be cancelled.')
 
         self.budget_reservation_id.write({
             'state': 'cancelled',
