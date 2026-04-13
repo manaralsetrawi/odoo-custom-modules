@@ -1,5 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    
+    <record id="view_expense_type_kanban" model="ir.ui.view">
+        <field name="name">expense.type.kanban</field>
+        <field name="model">expense.type</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile ncst_expense_type_kanban">
+                <field name="name"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click ncst_expense_type_card">
+
+                            <div class="ncst_expense_type_header">
+                                <div class="ncst_expense_type_header_main">
+                                    <div class="ncst_expense_type_label">
+                                        Expense Type
+                                    </div>
+                                    <div class="ncst_expense_type_name">
+                                        <field name="name"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ncst_expense_type_stats">
+                                <div class="ncst_expense_type_stat ncst_expense_type_stat_primary">
+                                    <div class="ncst_expense_type_stat_label">Type Name</div>
+                                    <div class="ncst_expense_type_stat_value">
+                                        <field name="name"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    
     <record id="view_expense_type_list" model="ir.ui.view">
         <field name="name">expense.type.list</field>
         <field name="model">expense.type</field>
