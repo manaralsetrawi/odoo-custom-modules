@@ -130,7 +130,15 @@ class BudgetDepartment(models.Model):
         readonly=True,
     )
 
-    @api.depends('general_budget_id', 'department_id', 'allocated_amount', 'state')
+    @api.depends(
+    'general_budget_id',
+    'department_id',
+    'allocated_amount',
+    'state',
+    'remaining_balance',
+    'reserved_amount',
+    'used_amount',
+    )
     def _compute_budget_summary(self):
         for record in self:
             record._update_budget_summary_values()
@@ -183,13 +191,13 @@ class BudgetDepartment(models.Model):
                     lambda d: d.department_id == record.department_id and d.state == 'approved' and d.id != record.id
                 )
                 current_department_total = sum(
-                    current_department_budgets.mapped('allocated_amount'))
+                    current_department_budgets.mapped('remaining_balance'))
 
             record.general_budget_remaining = general_remaining
 
             if record.state == 'approved':
                 final_department_budget = current_department_total + \
-                    (record.allocated_amount or 0.0)
+                    (record.remaining_balance or 0.0)
                 record.current_department_budget = final_department_budget
                 record.new_department_budget = final_department_budget
             else:
