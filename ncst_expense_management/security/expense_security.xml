@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="group_expense_employee" model="res.groups">
-        <field name="name">Expense Employee</field>
-        <field name="category_id" ref="base.module_category_human_resources"/>
-    </record>
-
-    <record id="group_expense_manager" model="res.groups">
-        <field name="name">Expense Manager</field>
-        <field name="category_id" ref="base.module_category_human_resources"/>
-    </record>
-
     <record id="group_expense_finance" model="res.groups">
         <field name="name">Expense Finance</field>
         <field name="category_id" ref="base.module_category_accounting_accounting"/>

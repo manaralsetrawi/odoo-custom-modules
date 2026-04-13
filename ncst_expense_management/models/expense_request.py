@@ -31,8 +31,16 @@ class ExpenseRequest(models.Model):
     )
 
     manager_id = fields.Many2one(
-        'hr.employee',
-        string='Manager',
+    'hr.employee',
+    string='Manager',
+    compute='_compute_manager_id',
+    store=True,
+    readonly=True,
+)
+
+    manager_user_id = fields.Many2one(
+        'res.users',
+        string='Manager User',
         compute='_compute_manager_id',
         store=True,
         readonly=True,
@@ -110,7 +118,14 @@ class ExpenseRequest(models.Model):
     @api.depends('employee_id')
     def _compute_manager_id(self):
         for record in self:
-            record.manager_id = record.employee_id.parent_id.id if record.employee_id.parent_id else False
+            manager = False
+
+            if record.employee_id and record.employee_id.parent_id:
+                manager = record.employee_id.parent_id
+
+            record.manager_id = manager
+            record.manager_user_id = manager.user_id.id if manager and manager.user_id else False
+
 
     @api.model
     def create(self, vals):
@@ -138,11 +153,17 @@ class ExpenseRequest(models.Model):
             if record.state != 'submitted':
                 continue
 
+            if not record.manager_user_id or record.manager_user_id != self.env.user:
+                raise ValidationError('Only the employee manager can approve this expense request.')
+
             record.state = 'approved_manager'
             record.manager_approved_by = self.env.user
             record.manager_approval_date = fields.Datetime.now()
 
     def action_finance_approve(self):
+        if not self.env.user.has_group('ncst_expense_management.group_expense_finance'):
+            raise ValidationError('Only Finance can approve expense requests.')
+
         for record in self:
             if record.state != 'approved_manager':
                 continue
