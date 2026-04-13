@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_expense_root"
+              name="Expenses"
+              sequence="50"/>
+
+    <menuitem id="menu_expense_request"
+              name="Expense Requests"
+              parent="menu_expense_root"
+              action="action_expense_request"
+              sequence="10"/>
+
+    <menuitem id="menu_expense_type"
+              name="Expense Types"
+              parent="menu_expense_root"
+              action="action_expense_type"
+              sequence="20"/>
+</odoo>

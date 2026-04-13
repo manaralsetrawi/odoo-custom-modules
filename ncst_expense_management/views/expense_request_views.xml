@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_expense_request_list" model="ir.ui.view">
+        <field name="name">expense.request.list</field>
+        <field name="model">expense.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="expense_type_id"/>
+                <field name="amount"/>
+                <field name="expense_date"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_expense_request_form" model="ir.ui.view">
+        <field name="name">expense.request.form</field>
+        <field name="model">expense.request</field>
+        <field name="arch" type="xml">
+            <form string="Expense Request">
+                <header>
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+
+                    <button name="action_manager_approve"
+                            string="Manager Approve"
+                            type="object"
+                            class="btn-success"
+                            invisible="state != 'submitted'"/>
+
+                    <button name="action_finance_approve"
+                            string="Finance Approve"
+                            type="object"
+                            class="btn-success"
+                            invisible="state != 'approved_manager'"/>
+
+                    <button name="action_mark_paid"
+                            string="Mark as Paid"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state != 'approved_finance'"/>
+
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,approved_manager,approved_finance,paid,rejected"/>
+                </header>
+
+                <sheet>
+                    <group string="Expense Information">
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="department_id" readonly="1"/>
+                            <field name="manager_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="expense_type_id" readonly="state != 'draft'"/>
+                            <field name="expense_date" readonly="state != 'draft'"/>
+                            <field name="amount" readonly="state != 'draft'"/>
+                            <field name="currency_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Description">
+                        <field name="description" readonly="state != 'draft'"/>
+                    </group>
+
+                    <group string="Attachment">
+                        <field name="attachment" filename="attachment_name" readonly="state != 'draft'"/>
+                        <field name="attachment_name" invisible="1"/>
+                    </group>
+
+                    <group string="Budget Integration">
+                        <field name="budget_reservation_id" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_expense_request" model="ir.actions.act_window">
+        <field name="name">Expense Requests</field>
+        <field name="res_model">expense.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>
