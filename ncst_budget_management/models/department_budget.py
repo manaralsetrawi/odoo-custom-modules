@@ -1,5 +1,5 @@
-from odoo import api, fields, models
-from odoo.exceptions import ValidationError
+from odoo import api, fields, models # type: ignore
+from odoo.exceptions import ValidationError # type: ignore
 
 
 class BudgetDepartment(models.Model):
