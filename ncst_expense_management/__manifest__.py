@@ -16,6 +16,7 @@
         'security/ir.model.access.csv',
         'views/expense_type_views.xml',
         'views/expense_request_views.xml',
+        'views/expense_reject_wizard_views.xml',
         'views/expense_menu.xml',
     ],
     'assets': {
