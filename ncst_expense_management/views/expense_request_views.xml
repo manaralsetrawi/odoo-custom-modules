@@ -150,7 +150,7 @@
                     <group string="Expense Information">
                         <group>
                             <field name="name" readonly="1"/>
-                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="employee_id" readonly="1"/>
                             <field name="department_id" readonly="1"/>
                             <field name="manager_id" readonly="1"/>
                         </group>
