@@ -359,3 +359,18 @@
         padding: 0.85rem 0.9rem;
     }
 }
+
+/* Inactive Expense Type Card */
+.ncst_expense_type_card.o_kanban_record_inactive {
+    background: #fff5f5;
+    border-color: #f5c2c2;
+}
+
+.ncst_expense_type_card.o_kanban_record_inactive .ncst_expense_type_stat_primary {
+    background: #fdeaea;
+    border-color: #f5c2c2;
+}
+
+.ncst_expense_type_card.o_kanban_record_inactive .ncst_expense_type_name {
+    color: #b42318;
+}
