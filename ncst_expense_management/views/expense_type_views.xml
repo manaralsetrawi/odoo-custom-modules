@@ -13,7 +13,8 @@
 
                 <templates>
                     <t t-name="card">
-                        <div t-attf-class="oe_kanban_global_click ncst_expense_type_card #{'ncst_expense_type_card_inactive' if not record.active.raw_value else 'ncst_expense_type_card_active'}">
+                        <div t-attf-class="oe_kanban_global_click ncst_expense_type_card #{record.active.raw_value ? 'ncst_expense_type_card_active' : 'ncst_expense_type_card_inactive'}">
+
                             <div class="ncst_expense_type_header">
                                 <div class="ncst_expense_type_header_main">
                                     <div class="ncst_expense_type_label">
