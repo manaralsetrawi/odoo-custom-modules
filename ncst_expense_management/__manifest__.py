@@ -18,6 +18,11 @@
         'views/expense_request_views.xml',
         'views/expense_menu.xml',
     ],
+    'assets': {
+    'web.assets_backend': [
+        'ncst_expense_management/static/src/scss/expenses_design.scss',
+        ],
+    },
     'installable': True,
     'application': True,
 }
