@@ -16,15 +16,16 @@
                     <t t-name="card">
                         <div class="oe_kanban_global_click"
                              style="
-                                background: transparent;
-                                border-radius: 1.4rem;
-                                box-shadow: none;
-                                padding: 1.5rem;
-                                margin-bottom: 1rem;
+                                background: #ffffff;
+                                border: 0.0625rem solid #e5eaf0;
+                                border-radius: 1.5rem;
+                                box-shadow: 0 0.25rem 0.9rem rgba(15, 23, 42, 0.04);
+                                padding: 1.15rem;
+                                margin-bottom: 0.9rem;
                                 min-height: 100%;
                                 display: flex;
                                 flex-direction: column;
-                                gap: 1.25rem;
+                                gap: 0.95rem;
                              ">
 
                             <!-- Header -->
@@ -32,26 +33,26 @@
                                 display: flex;
                                 align-items: flex-start;
                                 justify-content: space-between;
-                                gap: 0.9rem;
+                                gap: 0.75rem;
                                 flex-wrap: wrap;
                             ">
                                 <div style="min-width: 0; flex: 1 1 auto;">
                                     <div style="
-                                        font-size: 0.72rem;
+                                        font-size: 0.68rem;
                                         color: #94a3b8;
-                                        margin-bottom: 0.45rem;
+                                        margin-bottom: 0.35rem;
                                         text-transform: uppercase;
                                         letter-spacing: 0.05em;
-                                        line-height: 1.4;
+                                        line-height: 1.35;
                                     ">
                                         Department Budget Overview
                                     </div>
 
                                     <div style="
-                                        font-size: clamp(1.05rem, 0.55vw + 0.95rem, 1.45rem);
+                                        font-size: clamp(0.98rem, 0.45vw + 0.9rem, 1.28rem);
                                         font-weight: 700;
                                         color: #1e3a5f;
-                                        line-height: 1.35;
+                                        line-height: 1.3;
                                         white-space: normal;
                                         word-break: break-word;
                                         overflow-wrap: anywhere;
@@ -65,33 +66,33 @@
                             <div style="
                                 display: flex;
                                 flex-wrap: wrap;
-                                gap: 1rem;
+                                gap: 0.8rem;
                             ">
 
                                 <div style="
-                                    flex: 1 1 14rem;
+                                    flex: 1 1 13rem;
                                     min-width: 0;
-                                    background: #eef6ff;
-                                    border: 0.0625rem solid #cfe3fb;
-                                    border-radius: 1.15rem;
-                                    padding: 1.2rem;
+                                    background: #f2f7fd;
+                                    border: 0.0625rem solid #d8e6f6;
+                                    border-radius: 1.1rem;
+                                    padding: 0.95rem 1rem;
                                 ">
                                     <div style="
-                                        font-size: 0.72rem;
-                                        color: #3b6ea8;
-                                        margin-bottom: 0.5rem;
+                                        font-size: 0.68rem;
+                                        color: #4e7cb3;
+                                        margin-bottom: 0.35rem;
                                         text-transform: uppercase;
                                         letter-spacing: 0.05em;
-                                        line-height: 1.4;
+                                        line-height: 1.35;
                                     ">
                                         Current Budget
                                     </div>
 
                                     <div style="
-                                        font-size: clamp(1.2rem, 0.7vw + 1rem, 1.7rem);
+                                        font-size: clamp(1.02rem, 0.55vw + 0.95rem, 1.45rem);
                                         font-weight: 700;
-                                        color: #0b4f8a;
-                                        line-height: 1.3;
+                                        color: #0f4c81;
+                                        line-height: 1.25;
                                         white-space: normal;
                                         word-break: break-word;
                                         overflow-wrap: anywhere;
@@ -101,29 +102,29 @@
                                 </div>
 
                                 <div style="
-                                    flex: 1 1 12rem;
+                                    flex: 1 1 13rem;
                                     min-width: 0;
                                     background: #f8fafc;
-                                    border: 0.0625rem solid #dde5ee;
-                                    border-radius: 1.15rem;
-                                    padding: 1.2rem;
+                                    border: 0.0625rem solid #e2e8f0;
+                                    border-radius: 1.1rem;
+                                    padding: 0.95rem 1rem;
                                 ">
                                     <div style="
-                                        font-size: 0.72rem;
+                                        font-size: 0.68rem;
                                         color: #64748b;
-                                        margin-bottom: 0.5rem;
+                                        margin-bottom: 0.35rem;
                                         text-transform: uppercase;
                                         letter-spacing: 0.05em;
-                                        line-height: 1.4;
+                                        line-height: 1.35;
                                     ">
                                         Approved Allocations
                                     </div>
 
                                     <div style="
-                                        font-size: clamp(1.2rem, 0.7vw + 1rem, 1.7rem);
+                                        font-size: clamp(1.02rem, 0.55vw + 0.95rem, 1.45rem);
                                         font-weight: 700;
                                         color: #1e3a5f;
-                                        line-height: 1.3;
+                                        line-height: 1.25;
                                         white-space: normal;
                                         word-break: break-word;
                                         overflow-wrap: anywhere;
