@@ -361,20 +361,29 @@
 }
 
 /* Inactive Expense Type Card */
-.o_kanban_record.o_kanban_record_inactive .ncst_expense_type_card {
-    background: #fff5f5;
-    border-color: #f5c2c2;
+.ncst_expense_type_card_inactive {
+    background: #fff5f5 !important;
+    border-color: #f5c2c2 !important;
 }
 
-.o_kanban_record.o_kanban_record_inactive .ncst_expense_type_stat_primary {
-    background: #fdeaea;
-    border-color: #f5c2c2;
+.ncst_expense_type_card_inactive .ncst_expense_type_stat_primary {
+    background: #fdeaea !important;
+    border-color: #f5c2c2 !important;
 }
 
-.o_kanban_record.o_kanban_record_inactive .ncst_expense_type_name {
-    color: #b42318;
+.ncst_expense_type_card_inactive .ncst_expense_type_name {
+    color: #b42318 !important;
 }
 
-.o_kanban_record.o_kanban_record_inactive {
-    opacity: 0.9;
+.ncst_expense_type_card_inactive .ncst_expense_type_stat_label {
+    color: #c24141 !important;
+}
+
+.ncst_expense_type_card_inactive .ncst_expense_type_stat_value {
+    color: #b42318 !important;
+}
+
+.ncst_expense_type_card_inactive .ncst_expense_type_meta_box {
+    border-color: #f1c7c7 !important;
+    background: #fffafa !important;
 }
