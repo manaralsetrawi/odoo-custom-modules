@@ -1,21 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view -->
-    <record id="view_budget_reservation_tree" model="ir.ui.view">
-        <field name="name">budget.reservation.tree</field>
+    <!-- Kanban view -->
+    <record id="view_budget_reservation_kanban" model="ir.ui.view">
+        <field name="name">budget.reservation.kanban</field>
         <field name="model">budget.reservation</field>
         <field name="arch" type="xml">
-            <tree>
+            <kanban class="o_kanban_mobile">
                 <field name="name"/>
                 <field name="date"/>
-                <field name="general_budget_id"/>
                 <field name="department_id"/>
-                <field name="department_budget_id"/>
-                <field name="request_ref"/>
                 <field name="amount"/>
+                <field name="request_ref"/>
                 <field name="state"/>
-            </tree>
+                <field name="created_by"/>
+                <field name="created_date"/>
+
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click"
+                             style="background: transparent; border-radius: 16px; padding: 18px 20px; margin-bottom: 4px;">
+
+                            <!-- Header -->
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 8px;">
+                                <div>
+                                    <div style="font-size: 11px; color: #9ca3af; margin-bottom: 3px;">Budget Reservation</div>
+                                    <div style="font-size: 17px; font-weight: 700; color: #1e3a5f;">
+                                        <field name="name"/>
+                                    </div>
+                                </div>
+                                <div style="flex-shrink: 0;">
+                                    <field name="state" widget="badge"
+                                           decoration-muted="state == 'draft'"
+                                           decoration-warning="state == 'submitted'"
+                                           decoration-info="state == 'reserved'"
+                                           decoration-success="state == 'used'"
+                                           decoration-danger="state == 'cancelled'"/>
+                                </div>
+                            </div>
+
+                            <!-- Stats row -->
+                            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                <div style="flex: 1; min-width: 0; background: #f8fafc; border: 1px solid #e2e6ea; border-radius: 10px; padding: 10px 12px;">
+                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af; margin-bottom: 4px;">Department</div>
+                                    <div style="font-size: 14px; font-weight: 700; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="department_id"/>
+                                    </div>
+                                </div>
+
+                                <div style="flex: 1; min-width: 0; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 10px 12px;">
+                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #059669; margin-bottom: 4px;">Amount</div>
+                                    <div style="font-size: 14px; font-weight: 700; color: #059669; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="amount"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Meta row -->
+                            <div style="display: flex; gap: 8px;">
+                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
+                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Request Ref</div>
+                                    <div style="font-size: 12px; font-weight: 600; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="request_ref"/>
+                                    </div>
+                                </div>
+
+                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
+                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Created By</div>
+                                    <div style="font-size: 12px; font-weight: 600; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="created_by"/>
+                                    </div>
+                                </div>
+
+                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
+                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Created On</div>
+                                    <div style="font-size: 12px; font-weight: 600; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="created_date"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List view -->
+    <record id="view_budget_reservation_list" model="ir.ui.view">
+        <field name="name">budget.reservation.list</field>
+        <field name="model">budget.reservation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="department_id"/>
+                <field name="amount"/>
+                <field name="request_ref"/>
+                <field name="state" widget="badge"
+                       decoration-muted="state == 'draft'"
+                       decoration-warning="state == 'submitted'"
+                       decoration-info="state == 'reserved'"
+                       decoration-success="state == 'used'"
+                       decoration-danger="state == 'cancelled'"/>
+            </list>
         </field>
     </record>
 
@@ -26,45 +115,76 @@
         <field name="arch" type="xml">
             <form string="Budget Reservation">
                 <header>
-                    <button name="action_reserve"
-                            string="Reserve"
+                    <button name="action_submit"
+                            string="Submit / Reserve"
                             type="object"
                             class="btn-primary"
                             invisible="state != 'draft'"/>
+
+                    <button name="action_approve_reservation"
+                            string="Approve Reservation"
+                            type="object"
+                            class="btn-success"
+                            invisible="state != 'submitted'"
+                            groups="ncst_budget_management.group_budget_finance_manager"/>
+
                     <button name="action_mark_used"
                             string="Mark as Used"
                             type="object"
                             class="btn-secondary"
-                            invisible="state != 'reserved'"/>
-                    <button name="action_cancel"
+                            invisible="state != 'reserved'"
+                            groups="ncst_budget_management.group_budget_finance_manager"/>
+
+                    <button name="action_cancel_reservation"
                             string="Cancel"
                             type="object"
-                            invisible="state not in ['draft', 'reserved']"/>
+                            class="btn-danger"
+                            invisible="state not in ['draft', 'submitted', 'reserved']"/>
+
                     <button name="action_reset_to_draft"
                             string="Reset to Draft"
                             type="object"
-                            invisible="state not in ['reserved']"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,reserved,used,cancelled"/>
+                            invisible="state != 'cancelled'"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,reserved,used,cancelled"/>
                 </header>
 
                 <sheet>
-                    <group>
+                    <group string="Reservation Information">
                         <group>
                             <field name="name" readonly="1"/>
-                            <field name="department_budget_id"/>
-                            <field name="department_id" readonly="1"/>
-                            <field name="general_budget_id" readonly="1"/>
+                            <field name="date" readonly="1"/>
+                            <field name="department_id" readonly="state in ['submitted', 'reserved', 'used', 'cancelled']"/>
+                            <field name="department_budget_amount" readonly="1"/>
                         </group>
+
                         <group>
-                            <field name="amount"/>
+                            <field name="amount" readonly="state in ['submitted', 'reserved', 'used', 'cancelled']"/>
                             <field name="currency_id" readonly="1"/>
-                            <field name="date"/>
-                            <field name="request_ref"/>
                         </group>
                     </group>
 
-                    <group>
-                        <field name="description"/>
+                    <group string="Description">
+                        <field name="description" readonly="state in ['submitted', 'reserved', 'used', 'cancelled']"/>
+                    </group>
+
+                    <group string="Tracking Information">
+                        <group>
+                            <field name="created_by" readonly="1"/>
+                            <field name="created_date" readonly="1"/>
+                            <field name="submitted_by" readonly="1" invisible="state not in ['submitted', 'reserved', 'used', 'cancelled']"/>
+                            <field name="submitted_date" readonly="1" invisible="state not in ['submitted', 'reserved', 'used', 'cancelled']"/>
+                            <field name="reserved_by" readonly="1" invisible="state not in ['reserved', 'used', 'cancelled']"/>
+                            <field name="reserved_date" readonly="1" invisible="state not in ['reserved', 'used', 'cancelled']"/>
+                        </group>
+
+                        <group>
+                            <field name="used_by" readonly="1" invisible="state != 'used'"/>
+                            <field name="used_date" readonly="1" invisible="state != 'used'"/>
+                            <field name="cancelled_by" readonly="1" invisible="state != 'cancelled'"/>
+                            <field name="cancelled_date" readonly="1" invisible="state != 'cancelled'"/>
+                            <field name="cancel_reason" readonly="1" invisible="state != 'cancelled'"/>
+                        </group>
                     </group>
                 </sheet>
             </form>
@@ -73,9 +193,17 @@
 
     <!-- Action -->
     <record id="action_budget_reservation" model="ir.actions.act_window">
-        <field name="name">Budget Reservations</field>
+        <field name="name">Reservations</field>
         <field name="res_model">budget.reservation</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first budget reservation
+            </p>
+            <p>
+                Reserve part of an approved department budget before it is finally used or cancelled.
+            </p>
+        </field>
     </record>
 
 </odoo>

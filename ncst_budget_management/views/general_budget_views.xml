@@ -1,20 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view -->
-    <record id="view_budget_general_tree" model="ir.ui.view">
-        <field name="name">budget.general.tree</field>
+    <!-- Dashboard / Kanban view -->
+    <record id="view_budget_general_kanban" model="ir.ui.view">
+        <field name="name">budget.general.kanban</field>
         <field name="model">budget.general</field>
         <field name="arch" type="xml">
-            <tree>
+            <kanban edit="0" delete="0">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="total_amount"/>
+                <field name="allocated_amount"/>
+                <field name="remaining_amount"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="created_by"/>
+
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click"
+                             style="background: transparent; border-radius: 16px; padding: 18px 20px; margin-bottom: 4px;">
+
+                            <!-- Header -->
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 8px;">
+                                <div>
+                                    <div style="font-size: 11px; color: #9ca3af; margin-bottom: 3px;">Yearly Budget Pool</div>
+                                    <div style="font-size: 17px; font-weight: 700; color: #1e3a5f;">
+                                        <field name="name"/>
+                                    </div>
+                                </div>
+                                <div style="flex-shrink: 0;">
+                                    <field name="state" widget="badge"
+                                           decoration-muted="state == 'draft'"
+                                           decoration-success="state == 'active'"
+                                           decoration-danger="state == 'closed'"/>
+                                </div>
+                            </div>
+
+                            <!-- Stats row -->
+                            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                <div style="flex: 1; min-width: 0; background: #f8fafc; border: 1px solid #e2e6ea; border-radius: 10px; padding: 10px 12px;">
+                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af; margin-bottom: 4px;">Total</div>
+                                    <div style="font-size: 14px; font-weight: 700; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="total_amount"/>
+                                    </div>
+                                </div>
+                                <div style="flex: 1; min-width: 0; background: #f8fafc; border: 1px solid #e2e6ea; border-radius: 10px; padding: 10px 12px;">
+                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af; margin-bottom: 4px;">Allocated</div>
+                                    <div style="font-size: 14px; font-weight: 700; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="allocated_amount"/>
+                                    </div>
+                                </div>
+                                <div style="flex: 1; min-width: 0; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 10px 12px;">
+                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #059669; margin-bottom: 4px;">Remaining</div>
+                                    <div style="font-size: 14px; font-weight: 700; color: #059669; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="remaining_amount"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Meta row -->
+                            <div style="display: flex; gap: 8px;">
+                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
+                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Budget Period</div>
+                                    <div style="font-size: 12px; font-weight: 600; color: #1e3a5f;">
+                                        <field name="period_start"/> – <field name="period_end"/>
+                                    </div>
+                                </div>
+                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
+                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Created By</div>
+                                    <div style="font-size: 12px; font-weight: 600; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="created_by"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List view -->
+    <record id="view_budget_general_list" model="ir.ui.view">
+        <field name="name">budget.general.list</field>
+        <field name="model">budget.general</field>
+        <field name="arch" type="xml">
+            <list>
                 <field name="name"/>
                 <field name="period_start"/>
                 <field name="period_end"/>
                 <field name="total_amount"/>
                 <field name="allocated_amount"/>
                 <field name="remaining_amount"/>
-                <field name="state"/>
-            </tree>
+                <field name="state" widget="badge"
+                       decoration-muted="state == 'draft'"
+                       decoration-success="state == 'active'"
+                       decoration-danger="state == 'closed'"/>
+            </list>
         </field>
     </record>
 
@@ -25,65 +109,55 @@
         <field name="arch" type="xml">
             <form string="General Budget">
                 <header>
-                    <button name="action_activate"
-                            string="Activate"
+                    <button name="action_submit"
+                            string="Submit"
                             type="object"
                             class="btn-primary"
-                            invisible="state != 'draft'"/>
-                    <button name="action_close"
-                            string="Close"
-                            type="object"
-                            class="btn-secondary"
-                            invisible="state != 'active'"/>
+                            invisible="state != 'draft'"
+                            groups="ncst_budget_management.group_budget_finance_manager"/>
+
                     <button name="action_reset_to_draft"
                             string="Reset to Draft"
                             type="object"
-                            invisible="state == 'closed' or state == 'draft'"/>
+                            invisible="state == 'draft'"
+                            groups="ncst_budget_management.group_budget_finance_manager"/>
+
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,closed"/>
                 </header>
 
                 <sheet>
                     <group>
                         <group>
-                            <field name="name"/>
-                            <field name="period_start"/>
-                            <field name="period_end"/>
+                            <field name="name" readonly="state in ['active', 'closed']"/>
+                            <field name="period_start" readonly="state in ['active', 'closed']"/>
+                            <field name="period_end" readonly="state in ['active', 'closed']"/>
                             <field name="company_id" readonly="1"/>
-                            <field name="currency_id"/>
+                            <field name="currency_id" readonly="1"/>
                         </group>
                         <group>
                             <field name="total_amount"/>
-                            <field name="allocated_amount" readonly="1"/>
                             <field name="remaining_amount" readonly="1"/>
                             <field name="created_by" readonly="1"/>
                         </group>
                     </group>
-
-                    <notebook>
-                        <page string="Department Budgets">
-                            <field name="department_budget_ids" readonly="1">
-                                <tree>
-                                    <field name="name"/>
-                                    <field name="department_id"/>
-                                    <field name="allocated_amount"/>
-                                    <field name="reserved_amount"/>
-                                    <field name="used_amount"/>
-                                    <field name="remaining_balance"/>
-                                    <field name="state"/>
-                                </tree>
-                            </field>
-                        </page>
-                    </notebook>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <!-- Action -->
-    <record id="action_budget_general" model="ir.actions.act_window">
-        <field name="name">General Budgets</field>
+    <!-- Dashboard action -->
+    <record id="action_budget_summary" model="ir.actions.act_window">
+        <field name="name">Budget Summary</field>
         <field name="res_model">budget.general</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,form,list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No yearly budget pool found
+            </p>
+            <p>
+                Create the yearly budget pool first to start allocating department budgets.
+            </p>
+        </field>
     </record>
 
 </odoo>

@@ -1,21 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view -->
-    <record id="view_budget_department_tree" model="ir.ui.view">
-        <field name="name">budget.department.tree</field>
+    <!-- Dashboard / Kanban view -->
+    <record id="view_budget_department_kanban" model="ir.ui.view">
+        <field name="name">budget.department.kanban</field>
         <field name="model">budget.department</field>
         <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="general_budget_id"/>
+            <kanban class="o_kanban_mobile">
                 <field name="department_id"/>
                 <field name="allocated_amount"/>
-                <field name="reserved_amount"/>
-                <field name="used_amount"/>
-                <field name="remaining_balance"/>
+                <field name="current_department_budget"/>
+                <field name="new_department_budget"/>
+                <field name="general_budget_remaining"/>
                 <field name="state"/>
-            </tree>
+                <field name="requested_by"/>
+                <field name="approved_by"/>
+                <field name="request_date"/>
+
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click"
+                             style="background: transparent; border-radius: 16px; padding: 18px 20px; margin-bottom: 4px;">
+
+                            <!-- Header -->
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 8px;">
+                                <div>
+                                    <div style="font-size: 11px; color: #9ca3af; margin-bottom: 3px;">Department Budget Allocation</div>
+                                    <div style="font-size: 17px; font-weight: 700; color: #1e3a5f;">
+                                        <field name="department_id"/>
+                                    </div>
+                                </div>
+                                <div style="flex-shrink: 0;">
+                                    <field name="state" widget="badge"
+                                           decoration-muted="state == 'draft'"
+                                           decoration-warning="state == 'submitted'"
+                                           decoration-success="state == 'approved'"
+                                           decoration-danger="state == 'rejected'"/>
+                                </div>
+                            </div>
+
+                            <!-- Stats row -->
+                            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                <div style="flex: 1; min-width: 0; background: #f8fafc; border: 1px solid #e2e6ea; border-radius: 10px; padding: 10px 12px;">
+                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af; margin-bottom: 4px;">Assign Amt</div>
+                                    <div style="font-size: 14px; font-weight: 700; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="allocated_amount"/>
+                                    </div>
+                                </div>
+                                <div style="flex: 1; min-width: 0; background: #f8fafc; border: 1px solid #e2e6ea; border-radius: 10px; padding: 10px 12px;">
+                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af; margin-bottom: 4px;">Current</div>
+                                    <div style="font-size: 14px; font-weight: 700; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="current_department_budget"/>
+                                    </div>
+                                </div>
+                                <div style="flex: 1; min-width: 0; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 10px 12px;">
+                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #059669; margin-bottom: 4px;">After</div>
+                                    <div style="font-size: 14px; font-weight: 700; color: #059669; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="new_department_budget"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Meta row -->
+                            <div style="display: flex; gap: 8px;">
+                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
+                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">General Budget Remaining</div>
+                                    <div style="font-size: 13px; font-weight: 700; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="general_budget_remaining"/>
+                                    </div>
+                                </div>
+
+                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
+                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Requested By</div>
+                                    <div style="font-size: 12px; font-weight: 600; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="requested_by"/>
+                                    </div>
+                                </div>
+
+                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
+                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Request Date</div>
+                                    <div style="font-size: 12px; font-weight: 600; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <field name="request_date"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List view -->
+    <record id="view_budget_department_list" model="ir.ui.view">
+        <field name="name">budget.department.list</field>
+        <field name="model">budget.department</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="department_id" string="Department"/>
+                <field name="allocated_amount" string="Assign Amount"/>
+                <field name="current_department_budget" string="Current Budget"/>
+                <field name="state"
+                       widget="badge"
+                       decoration-muted="state == 'draft'"
+                       decoration-warning="state == 'submitted'"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'rejected'"/>
+            </list>
         </field>
     </record>
 
@@ -24,55 +116,80 @@
         <field name="name">budget.department.form</field>
         <field name="model">budget.department</field>
         <field name="arch" type="xml">
-            <form string="Department Budget">
+            <form string="Department Budget Allocation">
                 <header>
-                    <button name="action_activate"
-                            string="Activate"
+                    <button name="action_submit"
+                            string="Submit / Approve"
                             type="object"
                             class="btn-primary"
                             invisible="state != 'draft'"/>
-                    <button name="action_close"
-                            string="Close"
+
+                    <button name="action_approve"
+                            string="Approve"
                             type="object"
-                            class="btn-secondary"
-                            invisible="state != 'active'"/>
+                            class="btn-success"
+                            invisible="state != 'submitted'"
+                            groups="ncst_budget_management.group_budget_finance_manager"/>
+
+                    <button name="action_reject"
+                            string="Reject"
+                            type="object"
+                            class="btn-danger"
+                            invisible="state != 'submitted'"
+                            groups="ncst_budget_management.group_budget_finance_manager"/>
+
                     <button name="action_reset_to_draft"
                             string="Reset to Draft"
                             type="object"
-                            invisible="state == 'closed' or state == 'draft'"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,active,closed"/>
+                            invisible="state != 'rejected'"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected"/>
                 </header>
 
                 <sheet>
-                    <group>
+                    <!-- Request Information -->
+                    <group string="Request Information">
                         <group>
-                            <field name="name"/>
-                            <field name="general_budget_id"/>
-                            <field name="department_id"/>
-                            <field name="company_id" readonly="1"/>
+                            <field name="department_id" readonly="state in ['submitted', 'approved', 'rejected']"/>
+                            <field name="allocated_amount" string="Budget to Assign" readonly="state in ['submitted', 'approved', 'rejected']"/>
+                            <field name="request_date" readonly="1"/>
                         </group>
+
                         <group>
-                            <field name="allocated_amount"/>
-                            <field name="reserved_amount" readonly="1"/>
-                            <field name="used_amount" readonly="1"/>
-                            <field name="remaining_balance" readonly="1"/>
-                            <field name="currency_id" readonly="1"/>
+                            <field name="general_budget_remaining" string="General Budget Remaining" readonly="1"/>
+                            <field name="current_department_budget" string="Current Department Budget" readonly="1"/>
+                            <field name="new_department_budget" string="Department Budget After Assignment" readonly="1"/>
                         </group>
                     </group>
 
-                    <notebook>
-                        <page string="Reservations">
-                            <field name="reservation_ids" readonly="1">
-                                <tree>
-                                    <field name="name"/>
-                                    <field name="date"/>
-                                    <field name="request_ref"/>
-                                    <field name="amount"/>
-                                    <field name="state"/>
-                                </tree>
-                            </field>
-                        </page>
-                    </notebook>
+                    <!-- Approval Information -->
+                    <group string="Approval Information" invisible="state != 'approved'">
+                        <group>
+                            <field name="approved_by" readonly="1"/>
+                            <field name="approval_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Rejection Information -->
+                    <group string="Rejection Information" invisible="state != 'rejected'">
+                        <group>
+                            <field name="rejected_by" readonly="1"/>
+                            <field name="rejection_date" readonly="1"/>
+                            <field name="rejection_reason" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Hidden technical fields -->
+                    <group invisible="1">
+                        <field name="name"/>
+                        <field name="general_budget_id"/>
+                        <field name="company_id"/>
+                        <field name="requested_by"/>
+                        <field name="reserved_amount"/>
+                        <field name="used_amount"/>
+                        <field name="remaining_balance"/>
+                        <field name="currency_id"/>
+                    </group>
                 </sheet>
             </form>
         </field>
@@ -82,7 +199,15 @@
     <record id="action_budget_department" model="ir.actions.act_window">
         <field name="name">Department Budgets</field>
         <field name="res_model">budget.department</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first department budget allocation
+            </p>
+            <p>
+                Select a department, enter the budget amount to assign, and review the current budget values before submission or approval.
+            </p>
+        </field>
     </record>
 
 </odoo>

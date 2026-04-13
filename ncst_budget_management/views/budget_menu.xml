@@ -1,42 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Main Budget Management menu -->
+    <!-- Main root menu -->
     <menuitem
         id="menu_budget_management_root"
         name="Budget Management"
         sequence="10"
-        groups="ncst_budget_management.group_budget_finance_manager"
+        groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
     />
 
-    <!-- General Budgets menu -->
+    <!-- Dashboards parent -->
     <menuitem
-        id="menu_budget_general"
-        name="General Budgets"
+        id="menu_budget_dashboards"
+        name="Dashboards"
         parent="menu_budget_management_root"
-        action="action_budget_general"
         sequence="1"
-        groups="ncst_budget_management.group_budget_finance_manager"
+        groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
     />
 
-    <!-- Department Budgets menu -->
+    <!-- Operations parent -->
+    <menuitem
+        id="menu_budget_operations"
+        name="Operations"
+        parent="menu_budget_management_root"
+        sequence="2"
+        groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
+    />
+
+    <!-- Dashboard children -->
+    <menuitem
+        id="menu_budget_summary"
+        name="Budget Summary"
+        parent="menu_budget_dashboards"
+        action="action_budget_summary"
+        sequence="1"
+        groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
+    />
+
+    <menuitem
+        id="menu_department_budget_overview"
+        name="Department Budget Overview"
+        parent="menu_budget_dashboards"
+        action="action_hr_department_budget_overview"
+        sequence="2"
+        groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
+    />
+
+    <!-- Operations children -->
     <menuitem
         id="menu_budget_department"
-        name="Department Budgets"
-        parent="menu_budget_management_root"
+        name="Budget Requests"
+        parent="menu_budget_operations"
         action="action_budget_department"
-        sequence="2"
-        groups="ncst_budget_management.group_budget_finance_manager"
+        sequence="1"
+        groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
     />
 
-    <!-- Budget Reservations menu -->
     <menuitem
         id="menu_budget_reservation"
         name="Reservations"
-        parent="menu_budget_management_root"
+        parent="menu_budget_operations"
         action="action_budget_reservation"
-        sequence="3"
-        groups="ncst_budget_management.group_budget_finance_manager"
+        sequence="2"
+        groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
     />
 
 </odoo>
