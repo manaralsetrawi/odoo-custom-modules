@@ -7,48 +7,42 @@
         <field name="model">hr.department</field>
         <field name="priority" eval="99"/>
         <field name="arch" type="xml">
-            <kanban create="0" edit="0" delete="0" quick_create="0" class="o_kanban_mobile">
+            <kanban create="0" edit="0" delete="0" quick_create="0" class="o_kanban_mobile ncst_department_budget_kanban">
                 <field name="name"/>
                 <field name="current_budget_amount"/>
                 <field name="approved_allocation_count"/>
 
                 <templates>
                     <t t-name="card">
-                        <div style="background: transparent; border-radius: 18px; box-shadow: none; padding: 20px; margin-bottom: 10px;">
+                        <div class="oe_kanban_global_click ncst_department_budget_card">
 
-                            <!-- Header -->
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                                <div>
-                                    <div style="font-size: 11px; color: #9ca3af; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">
-                                        Department Budget Overview
-                                    </div>
-                                    <div style="font-size: 20px; font-weight: 700; color: #1e3a5f;">
-                                        <field name="name"/>
-                                    </div>
+                            <div class="ncst_department_budget_header">
+                                <div class="ncst_department_budget_label">
+                                    Department Budget Overview
+                                </div>
+                                <div class="ncst_department_budget_name">
+                                    <field name="name"/>
                                 </div>
                             </div>
 
-                            <!-- Main stats -->
-                            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
-
-                                <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 14px; padding: 16px;">
-                                    <div style="font-size: 10px; color: #059669; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
+                            <div class="ncst_department_budget_stats">
+                                <div class="ncst_department_budget_stat ncst_department_budget_stat_primary">
+                                    <div class="ncst_department_budget_stat_label">
                                         Current Budget
                                     </div>
-                                    <div style="font-size: 24px; font-weight: 700; color: #047857; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    <div class="ncst_department_budget_stat_value">
                                         <field name="current_budget_amount"/>
                                     </div>
                                 </div>
 
-                                <div style="background: #f8fafc; border: 1px solid #d9dee3; border-radius: 14px; padding: 16px;">
-                                    <div style="font-size: 10px; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                <div class="ncst_department_budget_stat ncst_department_budget_stat_secondary">
+                                    <div class="ncst_department_budget_stat_label">
                                         Approved Allocations
                                     </div>
-                                    <div style="font-size: 24px; font-weight: 700; color: #1e3a5f;">
+                                    <div class="ncst_department_budget_stat_value">
                                         <field name="approved_allocation_count"/>
                                     </div>
                                 </div>
-
                             </div>
 
                         </div>

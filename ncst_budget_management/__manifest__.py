@@ -34,6 +34,11 @@ Custom module for:
         'views/budget_reservation_cancel_wizard_views.xml',
         'views/budget_menu.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'ncst_budget_management/static/src/scss/hr_department_budget_dashboard.scss',
+        ],
+    },
     'installable': True,
     'application': True,
 }

@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class HrDepartment(models.Model):
@@ -36,5 +36,5 @@ class HrDepartment(models.Model):
             )
 
             department.budget_currency_id = active_budget.currency_id
-            department.current_budget_amount = sum(approved_allocations.mapped('allocated_amount'))
+            department.current_budget_amount = sum(approved_allocations.mapped('remaining_balance'))
             department.approved_allocation_count = len(approved_allocations)
