@@ -6,7 +6,7 @@
         <field name="name">budget.general.kanban</field>
         <field name="model">budget.general</field>
         <field name="arch" type="xml">
-            <kanban edit="0" delete="0">
+            <kanban edit="0" delete="0" class="o_kanban_mobile ncst_budget_summary_kanban">
                 <field name="name"/>
                 <field name="state"/>
                 <field name="total_amount"/>
@@ -18,58 +18,60 @@
 
                 <templates>
                     <t t-name="card">
-                        <div class="oe_kanban_global_click"
-                             style="background: transparent; border-radius: 16px; padding: 18px 20px; margin-bottom: 4px;">
+                        <div class="oe_kanban_global_click ncst_budget_summary_card">
 
-                            <!-- Header -->
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 8px;">
-                                <div>
-                                    <div style="font-size: 11px; color: #9ca3af; margin-bottom: 3px;">Yearly Budget Pool</div>
-                                    <div style="font-size: 17px; font-weight: 700; color: #1e3a5f;">
+                            <div class="ncst_budget_summary_header">
+                                <div class="ncst_budget_summary_header_main">
+                                    <div class="ncst_budget_summary_label">
+                                        Yearly Budget Pool
+                                    </div>
+                                    <div class="ncst_budget_summary_name">
                                         <field name="name"/>
                                     </div>
                                 </div>
-                                <div style="flex-shrink: 0;">
+
+                                <div class="ncst_budget_summary_badge_wrap">
                                     <field name="state" widget="badge"
-                                           decoration-muted="state == 'draft'"
-                                           decoration-success="state == 'active'"
-                                           decoration-danger="state == 'closed'"/>
+                                        decoration-muted="state == 'draft'"
+                                        decoration-success="state == 'active'"
+                                        decoration-danger="state == 'closed'"/>
                                 </div>
                             </div>
 
-                            <!-- Stats row -->
-                            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                                <div style="flex: 1; min-width: 0; background: #f8fafc; border: 1px solid #e2e6ea; border-radius: 10px; padding: 10px 12px;">
-                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af; margin-bottom: 4px;">Total</div>
-                                    <div style="font-size: 14px; font-weight: 700; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <div class="ncst_budget_summary_stats">
+                                <div class="ncst_budget_summary_stat ncst_budget_summary_stat_soft">
+                                    <div class="ncst_budget_summary_stat_label">Total</div>
+                                    <div class="ncst_budget_summary_stat_value">
                                         <field name="total_amount"/>
                                     </div>
                                 </div>
-                                <div style="flex: 1; min-width: 0; background: #f8fafc; border: 1px solid #e2e6ea; border-radius: 10px; padding: 10px 12px;">
-                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af; margin-bottom: 4px;">Allocated</div>
-                                    <div style="font-size: 14px; font-weight: 700; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+
+                                <div class="ncst_budget_summary_stat ncst_budget_summary_stat_soft">
+                                    <div class="ncst_budget_summary_stat_label">Allocated</div>
+                                    <div class="ncst_budget_summary_stat_value">
                                         <field name="allocated_amount"/>
                                     </div>
                                 </div>
-                                <div style="flex: 1; min-width: 0; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 10px 12px;">
-                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #059669; margin-bottom: 4px;">Remaining</div>
-                                    <div style="font-size: 14px; font-weight: 700; color: #059669; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+
+                                <div class="ncst_budget_summary_stat ncst_budget_summary_stat_primary">
+                                    <div class="ncst_budget_summary_stat_label">Remaining</div>
+                                    <div class="ncst_budget_summary_stat_value">
                                         <field name="remaining_amount"/>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Meta row -->
-                            <div style="display: flex; gap: 8px;">
-                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
-                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Budget Period</div>
-                                    <div style="font-size: 12px; font-weight: 600; color: #1e3a5f;">
+                            <div class="ncst_budget_summary_meta">
+                                <div class="ncst_budget_summary_meta_box">
+                                    <div class="ncst_budget_summary_meta_label">Budget Period</div>
+                                    <div class="ncst_budget_summary_meta_value">
                                         <field name="period_start"/> – <field name="period_end"/>
                                     </div>
                                 </div>
-                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
-                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Created By</div>
-                                    <div style="font-size: 12px; font-weight: 600; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+
+                                <div class="ncst_budget_summary_meta_box">
+                                    <div class="ncst_budget_summary_meta_label">Created By</div>
+                                    <div class="ncst_budget_summary_meta_value">
                                         <field name="created_by"/>
                                     </div>
                                 </div>

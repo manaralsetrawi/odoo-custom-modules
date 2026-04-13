@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Kanban view -->
+    <record id="view_expense_type_kanban" model="ir.ui.view">
+        <field name="name">expense.type.kanban</field>
+        <field name="model">expense.type</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile ncst_expense_type_kanban">
+                <field name="name"/>
+                <field name="active"/>
+                <field name="description"/>
+
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="oe_kanban_global_click ncst_expense_type_card #{record.active.raw_value ? 'ncst_expense_type_card_active' : 'ncst_expense_type_card_inactive'}">
+
+                            <div class="ncst_expense_type_header">
+                                <div class="ncst_expense_type_header_main">
+                                    <div class="ncst_expense_type_label">
+                                        Expense Type
+                                    </div>
+                                    <div class="ncst_expense_type_name">
+                                        <field name="name"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ncst_expense_type_stats">
+                                <div class="ncst_expense_type_stat ncst_expense_type_stat_primary">
+                                    <div class="ncst_expense_type_stat_label">Status</div>
+                                    <div class="ncst_expense_type_stat_value">
+                                        <t t-if="record.active.raw_value">Active</t>
+                                        <t t-else="">Inactive</t>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ncst_expense_type_meta">
+                                <div class="ncst_expense_type_meta_box">
+                                    <div class="ncst_expense_type_meta_label">Description</div>
+                                    <div class="ncst_expense_type_meta_value">
+                                        <field name="description"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List view -->
+    <record id="view_expense_type_list" model="ir.ui.view">
+        <field name="name">expense.type.list</field>
+        <field name="model">expense.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_expense_type_form" model="ir.ui.view">
+        <field name="name">expense.type.form</field>
+        <field name="model">expense.type</field>
+        <field name="arch" type="xml">
+            <form string="Expense Type">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="active"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_expense_type" model="ir.actions.act_window">
+        <field name="name">Expense Types</field>
+        <field name="res_model">expense.type</field>
+        <field name="view_mode">kanban,list,form</field>
+
+        <!-- THIS LINE FIXES IT -->
+        <field name="context">{'active_test': False}</field>
+
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first expense type
+            </p>
+            <p>
+                Manage the expense categories used in employee expense requests.
+            </p>
+        </field>
+    </record>
+
+</odoo>

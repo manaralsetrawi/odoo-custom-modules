@@ -6,7 +6,7 @@
         <field name="name">budget.department.kanban</field>
         <field name="model">budget.department</field>
         <field name="arch" type="xml">
-            <kanban class="o_kanban_mobile">
+            <kanban class="o_kanban_mobile ncst_budget_department_kanban">
                 <field name="department_id"/>
                 <field name="allocated_amount"/>
                 <field name="current_department_budget"/>
@@ -19,67 +19,68 @@
 
                 <templates>
                     <t t-name="card">
-                        <div class="oe_kanban_global_click"
-                             style="background: transparent; border-radius: 16px; padding: 18px 20px; margin-bottom: 4px;">
+                        <div class="oe_kanban_global_click ncst_budget_department_card">
 
-                            <!-- Header -->
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 8px;">
-                                <div>
-                                    <div style="font-size: 11px; color: #9ca3af; margin-bottom: 3px;">Department Budget Allocation</div>
-                                    <div style="font-size: 17px; font-weight: 700; color: #1e3a5f;">
+                            <div class="ncst_budget_department_header">
+                                <div class="ncst_budget_department_header_main">
+                                    <div class="ncst_budget_department_label">
+                                        Department Budget Allocation
+                                    </div>
+                                    <div class="ncst_budget_department_name">
                                         <field name="department_id"/>
                                     </div>
                                 </div>
-                                <div style="flex-shrink: 0;">
+
+                                <div class="ncst_budget_department_badge_wrap">
                                     <field name="state" widget="badge"
-                                           decoration-muted="state == 'draft'"
-                                           decoration-warning="state == 'submitted'"
-                                           decoration-success="state == 'approved'"
-                                           decoration-danger="state == 'rejected'"/>
+                                        decoration-muted="state == 'draft'"
+                                        decoration-warning="state == 'submitted'"
+                                        decoration-success="state == 'approved'"
+                                        decoration-danger="state == 'rejected'"/>
                                 </div>
                             </div>
 
-                            <!-- Stats row -->
-                            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                                <div style="flex: 1; min-width: 0; background: #f8fafc; border: 1px solid #e2e6ea; border-radius: 10px; padding: 10px 12px;">
-                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af; margin-bottom: 4px;">Assign Amt</div>
-                                    <div style="font-size: 14px; font-weight: 700; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <div class="ncst_budget_department_stats">
+                                <div class="ncst_budget_department_stat ncst_budget_department_stat_soft">
+                                    <div class="ncst_budget_department_stat_label">Assign Amt</div>
+                                    <div class="ncst_budget_department_stat_value">
                                         <field name="allocated_amount"/>
                                     </div>
                                 </div>
-                                <div style="flex: 1; min-width: 0; background: #f8fafc; border: 1px solid #e2e6ea; border-radius: 10px; padding: 10px 12px;">
-                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af; margin-bottom: 4px;">Current</div>
-                                    <div style="font-size: 14px; font-weight: 700; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+
+                                <div class="ncst_budget_department_stat ncst_budget_department_stat_soft">
+                                    <div class="ncst_budget_department_stat_label">Current</div>
+                                    <div class="ncst_budget_department_stat_value">
                                         <field name="current_department_budget"/>
                                     </div>
                                 </div>
-                                <div style="flex: 1; min-width: 0; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 10px 12px;">
-                                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #059669; margin-bottom: 4px;">After</div>
-                                    <div style="font-size: 14px; font-weight: 700; color: #059669; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+
+                                <div class="ncst_budget_department_stat ncst_budget_department_stat_primary">
+                                    <div class="ncst_budget_department_stat_label">After</div>
+                                    <div class="ncst_budget_department_stat_value">
                                         <field name="new_department_budget"/>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Meta row -->
-                            <div style="display: flex; gap: 8px;">
-                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
-                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">General Budget Remaining</div>
-                                    <div style="font-size: 13px; font-weight: 700; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <div class="ncst_budget_department_meta">
+                                <div class="ncst_budget_department_meta_box">
+                                    <div class="ncst_budget_department_meta_label">General Budget Remaining</div>
+                                    <div class="ncst_budget_department_meta_value">
                                         <field name="general_budget_remaining"/>
                                     </div>
                                 </div>
 
-                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
-                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Requested By</div>
-                                    <div style="font-size: 12px; font-weight: 600; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <div class="ncst_budget_department_meta_box">
+                                    <div class="ncst_budget_department_meta_label">Requested By</div>
+                                    <div class="ncst_budget_department_meta_value">
                                         <field name="requested_by"/>
                                     </div>
                                 </div>
 
-                                <div style="flex: 1; min-width: 0; border: 1px solid #e2e6ea; border-radius: 10px; padding: 8px 12px;">
-                                    <div style="font-size: 9px; color: #9ca3af; margin-bottom: 3px;">Request Date</div>
-                                    <div style="font-size: 12px; font-weight: 600; color: #1e3a5f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <div class="ncst_budget_department_meta_box">
+                                    <div class="ncst_budget_department_meta_label">Request Date</div>
+                                    <div class="ncst_budget_department_meta_value">
                                         <field name="request_date"/>
                                     </div>
                                 </div>
