@@ -324,6 +324,9 @@ class BudgetReservation(models.Model):
             }
 
     def action_reset_to_draft(self):
+        if not self.env.user.has_group('ncst_budget_management.group_budget_finance_manager'):
+            raise ValidationError('Only the Finance Manager can reset reservations to draft.')
+
         for record in self:
             if record.state in ['used', 'reserved']:
                 raise ValidationError('Reserved or used reservations cannot be reset to draft directly.')

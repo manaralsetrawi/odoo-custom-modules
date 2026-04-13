@@ -135,7 +135,8 @@
                     <button name="action_reset_to_draft"
                             string="Reset to Draft"
                             type="object"
-                            invisible="state != 'cancelled'"/>
+                            invisible="state != 'cancelled'"
+                            groups="ncst_budget_management.group_budget_finance_manager"/>
 
                     <field name="state" widget="statusbar" statusbar_visible="draft,submitted,reserved,used,cancelled"/>
                 </header>
