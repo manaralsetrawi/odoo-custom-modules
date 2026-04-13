@@ -82,10 +82,10 @@ class BudgetDepartment(models.Model):
         default='draft',
         required=True,
     )
-    reservation_ids = fields.One2many(
-        'budget.reservation',
+    reservation_line_ids = fields.One2many(
+        'budget.reservation.line',
         'department_budget_id',
-        string='Reservations',
+        string='Reservation Lines',
     )
     company_id = fields.Many2one(
         related='general_budget_id.company_id',
@@ -205,21 +205,28 @@ class BudgetDepartment(models.Model):
                 record.new_department_budget = current_department_total + \
                     (record.allocated_amount or 0.0)
 
-    @api.depends('allocated_amount', 'reservation_ids.amount', 'reservation_ids.state')
+    @api.depends(
+        'allocated_amount',
+        'reservation_line_ids.amount',
+        'reservation_line_ids.reservation_state',
+    )
     def _compute_budget_usage(self):
         for record in self:
             reserved = sum(
-                record.reservation_ids.filtered(
-                    lambda r: r.state == 'reserved').mapped('amount')
+                record.reservation_line_ids.filtered(
+                    lambda l: l.reservation_state == 'reserved'
+                ).mapped('amount')
             )
             used = sum(
-                record.reservation_ids.filtered(
-                    lambda r: r.state == 'used').mapped('amount')
+                record.reservation_line_ids.filtered(
+                    lambda l: l.reservation_state == 'used'
+                ).mapped('amount')
             )
             record.reserved_amount = reserved
             record.used_amount = used
             record.remaining_balance = record.allocated_amount - reserved - used
 
+            
     @api.constrains('allocated_amount')
     def _check_allocated_amount(self):
         for record in self:
