@@ -187,7 +187,6 @@
 
 
 
-
 /* =========================
    Expense Type Kanban
    ========================= */
@@ -301,10 +300,6 @@
     white-space: normal;
     word-break: break-word;
     overflow-wrap: anywhere;
-    color: #1e3a5f;
-}
-
-.ncst_expense_type_stat_primary .ncst_expense_type_stat_value {
     color: #0f4c81;
 }
 
@@ -339,6 +334,13 @@
     white-space: normal;
     word-break: break-word;
     overflow-wrap: anywhere;
+}
+
+/* Make empty description look cleaner */
+.ncst_expense_type_meta_value:empty::before {
+    content: "No description";
+    color: #94a3b8;
+    font-weight: 500;
 }
 
 /* Mobile */
