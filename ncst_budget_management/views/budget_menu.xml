@@ -29,11 +29,20 @@
 
     <!-- Dashboard children -->
     <menuitem
+        id="menu_finance_kpi_dashboard"
+        name="Finance Dashboard"
+        parent="menu_budget_dashboards"
+        action="action_finance_kpi_dashboard"
+        sequence="1"
+        groups="ncst_budget_management.group_budget_finance_manager"
+    />
+   
+    <menuitem
         id="menu_budget_summary"
         name="Budget Summary"
         parent="menu_budget_dashboards"
         action="action_budget_summary"
-        sequence="1"
+        sequence="2"
         groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
     />
 
@@ -42,18 +51,10 @@
         name="Department Budget Overview"
         parent="menu_budget_dashboards"
         action="action_hr_department_budget_overview"
-        sequence="2"
+        sequence="3"
         groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
     />
 
-    <menuitem
-        id="menu_finance_kpi_dashboard"
-        name="Finance Dashboard"
-        parent="menu_budget_dashboards"
-        action="action_finance_kpi_dashboard"
-        sequence="3"
-        groups="ncst_budget_management.group_budget_finance_manager"
-    />
 
     <!-- Operations children -->
 
