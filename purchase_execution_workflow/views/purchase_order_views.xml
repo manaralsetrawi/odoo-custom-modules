@@ -67,6 +67,15 @@
                            placeholder="Summarize the technical and commercial comparison between suppliers..."/>
                 </group>
 
+                <!-- Adding Budget Reservation section -->
+                <group string="Budget Reservation"
+                    invisible="not purchase_request_id">
+                    <group>
+                        <field name="budget_reservation_id" readonly="1"/>
+                        <field name="budget_reservation_status" readonly="1"/>
+                    </group>
+                </group>
+
                 <!-- UI POLISH: clearer business-facing section title -->
                 <group string="Financial Approval Workflow"
                        invisible="not purchase_request_id">

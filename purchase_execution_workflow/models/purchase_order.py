@@ -146,6 +146,21 @@ class PurchaseOrder(models.Model):
         help="Reason entered when the quotation is rejected in the financial approval step.",
     )
 
+    budget_reservation_id = fields.Many2one(
+        'budget.reservation',
+        string='Budget Reservation',
+        readonly=True,
+        copy=False,
+        help='Budget reservation created for this RFQ before financial approval.'
+    )
+
+    budget_reservation_status = fields.Selection(
+        related='budget_reservation_id.state',
+        string='Budget Reservation Status',
+        readonly=True,
+        store=False,
+    )
+
     # -------------------------------------------------------------------------
     # PHASE 4 - PURCHASE ORDER ISSUANCE AND VENDOR ACKNOWLEDGMENT
     # -------------------------------------------------------------------------
@@ -660,6 +675,72 @@ class PurchaseOrder(models.Model):
                     "This procurement cycle cannot be closed yet. Please complete vendor acknowledgment, receipt confirmation, invoice verification, and payment first."
                 )
 
+
+    # -------------------------------------------------------------------------
+    # BUDGET RESERVATION HELPERS
+    # -------------------------------------------------------------------------
+
+    #Check department budget availability and create budget reservation 
+        for order in self:
+            if not order.purchase_request_id:
+                raise ValidationError('Please link this quotation to a Purchase Request before budget checking.')
+
+            if not order.purchase_request_id.department_id:
+                raise ValidationError('The linked Purchase Request does not have a department.')
+
+            if order.budget_reservation_id and order.budget_reservation_id.state in ['reserved', 'used']:
+                continue
+
+            department = order.purchase_request_id.department_id
+
+            department_budgets = self.env['budget.department'].search([
+                ('department_id', '=', department.id),
+                ('state', '=', 'approved'),
+                ('general_budget_id.state', '=', 'active'),
+                ('remaining_balance', '>', 0),
+            ], order='approval_date asc, id asc')
+
+            total_available = sum(department_budgets.mapped('remaining_balance'))
+
+            if order.amount_total > total_available:
+                raise ValidationError(
+                    'Insufficient department budget. The RFQ total amount is greater than the available approved budget balance for this department.'
+                )
+
+            reservation = self.env['budget.reservation'].create({
+                'department_id': department.id,
+                'amount': order.amount_total,
+                'description': f'Automatic reservation for RFQ/PO {order.name}',
+                'request_ref': order.purchase_request_id.name or order.name,
+            })
+
+            # Use teammate allocation logic directly, then mark reserved
+            reservation._allocate_reservation_lines()
+            reservation.state = 'reserved'
+            reservation.submitted_by = self.env.user
+            reservation.submitted_date = fields.Datetime.now()
+            reservation.reserved_by = self.env.user
+            reservation.reserved_date = fields.Datetime.now()
+
+            order.budget_reservation_id = reservation.id
+
+    #Mark budget reservation as used after financial approval
+    def _mark_budget_reservation_used(self):
+        for order in self:
+            if order.budget_reservation_id and order.budget_reservation_id.state == 'reserved':
+                order.budget_reservation_id.action_mark_used()
+    
+    #Cancel budget reservation if RFQ is rejected in financial approval step
+    def _cancel_budget_reservation(self):
+        for order in self:
+            if order.budget_reservation_id and order.budget_reservation_id.state == 'reserved':
+                order.budget_reservation_id.write({
+                    'state': 'cancelled',
+                    'cancelled_by': self.env.user.id,
+                    'cancelled_date': fields.Datetime.now(),
+                    'cancel_reason': 'Cancelled automatically because the RFQ was financially rejected.',
+                })
+    
     # -------------------------------------------------------------------------
     # SAFE FIELD WRITE PROTECTION
     # -------------------------------------------------------------------------
@@ -812,6 +893,8 @@ class PurchaseOrder(models.Model):
             order._check_minimum_quotation_requirement()
             order._check_evaluation_completion()
             order._check_recommended_vendor_selected()
+            #added budget reservation check and creation before allowing submission for financial approval
+            order._check_and_create_budget_reservation()
 
             order.financial_approval_state = "to_approve"
             order.financial_rejection_reason = False
@@ -830,6 +913,8 @@ class PurchaseOrder(models.Model):
             order.financial_approved_by = self.env.user
             order.financial_approved_date = fields.Datetime.now()
             order.financial_rejection_reason = False
+            #mark budget reservation as used after financial approval
+            order._mark_budget_reservation_used()
 
     def action_financial_reject(self):
         self._check_financial_approver_access()
@@ -848,6 +933,8 @@ class PurchaseOrder(models.Model):
             order.financial_approval_state = "rejected"
             order.financial_approved_by = False
             order.financial_approved_date = False
+            #mark budget reservation as cancelled after financial rejection
+            order._cancel_budget_reservation()
 
     def action_mark_vendor_acknowledged(self):
         self._check_procurement_officer_access()
