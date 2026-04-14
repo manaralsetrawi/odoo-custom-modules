@@ -697,7 +697,7 @@ class PurchaseOrder(models.Model):
 
             department = order.purchase_request_id.department_id
 
-            department_budgets = self.env['budget.department'].search([
+            department_budgets = self.env['budget.department'].sudo().search([
                 ('department_id', '=', department.id),
                 ('state', '=', 'approved'),
                 ('general_budget_id.state', '=', 'active'),
@@ -711,31 +711,33 @@ class PurchaseOrder(models.Model):
                     'Insufficient department budget. The RFQ total amount is greater than the available approved budget balance for this department.'
                 )
 
-            reservation = self.env['budget.reservation'].create({
+            reservation = self.env['budget.reservation'].sudo().create({
                 'department_id': department.id,
                 'amount': order.amount_total,
                 'description': f'Automatic reservation for RFQ/PO {order.name}',
                 'request_ref': order.purchase_request_id.name or order.name,
             })
 
-            reservation._allocate_reservation_lines()
-            reservation.state = 'reserved'
-            reservation.submitted_by = self.env.user
-            reservation.submitted_date = fields.Datetime.now()
-            reservation.reserved_by = self.env.user
-            reservation.reserved_date = fields.Datetime.now()
+            reservation.sudo()._allocate_reservation_lines()
+            reservation.sudo().write({
+                'state': 'reserved',
+                'submitted_by': self.env.user.id,
+                'submitted_date': fields.Datetime.now(),
+                'reserved_by': self.env.user.id,
+                'reserved_date': fields.Datetime.now(),
+            })
 
             order.budget_reservation_id = reservation.id
 
     def _mark_budget_reservation_used(self):
         for order in self:
             if order.budget_reservation_id and order.budget_reservation_id.state == 'reserved':
-                order.budget_reservation_id.action_mark_used()
+                order.budget_reservation_id.sudo().action_mark_used()
 
     def _cancel_budget_reservation(self):
         for order in self:
             if order.budget_reservation_id and order.budget_reservation_id.state == 'reserved':
-                order.budget_reservation_id.write({
+                order.budget_reservation_id.sudo().write({
                     'state': 'cancelled',
                     'cancelled_by': self.env.user.id,
                     'cancelled_date': fields.Datetime.now(),
