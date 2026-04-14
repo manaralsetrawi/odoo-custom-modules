@@ -185,8 +185,23 @@
     </record>
 
     <!-- Action -->
-    <record id="action_budget_reservation" model="ir.actions.act_window">
-        <field name="name">Reservations</field>
+    <record id="action_my_budget_reservation" model="ir.actions.act_window">
+        <field name="name">My Reservations</field>
+        <field name="res_model">budget.reservation</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('created_by', '=', uid)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first budget reservation
+            </p>
+            <p>
+                View and manage the reservations you created.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_all_budget_reservation" model="ir.actions.act_window">
+        <field name="name">All Reservations</field>
         <field name="res_model">budget.reservation</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="help" type="html">
