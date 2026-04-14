@@ -1,6 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_expense_type_user,expense.type.user,model_expense_type,base.group_user,1,0,0,0
 access_expense_type_finance,expense.type.finance,model_expense_type,ncst_expense_management.group_expense_finance,1,1,1,1
+access_expense_type_admin,expense.type.admin,model_expense_type,base.group_system,1,1,1,1
 access_expense_request_user,expense.request.user,model_expense_request,base.group_user,1,1,1,0
 access_expense_request_finance,expense.request.finance,model_expense_request,ncst_expense_management.group_expense_finance,1,1,1,1
 access_expense_reject_wizard_user,expense.reject.wizard.user,model_expense_reject_wizard,base.group_user,1,1,1,1

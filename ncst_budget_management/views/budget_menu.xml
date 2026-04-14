@@ -47,22 +47,59 @@
     />
 
     <!-- Operations children -->
+
+    <!-- Budget Requests -->
     <menuitem
-        id="menu_budget_department"
+        id="menu_budget_department_root"
         name="Budget Requests"
         parent="menu_budget_operations"
-        action="action_budget_department"
         sequence="1"
         groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
     />
 
     <menuitem
-        id="menu_budget_reservation"
+        id="menu_my_budget_department"
+        name="My Departments Allocations"
+        parent="menu_budget_department_root"
+        action="action_my_department_budget"
+        sequence="1"
+        groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
+    />
+
+    <menuitem
+        id="menu_all_budget_department"
+        name="All Departments Allocations"
+        parent="menu_budget_department_root"
+        action="action_all_department_budget"
+        sequence="2"
+        groups="ncst_budget_management.group_budget_finance_manager"
+    />
+
+    <!-- Reservations -->
+    <menuitem
+        id="menu_budget_reservation_root"
         name="Reservations"
         parent="menu_budget_operations"
-        action="action_budget_reservation"
         sequence="2"
         groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
+    />
+
+    <menuitem
+        id="menu_my_budget_reservation"
+        name="My Reservations"
+        parent="menu_budget_reservation_root"
+        action="action_my_budget_reservation"
+        sequence="1"
+        groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
+    />
+
+    <menuitem
+        id="menu_all_budget_reservation"
+        name="All Reservations"
+        parent="menu_budget_reservation_root"
+        action="action_all_budget_reservation"
+        sequence="2"
+        groups="ncst_budget_management.group_budget_finance_manager"
     />
 
 </odoo>

@@ -197,16 +197,31 @@
     </record>
 
     <!-- Action -->
-    <record id="action_budget_department" model="ir.actions.act_window">
-        <field name="name">Department Budgets</field>
+    <record id="action_my_department_budget" model="ir.actions.act_window">
+        <field name="name">My Departments Allocations</field>
         <field name="res_model">budget.department</field>
         <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('requested_by', '=', uid)]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first department budget allocation
             </p>
             <p>
-                Select a department, enter the budget amount to assign, and review the current budget values before submission or approval.
+                View and manage the budget allocations you created.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_all_department_budget" model="ir.actions.act_window">
+        <field name="name">All Departments Allocations</field>
+        <field name="res_model">budget.department</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No department budget allocations found
+            </p>
+            <p>
+                View all department budget allocations.
             </p>
         </field>
     </record>
