@@ -17,23 +17,25 @@
 }
 
 .ncst_finance_dashboard_title {
-    font-size: 1.7rem;
+    font-size: 2rem;
     font-weight: 700;
     color: #1e3a5f;
+    line-height: 1.2;
 }
 
 .ncst_finance_dashboard_kpi_grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(180px, 1fr));
+    grid-template-columns: repeat(4, minmax(220px, 1fr));
     gap: 16px;
     margin-bottom: 24px;
 }
 
 .ncst_finance_kpi_box {
     border-radius: 18px;
-    padding: 16px;
+    padding: 18px;
     border: 1px solid transparent;
     background: #ffffff;
+    min-height: 110px;
 }
 
 .ncst_finance_kpi_box_soft {
@@ -58,22 +60,23 @@
 
 .ncst_finance_kpi_label {
     font-size: 0.72rem;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: #64748b;
 }
 
 .ncst_finance_kpi_value {
-    font-size: 1.45rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: #1e3a5f;
     line-height: 1.25;
+    word-break: break-word;
 }
 
 .ncst_finance_kpi_note {
     margin-top: 8px;
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     color: #64748b;
 }
 
@@ -86,7 +89,7 @@
 }
 
 .ncst_finance_chart_title {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: #1e3a5f;
     margin-bottom: 16px;
@@ -95,31 +98,41 @@
 .ncst_finance_chart_canvas_wrap {
     position: relative;
     width: 100%;
-    height: 420px;
+    height: 340px;
 }
 
-@media (max-width: 1200px) {
+.ncst_finance_chart_error {
+    margin-top: 12px;
+    color: #c53030;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 1400px) {
     .ncst_finance_dashboard_kpi_grid {
-        grid-template-columns: repeat(3, minmax(180px, 1fr));
+        grid-template-columns: repeat(3, minmax(220px, 1fr));
     }
 }
 
 @media (max-width: 992px) {
     .ncst_finance_dashboard_kpi_grid {
-        grid-template-columns: repeat(2, minmax(180px, 1fr));
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
     }
 }
 
 @media (max-width: 768px) {
-    .ncst_finance_dashboard_kpi_grid {
-        grid-template-columns: 1fr;
-    }
-
     .ncst_finance_dashboard_page {
         padding: 16px;
     }
 
+    .ncst_finance_dashboard_kpi_grid {
+        grid-template-columns: 1fr;
+    }
+
     .ncst_finance_chart_canvas_wrap {
-        height: 320px;
+        height: 280px;
+    }
+
+    .ncst_finance_dashboard_title {
+        font-size: 1.6rem;
     }
 }
