@@ -321,12 +321,12 @@ class FinanceKPIDashboard(models.Model):
 
         expenses_this_month = expense_request_model.search([
             ('state', '=', 'paid'),
-            ('date', '>=', month_start)
+            ('expense_date', '>=', month_start)
         ])
 
         expenses_this_year = expense_request_model.search([
             ('state', '=', 'paid'),
-            ('date', '>=', year_start)
+            ('expense_date', '>=', year_start)
         ])
 
         total_expenses_month = sum(expenses_this_month.mapped('amount'))
