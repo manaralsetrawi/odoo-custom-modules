@@ -1,7 +1,7 @@
 from odoo import api, fields, models, Command
 from odoo.exceptions import AccessError, ValidationError
-import logging
-_logger = logging.getLogger(__name__)
+# import logging
+# _logger = logging.getLogger(__name__)
 
 
 class PurchaseOrder(models.Model):
@@ -709,11 +709,11 @@ class PurchaseOrder(models.Model):
             total_available = sum(department_budgets.mapped('remaining_balance'))
             
             #debugging lines
-            _logger.warning("PR Department: %s", department.name)
-            _logger.warning("RFQ Amount Total: %s", order.amount_total)
-            _logger.warning("Matched Department Budgets: %s", department_budgets.ids)
-            _logger.warning("Remaining Balances: %s", department_budgets.mapped('remaining_balance'))
-            _logger.warning("Total Available: %s", total_available)
+            # _logger.warning("PR Department: %s", department.name)
+            # _logger.warning("RFQ Amount Total: %s", order.amount_total)
+            # _logger.warning("Matched Department Budgets: %s", department_budgets.ids)
+            # _logger.warning("Remaining Balances: %s", department_budgets.mapped('remaining_balance'))
+            # _logger.warning("Total Available: %s", total_available)
 
             if order.amount_total > total_available:
                 raise ValidationError(
