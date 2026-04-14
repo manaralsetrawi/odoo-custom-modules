@@ -500,3 +500,12 @@ class AccountMove(models.Model):
         for review.
         """
         self._run_vendor_bill_readiness_check()
+
+    def action_generate_finance_summary_report(self):
+        """
+        Generate the Finance Review Summary Report for the current invoice or vendor bill.
+        """
+        self.ensure_one()
+        return self.env.ref(
+            'finance_review_workflow.action_finance_review_summary_report'
+        ).report_action(self)

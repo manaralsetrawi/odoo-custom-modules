@@ -55,6 +55,13 @@
         class="btn-secondary"
         invisible="move_type != 'in_invoice' or state != 'draft'"/>
 
+    <!-- Generate summary report -->
+    <button name="action_generate_finance_summary_report"
+        type="object"
+        string="Generate Summary Report"
+        class="btn-secondary"
+        invisible="move_type not in ('out_invoice', 'in_invoice')"/>
+
 </xpath>
 
             <!-- Show workflow status clearly near invoice date -->
