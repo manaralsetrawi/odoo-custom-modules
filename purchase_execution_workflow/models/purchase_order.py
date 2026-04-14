@@ -680,13 +680,17 @@ class PurchaseOrder(models.Model):
     # BUDGET RESERVATION HELPERS
     # -------------------------------------------------------------------------
 
-    #Check department budget availability and create budget reservation 
+    def _check_and_create_budget_reservation(self):
         for order in self:
             if not order.purchase_request_id:
-                raise ValidationError('Please link this quotation to a Purchase Request before budget checking.')
+                raise ValidationError(
+                    'Please link this quotation to a Purchase Request before budget checking.'
+                )
 
             if not order.purchase_request_id.department_id:
-                raise ValidationError('The linked Purchase Request does not have a department.')
+                raise ValidationError(
+                    'The linked Purchase Request does not have a department.'
+                )
 
             if order.budget_reservation_id and order.budget_reservation_id.state in ['reserved', 'used']:
                 continue
@@ -714,7 +718,6 @@ class PurchaseOrder(models.Model):
                 'request_ref': order.purchase_request_id.name or order.name,
             })
 
-            # Use teammate allocation logic directly, then mark reserved
             reservation._allocate_reservation_lines()
             reservation.state = 'reserved'
             reservation.submitted_by = self.env.user
@@ -724,13 +727,11 @@ class PurchaseOrder(models.Model):
 
             order.budget_reservation_id = reservation.id
 
-    #Mark budget reservation as used after financial approval
     def _mark_budget_reservation_used(self):
         for order in self:
             if order.budget_reservation_id and order.budget_reservation_id.state == 'reserved':
                 order.budget_reservation_id.action_mark_used()
-    
-    #Cancel budget reservation if RFQ is rejected in financial approval step
+
     def _cancel_budget_reservation(self):
         for order in self:
             if order.budget_reservation_id and order.budget_reservation_id.state == 'reserved':
