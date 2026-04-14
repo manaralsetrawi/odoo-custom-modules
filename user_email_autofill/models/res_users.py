@@ -55,6 +55,7 @@ class ResUsers(models.Model):
             # Accounting / Invoicing
             "account.group_account_user",
             "account.group_account_manager",
+            "account.group_account_readonly",
 
             # Inventory
             "stock.group_stock_user",
@@ -93,10 +94,24 @@ class ResUsers(models.Model):
         ]
 
         groups = self.env["res.groups"]
+
         for xml_id in xml_ids:
             group = self.env.ref(xml_id, raise_if_not_found=False)
             if group:
                 groups |= group
+
+        # Backup removal by visible name
+        extra_groups_by_name = self.env["res.groups"].search([
+            ("name", "in", [
+                "Officer: Manage attendances",
+                "Time Off Responsible",
+                "Billing",
+                "Administrator",
+                "Recruitment / Officer",
+                "Recruitment / Manager",
+            ])
+        ])
+        groups |= extra_groups_by_name
 
         return groups
 
