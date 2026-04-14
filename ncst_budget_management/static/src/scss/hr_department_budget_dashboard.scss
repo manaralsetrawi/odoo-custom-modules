@@ -769,3 +769,152 @@
         padding: 0.9rem 0.95rem;
     }
 }
+
+
+.ncst_finance_kpi_dashboard_footer {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding-top: 0.25rem;
+    border-top: 0.0625rem solid #eef2f7;
+    font-size: 0.78rem;
+    color: #64748b;
+    flex-wrap: wrap;
+}
+
+.ncst_finance_kpi_footer_label {
+    font-weight: 600;
+    color: #64748b;
+}
+
+.ncst_finance_kpi_footer_value {
+    color: #1e3a5f;
+}
+
+
+.ncst_finance_kpi_box_warning {
+    background: #fff8eb;
+    border-color: #f6d38b;
+}
+
+.ncst_finance_kpi_box_warning .ncst_finance_kpi_label {
+    color: #b7791f;
+}
+
+.ncst_finance_kpi_box_warning .ncst_finance_kpi_value {
+    color: #975a16;
+}
+
+.ncst_finance_kpi_box_danger {
+    background: #fff1f2;
+    border-color: #f5b7c0;
+}
+
+.ncst_finance_kpi_box_danger .ncst_finance_kpi_label {
+    color: #c53030;
+}
+
+.ncst_finance_kpi_box_danger .ncst_finance_kpi_value {
+    color: #9b2c2c;
+}
+
+.ncst_finance_kpi_note {
+    margin-top: 0.35rem;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    color: #64748b;
+}
+
+
+.ncst_finance_chart_section {
+    background: #ffffff;
+    border: 0.0625rem solid #e8edf3;
+    border-radius: 1.2rem;
+    padding: 1rem 1.05rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.ncst_finance_chart_title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    line-height: 1.35;
+}
+
+.ncst_finance_chart_rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.ncst_finance_chart_row {
+    display: grid;
+    grid-template-columns: 6rem 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.ncst_finance_chart_row_label {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.ncst_finance_chart_row_bar_wrap {
+    height: 0.9rem;
+    background: #eef3f8;
+    border-radius: 999rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.ncst_finance_chart_row_bar {
+    height: 100%;
+    border-radius: 999rem;
+}
+
+.ncst_finance_chart_row_bar_allocated {
+    background: #9ec5f0;
+}
+
+.ncst_finance_chart_row_bar_reserved {
+    background: #5d8fc9;
+}
+
+.ncst_finance_chart_row_bar_paid {
+    background: #1f5b99;
+}
+
+.ncst_finance_chart_row_value {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    min-width: 4.5rem;
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .ncst_finance_chart_row {
+        grid-template-columns: 1fr;
+        gap: 0.45rem;
+    }
+
+    .ncst_finance_chart_row_value {
+        text-align: left;
+    }
+}
+
+
+.ncst_finance_chart_row_bar_expense_type_1 {
+    background: #2563eb;
+}
+
+.ncst_finance_chart_row_bar_expense_type_2 {
+    background: #60a5fa;
+}
+
+.ncst_finance_chart_row_bar_expense_type_3 {
+    background: #93c5fd;
+}
