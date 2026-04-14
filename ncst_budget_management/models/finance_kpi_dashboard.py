@@ -374,3 +374,120 @@ class FinanceKPIDashboard(models.Model):
                 'name': 'Finance KPI Dashboard',
             })
         return dashboard
+    
+
+    @api.model
+    def get_budget_chart_data(self):
+        budget_department_model = self.env['budget.department']
+        budget_reservation_model = self.env['budget.reservation']
+        expense_request_model = self.env['expense.request']
+
+        approved_budget_allocations = budget_department_model.search([
+            ('state', '=', 'approved')
+        ])
+        total_budget_allocated = sum(approved_budget_allocations.mapped('allocated_amount'))
+
+        reserved_reservations = budget_reservation_model.search([
+            ('state', '=', 'reserved')
+        ])
+        total_reserved_amount = sum(reserved_reservations.mapped('amount'))
+
+        paid_expenses = expense_request_model.search([
+            ('state', '=', 'paid')
+        ])
+        total_paid_expenses = sum(paid_expenses.mapped('amount'))
+
+        return {
+            'labels': ['Allocated', 'Reserved', 'Paid'],
+            'values': [
+                total_budget_allocated,
+                total_reserved_amount,
+                total_paid_expenses,
+            ],
+            'currency_symbol': self.env.company.currency_id.symbol or '',
+        }
+    
+
+
+    @api.model
+    def get_finance_dashboard_data(self):
+        budget_department_model = self.env['budget.department']
+        budget_reservation_model = self.env['budget.reservation']
+        expense_request_model = self.env['expense.request']
+
+        approved_budget_allocations = budget_department_model.search([
+            ('state', '=', 'approved')
+        ])
+        total_budget_allocated = sum(approved_budget_allocations.mapped('allocated_amount'))
+
+        reserved_reservations = budget_reservation_model.search([
+            ('state', '=', 'reserved')
+        ])
+        total_reserved_amount = sum(reserved_reservations.mapped('amount'))
+
+        paid_expenses = expense_request_model.search([
+            ('state', '=', 'paid')
+        ])
+        total_paid_expenses = sum(paid_expenses.mapped('amount'))
+
+        pending_expense_requests = expense_request_model.search_count([
+            ('state', 'in', ['submitted', 'approved_manager'])
+        ])
+
+        pending_reservations = budget_reservation_model.search_count([
+            ('state', '=', 'submitted')
+        ])
+
+        approved_reservations = budget_reservation_model.search_count([
+            ('state', '=', 'reserved')
+        ])
+
+        used_reservations = budget_reservation_model.search_count([
+            ('state', '=', 'used')
+        ])
+
+        rejected_budget_requests = budget_department_model.search_count([
+            ('state', '=', 'rejected')
+        ])
+
+        remaining_budget = total_budget_allocated - total_reserved_amount - total_paid_expenses
+
+        if total_budget_allocated > 0:
+            remaining_ratio = remaining_budget / total_budget_allocated
+        else:
+            remaining_ratio = 0
+
+        if remaining_budget <= 0:
+            remaining_budget_status = 'danger'
+            remaining_budget_message = 'Budget exhausted or exceeded'
+        elif remaining_ratio <= 0.2:
+            remaining_budget_status = 'warning'
+            remaining_budget_message = 'Remaining budget is low'
+        else:
+            remaining_budget_status = 'normal'
+            remaining_budget_message = 'Budget level is healthy'
+
+        return {
+            'currency_symbol': self.env.company.currency_id.symbol or '',
+            'kpis': {
+                'total_budget_allocated': total_budget_allocated,
+                'total_reserved_amount': total_reserved_amount,
+                'total_paid_expenses': total_paid_expenses,
+                'remaining_budget': remaining_budget,
+                'remaining_budget_status': remaining_budget_status,
+                'remaining_budget_message': remaining_budget_message,
+                'pending_expense_requests': pending_expense_requests,
+                'pending_reservations': pending_reservations,
+                'approved_reservations': approved_reservations,
+                'used_reservations': used_reservations,
+                'rejected_budget_requests': rejected_budget_requests,
+            },
+            'budget_chart': {
+                'labels': ['Allocated', 'Reserved', 'Paid'],
+                'values': [
+                    total_budget_allocated,
+                    total_reserved_amount,
+                    total_paid_expenses,
+                ],
+            },
+        }

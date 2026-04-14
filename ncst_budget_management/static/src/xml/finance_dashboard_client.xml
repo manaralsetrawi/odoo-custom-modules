@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ncst_budget_management.FinanceDashboardClient">
+        <div class="ncst_finance_dashboard_page" t-if="state.data">
+            <div class="ncst_finance_dashboard_header">
+                <div class="ncst_finance_dashboard_label">Finance Dashboard</div>
+                <div class="ncst_finance_dashboard_title">Budget and Expense Monitoring</div>
+            </div>
+
+            <div class="ncst_finance_dashboard_kpi_grid">
+                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_primary">
+                    <div class="ncst_finance_kpi_label">Total Budget Allocated</div>
+                    <div class="ncst_finance_kpi_value">
+                        <t t-esc="state.data.currency_symbol"/><t t-esc="state.data.kpis.total_budget_allocated"/>
+                    </div>
+                </div>
+
+                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_soft">
+                    <div class="ncst_finance_kpi_label">Total Reserved Amount</div>
+                    <div class="ncst_finance_kpi_value">
+                        <t t-esc="state.data.currency_symbol"/><t t-esc="state.data.kpis.total_reserved_amount"/>
+                    </div>
+                </div>
+
+                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_soft">
+                    <div class="ncst_finance_kpi_label">Total Paid Expenses</div>
+                    <div class="ncst_finance_kpi_value">
+                        <t t-esc="state.data.currency_symbol"/><t t-esc="state.data.kpis.total_paid_expenses"/>
+                    </div>
+                </div>
+
+                <div t-attf-class="ncst_finance_kpi_box #{state.data.kpis.remaining_budget_status === 'danger' ? 'ncst_finance_kpi_box_danger' : state.data.kpis.remaining_budget_status === 'warning' ? 'ncst_finance_kpi_box_warning' : 'ncst_finance_kpi_box_primary'}">
+                    <div class="ncst_finance_kpi_label">Remaining Budget</div>
+                    <div class="ncst_finance_kpi_value">
+                        <t t-esc="state.data.currency_symbol"/><t t-esc="state.data.kpis.remaining_budget"/>
+                    </div>
+                    <div class="ncst_finance_kpi_note">
+                        <t t-esc="state.data.kpis.remaining_budget_message"/>
+                    </div>
+                </div>
+
+                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_soft">
+                    <div class="ncst_finance_kpi_label">Pending Expense Requests</div>
+                    <div class="ncst_finance_kpi_value"><t t-esc="state.data.kpis.pending_expense_requests"/></div>
+                </div>
+
+                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_soft">
+                    <div class="ncst_finance_kpi_label">Pending Reservations</div>
+                    <div class="ncst_finance_kpi_value"><t t-esc="state.data.kpis.pending_reservations"/></div>
+                </div>
+
+                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_soft">
+                    <div class="ncst_finance_kpi_label">Approved Reservations</div>
+                    <div class="ncst_finance_kpi_value"><t t-esc="state.data.kpis.approved_reservations"/></div>
+                </div>
+
+                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_soft">
+                    <div class="ncst_finance_kpi_label">Used Reservations</div>
+                    <div class="ncst_finance_kpi_value"><t t-esc="state.data.kpis.used_reservations"/></div>
+                </div>
+
+                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_soft">
+                    <div class="ncst_finance_kpi_label">Rejected Budget Requests</div>
+                    <div class="ncst_finance_kpi_value"><t t-esc="state.data.kpis.rejected_budget_requests"/></div>
+                </div>
+            </div>
+
+            <div class="ncst_finance_dashboard_chart_card">
+                <div class="ncst_finance_chart_title">Budget vs Reserved vs Paid</div>
+                <div class="ncst_finance_chart_canvas_wrap">
+                    <canvas t-ref="budgetChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>
