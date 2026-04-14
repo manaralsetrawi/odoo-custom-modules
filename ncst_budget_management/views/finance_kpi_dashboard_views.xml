@@ -118,20 +118,20 @@
                                     </div>
                                 </div>
 
-                            </div>
-
-                            <div class="ncst_finance_kpi_box ncst_finance_kpi_box_soft">
-                                <div class="ncst_finance_kpi_label">Expenses This Month</div>
-                                <div class="ncst_finance_kpi_value">
-                                    <field name="expenses_this_month"/>
+                                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_soft">
+                                    <div class="ncst_finance_kpi_label">Expenses This Month</div>
+                                    <div class="ncst_finance_kpi_value">
+                                        <field name="expenses_this_month"/>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="ncst_finance_kpi_box ncst_finance_kpi_box_soft">
-                                <div class="ncst_finance_kpi_label">Expenses This Year</div>
-                                <div class="ncst_finance_kpi_value">
-                                    <field name="expenses_this_year"/>
+                                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_soft">
+                                    <div class="ncst_finance_kpi_label">Expenses This Year</div>
+                                    <div class="ncst_finance_kpi_value">
+                                        <field name="expenses_this_year"/>
+                                    </div>
                                 </div>
+
                             </div>
 
                             <div class="ncst_finance_chart_section">
@@ -142,7 +142,7 @@
                                         <div class="ncst_finance_chart_row_label">Allocated</div>
                                         <div class="ncst_finance_chart_row_bar_wrap">
                                             <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_allocated"
-                                                t-att-style="'width: %s%%;' % (100 if record.budget_chart_allocated.raw_value and record.budget_chart_allocated.raw_value > 0 else 0)"/>
+                                                 t-att-style="'width: ' + (record.budget_chart_allocated.raw_value && record.budget_chart_allocated.raw_value > 0 ? 100 : 0) + '%;'"/>
                                         </div>
                                         <div class="ncst_finance_chart_row_value">
                                             <field name="budget_chart_allocated"/>
@@ -153,7 +153,7 @@
                                         <div class="ncst_finance_chart_row_label">Reserved</div>
                                         <div class="ncst_finance_chart_row_bar_wrap">
                                             <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_reserved"
-                                                t-att-style="'width: %s%%;' % ((record.budget_chart_reserved.raw_value / record.budget_chart_allocated.raw_value * 100) if record.budget_chart_allocated.raw_value and record.budget_chart_allocated.raw_value > 0 else 0)"/>
+                                                 t-att-style="'width: ' + (record.budget_chart_allocated.raw_value && record.budget_chart_allocated.raw_value > 0 ? (record.budget_chart_reserved.raw_value / record.budget_chart_allocated.raw_value * 100) : 0) + '%;'"/>
                                         </div>
                                         <div class="ncst_finance_chart_row_value">
                                             <field name="budget_chart_reserved"/>
@@ -164,7 +164,7 @@
                                         <div class="ncst_finance_chart_row_label">Paid</div>
                                         <div class="ncst_finance_chart_row_bar_wrap">
                                             <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_paid"
-                                                t-att-style="'width: %s%%;' % ((record.budget_chart_paid.raw_value / record.budget_chart_allocated.raw_value * 100) if record.budget_chart_allocated.raw_value and record.budget_chart_allocated.raw_value > 0 else 0)"/>
+                                                 t-att-style="'width: ' + (record.budget_chart_allocated.raw_value && record.budget_chart_allocated.raw_value > 0 ? (record.budget_chart_paid.raw_value / record.budget_chart_allocated.raw_value * 100) : 0) + '%;'"/>
                                         </div>
                                         <div class="ncst_finance_chart_row_value">
                                             <field name="budget_chart_paid"/>
@@ -184,7 +184,7 @@
                                         </div>
                                         <div class="ncst_finance_chart_row_bar_wrap">
                                             <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_expense_type_1"
-                                                t-att-style="'width: 100%;'"/>
+                                                 t-att-style="'width: 100%;'"/>
                                         </div>
                                         <div class="ncst_finance_chart_row_value">
                                             <field name="top_expense_type_1_amount"/>
@@ -197,7 +197,7 @@
                                         </div>
                                         <div class="ncst_finance_chart_row_bar_wrap">
                                             <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_expense_type_2"
-                                                t-att-style="'width: %s%%;' % ((record.top_expense_type_2_amount.raw_value / record.top_expense_type_1_amount.raw_value * 100) if record.top_expense_type_1_amount.raw_value and record.top_expense_type_1_amount.raw_value > 0 else 0)"/>
+                                                 t-att-style="'width: ' + (record.top_expense_type_1_amount.raw_value && record.top_expense_type_1_amount.raw_value > 0 ? (record.top_expense_type_2_amount.raw_value / record.top_expense_type_1_amount.raw_value * 100) : 0) + '%;'"/>
                                         </div>
                                         <div class="ncst_finance_chart_row_value">
                                             <field name="top_expense_type_2_amount"/>
@@ -210,7 +210,7 @@
                                         </div>
                                         <div class="ncst_finance_chart_row_bar_wrap">
                                             <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_expense_type_3"
-                                                t-att-style="'width: %s%%;' % ((record.top_expense_type_3_amount.raw_value / record.top_expense_type_1_amount.raw_value * 100) if record.top_expense_type_1_amount.raw_value and record.top_expense_type_1_amount.raw_value > 0 else 0)"/>
+                                                 t-att-style="'width: ' + (record.top_expense_type_1_amount.raw_value && record.top_expense_type_1_amount.raw_value > 0 ? (record.top_expense_type_3_amount.raw_value / record.top_expense_type_1_amount.raw_value * 100) : 0) + '%;'"/>
                                         </div>
                                         <div class="ncst_finance_chart_row_value">
                                             <field name="top_expense_type_3_amount"/>
@@ -231,7 +231,7 @@
                                         </div>
                                         <div class="ncst_finance_chart_row_bar_wrap">
                                             <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_department_1"
-                                                t-att-style="'width: 100%;'"/>
+                                                 t-att-style="'width: 100%;'"/>
                                         </div>
                                         <div class="ncst_finance_chart_row_value">
                                             <field name="top_expense_department_1_amount"/>
@@ -244,7 +244,7 @@
                                         </div>
                                         <div class="ncst_finance_chart_row_bar_wrap">
                                             <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_department_2"
-                                                t-att-style="'width: %s%%;' % ((record.top_expense_department_2_amount.raw_value / record.top_expense_department_1_amount.raw_value * 100) if record.top_expense_department_1_amount.raw_value and record.top_expense_department_1_amount.raw_value > 0 else 0)"/>
+                                                 t-att-style="'width: ' + (record.top_expense_department_1_amount.raw_value && record.top_expense_department_1_amount.raw_value > 0 ? (record.top_expense_department_2_amount.raw_value / record.top_expense_department_1_amount.raw_value * 100) : 0) + '%;'"/>
                                         </div>
                                         <div class="ncst_finance_chart_row_value">
                                             <field name="top_expense_department_2_amount"/>
@@ -257,7 +257,7 @@
                                         </div>
                                         <div class="ncst_finance_chart_row_bar_wrap">
                                             <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_department_3"
-                                                t-att-style="'width: %s%%;' % ((record.top_expense_department_3_amount.raw_value / record.top_expense_department_1_amount.raw_value * 100) if record.top_expense_department_1_amount.raw_value and record.top_expense_department_1_amount.raw_value > 0 else 0)"/>
+                                                 t-att-style="'width: ' + (record.top_expense_department_1_amount.raw_value && record.top_expense_department_1_amount.raw_value > 0 ? (record.top_expense_department_3_amount.raw_value / record.top_expense_department_1_amount.raw_value * 100) : 0) + '%;'"/>
                                         </div>
                                         <div class="ncst_finance_chart_row_value">
                                             <field name="top_expense_department_3_amount"/>
