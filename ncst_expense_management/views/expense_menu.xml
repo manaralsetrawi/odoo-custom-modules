@@ -4,15 +4,29 @@
               name="Expenses"
               sequence="50"/>
 
-    <menuitem id="menu_expense_request"
-              name="Expense Requests"
+    <menuitem id="menu_my_expense_request"
+              name="My Expense Requests"
               parent="menu_expense_root"
-              action="action_expense_request"
+              action="action_my_expense_request"
               sequence="10"/>
+
+    <menuitem id="menu_expense_pending_manager"
+              name="Pending My Approval"
+              parent="menu_expense_root"
+              action="action_expense_pending_manager_approval"
+              sequence="20"/>
+
+    <menuitem id="menu_expense_finance_review"
+              name="Finance Review"
+              parent="menu_expense_root"
+              action="action_expense_finance_review"
+              sequence="30"
+              groups="ncst_expense_management.group_expense_finance"/>
 
     <menuitem id="menu_expense_type"
               name="Expense Types"
               parent="menu_expense_root"
               action="action_expense_type"
-              sequence="20"/>
+              sequence="40"
+              groups="ncst_expense_management.group_expense_finance"/>
 </odoo>
