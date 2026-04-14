@@ -24,9 +24,9 @@
               groups="ncst_expense_management.group_expense_finance"/>
 
     <menuitem id="menu_expense_type"
-              name="Expense Types"
-              parent="menu_manage_expenses"
-              action="action_expense_type"
-              sequence="20"
-              groups="ncst_expense_management.group_expense_finance"/>
+            name="Expense Types"
+            parent="menu_manage_expenses"
+            action="action_expense_type"
+            sequence="20"
+            groups="base.group_system,ncst_expense_management.group_expense_finance"/>
 </odoo>
