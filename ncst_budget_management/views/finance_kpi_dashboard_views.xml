@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Kanban Dashboard View -->
+    <record id="view_finance_kpi_dashboard_kanban" model="ir.ui.view">
+        <field name="name">finance.kpi.dashboard.kanban</field>
+        <field name="model">finance.kpi.dashboard</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile ncst_finance_kpi_dashboard_kanban" create="0" delete="0">
+                <field name="name"/>
+                <field name="total_budget_allocated"/>
+                <field name="total_reserved_amount"/>
+                <field name="total_paid_expenses"/>
+                <field name="remaining_budget"/>
+                <field name="pending_expense_requests"/>
+                <field name="pending_reservations"/>
+
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click ncst_finance_kpi_dashboard_card">
+
+                            <div class="ncst_finance_kpi_dashboard_header">
+                                <div class="ncst_finance_kpi_dashboard_label">
+                                    Finance Dashboard
+                                </div>
+                                <div class="ncst_finance_kpi_dashboard_title">
+                                    Budget and Expense Monitoring
+                                </div>
+                            </div>
+
+                            <div class="ncst_finance_kpi_dashboard_grid">
+
+                                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_primary">
+                                    <div class="ncst_finance_kpi_label">Total Budget Allocated</div>
+                                    <div class="ncst_finance_kpi_value">
+                                        <field name="total_budget_allocated"/>
+                                    </div>
+                                </div>
+
+                                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_soft">
+                                    <div class="ncst_finance_kpi_label">Total Reserved Amount</div>
+                                    <div class="ncst_finance_kpi_value">
+                                        <field name="total_reserved_amount"/>
+                                    </div>
+                                </div>
+
+                                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_soft">
+                                    <div class="ncst_finance_kpi_label">Total Paid Expenses</div>
+                                    <div class="ncst_finance_kpi_value">
+                                        <field name="total_paid_expenses"/>
+                                    </div>
+                                </div>
+
+                                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_primary">
+                                    <div class="ncst_finance_kpi_label">Remaining Budget</div>
+                                    <div class="ncst_finance_kpi_value">
+                                        <field name="remaining_budget"/>
+                                    </div>
+                                </div>
+
+                                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_soft">
+                                    <div class="ncst_finance_kpi_label">Pending Expense Requests</div>
+                                    <div class="ncst_finance_kpi_value">
+                                        <field name="pending_expense_requests"/>
+                                    </div>
+                                </div>
+
+                                <div class="ncst_finance_kpi_box ncst_finance_kpi_box_soft">
+                                    <div class="ncst_finance_kpi_label">Pending Reservations</div>
+                                    <div class="ncst_finance_kpi_value">
+                                        <field name="pending_reservations"/>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_finance_kpi_dashboard" model="ir.actions.act_window">
+        <field name="name">Finance Dashboard</field>
+        <field name="res_model">finance.kpi.dashboard</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_finance_kpi_dashboard_kanban"/>
+        <field name="context">{'create': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Finance KPI dashboard
+            </p>
+            <p>
+                Monitor total budget, reservations, expenses, and pending financial activities.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -46,6 +46,15 @@
         groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
     />
 
+    <menuitem
+        id="menu_finance_kpi_dashboard"
+        name="Finance Dashboard"
+        parent="menu_budget_dashboards"
+        action="action_finance_kpi_dashboard"
+        sequence="3"
+        groups="ncst_budget_management.group_budget_finance_manager"
+    />
+
     <!-- Operations children -->
 
     <!-- Budget Requests -->
