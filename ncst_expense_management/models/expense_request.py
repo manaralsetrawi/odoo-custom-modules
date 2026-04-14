@@ -174,7 +174,9 @@ class ExpenseRequest(models.Model):
             record.state = 'approved_manager'
             record.manager_approved_by = self.env.user
             record.manager_approval_date = fields.Datetime.now()
-
+    
+    
+    #needed for manar
     def action_finance_approve(self):
         if not self.env.user.has_group('ncst_expense_management.group_expense_finance'):
             raise ValidationError('Only Finance can approve expense requests.')
@@ -196,6 +198,7 @@ class ExpenseRequest(models.Model):
             record.finance_approved_by = self.env.user
             record.finance_approval_date = fields.Datetime.now()
 
+    
     def action_manager_reject(self):
         for record in self:
             if record.state != 'submitted':
@@ -232,6 +235,7 @@ class ExpenseRequest(models.Model):
             },
         }
 
+    #needed for manar
     def action_mark_paid(self):
         for record in self:
             if record.state != 'approved_finance':
