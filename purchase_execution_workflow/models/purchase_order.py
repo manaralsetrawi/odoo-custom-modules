@@ -727,7 +727,6 @@ class PurchaseOrder(models.Model):
                 'request_ref': order.purchase_request_id.name or order.name,
             })
 
-            reservation.sudo()._allocate_reservation_lines()
             reservation.sudo().write({
                 'state': 'reserved',
                 'submitted_by': self.env.user.id,
@@ -735,6 +734,8 @@ class PurchaseOrder(models.Model):
                 'reserved_by': self.env.user.id,
                 'reserved_date': fields.Datetime.now(),
             })
+
+            reservation.sudo()._allocate_reservation_lines()
 
             order.budget_reservation_id = reservation.id
 
