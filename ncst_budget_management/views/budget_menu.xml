@@ -47,13 +47,31 @@
     />
 
     <!-- Operations children -->
+    
     <menuitem
-        id="menu_budget_department"
+        id="menu_budget_department_root"
         name="Budget Requests"
         parent="menu_budget_operations"
-        action="action_budget_department"
         sequence="1"
         groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
+    />
+
+    <menuitem
+        id="menu_my_budget_department"
+        name="My Departments Allocations"
+        parent="menu_budget_department_root"
+        action="action_my_budget_department"
+        sequence="1"
+        groups="ncst_budget_management.group_budget_finance_manager,ncst_budget_management.group_budget_finance_employee"
+    />
+
+    <menuitem
+        id="menu_all_budget_department"
+        name="All Departments Allocations"
+        parent="menu_budget_department_root"
+        action="action_budget_department"
+        sequence="2"
+        groups="ncst_budget_management.group_budget_finance_manager"
     />
 
     <menuitem
