@@ -56,6 +56,7 @@ class ResUsers(models.Model):
             "account.group_account_user",
             "account.group_account_manager",
             "account.group_account_readonly",
+            "account.group_account_invoice",
 
             # Inventory
             "stock.group_stock_user",
@@ -70,8 +71,13 @@ class ResUsers(models.Model):
             "hr.group_hr_manager",
             "hr_holidays.group_hr_holidays_user",
             "hr_holidays.group_hr_holidays_manager",
+
+            # Recruitment
             "hr_recruitment.group_hr_recruitment_user",
             "hr_recruitment.group_hr_recruitment_manager",
+            "hr_recruitment.group_hr_recruitment_interviewer",
+
+            # Attendances
             "hr_attendance.group_hr_attendance_user",
             "hr_attendance.group_hr_attendance_manager",
             "hr_attendance.group_hr_attendance_officer",
@@ -95,6 +101,7 @@ class ResUsers(models.Model):
 
         groups = self.env["res.groups"]
 
+        # Remove by XML ID
         for xml_id in xml_ids:
             group = self.env.ref(xml_id, raise_if_not_found=False)
             if group:
@@ -105,13 +112,20 @@ class ResUsers(models.Model):
             ("name", "in", [
                 "Officer: Manage attendances",
                 "Time Off Responsible",
+                "Interviewer",
                 "Billing",
-                "Administrator",
-                "Recruitment / Officer",
-                "Recruitment / Manager",
             ])
         ])
         groups |= extra_groups_by_name
+
+        # Strong cleanup by category name
+        category_groups = self.env["res.groups"].search([
+            ("category_id.name", "in", [
+                "Recruitment",
+                "Invoicing",
+            ])
+        ])
+        groups |= category_groups
 
         return groups
 
