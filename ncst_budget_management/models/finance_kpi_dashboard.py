@@ -153,6 +153,61 @@ class FinanceKPIDashboard(models.Model):
     )
 
 
+    top_expense_department_1 = fields.Char(
+    string='Top Expense Department 1',
+    compute='_compute_kpi_values',
+    store=False,
+    )
+
+    top_expense_department_1_amount = fields.Monetary(
+        string='Top Expense Department 1 Amount',
+        currency_field='currency_id',
+        compute='_compute_kpi_values',
+        store=False,
+    )
+
+    top_expense_department_2 = fields.Char(
+        string='Top Expense Department 2',
+        compute='_compute_kpi_values',
+        store=False,
+    )
+
+    top_expense_department_2_amount = fields.Monetary(
+        string='Top Expense Department 2 Amount',
+        currency_field='currency_id',
+        compute='_compute_kpi_values',
+        store=False,
+    )
+
+    top_expense_department_3 = fields.Char(
+        string='Top Expense Department 3',
+        compute='_compute_kpi_values',
+        store=False,
+    )
+
+    top_expense_department_3_amount = fields.Monetary(
+        string='Top Expense Department 3 Amount',
+        currency_field='currency_id',
+        compute='_compute_kpi_values',
+        store=False,
+    )
+
+
+    expenses_this_month = fields.Monetary(
+    string='Expenses This Month',
+    currency_field='currency_id',
+    compute='_compute_kpi_values',
+    store=False,
+    )
+
+    expenses_this_year = fields.Monetary(
+        string='Expenses This Year',
+        currency_field='currency_id',
+        compute='_compute_kpi_values',
+        store=False,
+    )
+
+
     @api.depends_context('uid')
     def _compute_kpi_values(self):
         budget_department_model = self.env['budget.department']
@@ -177,7 +232,7 @@ class FinanceKPIDashboard(models.Model):
         expense_type_totals = {}
 
         for expense in paid_expenses:
-            expense_type_name = expense.expense_type_id.name or 'Unknown'
+            expense_type_name = expense.expense_type_id.name if expense.expense_type_id else 'Unknown'
             expense_type_totals[expense_type_name] = expense_type_totals.get(expense_type_name, 0.0) + expense.amount
 
         sorted_expense_types = sorted(
@@ -185,6 +240,28 @@ class FinanceKPIDashboard(models.Model):
             key=lambda item: item[1],
             reverse=True
         )
+
+
+        expense_department_totals = {}
+
+        for expense in paid_expenses:
+            department_name = expense.department_id.name if expense.department_id else 'Unknown'
+            expense_department_totals[department_name] = expense_department_totals.get(department_name, 0.0) + expense.amount
+
+        sorted_expense_departments = sorted(
+            expense_department_totals.items(),
+            key=lambda item: item[1],
+            reverse=True
+        )
+
+        dept_1_name = sorted_expense_departments[0][0] if len(sorted_expense_departments) > 0 else 'No Data'
+        dept_1_amount = sorted_expense_departments[0][1] if len(sorted_expense_departments) > 0 else 0.0
+
+        dept_2_name = sorted_expense_departments[1][0] if len(sorted_expense_departments) > 1 else 'No Data'
+        dept_2_amount = sorted_expense_departments[1][1] if len(sorted_expense_departments) > 1 else 0.0
+
+        dept_3_name = sorted_expense_departments[2][0] if len(sorted_expense_departments) > 2 else 'No Data'
+        dept_3_amount = sorted_expense_departments[2][1] if len(sorted_expense_departments) > 2 else 0.0
 
         top_1_name = sorted_expense_types[0][0] if len(sorted_expense_types) > 0 else 'No Data'
         top_1_amount = sorted_expense_types[0][1] if len(sorted_expense_types) > 0 else 0.0
@@ -235,6 +312,29 @@ class FinanceKPIDashboard(models.Model):
 
         now_value = fields.Datetime.now()
 
+        from datetime import datetime
+
+        today = fields.Date.today()
+
+        month_start = today.replace(day=1)
+        year_start = today.replace(month=1, day=1)
+
+        expenses_this_month = expense_request_model.search([
+            ('state', '=', 'paid'),
+            ('date', '>=', month_start)
+        ])
+
+        expenses_this_year = expense_request_model.search([
+            ('state', '=', 'paid'),
+            ('date', '>=', year_start)
+        ])
+
+        total_expenses_month = sum(expenses_this_month.mapped('amount'))
+        total_expenses_year = sum(expenses_this_year.mapped('amount'))
+
+
+
+
         for record in self:
             record.total_budget_allocated = total_budget_allocated
             record.total_reserved_amount = total_reserved_amount
@@ -257,6 +357,14 @@ class FinanceKPIDashboard(models.Model):
             record.top_expense_type_2_amount = top_2_amount
             record.top_expense_type_3 = top_3_name
             record.top_expense_type_3_amount = top_3_amount
+            record.top_expense_department_1 = dept_1_name
+            record.top_expense_department_1_amount = dept_1_amount
+            record.top_expense_department_2 = dept_2_name
+            record.top_expense_department_2_amount = dept_2_amount
+            record.top_expense_department_3 = dept_3_name
+            record.top_expense_department_3_amount = dept_3_amount
+            record.expenses_this_month = total_expenses_month
+            record.expenses_this_year = total_expenses_year
 
     @api.model
     def get_dashboard_record(self):
