@@ -51,7 +51,6 @@ class ResUsers(models.Model):
         Remove default admin / extra access groups from new users.
         Any group not installed will be skipped safely.
         """
-
         xml_ids = [
             # Accounting / Invoicing
             "account.group_account_user",
@@ -68,28 +67,28 @@ class ResUsers(models.Model):
             # HR
             "hr.group_hr_user",
             "hr.group_hr_manager",
-            "hr_holidays.group_hr_holidays_user",       # Time Off Responsible / user-side access
-            "hr_holidays.group_hr_holidays_manager",    # Time Off Administrator
+            "hr_holidays.group_hr_holidays_user",
+            "hr_holidays.group_hr_holidays_manager",
             "hr_recruitment.group_hr_recruitment_user",
             "hr_recruitment.group_hr_recruitment_manager",
-            "hr_attendance.group_hr_attendance_user",   # Officer: Manage attendances
+            "hr_attendance.group_hr_attendance_user",
             "hr_attendance.group_hr_attendance_manager",
 
             # Purchase standard groups
             "purchase.group_purchase_user",
             "purchase.group_purchase_manager",
 
-            # Technical section extras from your screenshot
+            # Technical section extras
             "base.group_allow_export",
             "uom.group_uom",
 
-            # Add your custom purchase groups here
-            # Replace these XML IDs with the real ones from your custom module
-            "your_module_name.group_purchase_academic_principal",
-            "your_module_name.group_purchase_coordinator",
-            "your_module_name.group_purchase_user",
-            "your_module_name.group_purchase_administrator",
-            "your_module_name.group_purchase_teacher",
+            # Custom Purchase Execution Workflow groups
+            "purchase_execution_workflow.group_procurement_officer",
+            "purchase_execution_workflow.group_finance_director",
+            "purchase_execution_workflow.group_deputy_ceo",
+            "purchase_execution_workflow.group_ceo",
+            "purchase_execution_workflow.group_end_user_receiver",
+            "purchase_execution_workflow.group_invoice_verifier",
         ]
 
         groups = self.env["res.groups"]
@@ -102,7 +101,7 @@ class ResUsers(models.Model):
 
     def _apply_minimum_default_access(self):
         """
-        Keep only minimum internal-user style access for newly created users.
+        Keep only minimum internal user access for newly created users.
         """
         internal_user_group = self.env.ref("base.group_user", raise_if_not_found=False)
         portal_group = self.env.ref("base.group_portal", raise_if_not_found=False)
@@ -113,17 +112,17 @@ class ResUsers(models.Model):
         for user in self:
             commands = []
 
-            # Ensure Internal User
+            # Keep Internal User
             if internal_user_group:
                 commands.append(Command.link(internal_user_group.id))
 
-            # Remove portal/public just in case
+            # Remove Portal / Public if assigned
             if portal_group:
                 commands.append(Command.unlink(portal_group.id))
             if public_group:
                 commands.append(Command.unlink(public_group.id))
 
-            # Remove unwanted default/admin groups
+            # Remove unwanted groups
             for group in groups_to_remove:
                 commands.append(Command.unlink(group.id))
 
@@ -133,7 +132,7 @@ class ResUsers(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            # Auto-generate email/login on create
+            # Auto-generate email/login on create too
             if vals.get("name"):
                 generated_email = self._generate_email_from_name(vals["name"])
                 if generated_email:
@@ -147,8 +146,5 @@ class ResUsers(models.Model):
                 vals["password"] = "NCST@1234"
 
         users = super().create(vals_list)
-
-        # Apply minimum access defaults after create
         users._apply_minimum_default_access()
-
         return users
