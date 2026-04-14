@@ -34,16 +34,11 @@ Custom module for:
         'views/finance_kpi_dashboard_views.xml',
         'views/budget_department_reject_wizard_views.xml',
         'views/budget_reservation_cancel_wizard_views.xml',
-        'views/finance_dashboard_client_action.xml',
         'views/budget_menu.xml',
     ],
     'assets': {
         'web.assets_backend': [
             'ncst_budget_management/static/src/scss/hr_department_budget_dashboard.scss',
-            'ncst_budget_management/static/lib/chartjs/chart.umd.min.js',
-            'ncst_budget_management/static/src/js/finance_dashboard_client.js',
-            'ncst_budget_management/static/src/xml/finance_dashboard_client.xml',
-            'ncst_budget_management/static/src/scss/finance_dashboard_client.scss',
         ],
     },
     'installable': True,
