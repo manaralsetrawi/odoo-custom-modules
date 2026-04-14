@@ -73,6 +73,7 @@ class ResUsers(models.Model):
             "hr_recruitment.group_hr_recruitment_manager",
             "hr_attendance.group_hr_attendance_user",
             "hr_attendance.group_hr_attendance_manager",
+            "hr_attendance.group_hr_attendance_officer",
 
             # Purchase standard groups
             "purchase.group_purchase_user",
