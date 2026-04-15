@@ -983,7 +983,7 @@
 
 .ncst_finance_chart_grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(320px, 1fr));
+    grid-template-columns: repeat(2, minmax(320px, 1fr));
     gap: 1.15rem;
     align-items: stretch;
 }
@@ -1139,6 +1139,11 @@
     padding-top: 0.3rem;
 }
 
+.ncst_finance_chart_section,
+.ncst_finance_visual_chart_section {
+    min-height: 260px;
+}
+
 .ncst_finance_column_item {
     display: flex;
     flex-direction: column;
@@ -1273,8 +1278,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.9rem;
-    justify-content: center;
-    min-height: 100%;
 }
 
 .ncst_finance_flow_track {
@@ -1329,8 +1332,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.95rem;
-    justify-content: center;
-    min-height: 100%;
 }
 
 .ncst_finance_split_meter_bar {
@@ -1422,9 +1423,9 @@
 }
 
 /* responsive */
-@media (max-width: 1500px) {
+@media (max-width: 992px) {
     .ncst_finance_chart_grid {
-        grid-template-columns: repeat(2, minmax(320px, 1fr));
+        grid-template-columns: 1fr;
     }
 }
 
