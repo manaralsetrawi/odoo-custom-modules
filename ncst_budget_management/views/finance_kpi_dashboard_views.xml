@@ -318,6 +318,51 @@
                                     </div>
                                 </div>
 
+                                <div class="ncst_finance_visual_chart_section">
+                                    <div class="ncst_finance_chart_title">Budget Usage Overview</div>
+                                    <div class="ncst_finance_chart_subtitle">
+                                        Reserved, paid, and remaining budget distribution
+                                    </div>
+
+                                    <div class="ncst_finance_donut_layout">
+                                        <div class="ncst_finance_donut_chart"
+                                            t-att-style="
+                                                'background: conic-gradient(' +
+                                                '#f59e0b 0% ' + record.reserved_budget_percentage.raw_value + '%, ' +
+                                                '#10b981 ' + record.reserved_budget_percentage.raw_value + '% ' +
+                                                (record.reserved_budget_percentage.raw_value + record.paid_budget_percentage.raw_value) + '%, ' +
+                                                '#2563eb ' + (record.reserved_budget_percentage.raw_value + record.paid_budget_percentage.raw_value) + '% 100%);'
+                                            ">
+                                            <div class="ncst_finance_donut_center">
+                                                <div class="ncst_finance_donut_center_label">Remaining</div>
+                                                <div class="ncst_finance_donut_center_value">
+                                                    <field name="remaining_budget_percentage"/>%
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="ncst_finance_donut_legend">
+                                            <div class="ncst_finance_donut_legend_item">
+                                                <span class="ncst_finance_donut_dot ncst_finance_donut_dot_reserved"></span>
+                                                <span class="ncst_finance_donut_text">Reserved</span>
+                                                <span class="ncst_finance_donut_amount"><field name="total_reserved_amount"/></span>
+                                            </div>
+
+                                            <div class="ncst_finance_donut_legend_item">
+                                                <span class="ncst_finance_donut_dot ncst_finance_donut_dot_paid"></span>
+                                                <span class="ncst_finance_donut_text">Paid</span>
+                                                <span class="ncst_finance_donut_amount"><field name="total_paid_expenses"/></span>
+                                            </div>
+
+                                            <div class="ncst_finance_donut_legend_item">
+                                                <span class="ncst_finance_donut_dot ncst_finance_donut_dot_remaining"></span>
+                                                <span class="ncst_finance_donut_text">Remaining</span>
+                                                <span class="ncst_finance_donut_amount"><field name="remaining_budget"/></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div class="ncst_finance_kpi_dashboard_footer">
