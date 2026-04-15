@@ -181,35 +181,38 @@
 
 /* ============================================================
    Form statusbar layout
-   Keep default buttons left, custom workflow button right,
-   and preserve visible status progress bar
+   Buttons on first row, status progress on second row
    ============================================================ */
 
 .o_form_view:has(.ncst_rfq_exec_form) .o_form_statusbar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.85rem;
-    padding: 0.7rem 0 0.8rem 0;
+    gap: 0.7rem;
+    padding: 0.7rem 0 0.85rem 0;
     border-bottom: 1px solid #e4ebf5;
     margin-bottom: 0.8rem;
-    min-height: 4.2rem;
 }
 
+/* First row: all buttons */
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons {
     display: flex !important;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem;
-    flex: 1 1 auto;
+    flex: 1 1 100%;
+    width: 100%;
     min-width: 0;
 }
 
-/* Status progress stays visible on the far right */
+/* Second row: status progress only */
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status {
-    flex: 0 1 auto;
-    margin-left: 1rem;
-    align-self: center;
-    min-width: max-content;
+    flex: 0 0 100%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-left: 0;
+    padding-top: 0.15rem;
 }
 
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status .o_arrow_button {
@@ -236,15 +239,15 @@
     text-align: center;
     justify-content: center;
     align-self: center;
-    min-height: 2.9rem;
+    min-height: 2.8rem;
 }
 
-/* Push only the first visible custom workflow button away */
+/* Push first custom workflow button away from default buttons */
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_start {
     margin-left: auto !important;
 }
 
-/* Keep the main action reasonable */
+/* Limit long buttons */
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_success,
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_primary {
     max-width: 18rem;
@@ -303,25 +306,14 @@
 }
 
 @media (max-width: 1200px) {
-    .o_form_view:has(.ncst_rfq_exec_form) .o_form_statusbar {
-        flex-wrap: wrap;
-        align-items: flex-start;
-    }
-
-    .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons {
-        width: 100%;
-    }
-
     .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_start {
         margin-left: 0 !important;
     }
 
     .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status {
-        margin-left: 0;
-        width: 100%;
+        justify-content: flex-start;
     }
 }
-
 /* ============================================================
    Custom workflow buttons only
    Smaller and pushed away from default Odoo buttons
