@@ -264,3 +264,15 @@
     display: none !important;
     content: none !important;
 }
+.o_kanban_renderer .o_kanban_record,
+.o_kanban_view .o_kanban_record {
+    overflow: hidden;
+    border-radius: 22px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.o_kanban_renderer .o_kanban_record > div,
+.o_kanban_view .o_kanban_record > div {
+    background: transparent !important;
+}
