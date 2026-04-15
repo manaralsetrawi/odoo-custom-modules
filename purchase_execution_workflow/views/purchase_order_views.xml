@@ -193,7 +193,7 @@
                 <button name="action_mark_as_recommended"
                         type="object"
                         string="Select Recommended Vendor"
-                        class="rfq_exec_btn rfq_exec_btn_secondary"
+                        class="rfq_exec_btn rfq_exec_btn_secondary rfq_exec_btn_start"
                         groups="purchase_execution_workflow.group_procurement_officer"
                         invisible="not purchase_request_id or state != 'draft'"
                         confirm="Are you sure you want to select this quotation as the recommended vendor?"/>
@@ -201,7 +201,7 @@
                 <button name="action_submit_financial_approval"
                         type="object"
                         string="Send for Financial Approval"
-                        class="rfq_exec_btn rfq_exec_btn_primary"
+                        class="rfq_exec_btn rfq_exec_btn_primary rfq_exec_btn_start"
                         groups="purchase_execution_workflow.group_procurement_officer"
                         invisible="state != 'draft' or not is_recommended_vendor or financial_approval_state == 'approved'"
                         confirm="Are you sure you want to send this quotation for financial approval?"/>
@@ -210,7 +210,7 @@
                 <button name="action_financial_approve"
                         type="object"
                         string="Financially Approve"
-                        class="rfq_exec_btn rfq_exec_btn_success"
+                        class="rfq_exec_btn rfq_exec_btn_success rfq_exec_btn_start"
                         groups="purchase_execution_workflow.group_finance_director"
                         invisible="financial_approval_state != 'to_approve' or required_financial_approval_level != 'finance_director'"
                         confirm="Are you sure you want to approve this quotation financially?"/>
@@ -227,7 +227,7 @@
                 <button name="action_financial_approve"
                         type="object"
                         string="Financially Approve"
-                        class="rfq_exec_btn rfq_exec_btn_success"
+                        class="rfq_exec_btn rfq_exec_btn_success rfq_exec_btn_start"
                         groups="purchase_execution_workflow.group_deputy_ceo"
                         invisible="financial_approval_state != 'to_approve' or required_financial_approval_level != 'deputy_ceo'"
                         confirm="Are you sure you want to approve this quotation financially?"/>
@@ -244,7 +244,7 @@
                 <button name="action_financial_approve"
                         type="object"
                         string="Financially Approve"
-                        class="rfq_exec_btn rfq_exec_btn_success"
+                        class="rfq_exec_btn rfq_exec_btn_success rfq_exec_btn_start"
                         groups="purchase_execution_workflow.group_ceo"
                         invisible="financial_approval_state != 'to_approve' or required_financial_approval_level != 'ceo'"
                         confirm="Are you sure you want to approve this quotation financially?"/>
@@ -260,7 +260,7 @@
                 <button name="action_mark_vendor_acknowledged"
                         type="object"
                         string="Record Vendor Acknowledgment"
-                        class="rfq_exec_btn rfq_exec_btn_secondary"
+                        class="rfq_exec_btn rfq_exec_btn_secondary rfq_exec_btn_start"
                         groups="purchase_execution_workflow.group_procurement_officer"
                         invisible="state != 'purchase' or vendor_ack_received"
                         confirm="Are you sure you want to record vendor acknowledgment for this purchase order?"/>
@@ -268,7 +268,7 @@
                 <button name="action_mark_procurement_closed"
                         type="object"
                         string="Close Procurement Process"
-                        class="rfq_exec_btn rfq_exec_btn_success"
+                        class="rfq_exec_btn rfq_exec_btn_success rfq_exec_btn_start"
                         invisible="state != 'purchase' or procurement_closure_state == 'closed'"
                         confirm="Are you sure you want to close this procurement process?"/>
             </xpath>

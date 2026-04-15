@@ -202,7 +202,7 @@
 
 /* ============================================================
    Custom workflow buttons only
-   Smaller and less visually heavy
+   Smaller and pushed away from default Odoo buttons
    ============================================================ */
 
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons {
@@ -221,20 +221,24 @@
     border: 1px solid transparent;
     box-shadow: none;
     transition: all 0.15s ease;
-    max-width: 18rem;
+    max-width: 16rem;
     white-space: normal;
     text-align: center;
     justify-content: center;
-    margin-left: 0.2rem;
+}
+
+/* This pushes the first visible custom workflow action group to the right */
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_start {
+    margin-left: auto !important;
 }
 
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn:hover {
     transform: translateY(-1px);
 }
 
-/* make custom workflow buttons visually different from Odoo defaults */
+/* keep default Odoo buttons on the left with their normal spacing */
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .btn:not(.rfq_exec_btn) {
-    margin-right: 0.15rem;
+    margin-right: 0.1rem;
 }
 
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_primary {
@@ -285,16 +289,13 @@
     color: #943737;
 }
 
-/* long action like Close Procurement Process */
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_success,
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_primary {
-    max-width: 16rem;
-}
-
 @media (max-width: 1100px) {
     .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn {
         max-width: 100%;
-        width: auto;
+    }
+
+    .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_start {
+        margin-left: 0 !important;
     }
 }
 
