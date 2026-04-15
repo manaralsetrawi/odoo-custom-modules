@@ -37,6 +37,16 @@
                 <field name="expenses_this_month"/>
                 <field name="expenses_this_year"/>
                 <field name="general_budget_this_year"/>
+                <field name="reserved_budget_percentage"/>
+                <field name="paid_budget_percentage"/>
+                <field name="remaining_budget_percentage"/>
+                <field name="average_monthly_expense"/>
+                <field name="projected_annual_expense"/>
+                <field name="highest_expense_type_summary"/>
+                <field name="highest_department_summary"/>
+                <field name="alert_1"/>
+                <field name="alert_2"/>
+                <field name="alert_3"/>
 
                 <templates>
                     <t t-name="card">
@@ -96,19 +106,94 @@
                                 </div>
                             </div>
 
+                            <div class="ncst_finance_alerts_section">
+                                <div class="ncst_finance_alerts_title">Alerts &amp; Insights</div>
+                                <div class="ncst_finance_alerts_grid">
+                                    <div class="ncst_finance_alert_box">
+                                        <field name="alert_1"/>
+                                    </div>
+                                    <div class="ncst_finance_alert_box">
+                                        <field name="alert_2"/>
+                                    </div>
+                                    <div class="ncst_finance_alert_box">
+                                        <field name="alert_3"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ncst_finance_insights_grid">
+                                <div class="ncst_finance_insight_card">
+                                    <div class="ncst_finance_insight_label">Reserved Budget %</div>
+                                    <div class="ncst_finance_insight_value">
+                                        <field name="reserved_budget_percentage"/>%
+                                    </div>
+                                </div>
+
+                                <div class="ncst_finance_insight_card">
+                                    <div class="ncst_finance_insight_label">Paid Budget %</div>
+                                    <div class="ncst_finance_insight_value">
+                                        <field name="paid_budget_percentage"/>%
+                                    </div>
+                                </div>
+
+                                <div class="ncst_finance_insight_card">
+                                    <div class="ncst_finance_insight_label">Remaining Budget %</div>
+                                    <div class="ncst_finance_insight_value">
+                                        <field name="remaining_budget_percentage"/>%
+                                    </div>
+                                </div>
+
+                                <div class="ncst_finance_insight_card">
+                                    <div class="ncst_finance_insight_label">Average Monthly Expense</div>
+                                    <div class="ncst_finance_insight_value">
+                                        <field name="average_monthly_expense"/>
+                                    </div>
+                                </div>
+
+                                <div class="ncst_finance_insight_card">
+                                    <div class="ncst_finance_insight_label">Projected Annual Expense</div>
+                                    <div class="ncst_finance_insight_value">
+                                        <field name="projected_annual_expense"/>
+                                    </div>
+                                </div>
+
+                                <div class="ncst_finance_insight_card">
+                                    <div class="ncst_finance_insight_label">Budget Status</div>
+                                    <div class="ncst_finance_insight_value">
+                                        <field name="remaining_budget_message"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ncst_finance_summary_grid">
+                                <div class="ncst_finance_summary_card">
+                                    <div class="ncst_finance_summary_title">Highest Expense Type</div>
+                                    <div class="ncst_finance_summary_text">
+                                        <field name="highest_expense_type_summary"/>
+                                    </div>
+                                </div>
+
+                                <div class="ncst_finance_summary_card">
+                                    <div class="ncst_finance_summary_title">Highest Spending Department</div>
+                                    <div class="ncst_finance_summary_text">
+                                        <field name="highest_department_summary"/>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="ncst_finance_chart_grid">
 
                                 <div class="ncst_finance_chart_section">
                                     <div class="ncst_finance_chart_title">Budget vs Reserved vs Paid</div>
                                     <div class="ncst_finance_chart_subtitle">
-                                        Overview of key budget usage values
+                                        Overall budget usage overview
                                     </div>
                                     <div class="ncst_finance_chart_rows">
                                         <div class="ncst_finance_chart_row">
                                             <div class="ncst_finance_chart_row_label">Allocated</div>
                                             <div class="ncst_finance_chart_row_bar_wrap">
                                                 <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_allocated"
-                                                    t-att-style="'width: ' + (record.budget_chart_allocated.raw_value &amp;&amp; record.budget_chart_allocated.raw_value > 0 ? 100 : 0) + '%;'"/>
+                                                     t-att-style="'width: ' + (record.budget_chart_allocated.raw_value &amp;&amp; record.budget_chart_allocated.raw_value > 0 ? 100 : 0) + '%;'"/>
                                             </div>
                                             <div class="ncst_finance_chart_row_value">
                                                 <field name="budget_chart_allocated"/>
@@ -119,7 +204,7 @@
                                             <div class="ncst_finance_chart_row_label">Reserved</div>
                                             <div class="ncst_finance_chart_row_bar_wrap">
                                                 <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_reserved"
-                                                    t-att-style="'width: ' + (record.budget_chart_allocated.raw_value &amp;&amp; record.budget_chart_allocated.raw_value > 0 ? (record.budget_chart_reserved.raw_value / record.budget_chart_allocated.raw_value * 100) : 0) + '%;'"/>
+                                                     t-att-style="'width: ' + (record.budget_chart_allocated.raw_value &amp;&amp; record.budget_chart_allocated.raw_value > 0 ? (record.budget_chart_reserved.raw_value / record.budget_chart_allocated.raw_value * 100) : 0) + '%;'"/>
                                             </div>
                                             <div class="ncst_finance_chart_row_value">
                                                 <field name="budget_chart_reserved"/>
@@ -130,7 +215,7 @@
                                             <div class="ncst_finance_chart_row_label">Paid</div>
                                             <div class="ncst_finance_chart_row_bar_wrap">
                                                 <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_paid"
-                                                    t-att-style="'width: ' + (record.budget_chart_allocated.raw_value &amp;&amp; record.budget_chart_allocated.raw_value > 0 ? (record.budget_chart_paid.raw_value / record.budget_chart_allocated.raw_value * 100) : 0) + '%;'"/>
+                                                     t-att-style="'width: ' + (record.budget_chart_allocated.raw_value &amp;&amp; record.budget_chart_allocated.raw_value > 0 ? (record.budget_chart_paid.raw_value / record.budget_chart_allocated.raw_value * 100) : 0) + '%;'"/>
                                             </div>
                                             <div class="ncst_finance_chart_row_value">
                                                 <field name="budget_chart_paid"/>
@@ -142,7 +227,7 @@
                                 <div class="ncst_finance_chart_section">
                                     <div class="ncst_finance_chart_title">Top Expense Types</div>
                                     <div class="ncst_finance_chart_subtitle">
-                                        Overview of key budget usage values
+                                        Highest paid expense categories
                                     </div>
                                     <div class="ncst_finance_chart_rows">
                                         <div class="ncst_finance_chart_row">
@@ -151,7 +236,7 @@
                                             </div>
                                             <div class="ncst_finance_chart_row_bar_wrap">
                                                 <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_expense_type_1"
-                                                    t-att-style="'width: 100%;'"/>
+                                                     t-att-style="'width: 100%;'"/>
                                             </div>
                                             <div class="ncst_finance_chart_row_value">
                                                 <field name="top_expense_type_1_amount"/>
@@ -164,7 +249,7 @@
                                             </div>
                                             <div class="ncst_finance_chart_row_bar_wrap">
                                                 <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_expense_type_2"
-                                                    t-att-style="'width: ' + (record.top_expense_type_1_amount.raw_value &amp;&amp; record.top_expense_type_1_amount.raw_value > 0 ? (record.top_expense_type_2_amount.raw_value / record.top_expense_type_1_amount.raw_value * 100) : 0) + '%;'"/>
+                                                     t-att-style="'width: ' + (record.top_expense_type_1_amount.raw_value &amp;&amp; record.top_expense_type_1_amount.raw_value > 0 ? (record.top_expense_type_2_amount.raw_value / record.top_expense_type_1_amount.raw_value * 100) : 0) + '%;'"/>
                                             </div>
                                             <div class="ncst_finance_chart_row_value">
                                                 <field name="top_expense_type_2_amount"/>
@@ -177,7 +262,7 @@
                                             </div>
                                             <div class="ncst_finance_chart_row_bar_wrap">
                                                 <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_expense_type_3"
-                                                    t-att-style="'width: ' + (record.top_expense_type_1_amount.raw_value &amp;&amp; record.top_expense_type_1_amount.raw_value > 0 ? (record.top_expense_type_3_amount.raw_value / record.top_expense_type_1_amount.raw_value * 100) : 0) + '%;'"/>
+                                                     t-att-style="'width: ' + (record.top_expense_type_1_amount.raw_value &amp;&amp; record.top_expense_type_1_amount.raw_value > 0 ? (record.top_expense_type_3_amount.raw_value / record.top_expense_type_1_amount.raw_value * 100) : 0) + '%;'"/>
                                             </div>
                                             <div class="ncst_finance_chart_row_value">
                                                 <field name="top_expense_type_3_amount"/>
@@ -189,7 +274,7 @@
                                 <div class="ncst_finance_chart_section">
                                     <div class="ncst_finance_chart_title">Top Spending Departments</div>
                                     <div class="ncst_finance_chart_subtitle">
-                                        Overview of key budget usage values
+                                        Departments with the largest paid expenses
                                     </div>
                                     <div class="ncst_finance_chart_rows">
                                         <div class="ncst_finance_chart_row">
@@ -198,7 +283,7 @@
                                             </div>
                                             <div class="ncst_finance_chart_row_bar_wrap">
                                                 <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_department_1"
-                                                    t-att-style="'width: 100%;'"/>
+                                                     t-att-style="'width: 100%;'"/>
                                             </div>
                                             <div class="ncst_finance_chart_row_value">
                                                 <field name="top_expense_department_1_amount"/>
@@ -211,7 +296,7 @@
                                             </div>
                                             <div class="ncst_finance_chart_row_bar_wrap">
                                                 <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_department_2"
-                                                    t-att-style="'width: ' + (record.top_expense_department_1_amount.raw_value &amp;&amp; record.top_expense_department_1_amount.raw_value > 0 ? (record.top_expense_department_2_amount.raw_value / record.top_expense_department_1_amount.raw_value * 100) : 0) + '%;'"/>
+                                                     t-att-style="'width: ' + (record.top_expense_department_1_amount.raw_value &amp;&amp; record.top_expense_department_1_amount.raw_value > 0 ? (record.top_expense_department_2_amount.raw_value / record.top_expense_department_1_amount.raw_value * 100) : 0) + '%;'"/>
                                             </div>
                                             <div class="ncst_finance_chart_row_value">
                                                 <field name="top_expense_department_2_amount"/>
@@ -224,7 +309,7 @@
                                             </div>
                                             <div class="ncst_finance_chart_row_bar_wrap">
                                                 <div class="ncst_finance_chart_row_bar ncst_finance_chart_row_bar_department_3"
-                                                    t-att-style="'width: ' + (record.top_expense_department_1_amount.raw_value &amp;&amp; record.top_expense_department_1_amount.raw_value > 0 ? (record.top_expense_department_3_amount.raw_value / record.top_expense_department_1_amount.raw_value * 100) : 0) + '%;'"/>
+                                                     t-att-style="'width: ' + (record.top_expense_department_1_amount.raw_value &amp;&amp; record.top_expense_department_1_amount.raw_value > 0 ? (record.top_expense_department_3_amount.raw_value / record.top_expense_department_1_amount.raw_value * 100) : 0) + '%;'"/>
                                             </div>
                                             <div class="ncst_finance_chart_row_value">
                                                 <field name="top_expense_department_3_amount"/>
