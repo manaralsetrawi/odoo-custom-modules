@@ -181,38 +181,46 @@
 
 /* ============================================================
    Form statusbar layout
-   Buttons on first row, status progress on second row
+   Stable layout: default buttons left, custom actions right,
+   status progress remains visible
    ============================================================ */
 
 .o_form_view:has(.ncst_rfq_exec_form) .o_form_statusbar {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 0.7rem;
-    padding: 0.7rem 0 0.85rem 0;
+    gap: 0.9rem;
+    padding: 0.65rem 0 0.85rem 0;
     border-bottom: 1px solid #e4ebf5;
     margin-bottom: 0.8rem;
+    min-height: 4.25rem;
 }
 
-/* First row: all buttons */
+/* Default Odoo button area */
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons {
     display: flex !important;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.5rem;
-    flex: 1 1 100%;
-    width: 100%;
+    gap: 0.45rem;
+    flex: 0 1 auto;
     min-width: 0;
 }
 
-/* Second row: status progress only */
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status {
-    flex: 0 0 100%;
-    width: 100%;
+/* Our custom workflow action wrapper */
+.o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions {
     display: flex;
-    justify-content: flex-end;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+    margin-right: 0.8rem;
+    min-width: 0;
+}
+
+/* Keep purchase status visible and normal */
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status {
+    flex: 0 0 auto;
     margin-left: 0;
-    padding-top: 0.15rem;
+    align-self: center;
 }
 
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status .o_arrow_button {
@@ -220,15 +228,19 @@
 }
 
 /* Default Odoo buttons */
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .btn:not(.rfq_exec_btn) {
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .btn {
     flex: 0 0 auto;
     margin-right: 0.05rem;
 }
 
 /* Custom workflow buttons */
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn {
+.o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions .rfq_exec_btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 1rem;
-    padding: 0.52rem 0.95rem;
+    padding: 0.5rem 0.95rem;
+    min-height: 2.7rem;
     font-weight: 700;
     font-size: 0.94rem;
     line-height: 1.2;
@@ -237,81 +249,76 @@
     transition: all 0.15s ease;
     white-space: normal;
     text-align: center;
-    justify-content: center;
-    align-self: center;
-    min-height: 2.8rem;
+    max-width: 16rem;
 }
 
-/* Push first custom workflow button away from default buttons */
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_start {
-    margin-left: auto !important;
-}
-
-/* Limit long buttons */
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_success,
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_primary {
-    max-width: 18rem;
-}
-
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn:hover {
+.o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions .rfq_exec_btn:hover {
     transform: translateY(-1px);
 }
 
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_primary {
+.o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions .rfq_exec_btn_primary {
     background: #eef5ff;
     border-color: #c8d9f2;
     color: #275b95;
 }
 
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_primary:hover {
+.o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions .rfq_exec_btn_primary:hover {
     background: #e2eeff;
     border-color: #b5ccec;
     color: #1f4d82;
 }
 
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_secondary {
+.o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions .rfq_exec_btn_secondary {
     background: #f7f9fc;
     border-color: #dbe3ee;
     color: #4d617d;
 }
 
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_secondary:hover {
+.o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions .rfq_exec_btn_secondary:hover {
     background: #f0f4f9;
     border-color: #ccd8e7;
     color: #394d69;
 }
 
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_success {
+.o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions .rfq_exec_btn_success {
     background: #edf8f1;
     border-color: #b9dfc3;
     color: #237243;
 }
 
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_success:hover {
+.o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions .rfq_exec_btn_success:hover {
     background: #e3f3e8;
     border-color: #a8d3b3;
     color: #1d6139;
 }
 
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_danger {
+.o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions .rfq_exec_btn_danger {
     background: #fff4f4;
     border-color: #efcfcf;
     color: #ae4747;
 }
 
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_danger:hover {
+.o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions .rfq_exec_btn_danger:hover {
     background: #ffebeb;
     border-color: #e7bbbb;
     color: #943737;
 }
 
-@media (max-width: 1200px) {
-    .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_start {
-        margin-left: 0 !important;
+@media (max-width: 1300px) {
+    .o_form_view:has(.ncst_rfq_exec_form) .o_form_statusbar {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+        justify-content: flex-start;
     }
 
     .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status {
-        justify-content: flex-start;
+        width: 100%;
     }
 }
 /* ============================================================
