@@ -24,120 +24,164 @@
                     <field name="can_edit_financial_rejection"/>
                 </group>
 
-                <!-- UI POLISH: clearer business-facing section title -->
-                <group string="Purchase Request &amp; Quotation Overview"
-                       invisible="not purchase_request_id">
-                    <group>
-                        <field name="quotation_count_for_request" readonly="1"/>
-                        <field name="is_above_quotation_threshold" readonly="1"/>
-                    </group>
-                    <group>
-                        <!-- UI POLISH: hide technical helper fields from end users -->
-                        <field name="has_purchase_request" invisible="1"/>
-                        <field name="is_multi_quotation_case" invisible="1"/>
-                        <field name="meets_minimum_quotation_rule" readonly="1"/>
-                    </group>
+                <!-- Adding custom summary section -->
+                <div class="rfq_exec_summary" invisible="not purchase_request_id">
+                    <div class="rfq_exec_card">
+                        <div class="rfq_exec_card_title">Purchase Request</div>
+                        <div class="rfq_exec_card_value">
+                            <field name="purchase_request_id" readonly="1" nolabel="1"/>
+                        </div>
+                    </div>
 
-                        <field name="quotation_exception_reason"
-                        readonly="not can_edit_procurement_fields"
-                        invisible="not is_above_quotation_threshold or quotation_count_for_request &gt;= 3"
-                        placeholder="Enter the reason if fewer than 3 quotations were obtained..."/>
-                </group>
+                    <div class="rfq_exec_card">
+                        <div class="rfq_exec_card_title">Quotation Count</div>
+                        <div class="rfq_exec_card_value">
+                            <field name="quotation_count_for_request" readonly="1" nolabel="1"/>
+                        </div>
+                    </div>
 
-                <!-- UI POLISH: clearer business-facing section title -->
-                <group string="Quotation Evaluation &amp; Recommendation"
-                       invisible="not purchase_request_id">
-                    <group>
-                        <field name="technical_evaluation"
-                               readonly="not can_edit_procurement_fields"/>
-                        <field name="commercial_evaluation"
-                               readonly="not can_edit_procurement_fields"/>
-                    </group>
-                    <group>
-                        <!-- UI POLISH: keep system/computed status fields clearly read-only -->
-                        <field name="is_recommended_vendor" readonly="1"/>
-                        <!-- UI POLISH: clearer user guidance through placeholder -->
-                        <field name="recommendation_reason"
-                               readonly="not can_edit_procurement_fields"
-                               placeholder="Explain why this supplier is selected (price, quality, delivery, etc.)"/>
-                    </group>
-                    <!-- UI POLISH: clearer user guidance through placeholder -->
-                    <field name="evaluation_notes"
-                           readonly="not can_edit_procurement_fields"
-                           placeholder="Summarize the technical and commercial comparison between suppliers..."/>
-                </group>
+                    <div class="rfq_exec_card">
+                        <div class="rfq_exec_card_title">Budget Reservation</div>
+                        <div class="rfq_exec_card_value">
+                            <field name="budget_reservation_status" readonly="1" nolabel="1"/>
+                        </div>
+                    </div>
 
-                <!-- Adding Budget Reservation section -->
-                <group string="Budget Reservation"
-                    invisible="not purchase_request_id">
-                    <group>
-                        <field name="budget_reservation_id" readonly="1"/>
-                        <field name="budget_reservation_status" readonly="1"/>
-                    </group>
-                </group>
+                    <div class="rfq_exec_card">
+                        <div class="rfq_exec_card_title">Required Approval</div>
+                        <div class="rfq_exec_card_value">
+                            <field name="required_financial_approval_level" readonly="1" nolabel="1"/>
+                        </div>
+                    </div>
 
-                <!-- UI POLISH: clearer business-facing section title -->
-                <group string="Financial Approval Workflow"
-                       invisible="not purchase_request_id">
-                    <group>
-                        <!-- UI POLISH: keep workflow tracking fields clearly read-only -->
-                        <field name="required_financial_approval_level" readonly="1"/>
-                        <field name="financial_approval_state" readonly="1"/>
-                    </group>
-                    <group>
-                        <!-- UI POLISH: keep workflow tracking fields clearly read-only -->
-                        <field name="financial_approved_by" readonly="1"/>
-                        <field name="financial_approved_date" readonly="1"/>
-                    </group>
-                    <!-- UI POLISH: clearer user guidance through placeholder -->
-                    <field name="financial_rejection_reason"
-                           readonly="not can_edit_financial_rejection"
-                           placeholder="Enter the reason if this quotation is rejected during financial approval..."/>
-                </group>
+                    <div class="rfq_exec_card">
+                        <div class="rfq_exec_card_title">Workflow Progress</div>
+                        <div class="rfq_exec_card_value">
+                            <field name="workflow_progress_status" readonly="1" nolabel="1"/>
+                        </div>
+                    </div>
+                </div>
+                            
+                <!-- Notebooks for detailed views -->
+                <notebook invisible="not purchase_request_id">
 
-                <!-- UI POLISH: clearer business-facing section title -->
-                <group string="Vendor Acknowledgment"
-                       invisible="state != 'purchase'">
-                    <group>
-                        <!-- UI POLISH: keep workflow tracking fields clearly read-only -->
-                        <field name="is_confirmed_purchase_order" readonly="1"/>
-                        <field name="vendor_ack_required"
-                               readonly="not can_edit_procurement_fields"/>
-                        <field name="vendor_ack_received" readonly="1"/>
-                    </group>
-                    <group>
-                        <!-- UI POLISH: keep workflow tracking fields clearly read-only -->
-                        <field name="vendor_ack_recorded_by" readonly="1"/>
-                        <field name="vendor_ack_date" readonly="1"/>
-                    </group>
-                    <!-- UI POLISH: clearer user guidance through placeholder -->
-                    <field name="vendor_ack_notes"
-                           readonly="not can_edit_procurement_fields"
-                           placeholder="Add confirmation details received from the vendor..."/>
-                </group>
+                    <page string="Overview" class="rfq_exec_page">
+                        <div class="rfq_exec_note">
+                            For purchases above BD 1000, at least 3 quotations or a valid justification are required.
+                        </div>
 
-                <!-- UI POLISH: clearer business-facing section title -->
-                <group string="Billing and Payment Tracking"
-                       invisible="state != 'purchase'">
-                    <group>
-                        <!-- UI POLISH: keep tracking fields clearly read-only -->
-                        <field name="vendor_bill_count" readonly="1"/>
-                        <field name="verified_vendor_bill_count" readonly="1"/>
-                        <field name="all_vendor_bills_verified" readonly="1"/>
-                    </group>
-                    <group>
-                        <!-- UI POLISH: keep tracking fields clearly read-only -->
-                        <field name="payment_status_summary" readonly="1"/>
-                        <field name="ready_for_procurement_closure" readonly="1"/>
-                        <field name="procurement_closure_state" readonly="1"/>
-                    </group>
-                    <group>
-                        <!-- UI POLISH: keep tracking fields clearly read-only -->
-                        <field name="procurement_closed_by" readonly="1"/>
-                        <field name="procurement_closed_date" readonly="1"/>
-                    </group>
-                </group>
+                        <group class="rfq_exec_section" string="Purchase Request &amp; Quotation Overview">
+                            <group>
+                                <field name="quotation_count_for_request" readonly="1"/>
+                                <field name="is_above_quotation_threshold" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="has_purchase_request" invisible="1"/>
+                                <field name="is_multi_quotation_case" invisible="1"/>
+                                <field name="meets_minimum_quotation_rule" readonly="1"/>
+                            </group>
 
+                            <field name="quotation_exception_reason"
+                                   readonly="not can_edit_procurement_fields"
+                                   required="is_above_quotation_threshold and quotation_count_for_request &lt; 3"
+                                   invisible="not is_above_quotation_threshold or quotation_count_for_request &gt;= 3"
+                                   placeholder="Enter the reason if fewer than 3 quotations were obtained..."/>
+                        </group>
+                    </page>
+
+                    <page string="Evaluation" class="rfq_exec_page">
+                        <div class="rfq_exec_note">
+                            Complete both technical and commercial evaluation before selecting the recommended vendor.
+                        </div>
+
+                        <group class="rfq_exec_section" string="Quotation Evaluation &amp; Recommendation">
+                            <group>
+                                <field name="technical_evaluation"
+                                       readonly="not can_edit_procurement_fields"/>
+                                <field name="commercial_evaluation"
+                                       readonly="not can_edit_procurement_fields"/>
+                            </group>
+                            <group>
+                                <field name="is_recommended_vendor" readonly="1"/>
+                                <field name="recommendation_reason"
+                                       readonly="not can_edit_procurement_fields"
+                                       required="is_recommended_vendor"
+                                       placeholder="Explain why this supplier is selected (price, quality, delivery, etc.)"/>
+                            </group>
+                            <field name="evaluation_notes"
+                                   readonly="not can_edit_procurement_fields"
+                                   placeholder="Summarize the technical and commercial comparison between suppliers..."/>
+                        </group>
+                    </page>
+
+                    <page string="Budget &amp; Approval" class="rfq_exec_page">
+                        <div class="rfq_exec_note">
+                            Budget reservation is checked before financial approval. Approval level is assigned automatically based on RFQ total amount.
+                        </div>
+
+                        <group class="rfq_exec_section" string="Budget Reservation">
+                            <group>
+                                <field name="budget_reservation_id" readonly="1"/>
+                                <field name="budget_reservation_status" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <group class="rfq_exec_section" string="Financial Approval Workflow">
+                            <group>
+                                <field name="required_financial_approval_level" readonly="1"/>
+                                <field name="financial_approval_state" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="financial_approved_by" readonly="1"/>
+                                <field name="financial_approved_date" readonly="1"/>
+                            </group>
+                            <field name="financial_rejection_reason"
+                                   readonly="not can_edit_financial_rejection"
+                                   placeholder="Enter the reason if this quotation is rejected during financial approval..."/>
+                        </group>
+                    </page>
+
+                    <page string="Execution" class="rfq_exec_page" invisible="state != 'purchase'">
+                        <div class="rfq_exec_note">
+                            After PO confirmation, record vendor acknowledgment and monitor billing, payment, and closure readiness.
+                        </div>
+
+                        <group class="rfq_exec_section" string="Vendor Acknowledgment">
+                            <group>
+                                <field name="is_confirmed_purchase_order" readonly="1"/>
+                                <field name="vendor_ack_required"
+                                       readonly="not can_edit_procurement_fields"/>
+                                <field name="vendor_ack_received" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="vendor_ack_recorded_by" readonly="1"/>
+                                <field name="vendor_ack_date" readonly="1"/>
+                            </group>
+                            <field name="vendor_ack_notes"
+                                   readonly="not can_edit_procurement_fields"
+                                   placeholder="Add confirmation details received from the vendor..."/>
+                        </group>
+
+                        <group class="rfq_exec_section" string="Billing and Payment Tracking">
+                            <group>
+                                <field name="vendor_bill_count" readonly="1"/>
+                                <field name="verified_vendor_bill_count" readonly="1"/>
+                                <field name="all_vendor_bills_verified" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="payment_status_summary" readonly="1"/>
+                                <field name="ready_for_procurement_closure" readonly="1"/>
+                                <field name="procurement_closure_state" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="procurement_closed_by" readonly="1"/>
+                                <field name="procurement_closed_date" readonly="1"/>
+                            </group>
+                        </group>
+                    </page>
+
+                </notebook>
+              
             </xpath>
 
             <!-- Header buttons -->
@@ -255,6 +299,26 @@
        decoration-success="workflow_progress_status in ['finance_approved', 'receipt_confirmed', 'paid']"
        decoration-it="workflow_progress_status == 'po_issued'"/>
         </xpath>
+    </field>
+</record>
+
+<record id="view_purchase_order_tree_inherit_execution_columns" model="ir.ui.view">
+    <field name="name">purchase.order.tree.inherit.execution.columns</field>
+    <field name="model">purchase.order</field>
+    <field name="inherit_id" ref="purchase.purchase_order_kpis_tree"/>
+    <field name="arch" type="xml">
+
+        <xpath expr="//field[@name='partner_id']" position="after">
+            <field name="purchase_request_id" optional="show"/>
+        </xpath>
+
+        <xpath expr="//field[@name='amount_total']" position="after">
+            <field name="quotation_count_for_request" optional="show"/>
+            <field name="budget_reservation_status" optional="show"/>
+            <field name="required_financial_approval_level" optional="show"/>
+            <field name="payment_status_summary" optional="show"/>
+        </xpath>
+
     </field>
 </record>
 </odoo>

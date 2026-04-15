@@ -1,0 +1,67 @@
+.o_form_view .rfq_exec_summary {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(180px, 1fr));
+    gap: 12px;
+    margin: 12px 0 18px 0;
+}
+
+.o_form_view .rfq_exec_card {
+    border: 1px solid #d9e2f2;
+    border-radius: 14px;
+    padding: 14px 16px;
+    background: #f8fbff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.o_form_view .rfq_exec_card_title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #60708f;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+}
+
+.o_form_view .rfq_exec_card_value .o_field_widget {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.o_form_view .rfq_exec_note {
+    border-left: 4px solid #7aa7d9;
+    background: #f7fbff;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin: 10px 0 14px 0;
+    color: #4b5d79;
+}
+
+.o_form_view .rfq_exec_page .o_group {
+    margin-top: 8px;
+}
+
+.o_form_view .rfq_exec_section {
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    background: #ffffff;
+}
+
+.o_list_view .o_data_row td[name="workflow_progress_status"] .badge {
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 999px;
+}
+
+@media (max-width: 1400px) {
+    .o_form_view .rfq_exec_summary {
+        grid-template-columns: repeat(3, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .o_form_view .rfq_exec_summary {
+        grid-template-columns: repeat(1, minmax(180px, 1fr));
+    }
+}

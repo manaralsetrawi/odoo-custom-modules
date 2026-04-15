@@ -12,7 +12,7 @@
     ],
     'assets': {
         'web.assets_backend': [
-            'purchase_execution_workflow/static/src/css/workflow_status.css',
+            'purchase_execution_workflow/static/src/scss/rfq_ui.scss',
         ],
     },
     'installable': True,
