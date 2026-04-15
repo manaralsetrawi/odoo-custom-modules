@@ -65,3 +65,43 @@
         grid-template-columns: repeat(1, minmax(180px, 1fr));
     }
 }
+
+.o_form_view .o_form_statusbar {
+    border-bottom: 1px solid #e6ecf5;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+}
+
+.o_form_view .o_statusbar_buttons .btn {
+    border-radius: 10px;
+    margin-right: 6px;
+    font-weight: 600;
+}
+
+.o_form_view .o_statusbar_buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.o_form_view .o_statusbar_status .o_arrow_button {
+    border-radius: 10px;
+}
+
+.o_form_view .o_statusbar_status {
+    margin-left: 12px;
+}
+
+.o_kanban_view .rfq_exec_kanban_meta {
+    margin-top: 8px;
+    display: grid;
+    gap: 6px;
+    font-size: 13px;
+    color: #4a5a73;
+}
+
+.o_kanban_view .rfq_exec_kanban_meta .badge {
+    border-radius: 999px;
+    padding: 4px 8px;
+    font-weight: 600;
+}

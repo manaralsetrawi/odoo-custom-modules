@@ -57,7 +57,7 @@
                     <div class="rfq_exec_card">
                         <div class="rfq_exec_card_title">Workflow Progress</div>
                         <div class="rfq_exec_card_value">
-                            <field name="workflow_progress_status" readonly="1" nolabel="1"/>
+                            <field name="workflow_progress_status" readonly="1" nolabel="1" widget="badge"/>
                         </div>
                     </div>
                 </div>
@@ -309,12 +309,56 @@
         </xpath>
 
         <xpath expr="//field[@name='amount_total']" position="after">
-            <field name="quotation_count_for_request" optional="show"/>
             <field name="budget_reservation_status" optional="show"/>
             <field name="required_financial_approval_level" optional="show"/>
-            <field name="payment_status_summary" optional="show"/>
         </xpath>
 
     </field>
+</record>
+
+<!-- UI POLISH: Kanban view with key info and visual status indicators -->
+<record id="view_purchase_order_kanban_inherit_execution" model="ir.ui.view">
+    <field name="name">purchase.order.kanban.inherit.execution</field>
+    <field name="model">purchase.order</field>
+    <field name="inherit_id" ref="purchase.purchase_order_view_kanban"/>
+    <field name="arch" type="xml">
+
+        <xpath expr="//kanban" position="inside">
+            <field name="purchase_request_id"/>
+            <field name="budget_reservation_status"/>
+            <field name="required_financial_approval_level"/>
+            <field name="workflow_progress_status"/>
+            <field name="payment_status_summary"/>
+        </xpath>
+
+        <xpath expr="//div[contains(@class, 'o_kanban_record_subtitle')]" position="after">
+            <div class="rfq_exec_kanban_meta">
+                <div>
+                    <strong>PR:</strong>
+                    <field name="purchase_request_id"/>
+                </div>
+                <div>
+                    <strong>Budget:</strong>
+                    <field name="budget_reservation_status" widget="badge"/>
+                </div>
+                <div>
+                    <strong>Approval:</strong>
+                    <field name="required_financial_approval_level"/>
+                </div>
+                <div>
+                    <strong>Workflow:</strong>
+                    <field name="workflow_progress_status" widget="badge"/>
+                </div>
+            </div>
+        </xpath>
+
+    </field>
+</record>
+<!-- Action for the Kanban view -->
+<record id="action_procurement_execution_kanban" model="ir.actions.act_window">
+    <field name="name">Procurement RFQs</field>
+    <field name="res_model">purchase.order</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="domain">[('purchase_request_id', '!=', False)]</field>
 </record>
 </odoo>
