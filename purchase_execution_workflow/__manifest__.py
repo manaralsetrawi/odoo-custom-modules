@@ -12,6 +12,7 @@
         'views/account_move_views.xml',
         'views/financial_reject_wizard_views.xml',
         'views/invoice_reject_wizard_views.xml',
+        'views/procurement_execution_menu.xml',
     ],
     'assets': {
         'web.assets_backend': [
