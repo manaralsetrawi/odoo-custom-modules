@@ -418,9 +418,14 @@ class PurchaseOrder(models.Model):
             )
 
             if seller:
-                line.price_unit = seller.price
+                # force-update the RFQ line price from supplier info
+                line.update({
+                    "price_unit": seller.price,
+                })
             else:
-                line.price_unit = 0.0
+                line.update({
+                    "price_unit": 0.0,
+                })
                 missing_products.append(line.product_id.display_name)
 
         if missing_products:
@@ -549,7 +554,12 @@ class PurchaseOrder(models.Model):
                 }
             }
 
-        return self._apply_vendor_prices_to_order_lines()
+        result = self._apply_vendor_prices_to_order_lines()
+
+        # force refresh of totals in the form after prices are updated
+        self._amount_all()
+
+        return result
 
     @api.depends("amount_total")
     def _compute_is_above_quotation_threshold(self):
