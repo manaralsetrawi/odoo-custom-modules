@@ -205,13 +205,36 @@
    Smaller and pushed away from default Odoo buttons
    ============================================================ */
 
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons {
+/* Make the full statusbar row behave properly */
+.o_form_view:has(.ncst_rfq_exec_form) .o_form_statusbar {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem;
     align-items: center;
+    gap: 0.75rem;
 }
 
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem;
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+}
+
+/* Keep the status steps on the far right */
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status {
+    flex: 0 0 auto;
+    margin-left: auto;
+}
+
+/* Default Odoo buttons */
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .btn:not(.rfq_exec_btn) {
+    margin-right: 0.1rem;
+    flex: 0 0 auto;
+}
+
+/* Custom workflow buttons */
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn {
     border-radius: 0.9rem;
     padding: 0.48rem 0.85rem;
@@ -225,20 +248,16 @@
     white-space: normal;
     text-align: center;
     justify-content: center;
+    flex: 0 0 auto;
 }
 
-/* This pushes the first visible custom workflow action group to the right */
+/* This now works because the parent stretches */
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_start {
     margin-left: auto !important;
 }
 
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn:hover {
     transform: translateY(-1px);
-}
-
-/* keep default Odoo buttons on the left with their normal spacing */
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .btn:not(.rfq_exec_btn) {
-    margin-right: 0.1rem;
 }
 
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_primary {
@@ -290,12 +309,24 @@
 }
 
 @media (max-width: 1100px) {
+    .o_form_view:has(.ncst_rfq_exec_form) .o_form_statusbar {
+        align-items: flex-start;
+    }
+
+    .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons {
+        width: auto;
+    }
+
     .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn {
         max-width: 100%;
     }
 
     .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_start {
         margin-left: 0 !important;
+    }
+
+    .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status {
+        margin-left: 0;
     }
 }
 
