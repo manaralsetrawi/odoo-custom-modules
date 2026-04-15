@@ -5,10 +5,12 @@
     'category': 'Purchase',
     'depends': ['purchase', 'stock', 'account', 'purchase_request'],
     'data': [
+        'security/ir.model.access.csv',
         'security/security.xml',
         'views/purchase_order_views.xml',
         'views/stock_picking_views.xml',
         'views/account_move_views.xml',
+        'views/financial_reject_wizard_views.xml',
     ],
     'assets': {
         'web.assets_backend': [
