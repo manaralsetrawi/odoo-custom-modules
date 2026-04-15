@@ -23,8 +23,13 @@
                     <t t-name="card">
                         <div class="oe_kanban_global_click rfq_exec_kanban_card">
                             <div class="rfq_exec_kanban_header">
-                                <div class="rfq_exec_kanban_title">
-                                    <strong><field name="name"/></strong>
+                                <div class="rfq_exec_kanban_title_wrap">
+                                    <div class="rfq_exec_kanban_title">
+                                        <strong><field name="name"/></strong>
+                                    </div>
+                                    <div class="rfq_exec_kanban_vendor_inline">
+                                        <field name="partner_id"/>
+                                    </div>
                                 </div>
 
                                 <div class="rfq_exec_kanban_state">
@@ -33,84 +38,95 @@
                                     <div t-if="record.state.raw_value == 'purchase'" class="rfq_badge rfq_badge_state_purchase">Purchase Order</div>
                                     <div t-if="record.state.raw_value == 'cancel'" class="rfq_badge rfq_badge_state_cancel">Cancelled</div>
                                     <div t-if="record.state.raw_value != 'draft' and record.state.raw_value != 'sent' and record.state.raw_value != 'purchase' and record.state.raw_value != 'cancel'"
-                                         class="rfq_badge rfq_badge_state_default">
+                                        class="rfq_badge rfq_badge_state_default">
                                         <field name="state"/>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="rfq_exec_kanban_vendor">
-                                <span class="rfq_exec_label">Vendor</span>
-                                <div class="rfq_exec_value"><field name="partner_id"/></div>
-                            </div>
+                            <div class="rfq_exec_section_grid">
 
-                            <div class="rfq_exec_kanban_grid">
-                                <div class="rfq_exec_info_item">
-                                    <span class="rfq_exec_label">Purchase Request</span>
-                                    <div class="rfq_exec_value"><field name="purchase_request_id"/></div>
+                                <div class="rfq_exec_section_box">
+                                    <div class="rfq_exec_section_title">Request</div>
+
+                                    <div class="rfq_exec_info_item">
+                                        <span class="rfq_exec_label">Purchase Request</span>
+                                        <div class="rfq_exec_value"><field name="purchase_request_id"/></div>
+                                    </div>
+
+                                    <div class="rfq_exec_info_item">
+                                        <span class="rfq_exec_label">Total Amount</span>
+                                        <div class="rfq_exec_value"><field name="amount_total"/></div>
+                                    </div>
                                 </div>
 
-                                <div class="rfq_exec_info_item">
-                                    <span class="rfq_exec_label">Total Amount</span>
-                                    <div class="rfq_exec_value"><field name="amount_total"/></div>
+                                <div class="rfq_exec_section_box">
+                                    <div class="rfq_exec_section_title">Approval</div>
+
+                                    <div class="rfq_exec_info_item">
+                                        <span class="rfq_exec_label">Budget Status</span>
+                                        <div class="rfq_exec_value">
+                                            <div t-if="record.budget_reservation_status.raw_value == 'reserved'" class="rfq_badge rfq_badge_budget_reserved">Reserved</div>
+                                            <div t-if="record.budget_reservation_status.raw_value == 'used'" class="rfq_badge rfq_badge_budget_used">Used</div>
+                                            <div t-if="record.budget_reservation_status.raw_value == 'cancelled'" class="rfq_badge rfq_badge_budget_cancelled">Cancelled</div>
+                                            <div t-if="record.budget_reservation_status.raw_value != 'reserved' and record.budget_reservation_status.raw_value != 'used' and record.budget_reservation_status.raw_value != 'cancelled'">
+                                                <field name="budget_reservation_status"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="rfq_exec_info_item">
+                                        <span class="rfq_exec_label">Required Approval</span>
+                                        <div class="rfq_exec_value"><field name="required_financial_approval_level"/></div>
+                                    </div>
                                 </div>
 
-                                <div class="rfq_exec_info_item">
-                                    <span class="rfq_exec_label">Budget Status</span>
-                                    <div class="rfq_exec_value">
-                                        <div t-if="record.budget_reservation_status.raw_value == 'reserved'" class="rfq_badge rfq_badge_budget_reserved">Reserved</div>
-                                        <div t-if="record.budget_reservation_status.raw_value == 'used'" class="rfq_badge rfq_badge_budget_used">Used</div>
-                                        <div t-if="record.budget_reservation_status.raw_value == 'cancelled'" class="rfq_badge rfq_badge_budget_cancelled">Cancelled</div>
-                                        <div t-if="record.budget_reservation_status.raw_value != 'reserved' and record.budget_reservation_status.raw_value != 'used' and record.budget_reservation_status.raw_value != 'cancelled'">
-                                            <field name="budget_reservation_status"/>
+                                <div class="rfq_exec_section_box">
+                                    <div class="rfq_exec_section_title">Execution</div>
+
+                                    <div class="rfq_exec_info_item">
+                                        <span class="rfq_exec_label">Workflow</span>
+                                        <div class="rfq_exec_value">
+                                            <div t-if="record.workflow_progress_status.raw_value == 'draft'" class="rfq_badge rfq_badge_workflow_draft">Draft</div>
+                                            <div t-if="record.workflow_progress_status.raw_value == 'under_evaluation'" class="rfq_badge rfq_badge_workflow_eval">Under Evaluation</div>
+                                            <div t-if="record.workflow_progress_status.raw_value == 'recommended'" class="rfq_badge rfq_badge_workflow_recommended">Recommended</div>
+                                            <div t-if="record.workflow_progress_status.raw_value == 'waiting_finance'" class="rfq_badge rfq_badge_workflow_waiting">Waiting Finance</div>
+                                            <div t-if="record.workflow_progress_status.raw_value == 'finance_approved'" class="rfq_badge rfq_badge_workflow_finance">Finance Approved</div>
+                                            <div t-if="record.workflow_progress_status.raw_value == 'po_issued'" class="rfq_badge rfq_badge_workflow_po">PO Issued</div>
+                                            <div t-if="record.workflow_progress_status.raw_value == 'vendor_acknowledged'" class="rfq_badge rfq_badge_workflow_ack">Vendor Acknowledged</div>
+                                            <div t-if="record.workflow_progress_status.raw_value == 'receipt_confirmed'" class="rfq_badge rfq_badge_workflow_receipt">Receipt Confirmed</div>
+                                            <div t-if="record.workflow_progress_status.raw_value == 'invoice_verified'" class="rfq_badge rfq_badge_workflow_invoice">Invoice Verified</div>
+                                            <div t-if="record.workflow_progress_status.raw_value == 'paid'" class="rfq_badge rfq_badge_workflow_paid">Paid</div>
+                                            <div t-if="record.workflow_progress_status.raw_value == 'closed'" class="rfq_badge rfq_badge_workflow_closed">Closed</div>
+                                            <div t-if="record.workflow_progress_status.raw_value != 'draft'
+                                                    and record.workflow_progress_status.raw_value != 'under_evaluation'
+                                                    and record.workflow_progress_status.raw_value != 'recommended'
+                                                    and record.workflow_progress_status.raw_value != 'waiting_finance'
+                                                    and record.workflow_progress_status.raw_value != 'finance_approved'
+                                                    and record.workflow_progress_status.raw_value != 'po_issued'
+                                                    and record.workflow_progress_status.raw_value != 'vendor_acknowledged'
+                                                    and record.workflow_progress_status.raw_value != 'receipt_confirmed'
+                                                    and record.workflow_progress_status.raw_value != 'invoice_verified'
+                                                    and record.workflow_progress_status.raw_value != 'paid'
+                                                    and record.workflow_progress_status.raw_value != 'closed'">
+                                                <field name="workflow_progress_status"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="rfq_exec_inline_meta">
+                                        <div class="rfq_exec_info_item">
+                                            <span class="rfq_exec_label">Bills</span>
+                                            <div class="rfq_exec_value"><field name="vendor_bill_count"/></div>
+                                        </div>
+
+                                        <div class="rfq_exec_info_item">
+                                            <span class="rfq_exec_label">Payment</span>
+                                            <div class="rfq_exec_value"><field name="payment_status_summary"/></div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="rfq_exec_info_item">
-                                    <span class="rfq_exec_label">Required Approval</span>
-                                    <div class="rfq_exec_value"><field name="required_financial_approval_level"/></div>
-                                </div>
-
-                                <div class="rfq_exec_info_item">
-                                    <span class="rfq_exec_label">Workflow</span>
-                                    <div class="rfq_exec_value">
-                                        <div t-if="record.workflow_progress_status.raw_value == 'draft'" class="rfq_badge rfq_badge_workflow_draft">Draft</div>
-                                        <div t-if="record.workflow_progress_status.raw_value == 'under_evaluation'" class="rfq_badge rfq_badge_workflow_eval">Under Evaluation</div>
-                                        <div t-if="record.workflow_progress_status.raw_value == 'recommended'" class="rfq_badge rfq_badge_workflow_recommended">Recommended</div>
-                                        <div t-if="record.workflow_progress_status.raw_value == 'waiting_finance'" class="rfq_badge rfq_badge_workflow_waiting">Waiting Finance</div>
-                                        <div t-if="record.workflow_progress_status.raw_value == 'finance_approved'" class="rfq_badge rfq_badge_workflow_finance">Finance Approved</div>
-                                        <div t-if="record.workflow_progress_status.raw_value == 'po_issued'" class="rfq_badge rfq_badge_workflow_po">PO Issued</div>
-                                        <div t-if="record.workflow_progress_status.raw_value == 'vendor_acknowledged'" class="rfq_badge rfq_badge_workflow_ack">Vendor Acknowledged</div>
-                                        <div t-if="record.workflow_progress_status.raw_value == 'receipt_confirmed'" class="rfq_badge rfq_badge_workflow_receipt">Receipt Confirmed</div>
-                                        <div t-if="record.workflow_progress_status.raw_value == 'invoice_verified'" class="rfq_badge rfq_badge_workflow_invoice">Invoice Verified</div>
-                                        <div t-if="record.workflow_progress_status.raw_value == 'paid'" class="rfq_badge rfq_badge_workflow_paid">Paid</div>
-                                        <div t-if="record.workflow_progress_status.raw_value == 'closed'" class="rfq_badge rfq_badge_workflow_closed">Closed</div>
-                                        <div t-if="record.workflow_progress_status.raw_value != 'draft'
-                                                and record.workflow_progress_status.raw_value != 'under_evaluation'
-                                                and record.workflow_progress_status.raw_value != 'recommended'
-                                                and record.workflow_progress_status.raw_value != 'waiting_finance'
-                                                and record.workflow_progress_status.raw_value != 'finance_approved'
-                                                and record.workflow_progress_status.raw_value != 'po_issued'
-                                                and record.workflow_progress_status.raw_value != 'vendor_acknowledged'
-                                                and record.workflow_progress_status.raw_value != 'receipt_confirmed'
-                                                and record.workflow_progress_status.raw_value != 'invoice_verified'
-                                                and record.workflow_progress_status.raw_value != 'paid'
-                                                and record.workflow_progress_status.raw_value != 'closed'">
-                                            <field name="workflow_progress_status"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="rfq_exec_info_item">
-                                    <span class="rfq_exec_label">Bills</span>
-                                    <div class="rfq_exec_value"><field name="vendor_bill_count"/></div>
-                                </div>
-
-                                <div class="rfq_exec_info_item">
-                                    <span class="rfq_exec_label">Payment</span>
-                                    <div class="rfq_exec_value"><field name="payment_status_summary"/></div>
-                                </div>
                             </div>
                         </div>
                     </t>

@@ -387,3 +387,133 @@
         gap: 0.9rem;
     }
 }
+
+
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_card {
+    background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+    border: 1px solid #d9e4f2;
+    border-radius: 1.5rem;
+    box-shadow: 0 0.35rem 1.2rem rgba(15, 23, 42, 0.06);
+    padding: 1.25rem;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_card:hover {
+    transform: translateY(-0.125rem);
+    box-shadow: 0 0.6rem 1.4rem rgba(15, 23, 42, 0.10);
+    border-color: #c7d8ee;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid #e8eef7;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_title_wrap {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_title {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #1e3a5f;
+    line-height: 1.15;
+    margin-bottom: 0.35rem;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_vendor_inline {
+    font-size: 1rem;
+    color: #5e7190;
+    font-weight: 600;
+    line-height: 1.35;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_section_grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_section_box {
+    background: #f8fbff;
+    border: 1px solid #e3ebf6;
+    border-radius: 1rem;
+    padding: 0.9rem 1rem;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_section_title {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #1f4d7a;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.75rem;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_info_item + .rfq_exec_info_item {
+    margin-top: 0.85rem;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_inline_meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 0.85rem;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_label {
+    display: block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #7a8ea9;
+    margin-bottom: 0.35rem;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_value {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #253f66;
+    line-height: 1.4;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.48rem 0.9rem;
+    border-radius: 999rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    line-height: 1.1;
+    max-width: 100%;
+}
+
+@media (max-width: 768px) {
+    .ncst_rfq_exec_dashboard .rfq_exec_inline_meta {
+        grid-template-columns: 1fr;
+    }
+
+    .ncst_rfq_exec_dashboard .rfq_exec_kanban_header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
