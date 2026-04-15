@@ -18,9 +18,6 @@
                 <attribute name="placeholder">Select a vendor after choosing the Purchase Request...</attribute>
             </xpath>
 
-            <!-- Remove the old duplicate PR field after vendor -->
-            <xpath expr="//field[@name='partner_id']/following-sibling::field[@name='purchase_request_id'][1]" position="replace"/>
-
             <!-- Main custom sections -->
             <xpath expr="//sheet" position="inside">
 
@@ -298,7 +295,6 @@
         </field>
     </record>
 
-    <!-- UI POLISH: Status badge for workflow progress -->
     <record id="view_purchase_order_tree_inherit_workflow_progress" model="ir.ui.view">
         <field name="name">purchase.order.tree.inherit.workflow.progress</field>
         <field name="model">purchase.order</field>
