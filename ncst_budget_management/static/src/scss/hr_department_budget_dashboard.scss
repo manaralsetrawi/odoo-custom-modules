@@ -1503,3 +1503,31 @@
         height: 135px;
     }
 }
+
+/* Report Section Styles */
+
+.ncst_finance_kpi_dashboard_header_top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.ncst_finance_kpi_dashboard_header_actions {
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .ncst_finance_kpi_dashboard_header_top {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ncst_finance_kpi_dashboard_header_actions {
+        width: 100%;
+    }
+
+    .ncst_finance_kpi_dashboard_header_actions .btn {
+        width: 100%;
+    }
+}

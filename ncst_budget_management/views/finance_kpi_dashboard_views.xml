@@ -56,8 +56,20 @@
                         <div class="oe_kanban_global_click ncst_finance_kpi_dashboard_card">
 
                             <div class="ncst_finance_kpi_dashboard_header">
-                                <div class="ncst_finance_kpi_dashboard_label">Finance Dashboard</div>
-                                <div class="ncst_finance_kpi_dashboard_title">Budget and Expense Monitoring</div>
+                                <div class="ncst_finance_kpi_dashboard_header_top">
+                                    <div>
+                                        <div class="ncst_finance_kpi_dashboard_label">Finance Dashboard</div>
+                                        <div class="ncst_finance_kpi_dashboard_title">Budget and Expense Monitoring</div>
+                                    </div>
+
+                                    <div class="ncst_finance_kpi_dashboard_header_actions oe_kanban_no_global_click">
+                                        <button type="object"
+                                                name="action_print_dashboard_pdf"
+                                                class="btn btn-primary btn-sm">
+                                            Export PDF
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="ncst_finance_section_block">

@@ -525,3 +525,12 @@ class FinanceKPIDashboard(models.Model):
                 'name': 'Finance KPI Dashboard',
             })
         return dashboard
+    
+
+    def action_print_dashboard_pdf(self):
+        dashboard = self[:1]
+        if not dashboard:
+            dashboard = self.get_dashboard_record()
+        return self.env.ref(
+            'ncst_budget_management.action_report_finance_kpi_dashboard'
+        ).report_action(dashboard)

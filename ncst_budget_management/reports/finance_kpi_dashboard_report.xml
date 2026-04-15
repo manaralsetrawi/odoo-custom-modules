@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_finance_kpi_dashboard" model="ir.actions.report">
+        <field name="name">Finance Dashboard Report</field>
+        <field name="model">finance.kpi.dashboard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ncst_budget_management.report_finance_kpi_dashboard_document</field>
+        <field name="report_file">ncst_budget_management.report_finance_kpi_dashboard_document</field>
+        <field name="print_report_name">'Finance Dashboard - %s' % (object.name or 'Report')</field>
+    </record>
+
+    <template id="report_finance_kpi_dashboard_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 style="margin-bottom: 4px;">Finance Dashboard Report</h2>
+                        <div style="color:#666; margin-bottom: 18px;">
+                            Budget and Expense Monitoring
+                        </div>
+
+                        <h3 style="margin-bottom: 10px;">Overview</h3>
+                        <table style="width:100%; border-collapse: collapse; margin-bottom: 18px;">
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:10px;"><strong>General Budget for This Year</strong><br/><span t-field="o.general_budget_this_year"/></td>
+                                <td style="border:1px solid #ddd; padding:10px;"><strong>Total Budget Allocations</strong><br/><span t-field="o.total_budget_allocated"/></td>
+                                <td style="border:1px solid #ddd; padding:10px;"><strong>Pending Expense Requests</strong><br/><span t-field="o.pending_expense_requests"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:10px;"><strong>Pending Reservations</strong><br/><span t-field="o.pending_reservations"/></td>
+                                <td style="border:1px solid #ddd; padding:10px;"><strong>Expenses This Month</strong><br/><span t-field="o.expenses_this_month"/></td>
+                                <td style="border:1px solid #ddd; padding:10px;"><strong>Expenses This Year</strong><br/><span t-field="o.expenses_this_year"/></td>
+                            </tr>
+                        </table>
+
+                        <h3 style="margin-bottom: 10px;">Alerts &amp; Insights</h3>
+                        <ul style="margin-bottom: 18px; padding-left: 18px;">
+                            <li><span t-field="o.alert_1"/></li>
+                            <li><span t-field="o.alert_2"/></li>
+                            <li><span t-field="o.alert_3"/></li>
+                        </ul>
+
+                        <h3 style="margin-bottom: 10px;">Budget Metrics</h3>
+                        <table style="width:100%; border-collapse: collapse; margin-bottom: 18px;">
+                            <tr>
+                                <th style="border:1px solid #ddd; padding:8px; background:#f5f7fa; text-align:left;">Metric</th>
+                                <th style="border:1px solid #ddd; padding:8px; background:#f5f7fa; text-align:left;">Value</th>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:8px;">Reserved Budget %</td>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.reserved_budget_percentage"/>%</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:8px;">Paid Budget %</td>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.paid_budget_percentage"/>%</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:8px;">Remaining Budget %</td>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.remaining_budget_percentage"/>%</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:8px;">Average Monthly Expense</td>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.average_monthly_expense"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:8px;">Projected Annual Expense</td>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.projected_annual_expense"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:8px;">Budget Status</td>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.remaining_budget_message"/></td>
+                            </tr>
+                        </table>
+
+                        <h3 style="margin-bottom: 10px;">Highlights</h3>
+                        <table style="width:100%; border-collapse: collapse; margin-bottom: 18px;">
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:10px; width:50%;">
+                                    <strong>Highest Expense Type</strong><br/>
+                                    <span t-field="o.highest_expense_type_summary"/>
+                                </td>
+                                <td style="border:1px solid #ddd; padding:10px; width:50%;">
+                                    <strong>Highest Spending Department</strong><br/>
+                                    <span t-field="o.highest_department_summary"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <h3 style="margin-bottom: 10px;">Top Expense Types</h3>
+                        <table style="width:100%; border-collapse: collapse; margin-bottom: 18px;">
+                            <tr>
+                                <th style="border:1px solid #ddd; padding:8px; background:#f5f7fa; text-align:left;">Type</th>
+                                <th style="border:1px solid #ddd; padding:8px; background:#f5f7fa; text-align:left;">Amount</th>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.top_expense_type_1"/></td>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.top_expense_type_1_amount"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.top_expense_type_2"/></td>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.top_expense_type_2_amount"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.top_expense_type_3"/></td>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.top_expense_type_3_amount"/></td>
+                            </tr>
+                        </table>
+
+                        <h3 style="margin-bottom: 10px;">Top Spending Departments</h3>
+                        <table style="width:100%; border-collapse: collapse; margin-bottom: 18px;">
+                            <tr>
+                                <th style="border:1px solid #ddd; padding:8px; background:#f5f7fa; text-align:left;">Department</th>
+                                <th style="border:1px solid #ddd; padding:8px; background:#f5f7fa; text-align:left;">Amount</th>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.top_expense_department_1"/></td>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.top_expense_department_1_amount"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.top_expense_department_2"/></td>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.top_expense_department_2_amount"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.top_expense_department_3"/></td>
+                                <td style="border:1px solid #ddd; padding:8px;"><span t-field="o.top_expense_department_3_amount"/></td>
+                            </tr>
+                        </table>
+
+                        <div style="margin-top: 18px; color:#666;">
+                            <strong>Last Updated:</strong>
+                            <span t-field="o.last_updated"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>
