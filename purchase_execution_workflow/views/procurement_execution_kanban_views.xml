@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_purchase_order_kanban_procurement_execution" model="ir.ui.view">
+        <field name="name">purchase.order.kanban.procurement.execution</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="purchase_request_id"/>
+                <field name="amount_total"/>
+                <field name="currency_id"/>
+                <field name="required_financial_approval_level"/>
+                <field name="budget_reservation_status"/>
+                <field name="workflow_progress_status"/>
+                <field name="state"/>
+                <field name="vendor_bill_count"/>
+                <field name="payment_status_summary"/>
+
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click rfq_exec_kanban_card">
+                            <div class="rfq_exec_kanban_header">
+                                <div class="rfq_exec_kanban_title">
+                                    <strong><field name="name"/></strong>
+                                </div>
+                                <div class="rfq_exec_kanban_state">
+                                    <field name="state" widget="badge"/>
+                                </div>
+                            </div>
+
+                            <div class="rfq_exec_kanban_vendor">
+                                <strong>Vendor:</strong>
+                                <field name="partner_id"/>
+                            </div>
+
+                            <div class="rfq_exec_kanban_grid">
+                                <div>
+                                    <span class="rfq_exec_label">Purchase Request</span>
+                                    <div><field name="purchase_request_id"/></div>
+                                </div>
+
+                                <div>
+                                    <span class="rfq_exec_label">Total Amount</span>
+                                    <div><field name="amount_total"/></div>
+                                </div>
+
+                                <div>
+                                    <span class="rfq_exec_label">Budget Status</span>
+                                    <div><field name="budget_reservation_status" widget="badge"/></div>
+                                </div>
+
+                                <div>
+                                    <span class="rfq_exec_label">Required Approval</span>
+                                    <div><field name="required_financial_approval_level"/></div>
+                                </div>
+
+                                <div>
+                                    <span class="rfq_exec_label">Workflow</span>
+                                    <div><field name="workflow_progress_status" widget="badge"/></div>
+                                </div>
+
+                                <div>
+                                    <span class="rfq_exec_label">Bills</span>
+                                    <div><field name="vendor_bill_count"/></div>
+                                </div>
+
+                                <div>
+                                    <span class="rfq_exec_label">Payment</span>
+                                    <div><field name="payment_status_summary"/></div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_procurement_execution_kanban" model="ir.actions.act_window">
+        <field name="name">Requests for Quotation</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_purchase_order_kanban_procurement_execution"/>
+        <field name="domain">[('purchase_request_id', '!=', False)]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+        <field name="name">Requests for Quotation</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_purchase_order_kanban_procurement_execution"/>
+        <field name="domain">[('purchase_request_id', '!=', False)]</field>
+        <field name="context">{}</field>
+    </record>
+
+</odoo>

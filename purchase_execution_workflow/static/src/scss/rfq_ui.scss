@@ -92,16 +92,49 @@
     margin-left: 12px;
 }
 
-.o_kanban_view .rfq_exec_kanban_meta {
-    margin-top: 8px;
-    display: grid;
-    gap: 6px;
-    font-size: 13px;
-    color: #4a5a73;
+.o_kanban_view .rfq_exec_kanban_card {
+    border: 1px solid #d9e2f2;
+    border-radius: 16px;
+    padding: 16px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.o_kanban_view .rfq_exec_kanban_meta .badge {
+.o_kanban_view .rfq_exec_kanban_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.o_kanban_view .rfq_exec_kanban_title {
+    font-size: 16px;
+    color: #203354;
+}
+
+.o_kanban_view .rfq_exec_kanban_vendor {
+    margin-bottom: 12px;
+    color: #4f5f79;
+}
+
+.o_kanban_view .rfq_exec_kanban_grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+    gap: 10px 14px;
+}
+
+.o_kanban_view .rfq_exec_label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #71819c;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.o_kanban_view .rfq_exec_kanban_card .badge {
     border-radius: 999px;
-    padding: 4px 8px;
+    padding: 4px 10px;
     font-weight: 600;
 }
