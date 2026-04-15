@@ -32,6 +32,7 @@ Custom module for:
         'views/budget_reservation_views.xml',
         'views/hr_department_budget_views.xml',
         'views/finance_kpi_dashboard_views.xml',
+        'reports/finance_kpi_dashboard_report.xml',
         'views/budget_department_reject_wizard_views.xml',
         'views/budget_reservation_cancel_wizard_views.xml',
         'views/budget_menu.xml',
