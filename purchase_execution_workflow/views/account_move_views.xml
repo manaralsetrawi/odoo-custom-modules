@@ -22,9 +22,11 @@
                     <group>
                         <field name="is_vendor_bill" readonly="1"/>
                     </group>
-                    <field name="invoice_rejection_reason"
-                            readonly="1"
-                            placeholder="Invoice rejection reason will appear here after rejection..."/>
+                    <group>
+                        <field name="invoice_rejection_reason"
+                                readonly="1"
+                                placeholder="Invoice rejection reason will appear here after rejection..."/>
+                    </group>
                 </group>
             </xpath>
 
