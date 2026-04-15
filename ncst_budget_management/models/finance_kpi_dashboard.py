@@ -274,6 +274,24 @@ class FinanceKPIDashboard(models.Model):
         store=False,
     )
 
+    this_month_of_year_percentage = fields.Float(
+        string='This Month of Year Percentage',
+        compute='_compute_kpi_values',
+        store=False,
+    )
+
+    approved_reservations_percentage = fields.Float(
+        string='Approved Reservations Percentage',
+        compute='_compute_kpi_values',
+        store=False,
+    )
+
+    used_reservations_percentage = fields.Float(
+        string='Used Reservations Percentage',
+        compute='_compute_kpi_values',
+        store=False,
+    )
+
     @api.depends_context('uid')
     def _compute_kpi_values(self):
         budget_department_model = self.env['budget.department']
@@ -320,19 +338,15 @@ class FinanceKPIDashboard(models.Model):
 
         dept_1_name = sorted_expense_departments[0][0] if len(sorted_expense_departments) > 0 else 'No Data'
         dept_1_amount = sorted_expense_departments[0][1] if len(sorted_expense_departments) > 0 else 0.0
-
         dept_2_name = sorted_expense_departments[1][0] if len(sorted_expense_departments) > 1 else 'No Data'
         dept_2_amount = sorted_expense_departments[1][1] if len(sorted_expense_departments) > 1 else 0.0
-
         dept_3_name = sorted_expense_departments[2][0] if len(sorted_expense_departments) > 2 else 'No Data'
         dept_3_amount = sorted_expense_departments[2][1] if len(sorted_expense_departments) > 2 else 0.0
 
         top_1_name = sorted_expense_types[0][0] if len(sorted_expense_types) > 0 else 'No Data'
         top_1_amount = sorted_expense_types[0][1] if len(sorted_expense_types) > 0 else 0.0
-
         top_2_name = sorted_expense_types[1][0] if len(sorted_expense_types) > 1 else 'No Data'
         top_2_amount = sorted_expense_types[1][1] if len(sorted_expense_types) > 1 else 0.0
-
         top_3_name = sorted_expense_types[2][0] if len(sorted_expense_types) > 2 else 'No Data'
         top_3_amount = sorted_expense_types[2][1] if len(sorted_expense_types) > 2 else 0.0
 
@@ -393,22 +407,35 @@ class FinanceKPIDashboard(models.Model):
         ])
         general_budget_this_year = sum(general_budgets_this_year.mapped('total_amount'))
 
-        expenses_this_month = expense_request_model.search([
+        expenses_this_month_records = expense_request_model.search([
             ('state', '=', 'paid'),
             ('expense_date', '>=', month_start)
         ])
 
-        expenses_this_year = expense_request_model.search([
+        expenses_this_year_records = expense_request_model.search([
             ('state', '=', 'paid'),
             ('expense_date', '>=', year_start)
         ])
 
-        total_expenses_month = sum(expenses_this_month.mapped('amount'))
-        total_expenses_year = sum(expenses_this_year.mapped('amount'))
+        total_expenses_month = sum(expenses_this_month_records.mapped('amount'))
+        total_expenses_year = sum(expenses_this_year_records.mapped('amount'))
 
         current_month_number = today.month if today.month else 1
         average_monthly_expense = total_expenses_year / current_month_number if current_month_number else 0.0
         projected_annual_expense = average_monthly_expense * 12
+
+        if total_expenses_year > 0:
+            this_month_of_year_percentage = (total_expenses_month / total_expenses_year) * 100
+        else:
+            this_month_of_year_percentage = 0.0
+
+        total_reservation_activity = approved_reservations + used_reservations
+        if total_reservation_activity > 0:
+            approved_reservations_percentage = (approved_reservations / total_reservation_activity) * 100
+            used_reservations_percentage = (used_reservations / total_reservation_activity) * 100
+        else:
+            approved_reservations_percentage = 0.0
+            used_reservations_percentage = 0.0
 
         highest_expense_type_summary = (
             f'{top_1_name} is the highest paid expense type.'
@@ -486,6 +513,9 @@ class FinanceKPIDashboard(models.Model):
             record.alert_1 = alert_1
             record.alert_2 = alert_2
             record.alert_3 = alert_3
+            record.this_month_of_year_percentage = this_month_of_year_percentage
+            record.approved_reservations_percentage = approved_reservations_percentage
+            record.used_reservations_percentage = used_reservations_percentage
 
     @api.model
     def get_dashboard_record(self):
