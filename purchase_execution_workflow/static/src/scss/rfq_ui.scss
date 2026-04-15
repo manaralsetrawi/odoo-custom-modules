@@ -179,25 +179,147 @@
     font-weight: 700;
 }
 
-/* Status bar area */
+/* ============================================================
+   Form statusbar layout
+   Keep default buttons left, custom workflow button right,
+   and preserve visible status progress bar
+   ============================================================ */
+
 .o_form_view:has(.ncst_rfq_exec_form) .o_form_statusbar {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.7rem 0 0.8rem 0;
     border-bottom: 1px solid #e4ebf5;
-    padding-bottom: 0.55rem;
     margin-bottom: 0.8rem;
+    min-height: 4.2rem;
 }
 
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons {
-    display: flex;
+    display: flex !important;
     flex-wrap: wrap;
-    gap: 0.45rem;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
+/* Status progress stays visible on the far right */
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status {
-    margin-left: 0.9rem;
+    flex: 0 1 auto;
+    margin-left: 1rem;
+    align-self: center;
+    min-width: max-content;
 }
 
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status .o_arrow_button {
     border-radius: 0.8rem;
+}
+
+/* Default Odoo buttons */
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .btn:not(.rfq_exec_btn) {
+    flex: 0 0 auto;
+    margin-right: 0.05rem;
+}
+
+/* Custom workflow buttons */
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn {
+    border-radius: 1rem;
+    padding: 0.52rem 0.95rem;
+    font-weight: 700;
+    font-size: 0.94rem;
+    line-height: 1.2;
+    border: 1px solid transparent;
+    box-shadow: none;
+    transition: all 0.15s ease;
+    white-space: normal;
+    text-align: center;
+    justify-content: center;
+    align-self: center;
+    min-height: 2.9rem;
+}
+
+/* Push only the first visible custom workflow button away */
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_start {
+    margin-left: auto !important;
+}
+
+/* Keep the main action reasonable */
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_success,
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_primary {
+    max-width: 18rem;
+}
+
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn:hover {
+    transform: translateY(-1px);
+}
+
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_primary {
+    background: #eef5ff;
+    border-color: #c8d9f2;
+    color: #275b95;
+}
+
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_primary:hover {
+    background: #e2eeff;
+    border-color: #b5ccec;
+    color: #1f4d82;
+}
+
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_secondary {
+    background: #f7f9fc;
+    border-color: #dbe3ee;
+    color: #4d617d;
+}
+
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_secondary:hover {
+    background: #f0f4f9;
+    border-color: #ccd8e7;
+    color: #394d69;
+}
+
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_success {
+    background: #edf8f1;
+    border-color: #b9dfc3;
+    color: #237243;
+}
+
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_success:hover {
+    background: #e3f3e8;
+    border-color: #a8d3b3;
+    color: #1d6139;
+}
+
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_danger {
+    background: #fff4f4;
+    border-color: #efcfcf;
+    color: #ae4747;
+}
+
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_danger:hover {
+    background: #ffebeb;
+    border-color: #e7bbbb;
+    color: #943737;
+}
+
+@media (max-width: 1200px) {
+    .o_form_view:has(.ncst_rfq_exec_form) .o_form_statusbar {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons {
+        width: 100%;
+    }
+
+    .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .rfq_exec_btn_start {
+        margin-left: 0 !important;
+    }
+
+    .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status {
+        margin-left: 0;
+        width: 100%;
+    }
 }
 
 /* ============================================================
