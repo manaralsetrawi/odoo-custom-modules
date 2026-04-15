@@ -331,27 +331,6 @@
             <field name="payment_status_summary"/>
         </xpath>
 
-        <xpath expr="//div[contains(@class, 'o_kanban_record_subtitle')]" position="after">
-            <div class="rfq_exec_kanban_meta">
-                <div>
-                    <strong>PR:</strong>
-                    <field name="purchase_request_id"/>
-                </div>
-                <div>
-                    <strong>Budget:</strong>
-                    <field name="budget_reservation_status" widget="badge"/>
-                </div>
-                <div>
-                    <strong>Approval:</strong>
-                    <field name="required_financial_approval_level"/>
-                </div>
-                <div>
-                    <strong>Workflow:</strong>
-                    <field name="workflow_progress_status" widget="badge"/>
-                </div>
-            </div>
-        </xpath>
-
     </field>
 </record>
 <!-- Action for the Kanban view -->
