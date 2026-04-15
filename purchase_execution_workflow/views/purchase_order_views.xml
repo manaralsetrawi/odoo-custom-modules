@@ -24,6 +24,7 @@
                     <field name="can_edit_financial_rejection"/>
                 </group>
 
+                <div class="ncst_rfq_exec_form">
                 <!-- Adding custom summary section -->
                 <div class="rfq_exec_summary" invisible="not purchase_request_id">
                     <div class="rfq_exec_card">
@@ -181,7 +182,7 @@
                     </page>
 
                 </notebook>
-              
+              </div>
             </xpath>
 
             <!-- Header buttons -->

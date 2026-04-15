@@ -1,11 +1,16 @@
-.o_form_view .rfq_exec_summary {
+/* ============================================================
+   NCST RFQ EXECUTION FORM
+   Scoped only to RFQ custom form content
+   ============================================================ */
+
+.ncst_rfq_exec_form .rfq_exec_summary {
     display: grid;
     grid-template-columns: repeat(5, minmax(180px, 1fr));
     gap: 12px;
     margin: 12px 0 18px 0;
 }
 
-.o_form_view .rfq_exec_card {
+.ncst_rfq_exec_form .rfq_exec_card {
     border: 1px solid #d9e2f2;
     border-radius: 14px;
     padding: 14px 16px;
@@ -13,7 +18,7 @@
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
-.o_form_view .rfq_exec_card_title {
+.ncst_rfq_exec_form .rfq_exec_card_title {
     font-size: 12px;
     font-weight: 600;
     color: #60708f;
@@ -22,12 +27,12 @@
     margin-bottom: 8px;
 }
 
-.o_form_view .rfq_exec_card_value .o_field_widget {
+.ncst_rfq_exec_form .rfq_exec_card_value .o_field_widget {
     font-size: 16px;
     font-weight: 600;
 }
 
-.o_form_view .rfq_exec_note {
+.ncst_rfq_exec_form .rfq_exec_note {
     border-left: 4px solid #7aa7d9;
     background: #f7fbff;
     padding: 10px 12px;
@@ -36,11 +41,11 @@
     color: #4b5d79;
 }
 
-.o_form_view .rfq_exec_page .o_group {
+.ncst_rfq_exec_form .rfq_exec_page .o_group {
     margin-top: 8px;
 }
 
-.o_form_view .rfq_exec_section {
+.ncst_rfq_exec_form .rfq_exec_section {
     border: 1px solid #e2e8f0;
     border-radius: 14px;
     padding: 14px 16px;
@@ -48,48 +53,43 @@
     background: #ffffff;
 }
 
-.o_list_view .o_data_row td[name="workflow_progress_status"] .badge {
-    font-weight: 600;
-    padding: 5px 10px;
-    border-radius: 999px;
-}
-
-@media (max-width: 1400px) {
-    .o_form_view .rfq_exec_summary {
-        grid-template-columns: repeat(3, minmax(180px, 1fr));
-    }
-}
-
-@media (max-width: 900px) {
-    .o_form_view .rfq_exec_summary {
-        grid-template-columns: repeat(1, minmax(180px, 1fr));
-    }
-}
-
-.o_form_view .o_form_statusbar {
+/* Only style header/status area when this RFQ form wrapper exists */
+.o_form_view:has(.ncst_rfq_exec_form) .o_form_statusbar {
     border-bottom: 1px solid #e6ecf5;
     padding-bottom: 8px;
     margin-bottom: 10px;
 }
 
-.o_form_view .o_statusbar_buttons .btn {
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .btn {
     border-radius: 10px;
     margin-right: 6px;
     font-weight: 600;
 }
 
-.o_form_view .o_statusbar_buttons {
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
 }
 
-.o_form_view .o_statusbar_status .o_arrow_button {
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status .o_arrow_button {
     border-radius: 10px;
 }
 
-.o_form_view .o_statusbar_status {
+.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status {
     margin-left: 12px;
+}
+
+@media (max-width: 1400px) {
+    .ncst_rfq_exec_form .rfq_exec_summary {
+        grid-template-columns: repeat(3, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .ncst_rfq_exec_form .rfq_exec_summary {
+        grid-template-columns: repeat(1, minmax(180px, 1fr));
+    }
 }
 
 /* ============================================================
@@ -129,11 +129,11 @@
 
 .ncst_rfq_exec_dashboard .rfq_exec_kanban_card:hover {
     transform: translateY(-0.125rem);
-    box-shadow: 0 0.6rem 1.4rem rgba(15, 23, 42, 0.1);
+    box-shadow: 0 0.6rem 1.4rem rgba(15, 23, 42, 0.10);
     border-color: #c7d8ee;
 }
 
-/* Remove any pseudo ribbon/triangle only for your RFQ cards */
+/* Remove pseudo ribbons only for RFQ cards */
 .o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.rfq_exec_kanban_card)::before,
 .o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.rfq_exec_kanban_card)::after,
 .o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.rfq_exec_kanban_card) .oe_kanban_global_click::before,
@@ -327,7 +327,7 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
     .o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.rfq_exec_kanban_card) {
         margin: 0.5rem !important;
     }
