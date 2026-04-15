@@ -929,6 +929,26 @@ class PurchaseOrder(models.Model):
             #mark budget reservation as used after financial approval
             order._mark_budget_reservation_used()
 
+    def action_open_financial_reject_wizard(self):
+        self._check_financial_approver_access()
+        self.ensure_one()
+
+        if self.financial_approval_state != 'to_approve':
+            raise ValidationError(
+                'Only quotations waiting for financial approval can be rejected.'
+            )
+
+        return {
+            'name': 'Reject Financial Approval',
+            'type': 'ir.actions.act_window',
+            'res_model': 'financial.reject.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_purchase_order_id': self.id,
+            },
+        }
+    
     def action_financial_reject(self):
         self._check_financial_approver_access()
 
