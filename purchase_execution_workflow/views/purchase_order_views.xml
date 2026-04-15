@@ -6,15 +6,20 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
 
-            <!-- Restrict vendor selection to companies with supplier rank -->
-            <xpath expr="//field[@name='partner_id']" position="attributes">
-                <attribute name="domain">[('supplier_rank', '&gt;', 0), ('is_company', '=', True)]</attribute>
-            </xpath>
-
-            <!-- Show related Purchase Request near the vendor field -->
-            <xpath expr="//field[@name='partner_id']" position="after">
+            <!-- Show Purchase Request before Vendor -->
+            <xpath expr="//field[@name='partner_id']" position="before">
                 <field name="purchase_request_id"/>
             </xpath>
+
+            <!-- Restrict vendor selection to valid company vendors for the selected PR -->
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="domain">[('id', 'in', available_vendor_ids), ('supplier_rank', '&gt;', 0), ('is_company', '=', True)]</attribute>
+                <attribute name="readonly">not purchase_request_id</attribute>
+                <attribute name="placeholder">Select a vendor after choosing the Purchase Request...</attribute>
+            </xpath>
+
+            <!-- Remove the old duplicate PR field after vendor -->
+            <xpath expr="//field[@name='partner_id']/following-sibling::field[@name='purchase_request_id'][1]" position="replace"/>
 
             <!-- Main custom sections -->
             <xpath expr="//sheet" position="inside">
@@ -23,6 +28,8 @@
                 <group invisible="1">
                     <field name="can_edit_procurement_fields"/>
                     <field name="can_edit_financial_rejection"/>
+                    <field name="available_vendor_ids"/>
+                    <field name="missing_vendor_price"/>
                 </group>
 
                 <div class="ncst_rfq_exec_form">
@@ -100,6 +107,10 @@
                                        required="is_above_quotation_threshold and quotation_count_for_request &lt; 3"
                                        invisible="not is_above_quotation_threshold or quotation_count_for_request &gt;= 3"
                                        placeholder="Enter the reason if fewer than 3 quotations were obtained..."/>
+
+                                <field name="missing_vendor_price"
+                                       readonly="1"
+                                       invisible="not missing_vendor_price"/>
                             </group>
                         </page>
 
