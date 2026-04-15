@@ -315,29 +315,4 @@
 
     </field>
 </record>
-
-<!-- UI POLISH: Kanban view with key info and visual status indicators -->
-<record id="view_purchase_order_kanban_inherit_execution" model="ir.ui.view">
-    <field name="name">purchase.order.kanban.inherit.execution</field>
-    <field name="model">purchase.order</field>
-    <field name="inherit_id" ref="purchase.purchase_order_kpis_tree"/>
-    <field name="arch" type="xml">
-
-        <xpath expr="//kanban" position="inside">
-            <field name="purchase_request_id"/>
-            <field name="budget_reservation_status"/>
-            <field name="required_financial_approval_level"/>
-            <field name="workflow_progress_status"/>
-            <field name="payment_status_summary"/>
-        </xpath>
-
-    </field>
-</record>
-<!-- Action for the Kanban view -->
-<record id="action_procurement_execution_kanban" model="ir.actions.act_window">
-    <field name="name">Procurement RFQs</field>
-    <field name="res_model">purchase.order</field>
-    <field name="view_mode">kanban,list,form</field>
-    <field name="domain">[('purchase_request_id', '!=', False)]</field>
-</record>
 </odoo>
