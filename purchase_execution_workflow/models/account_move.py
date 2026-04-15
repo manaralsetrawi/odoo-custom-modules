@@ -196,6 +196,27 @@ class AccountMove(models.Model):
             move.invoice_verified_date = fields.Datetime.now()
             move.invoice_rejection_reason = False
 
+    def action_open_invoice_reject_wizard(self):
+        self._check_invoice_verifier_access()
+        self.ensure_one()
+
+        if self.move_type != 'in_invoice':
+            raise ValidationError('This action is only allowed for vendor bills.')
+
+        if self.invoice_verification_status == 'rejected':
+            raise ValidationError('This vendor bill is already rejected.')
+
+        return {
+            'name': 'Reject Invoice',
+            'type': 'ir.actions.act_window',
+            'res_model': 'invoice.reject.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_account_move_id': self.id,
+            },
+        }
+
     def action_reject_vendor_bill(self):
         self._check_invoice_verifier_access()
 

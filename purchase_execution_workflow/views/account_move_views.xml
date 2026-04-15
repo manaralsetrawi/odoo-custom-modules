@@ -30,7 +30,8 @@
                         placeholder="Enter the reason for allowing invoice verification before full receipt..."
                         invisible="not allow_advance_payment_exception"/>
                     <field name="invoice_rejection_reason"
-                           placeholder="Enter the reason if this vendor bill is rejected..."/>
+                            readonly="1"
+                            placeholder="Invoice rejection reason will appear here after rejection..."/>
                 </group>
             </xpath>
 
@@ -43,7 +44,7 @@
                         invisible="move_type != 'in_invoice' or invoice_verification_status == 'verified'"
                         confirm="Are you sure you want to verify this vendor bill?"/>
 
-                <button name="action_reject_vendor_bill"
+                <button name="action_open_invoice_reject_wizard"
                         type="object"
                         string="Reject Invoice"
                         class="btn-danger"

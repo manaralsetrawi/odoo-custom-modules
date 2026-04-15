@@ -136,8 +136,8 @@
                                 <field name="financial_approved_date" readonly="1"/>
                             </group>
                             <field name="financial_rejection_reason"
-                                   readonly="not can_edit_financial_rejection"
-                                   placeholder="Enter the reason if this quotation is rejected during financial approval..."/>
+                                    readonly="1"
+                                    placeholder="Financial rejection reason will appear here after rejection..."/>
                         </group>
                     </page>
 
