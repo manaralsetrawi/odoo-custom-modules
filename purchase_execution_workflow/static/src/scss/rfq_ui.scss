@@ -181,59 +181,44 @@
 
 /* ============================================================
    Form statusbar layout
-   Stable layout: default buttons left, custom actions right,
-   status progress remains visible
+   Keep native Odoo purchase statusbar stable
    ============================================================ */
 
 .o_form_view:has(.ncst_rfq_exec_form) .o_form_statusbar {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    padding: 0.65rem 0 0.85rem 0;
     border-bottom: 1px solid #e4ebf5;
+    padding: 0.6rem 0 0.75rem 0;
     margin-bottom: 0.8rem;
-    min-height: 4.25rem;
 }
 
-/* Default Odoo button area */
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons {
-    display: flex !important;
+    display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.45rem;
-    flex: 0 1 auto;
-    min-width: 0;
 }
 
-/* Our custom workflow action wrapper */
-.o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-    margin-left: auto;
-    margin-right: 0.8rem;
-    min-width: 0;
-}
-
-/* Keep purchase status visible and normal */
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status {
-    flex: 0 0 auto;
-    margin-left: 0;
-    align-self: center;
+    margin-left: 0.9rem;
 }
 
 .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status .o_arrow_button {
     border-radius: 0.8rem;
 }
 
-/* Default Odoo buttons */
-.o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_buttons .btn {
-    flex: 0 0 auto;
-    margin-right: 0.05rem;
+/* ============================================================
+   Custom workflow actions in header
+   Safe separated group
+   ============================================================ */
+
+.o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 1rem;
+    vertical-align: middle;
 }
 
-/* Custom workflow buttons */
 .o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions .rfq_exec_btn {
     display: inline-flex;
     align-items: center;
@@ -304,21 +289,64 @@
     color: #943737;
 }
 
-@media (max-width: 1300px) {
-    .o_form_view:has(.ncst_rfq_exec_form) .o_form_statusbar {
-        flex-wrap: wrap;
-        align-items: flex-start;
-    }
+/* ============================================================
+   Custom workflow progress bar inside form body
+   ============================================================ */
 
+.ncst_rfq_exec_form .rfq_exec_workflow_bar_wrap {
+    border: 1px solid #dfe7f2;
+    border-radius: 1rem;
+    background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+    padding: 0.9rem 1rem 1rem 1rem;
+    margin: 0 0 1rem 0;
+    box-shadow: 0 0.18rem 0.6rem rgba(15, 23, 42, 0.03);
+}
+
+.ncst_rfq_exec_form .rfq_exec_workflow_label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #5f7392;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.65rem;
+}
+
+.ncst_rfq_exec_form .rfq_exec_workflow_bar {
+    display: block;
+}
+
+/* Style the statusbar widget inside the custom workflow box */
+.ncst_rfq_exec_form .rfq_exec_workflow_bar .o_statusbar_status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: 0;
+}
+
+.ncst_rfq_exec_form .rfq_exec_workflow_bar .o_arrow_button {
+    border-radius: 999rem;
+    min-height: 2.35rem;
+    padding: 0.45rem 0.95rem;
+    font-weight: 700;
+    border: 1px solid #dbe5f2;
+    background: #f7faff;
+    color: #526882;
+}
+
+.ncst_rfq_exec_form .rfq_exec_workflow_bar .o_arrow_button.btn-primary,
+.ncst_rfq_exec_form .rfq_exec_workflow_bar .o_arrow_button.o_arrow_button_current {
+    background: #e7f1ff;
+    border-color: #bfd4f1;
+    color: #1f5a95;
+}
+
+@media (max-width: 1200px) {
     .o_form_view:has(.ncst_rfq_exec_form) .rfq_exec_workflow_actions {
+        display: flex;
+        width: 100%;
         margin-left: 0;
-        margin-right: 0;
-        width: 100%;
-        justify-content: flex-start;
-    }
-
-    .o_form_view:has(.ncst_rfq_exec_form) .o_statusbar_status {
-        width: 100%;
+        margin-top: 0.45rem;
     }
 }
 /* ============================================================
