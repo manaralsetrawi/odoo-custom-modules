@@ -1,0 +1,27 @@
+.o_list_view .badge.text-bg-success,
+.o_list_view .o_field_badge .badge.text-bg-success {
+    background-color: #d1fae5 !important;
+    color: #065f46 !important;
+    border: 1px solid #a7f3d0 !important;
+}
+
+.o_list_view .badge.text-bg-danger,
+.o_list_view .o_field_badge .badge.text-bg-danger {
+    background-color: #fee2e2 !important;
+    color: #991b1b !important;
+    border: 1px solid #fecaca !important;
+}
+
+.o_list_view .badge.text-bg-warning,
+.o_list_view .o_field_badge .badge.text-bg-warning {
+    background-color: #fef3c7 !important;
+    color: #92400e !important;
+    border: 1px solid #fde68a !important;
+}
+
+.o_list_view .badge.text-bg-info,
+.o_list_view .o_field_badge .badge.text-bg-info {
+    background-color: #dbeafe !important;
+    color: #1d4ed8 !important;
+    border: 1px solid #bfdbfe !important;
+}
