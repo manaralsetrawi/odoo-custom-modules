@@ -65,16 +65,6 @@ class AccountMove(models.Model):
         compute='_compute_is_vendor_bill',
         help='Technical helper showing whether this record is a vendor bill.'
     )
-    #improvement fields for advance payment exception handling
-    allow_advance_payment_exception = fields.Boolean(
-        string='Allow Advance Payment Exception',
-        help='Enable this only for approved advance payment cases before full receipt.'
-    )
-
-    advance_payment_reason = fields.Text(
-        string='Advance Payment Justification',
-        help='Reason for allowing invoice verification before full receipt.'
-    )
 
     # -------------------------------------------------------------------------
     # PHASE 6 - PAYMENT TRACKING HELPER
@@ -171,17 +161,7 @@ class AccountMove(models.Model):
 
             for product_id, billed_qty in billed_qty_by_product.items():
                 received_qty = received_qty_by_product.get(product_id, 0.0)
-                #improvement: if billed quantity exceeds received quantity, check for advance payment exception
-                if billed_qty > received_qty:
-                    if not move.allow_advance_payment_exception:
-                        raise ValidationError(
-                            'The billed quantity cannot be greater than the received quantity for one or more products unless an advance payment exception is approved.'
-                        )
 
-                    if not move.advance_payment_reason:
-                        raise ValidationError(
-                            'Please enter the advance payment justification before verifying this vendor bill.'
-                        )
 
     def action_verify_vendor_bill(self):
         self._check_invoice_verifier_access()
