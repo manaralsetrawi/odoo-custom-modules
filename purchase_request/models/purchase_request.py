@@ -65,7 +65,6 @@ class PurchaseRequest(models.Model):
             ('waiting_coordinator', 'Waiting Coordinator Approval'),
             ('waiting_principal', 'Waiting Academic Principal Approval'),
             ('waiting_director', 'Waiting Department Director Approval'),
-            ('waiting_budget', 'Waiting Budget Verification'),
             ('approved', 'Approved'),
             ('rejected', 'Rejected'),
         ],
@@ -159,7 +158,6 @@ class PurchaseRequest(models.Model):
         tracking=True,
     )
 
-
     is_current_user_department_manager = fields.Boolean(
         string='Is Current User Department Manager',
         compute='_compute_user_access_flags',
@@ -170,7 +168,6 @@ class PurchaseRequest(models.Model):
         compute='_compute_user_access_flags',
     )
 
-
     is_current_user_coordinator = fields.Boolean(
         string='Is Current User Coordinator',
         compute='_compute_user_access_flags',
@@ -180,7 +177,6 @@ class PurchaseRequest(models.Model):
         string='Is Current User Principal',
         compute='_compute_user_access_flags',
     )
-
 
     is_current_user_can_reject = fields.Boolean(
         string='Can Current User Reject',
@@ -193,7 +189,6 @@ class PurchaseRequest(models.Model):
         compute='_compute_allowed_user_ids',
         store=True,
     )
-
 
     is_current_user_can_create_pr = fields.Boolean(
         string='Can Current User Create Purchase Request',
@@ -212,7 +207,7 @@ class PurchaseRequest(models.Model):
     def _compute_amount_total(self):
         for rec in self:
             rec.amount_total = sum(rec.line_ids.mapped('subtotal'))
-    
+
     @api.model
     def create(self, vals):
         user_group_ids = self.env.user.groups_id.ids
@@ -235,7 +230,6 @@ class PurchaseRequest(models.Model):
             return 'admin'
         return False
 
-
     @api.onchange('requester_id')
     def _onchange_requester(self):
         if self.requester_id and self.requester_id.user_id:
@@ -247,7 +241,6 @@ class PurchaseRequest(models.Model):
                 self.requester_category = 'admin'
             else:
                 self.requester_category = False
-
 
     @api.model
     def get_view(self, view_id=None, view_type='form', **options):
@@ -263,42 +256,34 @@ class PurchaseRequest(models.Model):
 
         return res
 
-
     @api.depends(
-    'state',
-    'requester_id',
-    'requester_id.user_id',
-    'department_id',
-    'department_id.manager_id',
-    'department_id.manager_id.user_id',
-    'requester_category',
+        'state',
+        'requester_id',
+        'requester_id.user_id',
+        'department_id',
+        'department_id.manager_id',
+        'department_id.manager_id.user_id',
+        'requester_category',
     )
     def _compute_allowed_user_ids(self):
         coordinator_users = self.env['res.users'].search([('groups_id', 'in', [81])])
         principal_users = self.env['res.users'].search([('groups_id', 'in', [96])])
-        finance_users = self.env['res.users'].search([('employee_ids.department_id', '=', 2)])
-        procurement_users = self.env['res.users'].search([('employee_ids.department_id', '=', 5)])
-
 
         procurement_officer_users = self.env['res.users'].search([('groups_id', 'in', [90])])
         director_finance_users = self.env['res.users'].search([('groups_id', 'in', [91])])
         deputy_ceo_users = self.env['res.users'].search([('groups_id', 'in', [92])])
         ceo_users = self.env['res.users'].search([('groups_id', 'in', [93])])
 
-
         for rec in self:
             users = self.env['res.users']
 
-            # requester can always see own request
             if rec.requester_id and rec.requester_id.user_id:
                 users |= rec.requester_id.user_id
 
-            # while still draft, only requester can see it
             if rec.state == 'draft':
                 rec.allowed_user_ids = [(6, 0, users.ids)]
                 continue
 
-            # after submission, expand visibility by route
             if rec.requester_category == 'admin':
                 if rec.department_id and rec.department_id.manager_id and rec.department_id.manager_id.user_id:
                     users |= rec.department_id.manager_id.user_id
@@ -307,19 +292,13 @@ class PurchaseRequest(models.Model):
                 users |= coordinator_users
                 users |= principal_users
 
-            # finance can see requests at budget stage and after approval
-            if rec.state in ('waiting_budget', 'approved','rejected'):
-                users |= finance_users
-
-            # procurement can see approved requests
-            if rec.state == 'approved':
+            if rec.state in ('approved', 'rejected'):
                 users |= procurement_officer_users
                 users |= director_finance_users
                 users |= deputy_ceo_users
                 users |= ceo_users
 
             rec.allowed_user_ids = [(6, 0, users.ids)]
-
 
     def _compute_user_access_flags(self):
         current_user = self.env.user
@@ -344,12 +323,11 @@ class PurchaseRequest(models.Model):
 
             rec.is_current_user_coordinator = 81 in current_user.groups_id.ids
             rec.is_current_user_principal = 96 in current_user.groups_id.ids
-           
+
             rec.is_current_user_can_reject = (
                 (rec.state == 'waiting_coordinator' and rec.is_current_user_coordinator)
                 or (rec.state == 'waiting_principal' and rec.is_current_user_principal)
                 or (rec.state == 'waiting_director' and rec.is_current_user_department_manager)
-                or (rec.state == 'waiting_budget' and rec.is_current_user_finance)
             )
 
             rec.is_current_user_can_create_pr = 79 in current_user.groups_id.ids or 61 in current_user.groups_id.ids
@@ -370,7 +348,6 @@ class PurchaseRequest(models.Model):
                 rec.state = 'waiting_director'
                 rec.message_post(body="Purchase Request submitted and routed to Department Director.")
 
-
     def action_coordinator_approve(self):
         for rec in self:
             if rec.state != 'waiting_coordinator':
@@ -383,7 +360,6 @@ class PurchaseRequest(models.Model):
             rec.coordinator_approved_by = self.env.user
             rec.coordinator_approved_date = fields.Datetime.now()
             rec.message_post(body="Purchase Request approved by Coordinator.")
-    
 
     def action_principal_approve(self):
         for rec in self:
@@ -393,67 +369,32 @@ class PurchaseRequest(models.Model):
             if 96 not in self.env.user.groups_id.ids:
                 raise UserError("Only Academic Principal users can approve at this stage.")
 
-            rec.state = 'waiting_budget'
+            rec.state = 'approved'
             rec.principal_approved_by = self.env.user
             rec.principal_approved_date = fields.Datetime.now()
             rec.message_post(body="Purchase Request approved by Academic Principal / Vice Principal.")
-
 
     def action_director_approve(self):
         for rec in self:
             if rec.state != 'waiting_director':
                 continue
-            
+
             if not rec.department_id or not rec.department_id.manager_id or not rec.department_id.manager_id.user_id:
                 raise UserError("This request's department does not have a manager with a linked user.")
 
             if rec.department_id.manager_id.user_id != self.env.user:
                 raise UserError("Only the manager of the request department can approve this request.")
 
-            rec.state = 'waiting_budget'
+            rec.state = 'approved'
             rec.director_approved_by = self.env.user
             rec.director_approved_date = fields.Datetime.now()
             rec.message_post(body="Purchase Request approved by Department Director.")
-
-
-
-    def action_verify_budget(self):
-        self.ensure_one()
-
-        current_employee = self.env['hr.employee'].search(
-            [('user_id', '=', self.env.user.id)],
-            limit=1
-        )
-
-        if self.state != 'waiting_budget':
-            raise UserError("This purchase request is not waiting for budget verification.")
-
-        if not current_employee or not current_employee.department_id:
-            raise UserError("The current user is not linked to an employee with a department.")
-
-        if current_employee.department_id.id != 2:
-            raise UserError("Only employees in the Finance & Accounting department can verify budget.")
-
-        return {
-            'name': 'Verify Budget',
-            'type': 'ir.actions.act_window',
-            'res_model': 'purchase.request.budget.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_purchase_request_id': self.id,
-                'default_available_budget': self.budget_available_amount,
-                'default_budget_note': self.budget_note,
-            },
-        }
-
 
     def action_reject(self):
         self.ensure_one()
 
         if not self.is_current_user_can_reject:
             raise UserError("You are not allowed to reject this request at the current stage.")
-
 
         return {
             'name': 'Reject Purchase Request',
@@ -466,12 +407,8 @@ class PurchaseRequest(models.Model):
             },
         }
 
-
     def write(self, vals):
-
         for rec in self:
-
-            # Prevent changing requester completely
             if 'requester_id' in vals:
                 raise UserError("Requester cannot be changed. It is automatically assigned to the logged-in user.")
 
@@ -486,12 +423,9 @@ class PurchaseRequest(models.Model):
             }
 
             if rec.state != 'draft' and protected_fields.intersection(vals.keys()):
-                raise UserError(
-                    "You cannot modify request details after submission."
-                )
+                raise UserError("You cannot modify request details after submission.")
 
         return super().write(vals)
-    
 
     def unlink(self):
         user_group_ids = self.env.user.groups_id.ids
@@ -504,7 +438,6 @@ class PurchaseRequest(models.Model):
                 raise UserError("Only draft purchase requests can be deleted.")
 
         return super().unlink()
-
 
     @api.model
     def check_access_rights(self, operation, raise_exception=True):

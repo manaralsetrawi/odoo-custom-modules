@@ -2,7 +2,6 @@
 <odoo>
     <data>
 
-        <!-- List View -->
         <record id="view_purchase_request_list" model="ir.ui.view">
             <field name="name">purchase.request.list</field>
             <field name="model">purchase.request</field>
@@ -15,19 +14,16 @@
                     <field name="required_date"/>
                     <field name="amount_total"/>
 
-
                     <field name="state"
                             widget="badge"
                             decoration-info="state == 'draft'"
-                            decoration-warning="state in ('waiting_coordinator', 'waiting_principal', 'waiting_director', 'waiting_budget')"
+                            decoration-warning="state in ('waiting_coordinator', 'waiting_principal', 'waiting_director')"
                             decoration-success="state == 'approved'"
                             decoration-danger="state == 'rejected'"/>
-                   
                 </list>
             </field>
         </record>
 
-        <!-- Form View -->
         <record id="view_purchase_request_form" model="ir.ui.view">
             <field name="name">purchase.request.form</field>
             <field name="model">purchase.request</field>
@@ -59,28 +55,22 @@
                                 class="btn-success"
                                 invisible="state != 'waiting_director' or not is_current_user_department_manager"/>
 
-                        <button name="action_verify_budget"
-                                type="object"
-                                string="Verify Budget"
-                                class="btn-primary"
-                                invisible="state != 'waiting_budget' or not is_current_user_finance"/>
-
                         <button name="action_reject"
                                 type="object"
                                 string="Reject"
                                 class="btn-danger"
-                                invisible="state not in ('waiting_coordinator','waiting_principal','waiting_director','waiting_budget') or not is_current_user_can_reject"/>
-                        
+                                invisible="state not in ('waiting_coordinator','waiting_principal','waiting_director') or not is_current_user_can_reject"/>
+
                         <field name="state"
                                 widget="statusbar"
-                                statusbar_visible="draft,waiting_coordinator,waiting_principal,waiting_budget,approved,rejected"
+                                statusbar_visible="draft,waiting_coordinator,waiting_principal,approved,rejected"
                                 invisible="requester_category != 'teacher'"/>
 
                         <field name="state"
                                 widget="statusbar"
-                                statusbar_visible="draft,waiting_director,waiting_budget,approved,rejected"
+                                statusbar_visible="draft,waiting_director,approved,rejected"
                                 invisible="requester_category != 'admin'"/>
-                        
+
                         <field name="state"
                                 widget="statusbar"
                                 statusbar_visible="draft,approved,rejected"
@@ -89,13 +79,13 @@
                     </header>
 
                     <sheet>
-                        
+
                         <field name="is_current_user_department_manager" invisible="1"/>
-                        <field name="is_current_user_finance" invisible="1"/>   
+                        <field name="is_current_user_finance" invisible="1"/>
                         <field name="is_current_user_coordinator" invisible="1"/>
                         <field name="is_current_user_principal" invisible="1"/>
                         <field name="is_current_user_can_reject" invisible="1"/>
-                        
+
                         <div class="oe_title">
                             <h1>
                                 <field name="name" readonly="1"/>
@@ -123,7 +113,6 @@
                                 <field name="line_ids" readonly="state != 'draft'">
                                     <list editable="bottom" delete="state == 'draft'">
                                         <field name="product_id" readonly="parent.state != 'draft'"/>
-                                        <!-- <field name="product_description"/> -->
                                         <field name="specifications" readonly="parent.state != 'draft'"/>
                                         <field name="quantity" readonly="parent.state != 'draft'"/>
                                         <field name="estimated_unit_price" readonly="1" force_save="1"/>
@@ -133,38 +122,23 @@
                             </page>
                         </notebook>
 
-                        <group string="Approval Information" 
+                        <group string="Approval Information"
                                invisible="not coordinator_approved_by and not principal_approved_by and not director_approved_by">
-                            
+
                             <group invisible="not coordinator_approved_by">
                                 <field name="coordinator_approved_by" readonly="1"/>
                                 <field name="coordinator_approved_date" readonly="1"/>
                             </group>
-                            
+
                             <group invisible="not principal_approved_by">
                                 <field name="principal_approved_by" readonly="1"/>
                                 <field name="principal_approved_date" readonly="1"/>
                             </group>
-                            
+
                             <group invisible="not director_approved_by">
                                 <field name="director_approved_by" readonly="1"/>
                                 <field name="director_approved_date" readonly="1"/>
                             </group>
-                        </group>
-
-                        <group string="Budget Verification" invisible="state not in ('waiting_budget', 'approved')">
-                            <group>
-                                <field name="budget_available_amount" readonly="1"/>
-                                <field name="budget_verified" readonly="1"/>
-                            </group>
-                            <group>
-                                <field name="budget_verified_by" readonly="1"/>
-                                <field name="budget_verified_date" readonly="1"/>
-                            </group>
-                            <group>
-                                <field name="budget_note" readonly="1"/>
-                            </group>
-                            
                         </group>
 
                         <group string="Rejection Information" invisible="not rejection_reason">
@@ -179,7 +153,6 @@
             </field>
         </record>
 
-        <!-- Action -->
         <record id="action_purchase_request" model="ir.actions.act_window">
             <field name="name">Purchase Requests</field>
             <field name="res_model">purchase.request</field>
