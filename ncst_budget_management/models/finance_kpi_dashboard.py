@@ -205,6 +205,13 @@ class FinanceKPIDashboard(models.Model):
         store=False,
     )
 
+    general_budget_this_year = fields.Monetary(
+    string='General Budget This Year',
+    currency_field='currency_id',
+    compute='_compute_kpi_values',
+    store=False,
+    )
+
     @api.depends_context('uid')
     def _compute_kpi_values(self):
         budget_department_model = self.env['budget.department']
@@ -330,6 +337,17 @@ class FinanceKPIDashboard(models.Model):
         month_start = today.replace(day=1)
         year_start = today.replace(month=1, day=1)
 
+        current_year = today.year
+
+        general_budgets_this_year = self.env['budget.general'].search([
+            ('period_start', '>=', fields.Date.to_date(f'{current_year}-01-01')),
+            ('period_end', '<=', fields.Date.to_date(f'{current_year}-12-31')),
+            ('state', '=', 'active'),
+            ('company_id', '=', self.env.company.id),
+        ])
+
+        general_budget_this_year = sum(general_budgets_this_year.mapped('total_amount'))
+
         expenses_this_month = expense_request_model.search([
             ('state', '=', 'paid'),
             ('expense_date', '>=', month_start)
@@ -373,6 +391,7 @@ class FinanceKPIDashboard(models.Model):
             record.top_expense_department_3_amount = dept_3_amount
             record.expenses_this_month = total_expenses_month
             record.expenses_this_year = total_expenses_year
+            record.general_budget_this_year = general_budget_this_year
 
     @api.model
     def get_dashboard_record(self):
