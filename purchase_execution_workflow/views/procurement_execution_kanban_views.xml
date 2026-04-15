@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <!-- Custom Kanban View -->
     <record id="view_purchase_order_kanban_procurement_execution" model="ir.ui.view">
         <field name="name">purchase.order.kanban.procurement.execution</field>
         <field name="model">purchase.order</field>
@@ -78,15 +79,7 @@
         </field>
     </record>
 
-    <record id="action_procurement_execution_kanban" model="ir.actions.act_window">
-        <field name="name">Requests for Quotation</field>
-        <field name="res_model">purchase.order</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="view_id" ref="view_purchase_order_kanban_procurement_execution"/>
-        <field name="domain">[('purchase_request_id', '!=', False)]</field>
-        <field name="context">{}</field>
-    </record>
-
+    <!-- Override default RFQ action -->
     <record id="purchase.purchase_rfq" model="ir.actions.act_window">
         <field name="name">Requests for Quotation</field>
         <field name="res_model">purchase.order</field>
