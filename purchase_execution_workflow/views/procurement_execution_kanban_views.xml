@@ -6,7 +6,7 @@
         <field name="name">purchase.order.kanban.procurement.execution</field>
         <field name="model">purchase.order</field>
         <field name="arch" type="xml">
-            <kanban class="o_kanban_mobile">
+            <kanban class="o_kanban_mobile ncst_rfq_exec_dashboard">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="purchase_request_id"/>
@@ -39,8 +39,8 @@
                             </div>
 
                             <div class="rfq_exec_kanban_vendor">
-                                <strong>Vendor:</strong>
-                                <field name="partner_id"/>
+                                <span class="rfq_exec_label">Vendor</span>
+                                <div><field name="partner_id"/></div>
                             </div>
 
                             <div class="rfq_exec_kanban_grid">

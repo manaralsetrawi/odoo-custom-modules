@@ -93,186 +93,252 @@
 }
 
 /* ============================================================
-   RFQ CUSTOM DASHBOARD / KANBAN POLISH
+   NCST RFQ EXECUTION DASHBOARD
+   Scoped only to the custom RFQ kanban page
    ============================================================ */
 
-.o_kanban_view .rfq_exec_kanban_card {
-    border: 1px solid #dbe4f0;
-    border-radius: 22px;
-    padding: 18px 18px 16px 18px;
-    background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
-    box-shadow: 0 6px 18px rgba(15, 34, 58, 0.06);
-    transition: all 0.18s ease;
-    min-height: 100%;
-}
-
-.o_kanban_view .rfq_exec_kanban_card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(15, 34, 58, 0.10);
-    border-color: #c9d8ee;
-}
-
-.o_kanban_view .rfq_exec_kanban_header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 14px;
-}
-
-.o_kanban_view .rfq_exec_kanban_title {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1f365c;
-    line-height: 1.2;
-}
-
-.o_kanban_view .rfq_exec_kanban_state {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-.o_kanban_view .rfq_exec_kanban_vendor {
-    margin-bottom: 16px;
-    color: #455672;
-    font-size: 15px;
-    line-height: 1.4;
-}
-
-.o_kanban_view .rfq_exec_kanban_vendor strong {
-    color: #31486e;
-    margin-right: 4px;
-}
-
-.o_kanban_view .rfq_exec_kanban_grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(150px, 1fr));
-    gap: 14px 18px;
-}
-
-.o_kanban_view .rfq_exec_label {
-    display: block;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #7a8aa5;
-    margin-bottom: 5px;
-    font-weight: 700;
-}
-
-.o_kanban_view .rfq_exec_kanban_grid > div > div {
-    font-size: 15px;
-    font-weight: 600;
-    color: #33455f;
-}
-
-.o_kanban_view .rfq_exec_kanban_card .badge {
-    border-radius: 999px !important;
-    padding: 6px 12px !important;
-    font-weight: 700 !important;
-    font-size: 13px !important;
-    border: none !important;
+/* Remove default Odoo kanban wrapper look for this dashboard only */
+.o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.rfq_exec_kanban_card) {
+    background-color: transparent !important;
+    border: 0 !important;
     box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0.7rem !important;
+    border-radius: 0 !important;
 }
 
-/* =========================
-   Status badge color polish
-   ========================= */
-
-/* Default purchase state badges */
-.o_kanban_view .rfq_exec_kanban_state .badge,
-.o_list_view td[name="state"] .badge {
-    background: #eef2f7 !important;
-    color: #334155 !important;
+/* Optional: make records stretch nicely only for this dashboard */
+.o_kanban_renderer.o_kanban_ungrouped:has(.rfq_exec_kanban_card) {
+    align-items: stretch;
 }
 
-/* RFQ */
-.o_kanban_view .rfq_exec_kanban_state .badge:contains("RFQ"),
-.o_list_view td[name="state"] .badge:contains("RFQ") {
-    background: #dff5fb !important;
-    color: #0f7f99 !important;
+/* The visible RFQ card */
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_card {
+    background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+    border: 0.0625rem solid #d9e4f2;
+    border-radius: 1.6rem;
+    box-shadow: 0 0.35rem 1.2rem rgba(15, 23, 42, 0.06);
+    padding: 1.25rem;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    position: relative;
 }
 
-/* Purchase Order */
-.o_kanban_view .rfq_exec_kanban_state .badge:contains("Purchase Order"),
-.o_list_view td[name="state"] .badge:contains("Purchase Order") {
-    background: #dff7e7 !important;
-    color: #1f8a45 !important;
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_card:hover {
+    transform: translateY(-0.125rem);
+    box-shadow: 0 0.6rem 1.4rem rgba(15, 23, 42, 0.1);
+    border-color: #c7d8ee;
 }
 
-/* Workflow badge general look */
-.o_kanban_view .rfq_exec_kanban_grid .badge,
-.o_list_view td[name="workflow_progress_status"] .badge {
-    background: #eef3f8 !important;
-    color: #30445f !important;
-}
-
-/* Budget status badge */
-.o_kanban_view .rfq_exec_kanban_grid .badge:contains("Used"),
-.o_list_view td[name="budget_reservation_status"] .badge:contains("Used") {
-    background: #e2f7ea !important;
-    color: #21824a !important;
-}
-
-/* Under Evaluation */
-.o_kanban_view .rfq_exec_kanban_grid .badge:contains("Under Evaluation"),
-.o_list_view td[name="workflow_progress_status"] .badge:contains("Under Evaluation") {
-    background: #dff4fb !important;
-    color: #167da0 !important;
-}
-
-/* Waiting Finance */
-.o_kanban_view .rfq_exec_kanban_grid .badge:contains("Waiting"),
-.o_list_view td[name="workflow_progress_status"] .badge:contains("Waiting") {
-    background: #fff4dc !important;
-    color: #9b6a00 !important;
-}
-
-/* Receipt Confirmed */
-.o_kanban_view .rfq_exec_kanban_grid .badge:contains("Receipt Confirmed"),
-.o_list_view td[name="workflow_progress_status"] .badge:contains("Receipt Confirmed") {
-    background: #e4f8ea !important;
-    color: #1f8a45 !important;
-}
-
-/* Paid */
-.o_kanban_view .rfq_exec_kanban_grid .badge:contains("Paid"),
-.o_list_view td[name="workflow_progress_status"] .badge:contains("Paid") {
-    background: #e6f8ec !important;
-    color: #1f8a45 !important;
-}
-
-/* Closed */
-.o_kanban_view .rfq_exec_kanban_grid .badge:contains("Closed"),
-.o_list_view td[name="workflow_progress_status"] .badge:contains("Closed") {
-    background: #eceff4 !important;
-    color: #374151 !important;
-}
-
-/* No Vendor Bill / No Bill text */
-.o_kanban_view .rfq_exec_kanban_grid > div > div:has(.o_field_widget[name="payment_status_summary"]),
-.o_kanban_view .rfq_exec_kanban_grid .o_field_widget[name="payment_status_summary"] {
-    color: #53657f;
-}
-
-/* Remove any ribbon/triangle feel from standard kanban card decorations */
-.o_kanban_view .o_kanban_record::before,
-.o_kanban_view .o_kanban_record::after,
-.o_kanban_view .oe_kanban_global_click::before,
-.o_kanban_view .oe_kanban_global_click::after {
+/* Remove any pseudo ribbon/triangle only for your RFQ cards */
+.o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.rfq_exec_kanban_card)::before,
+.o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.rfq_exec_kanban_card)::after,
+.o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.rfq_exec_kanban_card) .oe_kanban_global_click::before,
+.o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.rfq_exec_kanban_card) .oe_kanban_global_click::after {
     display: none !important;
     content: none !important;
 }
-.o_kanban_renderer .o_kanban_record,
-.o_kanban_view .o_kanban_record {
-    overflow: hidden;
-    border-radius: 22px !important;
-    background: transparent !important;
-    box-shadow: none !important;
+
+/* Header */
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.15rem;
 }
 
-.o_kanban_renderer .o_kanban_record > div,
-.o_kanban_view .o_kanban_record > div {
-    background: transparent !important;
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_title {
+    font-size: clamp(1.15rem, 1.25vw, 1.45rem);
+    font-weight: 800;
+    color: #1e3a5f;
+    line-height: 1.2;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_state {
+    flex: 0 0 auto;
+}
+
+/* Vendor */
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_vendor {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 0.15rem;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_vendor > div,
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_vendor {
+    font-size: 1rem;
+    line-height: 1.4;
+    color: #41546f;
+    font-weight: 600;
+}
+
+/* Grid */
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(160px, 1fr));
+    gap: 1rem 1.3rem;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_grid > div {
+    min-width: 0;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_label {
+    display: block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.35;
+    color: #7a8ea9;
+    margin-bottom: 0.35rem;
+    font-weight: 700;
+}
+
+.ncst_rfq_exec_dashboard .rfq_exec_kanban_grid > div > div {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #253f66;
+    line-height: 1.35;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+/* Generic badge style */
+.ncst_rfq_exec_dashboard .rfq_badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1;
+    border: 0.0625rem solid transparent;
+    white-space: nowrap;
+    box-shadow: none;
+}
+
+/* Purchase state badges */
+.ncst_rfq_exec_dashboard .rfq_badge_state_draft {
+    background: #e2f6fb;
+    color: #0f7f99;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_state_sent {
+    background: #edf0ff;
+    color: #5568d2;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_state_purchase {
+    background: #e3f8e8;
+    color: #22884a;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_state_cancel {
+    background: #fdeaea;
+    color: #b43a3a;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_state_default {
+    background: #edf1f7;
+    color: #4d5f78;
+}
+
+/* Budget badges */
+.ncst_rfq_exec_dashboard .rfq_badge_budget_reserved {
+    background: #fff4dc;
+    color: #9b6a00;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_budget_used {
+    background: #e2f7ea;
+    color: #21824a;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_budget_cancelled {
+    background: #fde8e8;
+    color: #b33434;
+}
+
+/* Workflow badges */
+.ncst_rfq_exec_dashboard .rfq_badge_workflow_draft {
+    background: #edf1f7;
+    color: #495a72;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_workflow_eval {
+    background: #dff4fb;
+    color: #167da0;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_workflow_recommended {
+    background: #efe9ff;
+    color: #6c4dd6;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_workflow_waiting {
+    background: #fff4dc;
+    color: #9b6a00;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_workflow_finance {
+    background: #e7f2ff;
+    color: #2e69b3;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_workflow_po {
+    background: #dff7e7;
+    color: #1f8a45;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_workflow_ack {
+    background: #e8f5ff;
+    color: #2c74b5;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_workflow_receipt {
+    background: #e7faed;
+    color: #20854a;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_workflow_invoice {
+    background: #eef0ff;
+    color: #5265d9;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_workflow_paid {
+    background: #e2f7ea;
+    color: #21824a;
+}
+
+.ncst_rfq_exec_dashboard .rfq_badge_workflow_closed {
+    background: #eceff4;
+    color: #374151;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:has(.rfq_exec_kanban_card) {
+        margin: 0.5rem !important;
+    }
+
+    .ncst_rfq_exec_dashboard .rfq_exec_kanban_card {
+        padding: 1rem;
+        border-radius: 1.35rem;
+    }
+
+    .ncst_rfq_exec_dashboard .rfq_exec_kanban_grid {
+        grid-template-columns: 1fr;
+        gap: 0.9rem;
+    }
 }
