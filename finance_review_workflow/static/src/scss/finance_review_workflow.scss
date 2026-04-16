@@ -77,19 +77,16 @@
    Finance Kanban - procurement-like style
    ========================================================= */
 
-/* Remove default ugly outer square */
-.frw-kanban-view .o_kanban_renderer,
-.frw-kanban-view .o_kanban_record,
-.frw-kanban-view .oe_kanban_card,
-.frw-kanban-view .oe_kanban_global_click,
-.frw-kanban-view .o_kanban_record > div {
+/* Remove only the OUTER Odoo kanban square */
+.frw-kanban-view .o_kanban_record {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
+    padding: 10px !important;
 }
 
-.frw-kanban-view .o_kanban_record {
-    padding: 10px !important;
+.frw-kanban-view .o_kanban_renderer {
+    background: transparent !important;
 }
 
 /* Main finance card */
@@ -170,12 +167,7 @@
     white-space: nowrap;
 }
 
-/* Review / completeness / exception states */
-.frw-chip-draft {
-    background: #fff1e6;
-    color: #b45309;
-}
-
+.frw-chip-draft,
 .frw-chip-submitted {
     background: #fff1e6;
     color: #b45309;
@@ -200,7 +192,6 @@
     color: #b7791f;
 }
 
-/* Make cards breathe more on large screens */
 @media (min-width: 1400px) {
     .frw-kanban-view .frw-kanban-card {
         min-height: 275px;
