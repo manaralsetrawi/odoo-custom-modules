@@ -231,7 +231,7 @@
 
                                 <t t-if="doc.finance_missing_payment_term">
                                     <span style="display: inline-block; margin: 0 8px 8px 0; background: #fff7ed; color: #b45309; border: 1px solid #fed7aa; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
-                                        Missing Payment Terms
+                                        Missing Payment Terms / Due Date
                                     </span>
                                 </t>
 

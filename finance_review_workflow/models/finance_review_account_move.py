@@ -235,9 +235,10 @@ class AccountMove(models.Model):
                     issues.append("Invoice date is missing.")
                     status = 'blocked'
 
-                if not move.invoice_payment_term_id:
+                # Customer invoice must have either payment terms OR due date
+                if not move.invoice_payment_term_id and not move.invoice_date_due:
                     vals['finance_missing_payment_term'] = True
-                    issues.append("Payment terms are missing.")
+                    issues.append("Either payment terms or due date must be provided.")
                     status = 'blocked'
 
                 if real_lines and not has_tax:

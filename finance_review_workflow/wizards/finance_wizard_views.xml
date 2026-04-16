@@ -41,7 +41,7 @@
                 <group>
                     <group string="What Needs Attention">
                         <field name="finance_missing_invoice_date" readonly="1"/>
-                        <field name="finance_missing_payment_term" readonly="1"/>
+                        <field name="finance_missing_payment_term" string="Missing Payment Terms / Due Date" readonly="1"/>
                         <field name="finance_missing_due_date" readonly="1"/>
                         <field name="finance_missing_tax" readonly="1"/>
                         <field name="finance_invalid_date_sequence" readonly="1"/>

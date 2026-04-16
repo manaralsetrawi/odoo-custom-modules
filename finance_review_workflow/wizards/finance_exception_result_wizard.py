@@ -28,7 +28,7 @@ class FinanceExceptionResultWizard(models.TransientModel):
     )
 
     finance_missing_payment_term = fields.Boolean(
-        string='Missing Payment Terms',
+        string='Missing Payment Terms / Due Date',
         readonly=True,
     )
 
