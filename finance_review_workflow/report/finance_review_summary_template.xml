@@ -8,152 +8,208 @@
                     <div class="page" style="font-family: Arial, sans-serif; color: #1f2937;">
 
                         <!-- Header -->
-                        <div style="margin-bottom: 28px;">
-                            <div style="font-size: 26px; font-weight: 700; color: #0f4c81; margin-bottom: 6px;">
+                        <div style="margin-bottom: 26px;">
+                            <div style="font-size: 28px; font-weight: 800; color: #0f4c81; margin-bottom: 6px;">
                                 Finance Review Summary Report
                             </div>
-                            <div style="font-size: 13px; color: #6b7280;">
+                            <div style="font-size: 13px; color: #6b7280; margin-bottom: 14px;">
                                 Generated summary for finance review, exception checking, and document outcome.
                             </div>
-                        </div>
 
-                        <!-- Document type badge -->
-                        <div style="margin-bottom: 18px;">
-                            <span style="display: inline-block; background: #eef6fb; color: #0f4c81; border: 1px solid #d5e7f5; border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700;">
+                            <span style="display: inline-block; background: #eef6fb; color: #0f4c81; border: 1px solid #d5e7f5; border-radius: 999px; padding: 7px 14px; font-size: 12px; font-weight: 700;">
                                 <t t-if="doc.move_type == 'out_invoice'">Customer Invoice</t>
                                 <t t-if="doc.move_type == 'in_invoice'">Vendor Bill</t>
                             </span>
                         </div>
 
-                        <!-- Overview -->
-                        <div style="border: 1px solid #dbe7f1; border-radius: 18px; padding: 18px; margin-bottom: 18px;">
-                            <div style="font-size: 16px; font-weight: 700; color: #1e4f86; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.04em;">
+                        <!-- Top summary cards -->
+                        <div style="width: 100%; margin-bottom: 18px;">
+                            <div style="display: flex; gap: 14px;">
+
+                                <div style="width: 32%; border: 1px solid #dbe7f1; border-radius: 18px; padding: 16px; vertical-align: top;">
+                                    <div style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #6b7280; margin-bottom: 8px;">
+                                        Partner
+                                    </div>
+                                    <div style="font-size: 18px; font-weight: 700; color: #111827; line-height: 1.35;">
+                                        <t t-esc="doc.partner_id.name or '-'"/>
+                                    </div>
+                                </div>
+
+                                <div style="width: 32%; border: 1px solid #dbe7f1; border-radius: 18px; padding: 16px; vertical-align: top;">
+                                    <div style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #6b7280; margin-bottom: 8px;">
+                                        Total Amount
+                                    </div>
+                                    <div style="font-size: 22px; font-weight: 800; color: #0f172a; line-height: 1.35;">
+                                        <t t-esc="doc.amount_total"/>
+                                        <t t-if="doc.currency_id">
+                                            <span style="font-size: 15px; font-weight: 700; color: #4b5563;">
+                                                <t t-esc="doc.currency_id.name"/>
+                                            </span>
+                                        </t>
+                                    </div>
+                                </div>
+
+                                <div style="width: 32%; border: 1px solid #dbe7f1; border-radius: 18px; padding: 16px; vertical-align: top;">
+                                    <div style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #6b7280; margin-bottom: 8px;">
+                                        Document Number
+                                    </div>
+                                    <div style="font-size: 18px; font-weight: 700; color: #111827; line-height: 1.35;">
+                                        <t t-esc="doc.name or '-'"/>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Section 1: Document Overview -->
+                        <div style="border: 1px solid #dbe7f1; border-radius: 20px; padding: 18px; margin-bottom: 18px;">
+                            <div style="font-size: 16px; font-weight: 800; color: #1e4f86; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.04em;">
                                 Document Overview
                             </div>
 
-                            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-                                <tbody>
-                                    <tr>
-                                        <td style="padding: 10px 0; width: 34%; font-weight: 700; color: #374151;">Document Number</td>
-                                        <td style="padding: 10px 0; color: #111827;">
-                                            <t t-esc="doc.name or '-'"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Customer / Vendor</td>
-                                        <td style="padding: 10px 0; color: #111827;">
-                                            <t t-esc="doc.partner_id.name or '-'"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Total Amount</td>
-                                        <td style="padding: 10px 0; color: #111827; font-weight: 700;">
-                                            <t t-esc="doc.amount_total"/>
-                                            <t t-if="doc.currency_id">
-                                                <span style="font-weight: 600; color: #4b5563;">
-                                                    <t t-esc="doc.currency_id.name"/>
-                                                </span>
-                                            </t>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Invoice / Bill Date</td>
-                                        <td style="padding: 10px 0; color: #111827;">
+                            <div style="display: flex; gap: 18px;">
+
+                                <div style="width: 48%;">
+                                    <div style="margin-bottom: 12px;">
+                                        <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 4px;">
+                                            Invoice / Bill Date
+                                        </div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #1f2937;">
                                             <t t-esc="doc.invoice_date or '-'"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Due Date</td>
-                                        <td style="padding: 10px 0; color: #111827;">
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-bottom: 12px;">
+                                        <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 4px;">
+                                            Due Date
+                                        </div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #1f2937;">
                                             <t t-esc="doc.invoice_date_due or '-'"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="width: 48%;">
+                                    <div style="margin-bottom: 12px;">
+                                        <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 4px;">
+                                            Document Type
+                                        </div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #1f2937;">
+                                            <t t-if="doc.move_type == 'out_invoice'">Customer Invoice</t>
+                                            <t t-if="doc.move_type == 'in_invoice'">Vendor Bill</t>
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-bottom: 12px;">
+                                        <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 4px;">
+                                            Current State
+                                        </div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #1f2937;">
+                                            <t t-esc="doc.state or '-'"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
 
-                        <!-- Review outcome -->
-                        <div style="border: 1px solid #dbe7f1; border-radius: 18px; padding: 18px; margin-bottom: 18px;">
-                            <div style="font-size: 16px; font-weight: 700; color: #1e4f86; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.04em;">
+                        <!-- Section 2: Review Outcome -->
+                        <div style="border: 1px solid #dbe7f1; border-radius: 20px; padding: 18px; margin-bottom: 18px;">
+                            <div style="font-size: 16px; font-weight: 800; color: #1e4f86; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.04em;">
                                 Review Outcome
                             </div>
 
-                            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-                                <tbody>
-                                    <tr>
-                                        <td style="padding: 10px 0; width: 34%; font-weight: 700; color: #374151;">Approval Status</td>
-                                        <td style="padding: 10px 0; color: #111827;">
-                                            <t t-if="doc.move_type == 'out_invoice'">
-                                                <t t-esc="dict(doc._fields['finance_review_state'].selection).get(doc.finance_review_state, '-')"/>
-                                            </t>
-                                            <t t-if="doc.move_type == 'in_invoice'">
-                                                <t t-esc="dict(doc._fields['invoice_verification_status'].selection).get(doc.invoice_verification_status, '-')"/>
-                                            </t>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Reviewer Name</td>
-                                        <td style="padding: 10px 0; color: #111827;">
+                            <!-- status chip -->
+                            <div style="margin-bottom: 16px;">
+                                <t t-if="doc.move_type == 'out_invoice'">
+                                    <t t-set="review_label" t-value="dict(doc._fields['finance_review_state'].selection).get(doc.finance_review_state, '-')"/>
+                                    <span style="display: inline-block; background: #eef6fb; color: #0f4c81; border: 1px solid #d5e7f5; border-radius: 999px; padding: 7px 14px; font-size: 12px; font-weight: 700;">
+                                        <t t-esc="review_label"/>
+                                    </span>
+                                </t>
+                                <t t-if="doc.move_type == 'in_invoice'">
+                                    <t t-set="verify_label" t-value="dict(doc._fields['invoice_verification_status'].selection).get(doc.invoice_verification_status, '-')"/>
+                                    <span style="display: inline-block; background: #eef6fb; color: #0f4c81; border: 1px solid #d5e7f5; border-radius: 999px; padding: 7px 14px; font-size: 12px; font-weight: 700;">
+                                        <t t-esc="verify_label"/>
+                                    </span>
+                                </t>
+                            </div>
+
+                            <div style="display: flex; gap: 18px;">
+
+                                <div style="width: 48%;">
+                                    <div style="margin-bottom: 12px;">
+                                        <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 4px;">
+                                            Reviewer Name
+                                        </div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #1f2937;">
                                             <t t-if="doc.move_type == 'out_invoice'">
                                                 <t t-esc="doc.finance_approved_by.name or doc.finance_rejected_by.name or '-'"/>
                                             </t>
                                             <t t-if="doc.move_type == 'in_invoice'">
                                                 <t t-esc="doc.invoice_verified_by.name or '-'"/>
                                             </t>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Review Date</td>
-                                        <td style="padding: 10px 0; color: #111827;">
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-bottom: 12px;">
+                                        <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 4px;">
+                                            Review Date
+                                        </div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #1f2937;">
                                             <t t-if="doc.move_type == 'out_invoice'">
                                                 <t t-esc="doc.finance_approved_on or doc.finance_rejected_on or '-'"/>
                                             </t>
                                             <t t-if="doc.move_type == 'in_invoice'">
                                                 <t t-esc="doc.invoice_verified_date or '-'"/>
                                             </t>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Rejection Reason</td>
-                                        <td style="padding: 10px 0; color: #111827;">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="width: 48%;">
+                                    <div style="margin-bottom: 12px;">
+                                        <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 4px;">
+                                            Rejection Reason
+                                        </div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #1f2937; line-height: 1.5;">
                                             <t t-if="doc.move_type == 'out_invoice'">
                                                 <t t-esc="doc.finance_reject_reason or '-'"/>
                                             </t>
                                             <t t-if="doc.move_type == 'in_invoice'">
                                                 <t t-esc="doc.invoice_rejection_reason or '-'"/>
                                             </t>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
 
-                        <!-- Validation summary -->
-                        <div style="border: 1px solid #dbe7f1; border-radius: 18px; padding: 18px; margin-bottom: 18px;">
-                            <div style="font-size: 16px; font-weight: 700; color: #1e4f86; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.04em;">
+                        <!-- Section 3: Validation Summary -->
+                        <div style="border: 1px solid #dbe7f1; border-radius: 20px; padding: 18px; margin-bottom: 18px;">
+                            <div style="font-size: 16px; font-weight: 800; color: #1e4f86; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.04em;">
                                 Validation Summary
                             </div>
 
-                            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-                                <tbody>
-                                    <tr>
-                                        <td style="padding: 10px 0; width: 34%; font-weight: 700; color: #374151;">Exception Status</td>
-                                        <td style="padding: 10px 0; color: #111827;">
-                                            <t t-esc="dict(doc._fields['finance_exception_status'].selection).get(doc.finance_exception_status, '-')"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Exception Result</td>
-                                        <td style="padding: 10px 0; color: #111827;">
-                                            <t t-esc="doc.finance_exception_summary or '-'"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div style="margin-bottom: 14px;">
+                                <t t-set="exception_label" t-value="dict(doc._fields['finance_exception_status'].selection).get(doc.finance_exception_status, '-')"/>
+                                <span style="display: inline-block; background: #ecfdf3; color: #166534; border: 1px solid #bbf7d0; border-radius: 999px; padding: 7px 14px; font-size: 12px; font-weight: 700;">
+                                    <t t-esc="exception_label"/>
+                                </span>
+                            </div>
 
-                            <!-- Detail chips -->
-                            <div style="margin-top: 14px;">
-                                <div style="font-size: 13px; font-weight: 700; color: #4b5563; margin-bottom: 8px;">
+                            <div style="margin-bottom: 16px;">
+                                <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 6px;">
+                                    Result Details
+                                </div>
+                                <div style="font-size: 15px; font-weight: 700; color: #1f2937; line-height: 1.5;">
+                                    <t t-esc="doc.finance_exception_summary or '-'"/>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 8px;">
                                     Detected Checks
                                 </div>
 
