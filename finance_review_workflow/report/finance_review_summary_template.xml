@@ -5,86 +5,203 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
-                    <div class="page">
-                        <h2>Finance Review Summary Report</h2>
+                    <div class="page" style="font-family: Arial, sans-serif; color: #1f2937;">
 
-                        <table class="table table-sm table-bordered" style="width: 100%; margin-top: 20px;">
-                            <tbody>
-                                <tr>
-                                    <td><strong>Document Number</strong></td>
-                                    <td><t t-esc="doc.name or '-'"/></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Customer / Vendor</strong></td>
-                                    <td><t t-esc="doc.partner_id.name or '-'"/></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Total Amount</strong></td>
-                                    <td><t t-esc="doc.amount_total"/></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Due Date</strong></td>
-                                    <td><t t-esc="doc.invoice_date_due or '-'"/></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Approval Status</strong></td>
-                                    <td>
-                                        <t t-if="doc.move_type == 'out_invoice'">
-                                            <t t-esc="dict(doc._fields['finance_review_state'].selection).get(doc.finance_review_state, '-')"/>
-                                        </t>
-                                        <t t-if="doc.move_type == 'in_invoice'">
-                                            <t t-esc="dict(doc._fields['invoice_verification_status'].selection).get(doc.invoice_verification_status, '-')"/>
-                                        </t>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Reviewer Name</strong></td>
-                                    <td>
-                                        <t t-if="doc.move_type == 'out_invoice'">
-                                            <t t-esc="doc.finance_approved_by.name or '-'"/>
-                                        </t>
-                                        <t t-if="doc.move_type == 'in_invoice'">
-                                            <t t-esc="doc.invoice_verified_by.name or '-'"/>
-                                        </t>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Review Date</strong></td>
-                                    <td>
-                                        <t t-if="doc.move_type == 'out_invoice'">
-                                            <t t-esc="doc.finance_approved_on or '-'"/>
-                                        </t>
-                                        <t t-if="doc.move_type == 'in_invoice'">
-                                            <t t-esc="doc.invoice_verified_date or '-'"/>
-                                        </t>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Exception Status</strong></td>
-                                    <td><t t-esc="dict(doc._fields['finance_exception_status'].selection).get(doc.finance_exception_status, '-')"/></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Completeness Status</strong></td>
-                                    <td>
-                                        <t t-if="doc.move_type == 'in_invoice'">
-                                            <t t-esc="dict(doc._fields['finance_readiness_status'].selection).get(doc.finance_readiness_status, '-')"/>
-                                        </t>
-                                        <t t-if="doc.move_type != 'in_invoice'">-</t>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Rejection Reason</strong></td>
-                                    <td>
-                                        <t t-if="doc.move_type == 'out_invoice'">
-                                            <t t-esc="doc.finance_reject_reason or '-'"/>
-                                        </t>
-                                        <t t-if="doc.move_type == 'in_invoice'">
-                                            <t t-esc="doc.invoice_rejection_reason or '-'"/>
-                                        </t>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <!-- Header -->
+                        <div style="margin-bottom: 28px;">
+                            <div style="font-size: 26px; font-weight: 700; color: #0f4c81; margin-bottom: 6px;">
+                                Finance Review Summary Report
+                            </div>
+                            <div style="font-size: 13px; color: #6b7280;">
+                                Generated summary for finance review, exception checking, and document outcome.
+                            </div>
+                        </div>
+
+                        <!-- Document type badge -->
+                        <div style="margin-bottom: 18px;">
+                            <span style="display: inline-block; background: #eef6fb; color: #0f4c81; border: 1px solid #d5e7f5; border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700;">
+                                <t t-if="doc.move_type == 'out_invoice'">Customer Invoice</t>
+                                <t t-if="doc.move_type == 'in_invoice'">Vendor Bill</t>
+                            </span>
+                        </div>
+
+                        <!-- Overview -->
+                        <div style="border: 1px solid #dbe7f1; border-radius: 18px; padding: 18px; margin-bottom: 18px;">
+                            <div style="font-size: 16px; font-weight: 700; color: #1e4f86; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.04em;">
+                                Document Overview
+                            </div>
+
+                            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                                <tbody>
+                                    <tr>
+                                        <td style="padding: 10px 0; width: 34%; font-weight: 700; color: #374151;">Document Number</td>
+                                        <td style="padding: 10px 0; color: #111827;">
+                                            <t t-esc="doc.name or '-'"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Customer / Vendor</td>
+                                        <td style="padding: 10px 0; color: #111827;">
+                                            <t t-esc="doc.partner_id.name or '-'"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Total Amount</td>
+                                        <td style="padding: 10px 0; color: #111827; font-weight: 700;">
+                                            <t t-esc="doc.amount_total"/>
+                                            <t t-if="doc.currency_id">
+                                                <span style="font-weight: 600; color: #4b5563;">
+                                                    <t t-esc="doc.currency_id.name"/>
+                                                </span>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Invoice / Bill Date</td>
+                                        <td style="padding: 10px 0; color: #111827;">
+                                            <t t-esc="doc.invoice_date or '-'"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Due Date</td>
+                                        <td style="padding: 10px 0; color: #111827;">
+                                            <t t-esc="doc.invoice_date_due or '-'"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Review outcome -->
+                        <div style="border: 1px solid #dbe7f1; border-radius: 18px; padding: 18px; margin-bottom: 18px;">
+                            <div style="font-size: 16px; font-weight: 700; color: #1e4f86; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.04em;">
+                                Review Outcome
+                            </div>
+
+                            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                                <tbody>
+                                    <tr>
+                                        <td style="padding: 10px 0; width: 34%; font-weight: 700; color: #374151;">Approval Status</td>
+                                        <td style="padding: 10px 0; color: #111827;">
+                                            <t t-if="doc.move_type == 'out_invoice'">
+                                                <t t-esc="dict(doc._fields['finance_review_state'].selection).get(doc.finance_review_state, '-')"/>
+                                            </t>
+                                            <t t-if="doc.move_type == 'in_invoice'">
+                                                <t t-esc="dict(doc._fields['invoice_verification_status'].selection).get(doc.invoice_verification_status, '-')"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Reviewer Name</td>
+                                        <td style="padding: 10px 0; color: #111827;">
+                                            <t t-if="doc.move_type == 'out_invoice'">
+                                                <t t-esc="doc.finance_approved_by.name or doc.finance_rejected_by.name or '-'"/>
+                                            </t>
+                                            <t t-if="doc.move_type == 'in_invoice'">
+                                                <t t-esc="doc.invoice_verified_by.name or '-'"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Review Date</td>
+                                        <td style="padding: 10px 0; color: #111827;">
+                                            <t t-if="doc.move_type == 'out_invoice'">
+                                                <t t-esc="doc.finance_approved_on or doc.finance_rejected_on or '-'"/>
+                                            </t>
+                                            <t t-if="doc.move_type == 'in_invoice'">
+                                                <t t-esc="doc.invoice_verified_date or '-'"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Rejection Reason</td>
+                                        <td style="padding: 10px 0; color: #111827;">
+                                            <t t-if="doc.move_type == 'out_invoice'">
+                                                <t t-esc="doc.finance_reject_reason or '-'"/>
+                                            </t>
+                                            <t t-if="doc.move_type == 'in_invoice'">
+                                                <t t-esc="doc.invoice_rejection_reason or '-'"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Validation summary -->
+                        <div style="border: 1px solid #dbe7f1; border-radius: 18px; padding: 18px; margin-bottom: 18px;">
+                            <div style="font-size: 16px; font-weight: 700; color: #1e4f86; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.04em;">
+                                Validation Summary
+                            </div>
+
+                            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                                <tbody>
+                                    <tr>
+                                        <td style="padding: 10px 0; width: 34%; font-weight: 700; color: #374151;">Exception Status</td>
+                                        <td style="padding: 10px 0; color: #111827;">
+                                            <t t-esc="dict(doc._fields['finance_exception_status'].selection).get(doc.finance_exception_status, '-')"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px 0; font-weight: 700; color: #374151;">Exception Result</td>
+                                        <td style="padding: 10px 0; color: #111827;">
+                                            <t t-esc="doc.finance_exception_summary or '-'"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Detail chips -->
+                            <div style="margin-top: 14px;">
+                                <div style="font-size: 13px; font-weight: 700; color: #4b5563; margin-bottom: 8px;">
+                                    Detected Checks
+                                </div>
+
+                                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                    <t t-if="doc.finance_missing_due_date">
+                                        <span style="display: inline-block; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
+                                            Missing Due Date
+                                        </span>
+                                    </t>
+
+                                    <t t-if="doc.finance_missing_tax">
+                                        <span style="display: inline-block; background: #fff7ed; color: #b45309; border: 1px solid #fed7aa; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
+                                            Missing Tax
+                                        </span>
+                                    </t>
+
+                                    <t t-if="doc.finance_invalid_date_sequence">
+                                        <span style="display: inline-block; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
+                                            Invalid Date Sequence
+                                        </span>
+                                    </t>
+
+                                    <t t-if="doc.move_type == 'in_invoice' and doc.finance_missing_vendor_ref">
+                                        <span style="display: inline-block; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
+                                            Missing Vendor Reference
+                                        </span>
+                                    </t>
+
+                                    <t t-if="doc.move_type == 'in_invoice' and doc.finance_duplicate_vendor_ref">
+                                        <span style="display: inline-block; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
+                                            Duplicate Vendor Reference
+                                        </span>
+                                    </t>
+
+                                    <t t-if="not doc.finance_missing_due_date and not doc.finance_missing_tax and not doc.finance_invalid_date_sequence and not doc.finance_missing_vendor_ref and not doc.finance_duplicate_vendor_ref">
+                                        <span style="display: inline-block; background: #ecfdf3; color: #166534; border: 1px solid #bbf7d0; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
+                                            No Detailed Issues Found
+                                        </span>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer note -->
+                        <div style="margin-top: 24px; font-size: 12px; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 12px;">
+                            This report is generated from the current finance review workflow and validation results available in the system.
+                        </div>
+
                     </div>
                 </t>
             </t>
