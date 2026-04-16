@@ -18,6 +18,8 @@
                 <field name="invoice_date_due"/>
                 <field name="finance_review_state"/>
                 <field name="finance_exception_status"/>
+                <field name="state"/>
+                <field name="payment_state"/>
 
                 <templates>
                     <t t-name="card">
@@ -56,6 +58,7 @@
                             <div class="frw-kanban-section frw-status-section">
                                 <div class="frw-kanban-section-title">Status</div>
 
+                                <!-- Custom finance statuses -->
                                 <div class="frw-status-row">
                                     <div class="frw-status-label">Review</div>
                                     <div class="frw-status-value">
@@ -77,6 +80,36 @@
                                             <t t-if="exception_state == 'valid'">No Issues</t>
                                             <t t-elif="exception_state == 'has_issue'">Needs Attention</t>
                                             <t t-elif="exception_state == 'blocked'">Blocked</t>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Odoo default statuses -->
+                                <div class="frw-status-row">
+                                    <div class="frw-status-label">Document</div>
+                                    <div class="frw-status-value">
+                                        <t t-set="doc_state" t-value="record.state.raw_value or 'draft'"/>
+                                        <span t-attf-class="frw-chip frw-chip-doc-#{doc_state}">
+                                            <t t-if="doc_state == 'draft'">Draft</t>
+                                            <t t-elif="doc_state == 'posted'">Posted</t>
+                                            <t t-elif="doc_state == 'cancel'">Cancelled</t>
+                                            <t t-else="">Unknown</t>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="frw-status-row">
+                                    <div class="frw-status-label">Payment</div>
+                                    <div class="frw-status-value">
+                                        <t t-set="pay_state" t-value="record.payment_state.raw_value or 'not_paid'"/>
+                                        <span t-attf-class="frw-chip frw-chip-pay-#{pay_state}">
+                                            <t t-if="pay_state == 'not_paid'">Not Paid</t>
+                                            <t t-elif="pay_state == 'in_payment'">In Payment</t>
+                                            <t t-elif="pay_state == 'paid'">Paid</t>
+                                            <t t-elif="pay_state == 'partial'">Partial</t>
+                                            <t t-elif="pay_state == 'reversed'">Reversed</t>
+                                            <t t-elif="pay_state == 'invoicing_legacy'">Legacy</t>
+                                            <t t-else="">-</t>
                                         </span>
                                     </div>
                                 </div>
@@ -116,6 +149,8 @@
                 <field name="invoice_date"/>
                 <field name="invoice_date_due"/>
                 <field name="finance_exception_status"/>
+                <field name="state"/>
+                <field name="payment_state"/>
 
                 <templates>
                     <t t-name="card">
@@ -154,6 +189,7 @@
                             <div class="frw-kanban-section frw-status-section">
                                 <div class="frw-kanban-section-title">Status</div>
 
+                                <!-- Custom finance status -->
                                 <div class="frw-status-row">
                                     <div class="frw-status-label">Check</div>
                                     <div class="frw-status-value">
@@ -162,6 +198,36 @@
                                             <t t-if="exception_state == 'valid'">No Issues</t>
                                             <t t-elif="exception_state == 'has_issue'">Needs Attention</t>
                                             <t t-elif="exception_state == 'blocked'">Blocked</t>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Odoo default statuses -->
+                                <div class="frw-status-row">
+                                    <div class="frw-status-label">Document</div>
+                                    <div class="frw-status-value">
+                                        <t t-set="doc_state" t-value="record.state.raw_value or 'draft'"/>
+                                        <span t-attf-class="frw-chip frw-chip-doc-#{doc_state}">
+                                            <t t-if="doc_state == 'draft'">Draft</t>
+                                            <t t-elif="doc_state == 'posted'">Posted</t>
+                                            <t t-elif="doc_state == 'cancel'">Cancelled</t>
+                                            <t t-else="">Unknown</t>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="frw-status-row">
+                                    <div class="frw-status-label">Payment</div>
+                                    <div class="frw-status-value">
+                                        <t t-set="pay_state" t-value="record.payment_state.raw_value or 'not_paid'"/>
+                                        <span t-attf-class="frw-chip frw-chip-pay-#{pay_state}">
+                                            <t t-if="pay_state == 'not_paid'">Not Paid</t>
+                                            <t t-elif="pay_state == 'in_payment'">In Payment</t>
+                                            <t t-elif="pay_state == 'paid'">Paid</t>
+                                            <t t-elif="pay_state == 'partial'">Partial</t>
+                                            <t t-elif="pay_state == 'reversed'">Reversed</t>
+                                            <t t-elif="pay_state == 'invoicing_legacy'">Legacy</t>
+                                            <t t-else="">-</t>
                                         </span>
                                     </div>
                                 </div>
