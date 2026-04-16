@@ -8,141 +8,140 @@
                     <div class="page" style="font-family: Arial, sans-serif; color: #1f2937;">
 
                         <!-- Header -->
-                        <div style="margin-bottom: 26px;">
-                            <div style="font-size: 28px; font-weight: 800; color: #0f4c81; margin-bottom: 6px;">
+                        <div style="margin-bottom: 22px;">
+                            <div style="font-size: 24px; font-weight: 800; color: #234f84; margin-bottom: 4px;">
                                 Finance Review Summary Report
                             </div>
-                            <div style="font-size: 13px; color: #6b7280; margin-bottom: 14px;">
-                                Generated summary for finance review, exception checking, and document outcome.
+                            <div style="font-size: 13px; color: #64748b;">
+                                Review, validation, and document outcome summary
                             </div>
+                        </div>
 
-                            <span style="display: inline-block; background: #eef6fb; color: #0f4c81; border: 1px solid #d5e7f5; border-radius: 999px; padding: 7px 14px; font-size: 12px; font-weight: 700;">
+                        <div style="border-top: 3px solid #2d456f; margin-bottom: 18px;"></div>
+
+                        <!-- Document type pill -->
+                        <div style="margin-bottom: 18px;">
+                            <span style="display: inline-block; background: #eaf2fb; color: #234f84; border: 1px solid #d3e0ee; border-radius: 999px; padding: 8px 16px; font-size: 12px; font-weight: 700;">
                                 <t t-if="doc.move_type == 'out_invoice'">Customer Invoice</t>
                                 <t t-if="doc.move_type == 'in_invoice'">Vendor Bill</t>
                             </span>
                         </div>
 
-                        <!-- Top summary cards -->
-                        <table style="width: 100%; border-collapse: separate; border-spacing: 12px 0; margin: 0 -12px 18px -12px;">
+                        <!-- Executive Summary -->
+                        <div style="font-size: 15px; font-weight: 400; color: #234f84; margin-bottom: 14px;">
+                            Executive Summary
+                        </div>
+
+                        <table style="width: 100%; border-collapse: separate; border-spacing: 10px 10px; margin: 0 0 18px 0;">
                             <tr>
                                 <td style="width: 33.33%; vertical-align: top;">
-                                    <div style="border: 1px solid #dbe7f1; border-radius: 18px; padding: 16px; min-height: 92px;">
-                                        <div style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #6b7280; margin-bottom: 8px;">
+                                    <div style="border: 1px solid #d9e3ef; border-radius: 10px; padding: 14px;">
+                                        <div style="font-size: 12px; color: #6f85a3; text-transform: uppercase; margin-bottom: 8px;">
                                             Partner
                                         </div>
-                                        <div style="font-size: 18px; font-weight: 700; color: #111827; line-height: 1.35;">
+                                        <div style="font-size: 15px; font-weight: 700; color: #111827; line-height: 1.35;">
                                             <t t-esc="doc.partner_id.name or '-'"/>
                                         </div>
                                     </div>
                                 </td>
 
                                 <td style="width: 33.33%; vertical-align: top;">
-                                    <div style="border: 1px solid #dbe7f1; border-radius: 18px; padding: 16px; min-height: 92px;">
-                                        <div style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #6b7280; margin-bottom: 8px;">
+                                    <div style="border: 1px solid #d9e3ef; border-radius: 10px; padding: 14px;">
+                                        <div style="font-size: 12px; color: #6f85a3; text-transform: uppercase; margin-bottom: 8px;">
+                                            Document Number
+                                        </div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #111827; line-height: 1.35;">
+                                            <t t-esc="doc.name or '-'"/>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td style="width: 33.33%; vertical-align: top;">
+                                    <div style="border: 1px solid #d9e3ef; border-radius: 10px; padding: 14px;">
+                                        <div style="font-size: 12px; color: #6f85a3; text-transform: uppercase; margin-bottom: 8px;">
                                             Total Amount
                                         </div>
-                                        <div style="font-size: 22px; font-weight: 800; color: #0f172a; line-height: 1.35;">
+                                        <div style="font-size: 17px; font-weight: 800; color: #233b6a; line-height: 1.35;">
                                             <t t-esc="doc.amount_total"/>
                                             <t t-if="doc.currency_id">
-                                                <span style="font-size: 15px; font-weight: 700; color: #4b5563;">
+                                                <span style="font-size: 14px; font-weight: 700; color: #475569;">
                                                     <t t-esc="doc.currency_id.name"/>
                                                 </span>
                                             </t>
                                         </div>
                                     </div>
                                 </td>
-
-                                <td style="width: 33.33%; vertical-align: top;">
-                                    <div style="border: 1px solid #dbe7f1; border-radius: 18px; padding: 16px; min-height: 92px;">
-                                        <div style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #6b7280; margin-bottom: 8px;">
-                                            Document Number
-                                        </div>
-                                        <div style="font-size: 18px; font-weight: 700; color: #111827; line-height: 1.35;">
-                                            <t t-esc="doc.name or '-'"/>
-                                        </div>
-                                    </div>
-                                </td>
                             </tr>
                         </table>
 
-                        <!-- Section 1: Document Overview -->
-                        <div style="border: 1px solid #dbe7f1; border-radius: 20px; padding: 18px; margin-bottom: 18px;">
-                            <div style="font-size: 16px; font-weight: 800; color: #1e4f86; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.04em;">
-                                Document Overview
-                            </div>
+                        <!-- Overview -->
+                        <div style="font-size: 15px; font-weight: 400; color: #234f84; margin-bottom: 10px;">
+                            Document Overview
+                        </div>
 
-                            <table style="width: 100%; border-collapse: separate; border-spacing: 0 10px;">
+                        <div style="border: 1px solid #d9e3ef; border-radius: 10px; padding: 16px; margin-bottom: 18px;">
+                            <table style="width: 100%; border-collapse: separate; border-spacing: 0 12px;">
                                 <tr>
-                                    <td style="width: 50%; vertical-align: top; padding-right: 10px;">
-                                        <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 4px;">
-                                            Invoice / Bill Date
-                                        </div>
-                                        <div style="font-size: 15px; font-weight: 700; color: #1f2937;">
+                                    <td style="width: 50%; vertical-align: top; padding-right: 16px;">
+                                        <div style="font-size: 12px; color: #6f85a3; text-transform: uppercase; margin-bottom: 4px;">Invoice / Bill Date</div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #111827;">
                                             <t t-esc="doc.invoice_date or '-'"/>
                                         </div>
                                     </td>
-
-                                    <td style="width: 50%; vertical-align: top; padding-left: 10px;">
-                                        <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 4px;">
-                                            Document Type
+                                    <td style="width: 50%; vertical-align: top;">
+                                        <div style="font-size: 12px; color: #6f85a3; text-transform: uppercase; margin-bottom: 4px;">Due Date</div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #111827;">
+                                            <t t-esc="doc.invoice_date_due or '-'"/>
                                         </div>
-                                        <div style="font-size: 15px; font-weight: 700; color: #1f2937;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 50%; vertical-align: top; padding-right: 16px;">
+                                        <div style="font-size: 12px; color: #6f85a3; text-transform: uppercase; margin-bottom: 4px;">Document Type</div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #111827;">
                                             <t t-if="doc.move_type == 'out_invoice'">Customer Invoice</t>
                                             <t t-if="doc.move_type == 'in_invoice'">Vendor Bill</t>
                                         </div>
                                     </td>
-                                </tr>
-
-                                <tr>
-                                    <td style="width: 50%; vertical-align: top; padding-right: 10px;">
-                                        <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 4px;">
-                                            Due Date
-                                        </div>
-                                        <div style="font-size: 15px; font-weight: 700; color: #1f2937;">
-                                            <t t-esc="doc.invoice_date_due or '-'"/>
-                                        </div>
-                                    </td>
-
-                                    <td style="width: 50%; vertical-align: top; padding-left: 10px;">
-                                        <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 4px;">
-                                            Current State
-                                        </div>
-                                        <div style="font-size: 15px; font-weight: 700; color: #1f2937;">
-                                            <t t-esc="doc.state or '-'"/>
+                                    <td style="width: 50%; vertical-align: top;">
+                                        <div style="font-size: 12px; color: #6f85a3; text-transform: uppercase; margin-bottom: 4px;">Current State</div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #111827;">
+                                            <t t-if="doc.state == 'draft'">Draft</t>
+                                            <t t-elif="doc.state == 'posted'">Posted</t>
+                                            <t t-elif="doc.state == 'cancel'">Cancelled</t>
+                                            <t t-else=""><t t-esc="doc.state or '-'"/></t>
                                         </div>
                                     </td>
                                 </tr>
                             </table>
                         </div>
 
-                        <!-- Section 2: Review Outcome -->
-                        <div style="border: 1px solid #dbe7f1; border-radius: 20px; padding: 18px; margin-bottom: 18px;">
-                            <div style="font-size: 16px; font-weight: 800; color: #1e4f86; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.04em;">
-                                Review Outcome
-                            </div>
+                        <!-- Review Outcome -->
+                        <div style="font-size: 15px; font-weight: 400; color: #234f84; margin-bottom: 10px;">
+                            Review Outcome
+                        </div>
 
-                            <div style="margin-bottom: 16px;">
+                        <div style="border: 1px solid #d9e3ef; border-radius: 10px; padding: 16px; margin-bottom: 18px;">
+                            <div style="margin-bottom: 14px;">
                                 <t t-if="doc.move_type == 'out_invoice'">
                                     <t t-set="review_label" t-value="dict(doc._fields['finance_review_state'].selection).get(doc.finance_review_state, '-')"/>
-                                    <span style="display: inline-block; background: #eef6fb; color: #0f4c81; border: 1px solid #d5e7f5; border-radius: 999px; padding: 7px 14px; font-size: 12px; font-weight: 700;">
+                                    <span style="display: inline-block; background: #eaf2fb; color: #234f84; border: 1px solid #d3e0ee; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
                                         <t t-esc="review_label"/>
                                     </span>
                                 </t>
                                 <t t-if="doc.move_type == 'in_invoice'">
                                     <t t-set="verify_label" t-value="dict(doc._fields['invoice_verification_status'].selection).get(doc.invoice_verification_status, '-')"/>
-                                    <span style="display: inline-block; background: #eef6fb; color: #0f4c81; border: 1px solid #d5e7f5; border-radius: 999px; padding: 7px 14px; font-size: 12px; font-weight: 700;">
+                                    <span style="display: inline-block; background: #eaf2fb; color: #234f84; border: 1px solid #d3e0ee; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
                                         <t t-esc="verify_label"/>
                                     </span>
                                 </t>
                             </div>
 
-                            <table style="width: 100%; border-collapse: separate; border-spacing: 0 10px;">
+                            <table style="width: 100%; border-collapse: separate; border-spacing: 0 12px;">
                                 <tr>
-                                    <td style="width: 50%; vertical-align: top; padding-right: 10px;">
-                                        <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 4px;">
-                                            Reviewer Name
-                                        </div>
-                                        <div style="font-size: 15px; font-weight: 700; color: #1f2937;">
+                                    <td style="width: 50%; vertical-align: top; padding-right: 16px;">
+                                        <div style="font-size: 12px; color: #6f85a3; text-transform: uppercase; margin-bottom: 4px;">Reviewer Name</div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #111827;">
                                             <t t-if="doc.move_type == 'out_invoice'">
                                                 <t t-esc="doc.finance_approved_by.name or doc.finance_rejected_by.name or '-'"/>
                                             </t>
@@ -151,12 +150,9 @@
                                             </t>
                                         </div>
                                     </td>
-
-                                    <td style="width: 50%; vertical-align: top; padding-left: 10px;">
-                                        <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 4px;">
-                                            Review Date
-                                        </div>
-                                        <div style="font-size: 15px; font-weight: 700; color: #1f2937;">
+                                    <td style="width: 50%; vertical-align: top;">
+                                        <div style="font-size: 12px; color: #6f85a3; text-transform: uppercase; margin-bottom: 4px;">Review Date</div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #111827;">
                                             <t t-if="doc.move_type == 'out_invoice'">
                                                 <t t-esc="doc.finance_approved_on or doc.finance_rejected_on or '-'"/>
                                             </t>
@@ -166,13 +162,10 @@
                                         </div>
                                     </td>
                                 </tr>
-
                                 <tr>
                                     <td colspan="2" style="vertical-align: top;">
-                                        <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 4px;">
-                                            Rejection Reason
-                                        </div>
-                                        <div style="font-size: 15px; font-weight: 700; color: #1f2937; line-height: 1.5;">
+                                        <div style="font-size: 12px; color: #6f85a3; text-transform: uppercase; margin-bottom: 4px;">Rejection Reason</div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #111827; line-height: 1.5;">
                                             <t t-if="doc.move_type == 'out_invoice'">
                                                 <t t-esc="doc.finance_reject_reason or '-'"/>
                                             </t>
@@ -185,70 +178,98 @@
                             </table>
                         </div>
 
-                        <!-- Section 3: Validation Summary -->
-                        <div style="border: 1px solid #dbe7f1; border-radius: 20px; padding: 18px; margin-bottom: 18px;">
-                            <div style="font-size: 16px; font-weight: 800; color: #1e4f86; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.04em;">
-                                Validation Summary
-                            </div>
+                        <!-- Alerts & Insights -->
+                        <div style="font-size: 15px; font-weight: 400; color: #234f84; margin-bottom: 10px;">
+                            Alerts &amp; Insights
+                        </div>
 
+                        <div style="border: 1px solid #ead7a4; background: #fbf7ea; border-radius: 10px; padding: 14px 16px; margin-bottom: 18px;">
+                            <ul style="margin: 0; padding-left: 18px; color: #1f2937; font-size: 14px; line-height: 1.7;">
+                                <li>
+                                    <strong>Exception Status:</strong>
+                                    <t t-esc="dict(doc._fields['finance_exception_status'].selection).get(doc.finance_exception_status, '-')"/>
+                                </li>
+                                <li>
+                                    <strong>Review Result:</strong>
+                                    <t t-if="doc.move_type == 'out_invoice'">
+                                        <t t-esc="dict(doc._fields['finance_review_state'].selection).get(doc.finance_review_state, '-')"/>
+                                    </t>
+                                    <t t-if="doc.move_type == 'in_invoice'">
+                                        <t t-esc="dict(doc._fields['invoice_verification_status'].selection).get(doc.invoice_verification_status, '-')"/>
+                                    </t>
+                                </li>
+                                <li>
+                                    <strong>Summary:</strong>
+                                    <t t-esc="doc.finance_exception_summary or 'No exception found.'"/>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Validation Summary -->
+                        <div style="font-size: 15px; font-weight: 400; color: #234f84; margin-bottom: 10px;">
+                            Validation Summary
+                        </div>
+
+                        <div style="border: 1px solid #d9e3ef; border-radius: 10px; padding: 16px; margin-bottom: 18px;">
                             <div style="margin-bottom: 14px;">
                                 <t t-set="exception_label" t-value="dict(doc._fields['finance_exception_status'].selection).get(doc.finance_exception_status, '-')"/>
-                                <span style="display: inline-block; background: #ecfdf3; color: #166534; border: 1px solid #bbf7d0; border-radius: 999px; padding: 7px 14px; font-size: 12px; font-weight: 700;">
+                                <span style="display: inline-block; background: #ecfdf3; color: #166534; border: 1px solid #bbf7d0; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
                                     <t t-esc="exception_label"/>
                                 </span>
                             </div>
 
-                            <div style="margin-bottom: 16px;">
-                                <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 6px;">
-                                    Result Details
-                                </div>
-                                <div style="font-size: 15px; font-weight: 700; color: #1f2937; line-height: 1.5;">
-                                    <t t-esc="doc.finance_exception_summary or '-'"/>
-                                </div>
+                            <div style="font-size: 12px; color: #6f85a3; text-transform: uppercase; margin-bottom: 8px;">
+                                Detected Checks
                             </div>
 
                             <div>
-                                <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #7489a8; margin-bottom: 8px;">
-                                    Detected Checks
-                                </div>
+                                <t t-if="doc.finance_missing_invoice_date">
+                                    <span style="display: inline-block; margin: 0 8px 8px 0; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
+                                        Missing Date
+                                    </span>
+                                </t>
 
-                                <div>
-                                    <t t-if="doc.finance_missing_due_date">
-                                        <span style="display: inline-block; margin: 0 8px 8px 0; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
-                                            Missing Due Date
-                                        </span>
-                                    </t>
+                                <t t-if="doc.finance_missing_payment_term">
+                                    <span style="display: inline-block; margin: 0 8px 8px 0; background: #fff7ed; color: #b45309; border: 1px solid #fed7aa; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
+                                        Missing Payment Terms
+                                    </span>
+                                </t>
 
-                                    <t t-if="doc.finance_missing_tax">
-                                        <span style="display: inline-block; margin: 0 8px 8px 0; background: #fff7ed; color: #b45309; border: 1px solid #fed7aa; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
-                                            Missing Tax
-                                        </span>
-                                    </t>
+                                <t t-if="doc.finance_missing_due_date">
+                                    <span style="display: inline-block; margin: 0 8px 8px 0; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
+                                        Missing Due Date
+                                    </span>
+                                </t>
 
-                                    <t t-if="doc.finance_invalid_date_sequence">
-                                        <span style="display: inline-block; margin: 0 8px 8px 0; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
-                                            Invalid Date Sequence
-                                        </span>
-                                    </t>
+                                <t t-if="doc.finance_missing_tax">
+                                    <span style="display: inline-block; margin: 0 8px 8px 0; background: #fff7ed; color: #b45309; border: 1px solid #fed7aa; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
+                                        Missing Tax
+                                    </span>
+                                </t>
 
-                                    <t t-if="doc.move_type == 'in_invoice' and doc.finance_missing_vendor_ref">
-                                        <span style="display: inline-block; margin: 0 8px 8px 0; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
-                                            Missing Vendor Reference
-                                        </span>
-                                    </t>
+                                <t t-if="doc.finance_invalid_date_sequence">
+                                    <span style="display: inline-block; margin: 0 8px 8px 0; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
+                                        Invalid Date Sequence
+                                    </span>
+                                </t>
 
-                                    <t t-if="doc.move_type == 'in_invoice' and doc.finance_duplicate_vendor_ref">
-                                        <span style="display: inline-block; margin: 0 8px 8px 0; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
-                                            Duplicate Vendor Reference
-                                        </span>
-                                    </t>
+                                <t t-if="doc.move_type == 'in_invoice' and doc.finance_missing_vendor_ref">
+                                    <span style="display: inline-block; margin: 0 8px 8px 0; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
+                                        Missing Vendor Reference
+                                    </span>
+                                </t>
 
-                                    <t t-if="not doc.finance_missing_due_date and not doc.finance_missing_tax and not doc.finance_invalid_date_sequence and not doc.finance_missing_vendor_ref and not doc.finance_duplicate_vendor_ref">
-                                        <span style="display: inline-block; margin: 0 8px 8px 0; background: #ecfdf3; color: #166534; border: 1px solid #bbf7d0; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
-                                            No Detailed Issues Found
-                                        </span>
-                                    </t>
-                                </div>
+                                <t t-if="doc.move_type == 'in_invoice' and doc.finance_duplicate_vendor_ref">
+                                    <span style="display: inline-block; margin: 0 8px 8px 0; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
+                                        Duplicate Vendor Reference
+                                    </span>
+                                </t>
+
+                                <t t-if="not doc.finance_missing_invoice_date and not doc.finance_missing_payment_term and not doc.finance_missing_due_date and not doc.finance_missing_tax and not doc.finance_invalid_date_sequence and not doc.finance_missing_vendor_ref and not doc.finance_duplicate_vendor_ref">
+                                    <span style="display: inline-block; margin: 0 8px 8px 0; background: #ecfdf3; color: #166534; border: 1px solid #bbf7d0; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
+                                        No Detailed Issues Found
+                                    </span>
+                                </t>
                             </div>
                         </div>
 
