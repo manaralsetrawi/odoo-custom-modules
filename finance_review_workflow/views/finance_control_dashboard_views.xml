@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- ========================================================= -->
-    <!-- Form View                                                 -->
-    <!-- ========================================================= -->
+    <!-- Finance Control Dashboard -->
     <record id="view_finance_control_dashboard_form" model="ir.ui.view">
         <field name="name">finance.control.dashboard.form</field>
         <field name="model">finance.control.dashboard</field>
@@ -11,6 +9,7 @@
             <form string="Finance Control" create="false" edit="false" delete="false">
                 <sheet class="fcc-dashboard-sheet">
 
+                    <!-- Clean header -->
                     <div class="fcc-dashboard-header">
                         <h1>Finance Control</h1>
                         <p>Quick overview and action center for invoices and vendor bills.</p>
@@ -21,48 +20,72 @@
                     <!-- Quick Overview -->
                     <div class="fcc-section-title">Quick Overview</div>
 
-                    <div class="oe_button_box fcc-kpi-grid" name="button_box">
+                    <div class="fcc-kpi-grid">
 
                         <button name="action_open_draft_invoices"
                                 type="object"
-                                class="oe_stat_button fcc-kpi-card"
+                                class="btn fcc-kpi-card"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
-                            <field name="draft_invoice_count" widget="statinfo" string="Draft Invoices"/>
+                            <div class="fcc-kpi-label">Draft Invoices</div>
+                            <div class="fcc-kpi-value">
+                                <field name="draft_invoice_count" nolabel="1"/>
+                            </div>
+                            <div class="fcc-kpi-note">Invoices still in draft stage</div>
                         </button>
 
                         <button name="action_open_waiting_review_invoices"
                                 type="object"
-                                class="oe_stat_button fcc-kpi-card"
+                                class="btn fcc-kpi-card"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
-                            <field name="waiting_review_count" widget="statinfo" string="Waiting Review"/>
+                            <div class="fcc-kpi-label">Waiting Review</div>
+                            <div class="fcc-kpi-value">
+                                <field name="waiting_review_count" nolabel="1"/>
+                            </div>
+                            <div class="fcc-kpi-note">Submitted invoices waiting for review</div>
                         </button>
 
                         <button name="action_open_approved_invoices"
                                 type="object"
-                                class="oe_stat_button fcc-kpi-card"
+                                class="btn fcc-kpi-card"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
-                            <field name="approved_invoice_count" widget="statinfo" string="Approved Invoices"/>
+                            <div class="fcc-kpi-label">Approved Invoices</div>
+                            <div class="fcc-kpi-value">
+                                <field name="approved_invoice_count" nolabel="1"/>
+                            </div>
+                            <div class="fcc-kpi-note">Invoices approved successfully</div>
                         </button>
 
                         <button name="action_open_rejected_invoices"
                                 type="object"
-                                class="oe_stat_button fcc-kpi-card"
+                                class="btn fcc-kpi-card"
                                 groups="finance_review_workflow.group_finance_invoice_reviewer">
-                            <field name="rejected_invoice_count" widget="statinfo" string="Rejected Invoices"/>
+                            <div class="fcc-kpi-label">Rejected Invoices</div>
+                            <div class="fcc-kpi-value">
+                                <field name="rejected_invoice_count" nolabel="1"/>
+                            </div>
+                            <div class="fcc-kpi-note">Invoices requiring correction</div>
                         </button>
 
                         <button name="action_open_blocked_documents"
                                 type="object"
-                                class="oe_stat_button fcc-kpi-card"
+                                class="btn fcc-kpi-card"
                                 groups="finance_review_workflow.group_finance_invoice_reviewer">
-                            <field name="blocked_documents_count" widget="statinfo" string="Blocked Documents"/>
+                            <div class="fcc-kpi-label">Blocked Documents</div>
+                            <div class="fcc-kpi-value">
+                                <field name="blocked_documents_count" nolabel="1"/>
+                            </div>
+                            <div class="fcc-kpi-note">Invoices or bills with blocked exceptions</div>
                         </button>
 
                         <button name="action_open_unpaid_posted_documents"
                                 type="object"
-                                class="oe_stat_button fcc-kpi-card"
+                                class="btn fcc-kpi-card"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
-                            <field name="unpaid_posted_count" widget="statinfo" string="Unpaid Posted Documents"/>
+                            <div class="fcc-kpi-label">Unpaid Posted Documents</div>
+                            <div class="fcc-kpi-value">
+                                <field name="unpaid_posted_count" nolabel="1"/>
+                            </div>
+                            <div class="fcc-kpi-note">Posted invoices and bills not fully paid</div>
                         </button>
 
                     </div>
@@ -76,32 +99,52 @@
                                 type="object"
                                 class="btn fcc-action-card"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
-                            <div class="fcc-action-title">Review Pending Invoices</div>
-                            <div class="fcc-action-subtitle">Open submitted invoices waiting for finance review.</div>
+                            <div class="fcc-action-icon">01</div>
+                            <div class="fcc-action-content">
+                                <div class="fcc-action-title">Review Pending Invoices</div>
+                                <div class="fcc-action-subtitle">
+                                    Open submitted invoices waiting for finance review.
+                                </div>
+                            </div>
                         </button>
 
                         <button name="action_open_rejected_invoices"
                                 type="object"
                                 class="btn fcc-action-card"
                                 groups="finance_review_workflow.group_finance_invoice_reviewer">
-                            <div class="fcc-action-title">Fix Rejected Invoices</div>
-                            <div class="fcc-action-subtitle">Review rejected invoices and follow up on issues.</div>
+                            <div class="fcc-action-icon">02</div>
+                            <div class="fcc-action-content">
+                                <div class="fcc-action-title">Fix Rejected Invoices</div>
+                                <div class="fcc-action-subtitle">
+                                    Review rejected invoices and correct missing or invalid details.
+                                </div>
+                            </div>
                         </button>
 
                         <button name="action_open_blocked_documents"
                                 type="object"
                                 class="btn fcc-action-card"
                                 groups="finance_review_workflow.group_finance_invoice_reviewer">
-                            <div class="fcc-action-title">Solve Blocked Exceptions</div>
-                            <div class="fcc-action-subtitle">Open documents with blocked validation issues.</div>
+                            <div class="fcc-action-icon">03</div>
+                            <div class="fcc-action-content">
+                                <div class="fcc-action-title">Solve Blocked Exceptions</div>
+                                <div class="fcc-action-subtitle">
+                                    Open documents with blocked validation issues and resolve them.
+                                </div>
+                            </div>
                         </button>
 
                         <button name="action_open_unpaid_posted_documents"
                                 type="object"
                                 class="btn fcc-action-card"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
-                            <div class="fcc-action-title">Follow Up Unpaid Documents</div>
-                            <div class="fcc-action-subtitle">Check posted invoices and bills that are still unpaid.</div>
+                            <div class="fcc-action-icon">04</div>
+                            <div class="fcc-action-content">
+                                <div class="fcc-action-title">Follow Up Unpaid Documents</div>
+                                <div class="fcc-action-subtitle">
+                                    Check posted invoices and vendor bills that are still unpaid.
+                                </div>
+                            </div>
                         </button>
 
                     </div>
@@ -111,9 +154,7 @@
         </field>
     </record>
 
-    <!-- ========================================================= -->
-    <!-- Server Action                                             -->
-    <!-- ========================================================= -->
+    <!-- Server Action -->
     <record id="action_finance_control_dashboard_server" model="ir.actions.server">
         <field name="name">Finance Control</field>
         <field name="model_id" ref="model_finance_control_dashboard"/>
@@ -121,11 +162,7 @@
         <field name="code">action = model.action_open_finance_control_dashboard()</field>
     </record>
 
-    <!-- ========================================================= -->
-    <!-- Menu                                                      -->
-    <!-- If account.menu_finance does not work in your DB, replace -->
-    <!-- only the parent with your invoicing root menu id.         -->
-    <!-- ========================================================= -->
+    <!-- Menu -->
     <menuitem id="menu_finance_control_dashboard"
               name="Finance Control"
               parent="account.menu_finance"
