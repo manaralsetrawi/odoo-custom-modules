@@ -1,70 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- Extend invoice form to add finance review workflow for customer invoices only -->
+    <!-- ========================================================= -->
+    <!-- Main finance review form improvements                      -->
+    <!-- ========================================================= -->
     <record id="view_move_form_inherit_finance_review" model="ir.ui.view">
         <field name="name">account.move.form.finance.review.workflow</field>
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
 
-<!-- Review action buttons in header -->
-<xpath expr="//header" position="inside">
+            <!-- Header buttons -->
+            <xpath expr="//header" position="inside">
 
-    <!-- Finance invoice user can submit for review -->
-    <button name="action_submit_finance_review"
-            type="object"
-            string="Submit for Review"
-            class="btn-primary"
-            groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer"
-            invisible="move_type != 'out_invoice' or state != 'draft' or finance_review_state != 'draft'"/>
+                <button name="action_submit_finance_review"
+                        type="object"
+                        string="Submit for Review"
+                        class="btn frw-btn frw-btn-submit"
+                        groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer"
+                        invisible="move_type != 'out_invoice' or state != 'draft' or finance_review_state != 'draft'"/>
 
-    <!-- Only finance reviewer can approve -->
-    <button name="action_approve_finance_review"
-            type="object"
-            string="Approve"
-            class="btn-success"
-            groups="finance_review_workflow.group_finance_invoice_reviewer"
-            invisible="move_type != 'out_invoice' or state != 'draft' or finance_review_state != 'submitted'"/>
+                <button name="action_approve_finance_review"
+                        type="object"
+                        string="Approve"
+                        class="btn frw-btn frw-btn-approve"
+                        groups="finance_review_workflow.group_finance_invoice_reviewer"
+                        invisible="move_type != 'out_invoice' or state != 'draft' or finance_review_state != 'submitted'"/>
 
-    <!-- Only finance reviewer can reject -->
-    <button name="action_reject_finance_review"
-            type="object"
-            string="Reject"
-            class="btn-secondary"
-            groups="finance_review_workflow.group_finance_invoice_reviewer"
-            invisible="move_type != 'out_invoice' or state != 'draft' or finance_review_state != 'submitted'"/>
+                <button name="action_open_finance_reject_wizard"
+                        type="object"
+                        string="Reject"
+                        class="btn frw-btn frw-btn-danger"
+                        groups="finance_review_workflow.group_finance_invoice_reviewer"
+                        invisible="move_type != 'out_invoice' or state != 'draft' or finance_review_state != 'submitted'"/>
 
-    <!-- Only finance reviewer can reset review state -->
-    <button name="action_reset_finance_review_to_draft"
-            type="object"
-            string="Return to Draft"
-            class="btn-secondary"
-            groups="finance_review_workflow.group_finance_invoice_reviewer"
-            invisible="move_type != 'out_invoice' or state != 'draft' or finance_review_state == 'draft'"/>
+                <button name="action_reset_finance_review_to_draft"
+                        type="object"
+                        string="Return to Draft"
+                        class="btn frw-btn frw-btn-neutral"
+                        groups="finance_review_workflow.group_finance_invoice_reviewer"
+                        invisible="move_type != 'out_invoice' or state != 'draft' or finance_review_state == 'draft'"/>
 
-    <button name="action_check_finance_exceptions"
-        type="object"
-        string="Check Exceptions"
-        class="btn-secondary"
-        invisible="move_type not in ('out_invoice', 'in_invoice') or state != 'draft'"/>
+                <button name="action_check_finance_exceptions"
+                        type="object"
+                        string="Check Exceptions"
+                        class="btn frw-btn frw-btn-check"
+                        invisible="move_type not in ('out_invoice', 'in_invoice') or state != 'draft'"/>
 
-    <button name="action_check_vendor_bill_readiness"
-        type="object"
-        string="Check Readiness"
-        class="btn-secondary"
-        invisible="move_type != 'in_invoice' or state != 'draft'"/>
+                <button name="action_check_vendor_bill_readiness"
+                        type="object"
+                        string="Check Bill Completeness"
+                        class="btn frw-btn frw-btn-check"
+                        invisible="move_type != 'in_invoice' or state != 'draft'"/>
 
-    <!-- Generate summary report -->
-    <button name="action_generate_finance_summary_report"
-        type="object"
-        string="Generate Summary Report"
-        class="btn-secondary"
-        invisible="move_type not in ('out_invoice', 'in_invoice')"/>
+                <button name="action_generate_finance_summary_report"
+                        type="object"
+                        string="Generate Summary Report"
+                        class="btn frw-btn frw-btn-report"
+                        invisible="move_type not in ('out_invoice', 'in_invoice')"/>
 
-</xpath>
+            </xpath>
 
-            <!-- Show workflow status clearly near invoice date -->
+            <!-- Invoice review statusbar -->
             <xpath expr="//field[@name='invoice_date']" position="after">
                 <field name="finance_review_state"
                        widget="statusbar"
@@ -73,11 +70,16 @@
                        invisible="move_type != 'out_invoice'"/>
             </xpath>
 
-            <!-- Add separate Finance Review tab next to Other Info -->
+            <!-- Clearer tabs -->
             <xpath expr="//notebook" position="inside">
-                <page string="Finance Review" invisible="move_type != 'out_invoice'">
 
-                    <group>
+                <!-- Customer invoice finance review -->
+                <page string="Finance Review" invisible="move_type != 'out_invoice'">
+                    <div class="frw-note">
+                        Use this section to follow the finance review progress of the customer invoice.
+                    </div>
+
+                    <group class="frw-section-card">
                         <group string="Review Status">
                             <field name="finance_review_state" readonly="1"/>
                             <field name="finance_reject_reason"
@@ -86,7 +88,7 @@
                         </group>
                     </group>
 
-                    <group>
+                    <group class="frw-section-card">
                         <group string="Submission Details">
                             <field name="finance_submitted_by" readonly="1"/>
                             <field name="finance_submitted_on" readonly="1"/>
@@ -98,108 +100,78 @@
                         </group>
                     </group>
 
-                    <group>
+                    <group class="frw-section-card">
                         <group string="Rejection Details">
                             <field name="finance_rejected_by" readonly="1"/>
                             <field name="finance_rejected_on" readonly="1"/>
                         </group>
                     </group>
-
                 </page>
 
-        <page string="AP/AR Exception Control" invisible="move_type not in ('out_invoice', 'in_invoice')">
+                <!-- Shared exception check -->
+                <page string="Exception Check" invisible="move_type not in ('out_invoice', 'in_invoice')">
+                    <div class="frw-note">
+                        This check highlights issues that may block posting or need user attention.
+                    </div>
 
-    <group>
-        <group string="Exception Result">
-            <field name="finance_exception_status" readonly="1"/>
-            <field name="finance_exception_summary" readonly="1" nolabel="0"/>
-        </group>
-    </group>
+                    <group class="frw-section-card">
+                        <group string="Check Result">
+                            <field name="finance_exception_status" string="Check Status" readonly="1"/>
+                            <field name="finance_exception_summary" string="Result Details" readonly="1"/>
+                        </group>
+                    </group>
 
-    <group>
-        <group string="Validation Checks">
-            <field name="finance_missing_due_date" readonly="1"/>
-            <field name="finance_missing_tax" readonly="1"/>
-            <field name="finance_invalid_date_sequence" readonly="1"/>
-        </group>
+                    <group class="frw-section-card">
+                        <group string="What Needs Attention">
+                            <field name="finance_missing_due_date" readonly="1"/>
+                            <field name="finance_missing_tax" readonly="1"/>
+                            <field name="finance_invalid_date_sequence" readonly="1"/>
+                        </group>
 
-        <group string="Vendor Bill Checks" invisible="move_type != 'in_invoice'">
-            <field name="finance_missing_vendor_ref" readonly="1"/>
-            <field name="finance_duplicate_vendor_ref" readonly="1"/>
-        </group>
-    </group>
-        </page>
+                        <group string="Vendor Bill Issues" invisible="move_type != 'in_invoice'">
+                            <field name="finance_missing_vendor_ref" readonly="1"/>
+                            <field name="finance_duplicate_vendor_ref" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
 
-    <page string="Vendor Bill Readiness" invisible="move_type != 'in_invoice'">
+                <!-- Vendor bill completeness -->
+                <page string="Bill Completeness" invisible="move_type != 'in_invoice'">
+                    <div class="frw-note">
+                        Use this quick check before review. Only bill reference and tax are required here.
+                    </div>
 
-    <group>
-        <group string="Readiness Result">
-            <field name="finance_readiness_status" readonly="1"/>
-            <field name="finance_readiness_summary" readonly="1"/>
-        </group>
-    </group>
+                    <group class="frw-section-card">
+                        <group string="Completeness Result">
+                            <field name="finance_readiness_status" string="Completeness Status" readonly="1"/>
+                            <field name="finance_readiness_summary" string="Check Result" readonly="1"/>
+                        </group>
+                    </group>
 
-    <group>
-        <group string="Main Checks">
-            <field name="finance_missing_bill_reference" readonly="1"/>
-            <field name="finance_missing_bill_tax" readonly="1"/>
-            <field name="finance_missing_payment_term" readonly="1"/>
-            <field name="finance_missing_attachment" readonly="1"/>
-        </group>
-    </group>
+                    <group class="frw-section-card">
+                        <group string="Main Checks">
+                            <field name="finance_missing_bill_reference" readonly="1"/>
+                            <field name="finance_missing_bill_tax" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
 
-    </page>  
             </xpath>
 
         </field>
     </record>
 
-        <!-- Add finance review status column to customer invoice list view -->
-<record id="view_out_invoice_tree_inherit_finance_review" model="ir.ui.view">
-    <field name="name">account.move.out.invoice.tree.finance.review</field>
-    <field name="model">account.move</field>
-    <field name="inherit_id" ref="account.view_out_invoice_tree"/>
-    <field name="arch" type="xml">
+    <!-- ========================================================= -->
+    <!-- Disable custom list modifications to keep default Odoo     -->
+    <!-- list views untouched                                       -->
+    <!-- ========================================================= -->
 
-        <!-- Add a colored finance review status badge after invoice date -->
-        <xpath expr="//list/field[@name='invoice_date']" position="after">
-            <field name="finance_review_state"
-                   string="Finance Review Status"
-                   widget="badge"
-                   optional="show"
-                   decoration-muted="finance_review_state == 'draft'"
-                   decoration-warning="finance_review_state == 'submitted'"
-                   decoration-success="finance_review_state == 'approved'"
-                   decoration-danger="finance_review_state == 'rejected'"/>
-                   
-            <field name="finance_exception_status"
-                    string="Exception Status"
-                    widget="badge"
-                    optional="show"
-                    decoration-success="finance_exception_status == 'valid'"
-                    decoration-warning="finance_exception_status == 'has_issue'"
-                    decoration-danger="finance_exception_status == 'blocked'"/>
-        </xpath>
+    <record id="view_out_invoice_tree_inherit_finance_review" model="ir.ui.view">
+        <field name="active" eval="False"/>
+    </record>
 
-    </field>
-</record>
-<record id="view_in_invoice_tree_inherit_finance_readiness" model="ir.ui.view">
-    <field name="name">account.move.in.invoice.tree.finance.readiness</field>
-    <field name="model">account.move</field>
-    <field name="inherit_id" ref="account.view_in_invoice_tree"/>
-    <field name="arch" type="xml">
-
-        <!-- Add readiness status after bill date -->
-        <xpath expr="//list/field[@name='invoice_date']" position="after">
-            <field name="finance_readiness_status"
-                   string="Readiness Status"
-                   widget="badge"
-                   optional="show"
-                   decoration-danger="finance_readiness_status == 'incomplete'"
-                   decoration-success="finance_readiness_status == 'ready'"/>
-        </xpath>
-
-    </field>
-</record>
+    <record id="view_in_invoice_tree_inherit_finance_readiness" model="ir.ui.view">
+        <field name="active" eval="False"/>
+    </record>
 
 </odoo>

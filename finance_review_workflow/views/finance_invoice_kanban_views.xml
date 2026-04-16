@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ========================================================= -->
+    <!-- Customer invoice kanban                                   -->
+    <!-- ========================================================= -->
+    <record id="view_out_invoice_kanban_frw" model="ir.ui.view">
+        <field name="name">account.move.out.invoice.kanban.frw</field>
+        <field name="model">account.move</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <kanban class="frw-kanban-view frw-kanban-invoice" sample="1">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="amount_total"/>
+                <field name="currency_id"/>
+                <field name="invoice_date"/>
+                <field name="invoice_date_due"/>
+                <field name="finance_review_state"/>
+                <field name="finance_exception_status"/>
+
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click frw-kanban-card">
+                            <div class="frw-kanban-title">
+                                <strong><field name="name"/></strong>
+                            </div>
+
+                            <div class="frw-kanban-subtitle">
+                                <field name="partner_id"/>
+                            </div>
+
+                            <div class="frw-kanban-meta">
+                                <span>Invoice Date: <field name="invoice_date"/></span>
+                                <span>Due Date: <field name="invoice_date_due"/></span>
+                            </div>
+
+                            <div class="frw-kanban-amount">
+                                <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </div>
+
+                            <div class="frw-kanban-chips">
+                                <t t-set="review_state" t-value="record.finance_review_state.raw_value or 'draft'"/>
+                                <span t-attf-class="frw-chip frw-chip-#{review_state}">
+                                    <field name="finance_review_state"/>
+                                </span>
+
+                                <t t-set="exception_state" t-value="record.finance_exception_status.raw_value or 'valid'"/>
+                                <span t-attf-class="frw-chip frw-chip-#{exception_state}">
+                                    <field name="finance_exception_status"/>
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Put invoice kanban first in customer invoice action -->
+    <record id="view_out_invoice_kanban_frw_action_link" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="finance_review_workflow.view_out_invoice_kanban_frw"/>
+        <field name="act_window_id" ref="account.action_move_out_invoice"/>
+    </record>
+
+    <record id="account.action_move_out_invoice" model="ir.actions.act_window">
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+
+    <!-- ========================================================= -->
+    <!-- Vendor bill kanban                                        -->
+    <!-- ========================================================= -->
+    <record id="view_in_invoice_kanban_frw" model="ir.ui.view">
+        <field name="name">account.move.in.invoice.kanban.frw</field>
+        <field name="model">account.move</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <kanban class="frw-kanban-view frw-kanban-bill" sample="1">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="amount_total"/>
+                <field name="currency_id"/>
+                <field name="invoice_date"/>
+                <field name="invoice_date_due"/>
+                <field name="finance_readiness_status"/>
+                <field name="finance_exception_status"/>
+
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click frw-kanban-card">
+                            <div class="frw-kanban-title">
+                                <strong><field name="name"/></strong>
+                            </div>
+
+                            <div class="frw-kanban-subtitle">
+                                <field name="partner_id"/>
+                            </div>
+
+                            <div class="frw-kanban-meta">
+                                <span>Bill Date: <field name="invoice_date"/></span>
+                                <span>Due Date: <field name="invoice_date_due"/></span>
+                            </div>
+
+                            <div class="frw-kanban-amount">
+                                <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </div>
+
+                            <div class="frw-kanban-chips">
+                                <t t-set="readiness_state" t-value="record.finance_readiness_status.raw_value or 'incomplete'"/>
+                                <span t-attf-class="frw-chip frw-chip-#{readiness_state}">
+                                    <field name="finance_readiness_status"/>
+                                </span>
+
+                                <t t-set="exception_state" t-value="record.finance_exception_status.raw_value or 'valid'"/>
+                                <span t-attf-class="frw-chip frw-chip-#{exception_state}">
+                                    <field name="finance_exception_status"/>
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Put bill kanban first in vendor bill action -->
+    <record id="view_in_invoice_kanban_frw_action_link" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="finance_review_workflow.view_in_invoice_kanban_frw"/>
+        <field name="act_window_id" ref="account.action_move_in_invoice"/>
+    </record>
+
+    <record id="account.action_move_in_invoice" model="ir.actions.act_window">
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+
+</odoo>

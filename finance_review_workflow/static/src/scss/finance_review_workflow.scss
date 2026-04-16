@@ -1,0 +1,163 @@
+/* =========================================================
+   Finance Review Workflow - isolated styles only
+   All selectors are prefixed with frw-
+   ========================================================= */
+
+.frw-btn {
+    border-radius: 12px !important;
+    padding: 0.45rem 0.9rem !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease-in-out;
+    border: 1px solid transparent !important;
+    box-shadow: none !important;
+}
+
+.frw-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08) !important;
+}
+
+.frw-btn-submit {
+    background: #0f5a7a !important;
+    color: #ffffff !important;
+    border-color: #0f5a7a !important;
+}
+
+.frw-btn-approve {
+    background: #1f8b4c !important;
+    color: #ffffff !important;
+    border-color: #1f8b4c !important;
+}
+
+.frw-btn-danger {
+    background: #c0392b !important;
+    color: #ffffff !important;
+    border-color: #c0392b !important;
+}
+
+.frw-btn-neutral {
+    background: #eef2f7 !important;
+    color: #1f2937 !important;
+    border-color: #d8e0ea !important;
+}
+
+.frw-btn-check {
+    background: #f4f8fb !important;
+    color: #0f5a7a !important;
+    border-color: #c9dbe7 !important;
+}
+
+.frw-btn-report {
+    background: #fff7ed !important;
+    color: #9a3412 !important;
+    border-color: #fed7aa !important;
+}
+
+/* Notes inside tabs */
+.frw-note {
+    background: #f8fbfd;
+    border: 1px solid #d7e7f0;
+    color: #29485a;
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+/* Simple card feel for grouped sections */
+.frw-section-card {
+    border: 1px solid #e5edf3;
+    border-radius: 16px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #ffffff;
+}
+
+/* Kanban */
+.frw-kanban-view .frw-kanban-card {
+    background: #ffffff;
+    border: 1px solid #e6edf3;
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+    min-height: 170px;
+}
+
+.frw-kanban-view .frw-kanban-title {
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+    color: #142433;
+}
+
+.frw-kanban-view .frw-kanban-subtitle {
+    color: #516173;
+    margin-bottom: 10px;
+}
+
+.frw-kanban-view .frw-kanban-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: #637487;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+}
+
+.frw-kanban-view .frw-kanban-amount {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 12px;
+}
+
+.frw-kanban-view .frw-kanban-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.frw-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1;
+    border: 1px solid transparent;
+}
+
+/* Status chips */
+.frw-chip-draft {
+    background: #eef2f7;
+    color: #475569;
+    border-color: #d8e0ea;
+}
+
+.frw-chip-submitted {
+    background: #fff7ed;
+    color: #b45309;
+    border-color: #fed7aa;
+}
+
+.frw-chip-approved,
+.frw-chip-valid,
+.frw-chip-ready {
+    background: #ecfdf3;
+    color: #166534;
+    border-color: #bbf7d0;
+}
+
+.frw-chip-rejected,
+.frw-chip-blocked,
+.frw-chip-incomplete {
+    background: #fef2f2;
+    color: #b91c1c;
+    border-color: #fecaca;
+}
+
+.frw-chip-has_issue {
+    background: #fffbeb;
+    color: #a16207;
+    border-color: #fde68a;
+}
