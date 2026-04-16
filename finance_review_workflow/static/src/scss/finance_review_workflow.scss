@@ -303,11 +303,25 @@
    ========================================================= */
 
 .fcc-dashboard-sheet {
-    padding: 8px 10px 24px 10px !important;
+    padding: 10px 12px 26px 12px !important;
     background: #ffffff;
 }
 
 .fcc-dashboard-header {
+    margin-bottom: 10px;
+}
+
+.fcc-mini-label {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #5f7ea6;
+    background: #edf4fb;
+    border: 1px solid #d7e5f3;
+    border-radius: 999px;
+    padding: 6px 12px;
     margin-bottom: 10px;
 }
 
@@ -326,13 +340,13 @@
 
 .fcc-divider {
     height: 3px;
-    background: #2d456f;
+    background: linear-gradient(90deg, #2d456f 0%, #4f7ab8 100%);
     border-radius: 999px;
-    margin: 14px 0 20px 0;
+    margin: 14px 0 22px 0;
 }
 
 .fcc-section-title {
-    font-size: 1.2rem;
+    font-size: 1.22rem;
     font-weight: 700;
     color: #234f84;
     margin: 18px 0 14px 0;
@@ -343,7 +357,7 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(240px, 1fr));
     gap: 14px;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
 }
 
 .fcc-kpi-card {
@@ -351,15 +365,47 @@
     border-radius: 18px !important;
     background: #ffffff !important;
     padding: 18px !important;
-    min-height: 122px;
+    min-height: 132px;
     text-align: left !important;
     box-shadow: none !important;
     transition: all 0.2s ease-in-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.fcc-kpi-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 5px;
+    border-radius: 18px 0 0 18px;
+    background: #5b87c5;
 }
 
 .fcc-kpi-card:hover {
     transform: translateY(-1px);
-    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05) !important;
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.05) !important;
+}
+
+.fcc-kpi-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.fcc-kpi-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #234f84;
+    background: #eef4fb;
+    flex-shrink: 0;
 }
 
 .fcc-kpi-label {
@@ -368,7 +414,6 @@
     text-transform: uppercase;
     font-weight: 800;
     letter-spacing: 0.05em;
-    margin-bottom: 10px;
 }
 
 .fcc-kpi-value {
@@ -392,6 +437,25 @@
     line-height: 1.45;
 }
 
+/* KPI color themes */
+.fcc-kpi-card-blue::before { background: #4f7ab8; }
+.fcc-kpi-card-blue .fcc-kpi-icon { background: #edf4fb; color: #2f63a8; }
+
+.fcc-kpi-card-amber::before { background: #d89c1d; }
+.fcc-kpi-card-amber .fcc-kpi-icon { background: #fff5dc; color: #b7791f; }
+
+.fcc-kpi-card-green::before { background: #2ea86b; }
+.fcc-kpi-card-green .fcc-kpi-icon { background: #e9f9f0; color: #1f7f4c; }
+
+.fcc-kpi-card-red::before { background: #d95c5c; }
+.fcc-kpi-card-red .fcc-kpi-icon { background: #fdeeee; color: #c24141; }
+
+.fcc-kpi-card-purple::before { background: #8a68d8; }
+.fcc-kpi-card-purple .fcc-kpi-icon { background: #f1ecfd; color: #7352c7; }
+
+.fcc-kpi-card-teal::before { background: #2aa4a1; }
+.fcc-kpi-card-teal .fcc-kpi-icon { background: #e8f8f7; color: #1f7f7d; }
+
 /* Action cards */
 .fcc-action-grid {
     display: grid;
@@ -411,11 +475,22 @@
     text-align: left !important;
     transition: all 0.2s ease-in-out;
     box-shadow: none !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.fcc-action-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 5px;
+    border-radius: 20px 0 0 20px;
+    background: #4f7ab8;
 }
 
 .fcc-action-card:hover {
     transform: translateY(-1px);
-    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06) !important;
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.06) !important;
 }
 
 .fcc-action-icon {
@@ -449,6 +524,19 @@
     line-height: 1.55;
     color: #64748b;
 }
+
+/* Action color themes */
+.fcc-action-card-blue::before { background: #4f7ab8; }
+.fcc-action-card-blue .fcc-action-icon { background: #edf4fb; color: #2f63a8; }
+
+.fcc-action-card-red::before { background: #d95c5c; }
+.fcc-action-card-red .fcc-action-icon { background: #fdeeee; color: #c24141; }
+
+.fcc-action-card-purple::before { background: #8a68d8; }
+.fcc-action-card-purple .fcc-action-icon { background: #f1ecfd; color: #7352c7; }
+
+.fcc-action-card-teal::before { background: #2aa4a1; }
+.fcc-action-card-teal .fcc-action-icon { background: #e8f8f7; color: #1f7f7d; }
 
 /* Responsive */
 @media (max-width: 1200px) {

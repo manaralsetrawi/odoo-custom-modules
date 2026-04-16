@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- Finance Control Dashboard -->
     <record id="view_finance_control_dashboard_form" model="ir.ui.view">
         <field name="name">finance.control.dashboard.form</field>
         <field name="model">finance.control.dashboard</field>
@@ -9,8 +8,8 @@
             <form string="Finance Control" create="false" edit="false" delete="false">
                 <sheet class="fcc-dashboard-sheet">
 
-                    <!-- Clean header -->
                     <div class="fcc-dashboard-header">
+                        <div class="fcc-mini-label">Finance Monitoring</div>
                         <h1>Finance Control</h1>
                         <p>Quick overview and action center for invoices and vendor bills.</p>
                     </div>
@@ -24,9 +23,12 @@
 
                         <button name="action_open_draft_invoices"
                                 type="object"
-                                class="btn fcc-kpi-card"
+                                class="btn fcc-kpi-card fcc-kpi-card-blue"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
-                            <div class="fcc-kpi-label">Draft Invoices</div>
+                            <div class="fcc-kpi-top">
+                                <div class="fcc-kpi-icon">D</div>
+                                <div class="fcc-kpi-label">Draft Invoices</div>
+                            </div>
                             <div class="fcc-kpi-value">
                                 <field name="draft_invoice_count" nolabel="1"/>
                             </div>
@@ -35,9 +37,12 @@
 
                         <button name="action_open_waiting_review_invoices"
                                 type="object"
-                                class="btn fcc-kpi-card"
+                                class="btn fcc-kpi-card fcc-kpi-card-amber"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
-                            <div class="fcc-kpi-label">Waiting Review</div>
+                            <div class="fcc-kpi-top">
+                                <div class="fcc-kpi-icon">R</div>
+                                <div class="fcc-kpi-label">Waiting Review</div>
+                            </div>
                             <div class="fcc-kpi-value">
                                 <field name="waiting_review_count" nolabel="1"/>
                             </div>
@@ -46,9 +51,12 @@
 
                         <button name="action_open_approved_invoices"
                                 type="object"
-                                class="btn fcc-kpi-card"
+                                class="btn fcc-kpi-card fcc-kpi-card-green"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
-                            <div class="fcc-kpi-label">Approved Invoices</div>
+                            <div class="fcc-kpi-top">
+                                <div class="fcc-kpi-icon">A</div>
+                                <div class="fcc-kpi-label">Approved Invoices</div>
+                            </div>
                             <div class="fcc-kpi-value">
                                 <field name="approved_invoice_count" nolabel="1"/>
                             </div>
@@ -57,9 +65,12 @@
 
                         <button name="action_open_rejected_invoices"
                                 type="object"
-                                class="btn fcc-kpi-card"
+                                class="btn fcc-kpi-card fcc-kpi-card-red"
                                 groups="finance_review_workflow.group_finance_invoice_reviewer">
-                            <div class="fcc-kpi-label">Rejected Invoices</div>
+                            <div class="fcc-kpi-top">
+                                <div class="fcc-kpi-icon">X</div>
+                                <div class="fcc-kpi-label">Rejected Invoices</div>
+                            </div>
                             <div class="fcc-kpi-value">
                                 <field name="rejected_invoice_count" nolabel="1"/>
                             </div>
@@ -68,9 +79,12 @@
 
                         <button name="action_open_blocked_documents"
                                 type="object"
-                                class="btn fcc-kpi-card"
+                                class="btn fcc-kpi-card fcc-kpi-card-purple"
                                 groups="finance_review_workflow.group_finance_invoice_reviewer">
-                            <div class="fcc-kpi-label">Blocked Documents</div>
+                            <div class="fcc-kpi-top">
+                                <div class="fcc-kpi-icon">!</div>
+                                <div class="fcc-kpi-label">Blocked Documents</div>
+                            </div>
                             <div class="fcc-kpi-value">
                                 <field name="blocked_documents_count" nolabel="1"/>
                             </div>
@@ -79,9 +93,12 @@
 
                         <button name="action_open_unpaid_posted_documents"
                                 type="object"
-                                class="btn fcc-kpi-card"
+                                class="btn fcc-kpi-card fcc-kpi-card-teal"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
-                            <div class="fcc-kpi-label">Unpaid Posted Documents</div>
+                            <div class="fcc-kpi-top">
+                                <div class="fcc-kpi-icon">$</div>
+                                <div class="fcc-kpi-label">Unpaid Posted Documents</div>
+                            </div>
                             <div class="fcc-kpi-value">
                                 <field name="unpaid_posted_count" nolabel="1"/>
                             </div>
@@ -97,7 +114,7 @@
 
                         <button name="action_open_waiting_review_invoices"
                                 type="object"
-                                class="btn fcc-action-card"
+                                class="btn fcc-action-card fcc-action-card-blue"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
                             <div class="fcc-action-icon">01</div>
                             <div class="fcc-action-content">
@@ -110,7 +127,7 @@
 
                         <button name="action_open_rejected_invoices"
                                 type="object"
-                                class="btn fcc-action-card"
+                                class="btn fcc-action-card fcc-action-card-red"
                                 groups="finance_review_workflow.group_finance_invoice_reviewer">
                             <div class="fcc-action-icon">02</div>
                             <div class="fcc-action-content">
@@ -123,7 +140,7 @@
 
                         <button name="action_open_blocked_documents"
                                 type="object"
-                                class="btn fcc-action-card"
+                                class="btn fcc-action-card fcc-action-card-purple"
                                 groups="finance_review_workflow.group_finance_invoice_reviewer">
                             <div class="fcc-action-icon">03</div>
                             <div class="fcc-action-content">
@@ -136,7 +153,7 @@
 
                         <button name="action_open_unpaid_posted_documents"
                                 type="object"
-                                class="btn fcc-action-card"
+                                class="btn fcc-action-card fcc-action-card-teal"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
                             <div class="fcc-action-icon">04</div>
                             <div class="fcc-action-content">
@@ -154,7 +171,6 @@
         </field>
     </record>
 
-    <!-- Server Action -->
     <record id="action_finance_control_dashboard_server" model="ir.actions.server">
         <field name="name">Finance Control</field>
         <field name="model_id" ref="model_finance_control_dashboard"/>
@@ -162,7 +178,6 @@
         <field name="code">action = model.action_open_finance_control_dashboard()</field>
     </record>
 
-    <!-- Menu -->
     <menuitem id="menu_finance_control_dashboard"
               name="Finance Control"
               parent="account.menu_finance"
