@@ -22,6 +22,16 @@ class FinanceExceptionResultWizard(models.TransientModel):
         readonly=True,
     )
 
+    finance_missing_invoice_date = fields.Boolean(
+        string='Missing Invoice / Bill Date',
+        readonly=True,
+    )
+
+    finance_missing_payment_term = fields.Boolean(
+        string='Missing Payment Terms',
+        readonly=True,
+    )
+
     finance_missing_due_date = fields.Boolean(
         string='Missing Due Date',
         readonly=True,
@@ -33,7 +43,7 @@ class FinanceExceptionResultWizard(models.TransientModel):
     )
 
     finance_invalid_date_sequence = fields.Boolean(
-        string='Invoice Date Later Than Due Date',
+        string='Date Later Than Due Date',
         readonly=True,
     )
 

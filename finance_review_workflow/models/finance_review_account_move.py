@@ -58,7 +58,7 @@ class AccountMove(models.Model):
     )
 
     # -------------------------------------------------------------------------
-    # AP / AR exception control fields
+    # Exception control fields
     # -------------------------------------------------------------------------
 
     finance_exception_status = fields.Selection([
@@ -69,6 +69,18 @@ class AccountMove(models.Model):
 
     finance_exception_summary = fields.Text(
         string='Exception Summary',
+        readonly=True,
+        copy=False,
+    )
+
+    finance_missing_invoice_date = fields.Boolean(
+        string='Missing Invoice / Bill Date',
+        readonly=True,
+        copy=False,
+    )
+
+    finance_missing_payment_term = fields.Boolean(
+        string='Missing Payment Terms',
         readonly=True,
         copy=False,
     )
@@ -98,14 +110,14 @@ class AccountMove(models.Model):
     )
 
     finance_invalid_date_sequence = fields.Boolean(
-        string='Invoice Date Later Than Due Date',
+        string='Date Later Than Due Date',
         readonly=True,
         copy=False,
     )
 
     # -------------------------------------------------------------------------
     # Old bill completeness fields
-    # Kept only to avoid breaking anything already created/referenced
+    # Kept only so nothing breaks if already referenced
     # -------------------------------------------------------------------------
 
     finance_readiness_status = fields.Selection([
@@ -127,12 +139,6 @@ class AccountMove(models.Model):
 
     finance_missing_bill_tax = fields.Boolean(
         string='Tax Missing',
-        readonly=True,
-        copy=False,
-    )
-
-    finance_missing_payment_term = fields.Boolean(
-        string='Missing Payment Term',
         readonly=True,
         copy=False,
     )
@@ -171,21 +177,24 @@ class AccountMove(models.Model):
         return self.move_type in ('out_invoice', 'in_invoice')
 
     # -------------------------------------------------------------------------
-    # Core checks
+    # Core exception checks
     # -------------------------------------------------------------------------
 
     def _run_finance_exception_checks(self):
         """
-        Single clear check used for:
-        - customer invoices
-        - vendor bills
+        Customer invoices:
+        - invoice date required
+        - payment terms required
+        - tax required
+        - if due date exists, invoice date cannot be later than due date
 
-        For vendor bills, keep it practical:
-        - due date
-        - tax
-        - vendor reference
-        - duplicate vendor reference
-        - invalid date sequence
+        Vendor bills:
+        - bill date required
+        - due date required
+        - vendor reference required
+        - tax required
+        - duplicate vendor reference blocked
+        - bill date cannot be later than due date
         """
         for move in self:
             if not move._is_exception_target_document():
@@ -195,6 +204,8 @@ class AccountMove(models.Model):
             status = 'valid'
 
             vals = {
+                'finance_missing_invoice_date': False,
+                'finance_missing_payment_term': False,
                 'finance_missing_due_date': False,
                 'finance_missing_tax': False,
                 'finance_missing_vendor_ref': False,
@@ -203,41 +214,68 @@ class AccountMove(models.Model):
                 'finance_exception_summary': False,
                 'finance_exception_status': 'valid',
 
-                # keep old completeness fields synced quietly so nothing breaks
+                # keep old compatibility fields synced quietly
                 'finance_missing_bill_reference': False,
                 'finance_missing_bill_tax': False,
-                'finance_missing_payment_term': False,
                 'finance_missing_attachment': False,
                 'finance_readiness_summary': False,
                 'finance_readiness_status': 'ready',
             }
 
-            # Missing due date
-            if not move.invoice_date_due:
-                vals['finance_missing_due_date'] = True
-                issues.append("Missing due date.")
-                status = 'blocked'
-
-            # Missing tax
+            # Real invoice/bill lines only
             real_lines = move.invoice_line_ids.filtered(lambda l: not l.display_type)
             has_tax = any(line.tax_ids for line in real_lines)
 
-            if real_lines and not has_tax:
-                vals['finance_missing_tax'] = True
-                issues.append("Missing tax on document lines.")
-                if status != 'blocked':
-                    status = 'has_issue'
+            # -------------------------------------------------------------
+            # Customer invoice checks
+            # -------------------------------------------------------------
+            if move.move_type == 'out_invoice':
+                if not move.invoice_date:
+                    vals['finance_missing_invoice_date'] = True
+                    issues.append("Invoice date is missing.")
+                    status = 'blocked'
 
-            # Vendor bill specific checks
+                if not move.invoice_payment_term_id:
+                    vals['finance_missing_payment_term'] = True
+                    issues.append("Payment terms are missing.")
+                    status = 'blocked'
+
+                if real_lines and not has_tax:
+                    vals['finance_missing_tax'] = True
+                    issues.append("Tax is missing on invoice lines.")
+                    status = 'blocked'
+
+                if move.invoice_date and move.invoice_date_due and move.invoice_date > move.invoice_date_due:
+                    vals['finance_invalid_date_sequence'] = True
+                    issues.append("Invoice date cannot be later than due date.")
+                    status = 'blocked'
+
+            # -------------------------------------------------------------
+            # Vendor bill checks
+            # -------------------------------------------------------------
             if move.move_type == 'in_invoice':
-                # Missing vendor reference
+                if not move.invoice_date:
+                    vals['finance_missing_invoice_date'] = True
+                    issues.append("Bill date is missing.")
+                    status = 'blocked'
+
+                if not move.invoice_date_due:
+                    vals['finance_missing_due_date'] = True
+                    issues.append("Due date is missing.")
+                    status = 'blocked'
+
                 if not move.ref:
                     vals['finance_missing_vendor_ref'] = True
                     vals['finance_missing_bill_reference'] = True
-                    issues.append("Missing vendor reference.")
+                    issues.append("Vendor reference is missing.")
                     status = 'blocked'
 
-                # Duplicate vendor bill reference
+                if real_lines and not has_tax:
+                    vals['finance_missing_tax'] = True
+                    vals['finance_missing_bill_tax'] = True
+                    issues.append("Tax is missing on bill lines.")
+                    status = 'blocked'
+
                 if move.ref and move.partner_id:
                     duplicate_bill = self.search([
                         ('id', '!=', move.id),
@@ -252,8 +290,12 @@ class AccountMove(models.Model):
                         issues.append("Duplicate vendor bill reference found.")
                         status = 'blocked'
 
-                # Keep old completeness fields synced only
-                vals['finance_missing_bill_tax'] = vals['finance_missing_tax']
+                if move.invoice_date and move.invoice_date_due and move.invoice_date > move.invoice_date_due:
+                    vals['finance_invalid_date_sequence'] = True
+                    issues.append("Bill date cannot be later than due date.")
+                    status = 'blocked'
+
+                # keep old completeness fields synced only
                 if vals['finance_missing_bill_reference'] or vals['finance_missing_bill_tax']:
                     vals['finance_readiness_status'] = 'incomplete'
                     old_issues = []
@@ -264,14 +306,7 @@ class AccountMove(models.Model):
                     vals['finance_readiness_summary'] = "\n".join(old_issues)
                 else:
                     vals['finance_readiness_status'] = 'ready'
-                    vals['finance_readiness_summary'] = "Vendor bill includes the main required information for review."
-
-            # Invalid date sequence
-            if move.invoice_date and move.invoice_date_due:
-                if move.invoice_date > move.invoice_date_due:
-                    vals['finance_invalid_date_sequence'] = True
-                    issues.append("Invoice date is later than due date.")
-                    status = 'blocked'
+                    vals['finance_readiness_summary'] = "Vendor bill includes the main required information."
 
             vals['finance_exception_status'] = status
             vals['finance_exception_summary'] = "\n".join(issues) if issues else "No exception found."
@@ -283,6 +318,11 @@ class AccountMove(models.Model):
     # -------------------------------------------------------------------------
 
     def action_submit_finance_review(self):
+        """
+        Before submitting:
+        - always run exception checks automatically
+        - block submit if invoice is not valid
+        """
         self._check_finance_invoice_user_group()
 
         for move in self:
@@ -290,10 +330,22 @@ class AccountMove(models.Model):
                 continue
 
             if move.state != 'draft':
-                raise ValidationError(_("Only draft customer invoices can be submitted for review."))
+                raise ValidationError(
+                    _("Only draft customer invoices can be submitted for review.")
+                )
 
             if move.finance_review_state != 'draft':
-                raise ValidationError(_("Only invoices in Draft review status can be submitted."))
+                raise ValidationError(
+                    _("Only invoices in Draft review status can be submitted.")
+                )
+
+            # Auto-run checks before submit
+            move._run_finance_exception_checks()
+
+            if move.finance_exception_status != 'valid':
+                raise ValidationError(
+                    _("Please solve any invoice issues before submitting for review. Run Check Exceptions and fix the highlighted fields first.")
+                )
 
             move.write({
                 'finance_review_state': 'submitted',
@@ -388,6 +440,8 @@ class AccountMove(models.Model):
                 'default_move_id': self.id,
                 'default_finance_exception_status': self.finance_exception_status,
                 'default_finance_exception_summary': self.finance_exception_summary,
+                'default_finance_missing_invoice_date': self.finance_missing_invoice_date,
+                'default_finance_missing_payment_term': self.finance_missing_payment_term,
                 'default_finance_missing_due_date': self.finance_missing_due_date,
                 'default_finance_missing_tax': self.finance_missing_tax,
                 'default_finance_invalid_date_sequence': self.finance_invalid_date_sequence,
@@ -409,7 +463,9 @@ class AccountMove(models.Model):
     def action_post(self):
         for move in self:
             if move._is_review_target_document() and move.finance_review_state != 'approved':
-                raise ValidationError(_("You cannot post this invoice until it is approved."))
+                raise ValidationError(
+                    _("You cannot post this invoice until it is approved.")
+                )
 
             if move._is_exception_target_document():
                 move._run_finance_exception_checks()

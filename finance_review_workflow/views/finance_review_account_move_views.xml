@@ -61,7 +61,7 @@
                        invisible="move_type != 'out_invoice'"/>
             </xpath>
 
-            <!-- Clearer tabs -->
+            <!-- Tabs -->
             <xpath expr="//notebook" position="inside">
 
                 <!-- Customer invoice finance review -->
@@ -114,7 +114,9 @@
 
                     <group class="frw-section-card">
                         <group string="What Needs Attention">
-                            <field name="finance_missing_due_date" readonly="1"/>
+                            <field name="finance_missing_invoice_date" readonly="1"/>
+                            <field name="finance_missing_payment_term" readonly="1" invisible="move_type != 'out_invoice'"/>
+                            <field name="finance_missing_due_date" readonly="1" invisible="move_type != 'in_invoice'"/>
                             <field name="finance_missing_tax" readonly="1"/>
                             <field name="finance_invalid_date_sequence" readonly="1"/>
                         </group>
