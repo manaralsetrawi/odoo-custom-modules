@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_finance_invoice_reject_wizard_user,finance.invoice.reject.wizard.user,model_finance_invoice_reject_wizard,finance_review_workflow.group_finance_invoice_reviewer,1,1,1,1
+access_finance_exception_result_wizard_user,finance.exception.result.wizard.user,model_finance_exception_result_wizard,finance_review_workflow.group_finance_invoice_user,1,1,1,1
+access_finance_exception_result_wizard_reviewer,finance.exception.result.wizard.reviewer,model_finance_exception_result_wizard,finance_review_workflow.group_finance_invoice_reviewer,1,1,1,1
+access_finance_bill_completeness_wizard_user,finance.bill.completeness.wizard.user,model_finance_bill_completeness_wizard,base.group_user,1,1,1,1

@@ -8,7 +8,10 @@
     'depends': ['account'],
     'data': [
         'security/security.xml',
+        'security/ir.model.access.csv',
         'views/finance_review_account_move_views.xml',
+        'views/finance_invoice_kanban_views.xml',
+        'views/finance_review_assets.xml',
         'wizards/finance_wizard_views.xml',
         'report/finance_review_summary_report.xml',
         'report/finance_review_summary_template.xml',
