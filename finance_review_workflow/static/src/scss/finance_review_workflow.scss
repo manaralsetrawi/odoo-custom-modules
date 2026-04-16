@@ -73,16 +73,38 @@
     background: #ffffff;
 }
 
-/* Kanban */
-.frw-kanban-view .frw-kanban-card {
-    background: #ffffff;
-    border: 1px solid #e6edf3;
-    border-radius: 18px;
-    padding: 16px;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
-    min-height: 170px;
+/* =========================================================
+   Kanban cleanup
+   Remove ugly outer Odoo square/background
+   Keep only custom inner card
+   ========================================================= */
+
+.frw-kanban-view .o_kanban_renderer,
+.frw-kanban-view .o_kanban_record,
+.frw-kanban-view .oe_kanban_card,
+.frw-kanban-view .oe_kanban_global_click,
+.frw-kanban-view .o_kanban_record > div {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
+.frw-kanban-view .o_kanban_record {
+    padding: 8px !important;
+}
+
+/* Custom card */
+.frw-kanban-view .frw-kanban-card {
+    background: #ffffff !important;
+    border: 1px solid #e6edf3 !important;
+    border-radius: 20px !important;
+    padding: 18px !important;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05) !important;
+    min-height: 175px;
+    height: 100%;
+}
+
+/* Card text */
 .frw-kanban-view .frw-kanban-title {
     font-size: 1.05rem;
     margin-bottom: 4px;
@@ -116,24 +138,19 @@
     gap: 8px;
 }
 
+/* Status chips */
 .frw-chip {
     display: inline-flex;
     align-items: center;
     border-radius: 999px;
-    padding: 6px 12px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    padding: 7px 13px;
+    font-size: 0.88rem;
+    font-weight: 700;
     line-height: 1;
     border: 1px solid transparent;
 }
 
-/* Status chips */
-.frw-chip-draft {
-    background: #eef2f7;
-    color: #475569;
-    border-color: #d8e0ea;
-}
-
+.frw-chip-draft,
 .frw-chip-submitted {
     background: #fff7ed;
     color: #b45309;

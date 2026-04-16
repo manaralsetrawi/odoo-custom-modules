@@ -40,14 +40,21 @@
                             </div>
 
                             <div class="frw-kanban-chips">
+                                <!-- Finance review status -->
                                 <t t-set="review_state" t-value="record.finance_review_state.raw_value or 'draft'"/>
                                 <span t-attf-class="frw-chip frw-chip-#{review_state}">
-                                    <field name="finance_review_state"/>
+                                    <t t-if="review_state == 'draft'">Waiting Review</t>
+                                    <t t-elif="review_state == 'submitted'">Under Review</t>
+                                    <t t-elif="review_state == 'approved'">Approved</t>
+                                    <t t-elif="review_state == 'rejected'">Rejected</t>
                                 </span>
 
+                                <!-- Exception status -->
                                 <t t-set="exception_state" t-value="record.finance_exception_status.raw_value or 'valid'"/>
                                 <span t-attf-class="frw-chip frw-chip-#{exception_state}">
-                                    <field name="finance_exception_status"/>
+                                    <t t-if="exception_state == 'valid'">No Issues</t>
+                                    <t t-elif="exception_state == 'has_issue'">Needs Attention</t>
+                                    <t t-elif="exception_state == 'blocked'">Blocked</t>
                                 </span>
                             </div>
                         </div>
@@ -108,14 +115,19 @@
                             </div>
 
                             <div class="frw-kanban-chips">
+                                <!-- Completeness status -->
                                 <t t-set="readiness_state" t-value="record.finance_readiness_status.raw_value or 'incomplete'"/>
                                 <span t-attf-class="frw-chip frw-chip-#{readiness_state}">
-                                    <field name="finance_readiness_status"/>
+                                    <t t-if="readiness_state == 'incomplete'">Missing Info</t>
+                                    <t t-elif="readiness_state == 'ready'">Ready for Review</t>
                                 </span>
 
+                                <!-- Exception status -->
                                 <t t-set="exception_state" t-value="record.finance_exception_status.raw_value or 'valid'"/>
                                 <span t-attf-class="frw-chip frw-chip-#{exception_state}">
-                                    <field name="finance_exception_status"/>
+                                    <t t-if="exception_state == 'valid'">No Issues</t>
+                                    <t t-elif="exception_state == 'has_issue'">Needs Attention</t>
+                                    <t t-elif="exception_state == 'blocked'">Blocked</t>
                                 </span>
                             </div>
                         </div>
