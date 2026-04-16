@@ -26,7 +26,7 @@
                                 class="btn fcc-kpi-card fcc-kpi-card-blue"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
                             <div class="fcc-kpi-top">
-                                <div class="fcc-kpi-icon">D</div>
+                                <div class="fcc-kpi-icon"/>
                                 <div class="fcc-kpi-label">Draft Invoices</div>
                             </div>
                             <div class="fcc-kpi-value">
@@ -40,7 +40,7 @@
                                 class="btn fcc-kpi-card fcc-kpi-card-amber"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
                             <div class="fcc-kpi-top">
-                                <div class="fcc-kpi-icon">R</div>
+                                <div class="fcc-kpi-icon"/>
                                 <div class="fcc-kpi-label">Waiting Review</div>
                             </div>
                             <div class="fcc-kpi-value">
@@ -54,7 +54,7 @@
                                 class="btn fcc-kpi-card fcc-kpi-card-green"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
                             <div class="fcc-kpi-top">
-                                <div class="fcc-kpi-icon">A</div>
+                                <div class="fcc-kpi-icon"/>
                                 <div class="fcc-kpi-label">Approved Invoices</div>
                             </div>
                             <div class="fcc-kpi-value">
@@ -68,7 +68,7 @@
                                 class="btn fcc-kpi-card fcc-kpi-card-red"
                                 groups="finance_review_workflow.group_finance_invoice_reviewer">
                             <div class="fcc-kpi-top">
-                                <div class="fcc-kpi-icon">X</div>
+                                <div class="fcc-kpi-icon"/>
                                 <div class="fcc-kpi-label">Rejected Invoices</div>
                             </div>
                             <div class="fcc-kpi-value">
@@ -82,7 +82,7 @@
                                 class="btn fcc-kpi-card fcc-kpi-card-purple"
                                 groups="finance_review_workflow.group_finance_invoice_reviewer">
                             <div class="fcc-kpi-top">
-                                <div class="fcc-kpi-icon">!</div>
+                                <div class="fcc-kpi-icon"/>
                                 <div class="fcc-kpi-label">Blocked Documents</div>
                             </div>
                             <div class="fcc-kpi-value">
@@ -96,7 +96,7 @@
                                 class="btn fcc-kpi-card fcc-kpi-card-teal"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
                             <div class="fcc-kpi-top">
-                                <div class="fcc-kpi-icon">$</div>
+                                <div class="fcc-kpi-icon"/>
                                 <div class="fcc-kpi-label">Unpaid Posted Documents</div>
                             </div>
                             <div class="fcc-kpi-value">
@@ -116,7 +116,7 @@
                                 type="object"
                                 class="btn fcc-action-card fcc-action-card-blue"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
-                            <div class="fcc-action-icon">01</div>
+                            <div class="fcc-action-icon"/>
                             <div class="fcc-action-content">
                                 <div class="fcc-action-title">Review Pending Invoices</div>
                                 <div class="fcc-action-subtitle">
@@ -129,7 +129,7 @@
                                 type="object"
                                 class="btn fcc-action-card fcc-action-card-red"
                                 groups="finance_review_workflow.group_finance_invoice_reviewer">
-                            <div class="fcc-action-icon">02</div>
+                            <div class="fcc-action-icon"/>
                             <div class="fcc-action-content">
                                 <div class="fcc-action-title">Fix Rejected Invoices</div>
                                 <div class="fcc-action-subtitle">
@@ -142,7 +142,7 @@
                                 type="object"
                                 class="btn fcc-action-card fcc-action-card-purple"
                                 groups="finance_review_workflow.group_finance_invoice_reviewer">
-                            <div class="fcc-action-icon">03</div>
+                            <div class="fcc-action-icon"/>
                             <div class="fcc-action-content">
                                 <div class="fcc-action-title">Solve Blocked Exceptions</div>
                                 <div class="fcc-action-subtitle">
@@ -155,7 +155,7 @@
                                 type="object"
                                 class="btn fcc-action-card fcc-action-card-teal"
                                 groups="finance_review_workflow.group_finance_invoice_user,finance_review_workflow.group_finance_invoice_reviewer">
-                            <div class="fcc-action-icon">04</div>
+                            <div class="fcc-action-icon"/>
                             <div class="fcc-action-content">
                                 <div class="fcc-action-title">Follow Up Unpaid Documents</div>
                                 <div class="fcc-action-subtitle">

@@ -307,10 +307,6 @@
     background: #ffffff;
 }
 
-.fcc-dashboard-header {
-    margin-bottom: 10px;
-}
-
 .fcc-mini-label {
     display: inline-block;
     font-size: 0.78rem;
@@ -395,17 +391,21 @@
 }
 
 .fcc-kpi-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    font-weight: 800;
-    color: #234f84;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
     background: #eef4fb;
     flex-shrink: 0;
+    position: relative;
+}
+
+.fcc-kpi-icon::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.9;
 }
 
 .fcc-kpi-label {
@@ -437,7 +437,7 @@
     line-height: 1.45;
 }
 
-/* KPI color themes */
+/* KPI themes */
 .fcc-kpi-card-blue::before { background: #4f7ab8; }
 .fcc-kpi-card-blue .fcc-kpi-icon { background: #edf4fb; color: #2f63a8; }
 
@@ -498,13 +498,31 @@
     height: 42px;
     border-radius: 14px;
     background: #eef4fb;
-    color: #234f84;
-    font-size: 0.95rem;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     flex-shrink: 0;
+    position: relative;
+}
+
+.fcc-action-icon::before,
+.fcc-action-icon::after {
+    content: "";
+    position: absolute;
+    background: currentColor;
+    border-radius: 999px;
+    opacity: 0.95;
+}
+
+.fcc-action-icon::before {
+    width: 18px;
+    height: 4px;
+    left: 12px;
+    top: 14px;
+}
+
+.fcc-action-icon::after {
+    width: 12px;
+    height: 4px;
+    left: 12px;
+    top: 22px;
 }
 
 .fcc-action-content {
@@ -525,7 +543,7 @@
     color: #64748b;
 }
 
-/* Action color themes */
+/* Action themes */
 .fcc-action-card-blue::before { background: #4f7ab8; }
 .fcc-action-card-blue .fcc-action-icon { background: #edf4fb; color: #2f63a8; }
 
@@ -538,7 +556,6 @@
 .fcc-action-card-teal::before { background: #2aa4a1; }
 .fcc-action-card-teal .fcc-action-icon { background: #e8f8f7; color: #1f7f7d; }
 
-/* Responsive */
 @media (max-width: 1200px) {
     .fcc-kpi-grid {
         grid-template-columns: repeat(2, minmax(220px, 1fr));
