@@ -104,7 +104,8 @@ class AccountMove(models.Model):
     )
 
     # -------------------------------------------------------------------------
-    # Vendor bill completeness fields
+    # Old bill completeness fields
+    # Kept only to avoid breaking anything already created/referenced
     # -------------------------------------------------------------------------
 
     finance_readiness_status = fields.Selection([
@@ -147,12 +148,10 @@ class AccountMove(models.Model):
     # -------------------------------------------------------------------------
 
     def _is_review_target_document(self):
-        """Apply finance review workflow only to customer invoices."""
         self.ensure_one()
         return self.move_type == 'out_invoice'
 
     def _check_finance_invoice_user_group(self):
-        """Allow only invoice user / reviewer groups to submit invoices."""
         if not (
             self.env.user.has_group('finance_review_workflow.group_finance_invoice_user') or
             self.env.user.has_group('finance_review_workflow.group_finance_invoice_reviewer')
@@ -162,21 +161,14 @@ class AccountMove(models.Model):
             )
 
     def _check_finance_invoice_reviewer_group(self):
-        """Allow only reviewer group to approve, reject, or reset review."""
         if not self.env.user.has_group('finance_review_workflow.group_finance_invoice_reviewer'):
             raise ValidationError(
                 _("Only the Finance Invoice Reviewer can perform this action.")
             )
 
     def _is_exception_target_document(self):
-        """Apply exception checks only to customer invoices and vendor bills."""
         self.ensure_one()
         return self.move_type in ('out_invoice', 'in_invoice')
-
-    def _is_vendor_bill_readiness_target(self):
-        """Apply bill completeness check only to vendor bills."""
-        self.ensure_one()
-        return self.move_type == 'in_invoice'
 
     # -------------------------------------------------------------------------
     # Core checks
@@ -184,7 +176,16 @@ class AccountMove(models.Model):
 
     def _run_finance_exception_checks(self):
         """
-        Run AP/AR exception checks and update stored result fields.
+        Single clear check used for:
+        - customer invoices
+        - vendor bills
+
+        For vendor bills, keep it practical:
+        - due date
+        - tax
+        - vendor reference
+        - duplicate vendor reference
+        - invalid date sequence
         """
         for move in self:
             if not move._is_exception_target_document():
@@ -201,6 +202,14 @@ class AccountMove(models.Model):
                 'finance_invalid_date_sequence': False,
                 'finance_exception_summary': False,
                 'finance_exception_status': 'valid',
+
+                # keep old completeness fields synced quietly so nothing breaks
+                'finance_missing_bill_reference': False,
+                'finance_missing_bill_tax': False,
+                'finance_missing_payment_term': False,
+                'finance_missing_attachment': False,
+                'finance_readiness_summary': False,
+                'finance_readiness_status': 'ready',
             }
 
             # Missing due date
@@ -219,26 +228,43 @@ class AccountMove(models.Model):
                 if status != 'blocked':
                     status = 'has_issue'
 
-            # Missing vendor reference (bills only)
-            if move.move_type == 'in_invoice' and not move.ref:
-                vals['finance_missing_vendor_ref'] = True
-                issues.append("Missing vendor reference.")
-                status = 'blocked'
-
-            # Duplicate vendor bill reference (bills only)
-            if move.move_type == 'in_invoice' and move.ref and move.partner_id:
-                duplicate_bill = self.search([
-                    ('id', '!=', move.id),
-                    ('move_type', '=', 'in_invoice'),
-                    ('partner_id', '=', move.partner_id.id),
-                    ('ref', '=', move.ref),
-                    ('state', '!=', 'cancel'),
-                ], limit=1)
-
-                if duplicate_bill:
-                    vals['finance_duplicate_vendor_ref'] = True
-                    issues.append("Duplicate vendor bill reference found.")
+            # Vendor bill specific checks
+            if move.move_type == 'in_invoice':
+                # Missing vendor reference
+                if not move.ref:
+                    vals['finance_missing_vendor_ref'] = True
+                    vals['finance_missing_bill_reference'] = True
+                    issues.append("Missing vendor reference.")
                     status = 'blocked'
+
+                # Duplicate vendor bill reference
+                if move.ref and move.partner_id:
+                    duplicate_bill = self.search([
+                        ('id', '!=', move.id),
+                        ('move_type', '=', 'in_invoice'),
+                        ('partner_id', '=', move.partner_id.id),
+                        ('ref', '=', move.ref),
+                        ('state', '!=', 'cancel'),
+                    ], limit=1)
+
+                    if duplicate_bill:
+                        vals['finance_duplicate_vendor_ref'] = True
+                        issues.append("Duplicate vendor bill reference found.")
+                        status = 'blocked'
+
+                # Keep old completeness fields synced only
+                vals['finance_missing_bill_tax'] = vals['finance_missing_tax']
+                if vals['finance_missing_bill_reference'] or vals['finance_missing_bill_tax']:
+                    vals['finance_readiness_status'] = 'incomplete'
+                    old_issues = []
+                    if vals['finance_missing_bill_reference']:
+                        old_issues.append("Vendor bill reference is missing.")
+                    if vals['finance_missing_bill_tax']:
+                        old_issues.append("Tax is missing on vendor bill lines.")
+                    vals['finance_readiness_summary'] = "\n".join(old_issues)
+                else:
+                    vals['finance_readiness_status'] = 'ready'
+                    vals['finance_readiness_summary'] = "Vendor bill includes the main required information for review."
 
             # Invalid date sequence
             if move.invoice_date and move.invoice_date_due:
@@ -252,63 +278,11 @@ class AccountMove(models.Model):
 
             move.write(vals)
 
-    def _run_vendor_bill_readiness_check(self):
-        """
-        Quick completeness check for vendor bills.
-        Required only:
-        - vendor bill reference
-        - tax
-        """
-        for move in self:
-            if not move._is_vendor_bill_readiness_target():
-                continue
-
-            issues = []
-            status = 'ready'
-
-            vals = {
-                'finance_missing_bill_reference': False,
-                'finance_missing_bill_tax': False,
-                'finance_missing_payment_term': False,
-                'finance_missing_attachment': False,
-                'finance_readiness_summary': False,
-                'finance_readiness_status': 'ready',
-            }
-
-            # Bill reference
-            if not move.ref:
-                vals['finance_missing_bill_reference'] = True
-                issues.append("Vendor bill reference is missing.")
-                status = 'incomplete'
-
-            # Tax
-            real_lines = move.invoice_line_ids.filtered(lambda l: not l.display_type)
-            has_tax = any(line.tax_ids for line in real_lines)
-
-            if real_lines and not has_tax:
-                vals['finance_missing_bill_tax'] = True
-                issues.append("Tax is missing on vendor bill lines.")
-                status = 'incomplete'
-
-            # No longer required for completeness
-            vals['finance_missing_payment_term'] = False
-            vals['finance_missing_attachment'] = False
-
-            vals['finance_readiness_status'] = status
-            vals['finance_readiness_summary'] = (
-                "\n".join(issues)
-                if issues else
-                "Vendor bill includes the main required information for review."
-            )
-
-            move.write(vals)
-
     # -------------------------------------------------------------------------
     # Review actions
     # -------------------------------------------------------------------------
 
     def action_submit_finance_review(self):
-        """Submit draft customer invoice for finance review."""
         self._check_finance_invoice_user_group()
 
         for move in self:
@@ -316,14 +290,10 @@ class AccountMove(models.Model):
                 continue
 
             if move.state != 'draft':
-                raise ValidationError(
-                    _("Only draft customer invoices can be submitted for review.")
-                )
+                raise ValidationError(_("Only draft customer invoices can be submitted for review."))
 
             if move.finance_review_state != 'draft':
-                raise ValidationError(
-                    _("Only invoices in Draft review status can be submitted.")
-                )
+                raise ValidationError(_("Only invoices in Draft review status can be submitted."))
 
             move.write({
                 'finance_review_state': 'submitted',
@@ -333,7 +303,6 @@ class AccountMove(models.Model):
             })
 
     def action_approve_finance_review(self):
-        """Approve a submitted customer invoice."""
         self._check_finance_invoice_reviewer_group()
 
         for move in self:
@@ -341,14 +310,10 @@ class AccountMove(models.Model):
                 continue
 
             if move.state != 'draft':
-                raise ValidationError(
-                    _("Only draft customer invoices can be approved.")
-                )
+                raise ValidationError(_("Only draft customer invoices can be approved."))
 
             if move.finance_review_state != 'submitted':
-                raise ValidationError(
-                    _("Only submitted invoices can be approved.")
-                )
+                raise ValidationError(_("Only submitted invoices can be approved."))
 
             move.write({
                 'finance_review_state': 'approved',
@@ -357,9 +322,7 @@ class AccountMove(models.Model):
             })
 
     def action_open_finance_reject_wizard(self):
-        """Open popup wizard to collect rejection reason."""
         self.ensure_one()
-
         return {
             'type': 'ir.actions.act_window',
             'name': 'Reject Invoice',
@@ -372,7 +335,6 @@ class AccountMove(models.Model):
         }
 
     def action_reject_finance_review(self):
-        """Reject a submitted customer invoice."""
         self._check_finance_invoice_reviewer_group()
 
         for move in self:
@@ -380,19 +342,13 @@ class AccountMove(models.Model):
                 continue
 
             if move.state != 'draft':
-                raise ValidationError(
-                    _("Only draft customer invoices can be rejected.")
-                )
+                raise ValidationError(_("Only draft customer invoices can be rejected."))
 
             if move.finance_review_state != 'submitted':
-                raise ValidationError(
-                    _("Only submitted invoices can be rejected.")
-                )
+                raise ValidationError(_("Only submitted invoices can be rejected."))
 
             if not move.finance_reject_reason:
-                raise ValidationError(
-                    _("Please enter the rejection reason before rejecting the invoice.")
-                )
+                raise ValidationError(_("Please enter the rejection reason before rejecting the invoice."))
 
             move.write({
                 'finance_review_state': 'rejected',
@@ -401,7 +357,6 @@ class AccountMove(models.Model):
             })
 
     def action_reset_finance_review_to_draft(self):
-        """Return finance review status back to Draft."""
         self._check_finance_invoice_reviewer_group()
 
         for move in self:
@@ -409,9 +364,7 @@ class AccountMove(models.Model):
                 continue
 
             if move.state != 'draft':
-                raise ValidationError(
-                    _("Only draft customer invoices can be returned to Draft.")
-                )
+                raise ValidationError(_("Only draft customer invoices can be returned to Draft."))
 
             move.write({
                 'finance_review_state': 'draft',
@@ -422,9 +375,6 @@ class AccountMove(models.Model):
     # -------------------------------------------------------------------------
 
     def action_check_finance_exceptions(self):
-        """
-        Run exception checks, store results, then open popup with result.
-        """
         self.ensure_one()
         self._run_finance_exception_checks()
 
@@ -446,30 +396,7 @@ class AccountMove(models.Model):
             },
         }
 
-    def action_check_vendor_bill_readiness(self):
-        """
-        Run bill completeness check, then open popup with result.
-        """
-        self.ensure_one()
-        self._run_vendor_bill_readiness_check()
-
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Bill Completeness Check',
-            'res_model': 'finance.bill.completeness.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_move_id': self.id,
-                'default_finance_readiness_status': self.finance_readiness_status,
-                'default_finance_readiness_summary': self.finance_readiness_summary,
-                'default_finance_missing_bill_reference': self.finance_missing_bill_reference,
-                'default_finance_missing_bill_tax': self.finance_missing_bill_tax,
-            },
-        }
-
     def action_generate_finance_summary_report(self):
-        """Generate the Finance Review Summary Report."""
         self.ensure_one()
         return self.env.ref(
             'finance_review_workflow.action_finance_review_summary_report'
@@ -480,22 +407,16 @@ class AccountMove(models.Model):
     # -------------------------------------------------------------------------
 
     def action_post(self):
-        """
-        1) Block customer invoice posting unless finance review is approved.
-        2) Block invoice/bill posting if AP/AR exception status is blocked.
-        """
         for move in self:
             if move._is_review_target_document() and move.finance_review_state != 'approved':
-                raise ValidationError(
-                    _("You cannot post this invoice until it is approved.")
-                )
+                raise ValidationError(_("You cannot post this invoice until it is approved."))
 
             if move._is_exception_target_document():
                 move._run_finance_exception_checks()
 
                 if move.finance_exception_status == 'blocked':
                     raise ValidationError(
-                        _("You cannot post this document because it has blocked AP/AR exceptions. Please fix them first.")
+                        _("You cannot post this document because it has blocked exceptions. Please fix them first.")
                     )
 
         return super().action_post()

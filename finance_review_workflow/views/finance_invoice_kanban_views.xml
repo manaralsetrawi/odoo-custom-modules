@@ -40,7 +40,6 @@
                             </div>
 
                             <div class="frw-kanban-chips">
-                                <!-- Finance review status -->
                                 <t t-set="review_state" t-value="record.finance_review_state.raw_value or 'draft'"/>
                                 <span t-attf-class="frw-chip frw-chip-#{review_state}">
                                     <t t-if="review_state == 'draft'">Waiting Review</t>
@@ -49,7 +48,6 @@
                                     <t t-elif="review_state == 'rejected'">Rejected</t>
                                 </span>
 
-                                <!-- Exception status -->
                                 <t t-set="exception_state" t-value="record.finance_exception_status.raw_value or 'valid'"/>
                                 <span t-attf-class="frw-chip frw-chip-#{exception_state}">
                                     <t t-if="exception_state == 'valid'">No Issues</t>
@@ -64,7 +62,6 @@
         </field>
     </record>
 
-    <!-- Put invoice kanban first in customer invoice action -->
     <record id="view_out_invoice_kanban_frw_action_link" model="ir.actions.act_window.view">
         <field name="sequence" eval="1"/>
         <field name="view_mode">kanban</field>
@@ -91,7 +88,6 @@
                 <field name="currency_id"/>
                 <field name="invoice_date"/>
                 <field name="invoice_date_due"/>
-                <field name="finance_readiness_status"/>
                 <field name="finance_exception_status"/>
 
                 <templates>
@@ -115,14 +111,6 @@
                             </div>
 
                             <div class="frw-kanban-chips">
-                                <!-- Completeness status -->
-                                <t t-set="readiness_state" t-value="record.finance_readiness_status.raw_value or 'incomplete'"/>
-                                <span t-attf-class="frw-chip frw-chip-#{readiness_state}">
-                                    <t t-if="readiness_state == 'incomplete'">Missing Info</t>
-                                    <t t-elif="readiness_state == 'ready'">Ready for Review</t>
-                                </span>
-
-                                <!-- Exception status -->
                                 <t t-set="exception_state" t-value="record.finance_exception_status.raw_value or 'valid'"/>
                                 <span t-attf-class="frw-chip frw-chip-#{exception_state}">
                                     <t t-if="exception_state == 'valid'">No Issues</t>
@@ -137,7 +125,6 @@
         </field>
     </record>
 
-    <!-- Put bill kanban first in vendor bill action -->
     <record id="view_in_invoice_kanban_frw_action_link" model="ir.actions.act_window.view">
         <field name="sequence" eval="1"/>
         <field name="view_mode">kanban</field>
