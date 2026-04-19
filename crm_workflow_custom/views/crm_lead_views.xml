@@ -96,7 +96,7 @@
                     </group>
                 </page>
 
-                <page string="Approval & Follow-up"
+                <page string="Approval &amp; Follow-up"
                       class="crmwf_workflow_page"
                       groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
 
