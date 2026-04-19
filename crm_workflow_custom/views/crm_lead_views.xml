@@ -10,7 +10,7 @@
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_view_support_tickets"
                         type="object"
-                        class="oe_stat_button"
+                        class="oe_stat_button crmwf_support_stat_btn"
                         icon="fa-life-ring"
                         groups="crm_workflow_custom.group_crm_support_user,crm_workflow_custom.group_crm_support_manager">
                     <field name="support_ticket_count" widget="statinfo" string="Support Tickets"/>
@@ -22,73 +22,75 @@
                 <button name="action_start_analysis"
                         type="object"
                         string="Start Analysis"
-                        class="btn-primary"
+                        class="btn-primary crmwf_btn crmwf_btn_primary"
                         groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer"
                         invisible="is_stage_analysis or is_stage_proposal or is_stage_waiting_approval or is_stage_approved or is_stage_rejected"/>
 
                 <button name="action_submit_proposal"
                         type="object"
                         string="Submit Proposal"
-                        class="btn-primary"
+                        class="btn-primary crmwf_btn crmwf_btn_primary"
                         groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"
                         invisible="is_stage_proposal or is_stage_waiting_approval or is_stage_approved or is_stage_rejected"/>
 
                 <button name="action_send_to_approval"
                         type="object"
                         string="Send to Approval"
-                        class="btn-primary"
+                        class="btn-primary crmwf_btn crmwf_btn_primary"
                         groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"
                         invisible="is_stage_waiting_approval or is_stage_approved or is_stage_rejected"/>
 
                 <button name="action_approve_project"
                         type="object"
                         string="Approve"
-                        class="btn-success"
+                        class="btn-success crmwf_btn crmwf_btn_success"
                         groups="crm_workflow_custom.group_crm_workflow_manager"
                         invisible="not is_stage_waiting_approval"/>
 
                 <button name="action_reject_project"
                         type="object"
                         string="Reject"
-                        class="btn-danger"
+                        class="btn-danger crmwf_btn crmwf_btn_danger"
                         groups="crm_workflow_custom.group_crm_workflow_manager"
                         invisible="is_stage_approved or is_stage_rejected"/>
 
                 <button name="action_create_support_ticket"
                         type="object"
                         string="Create Support Ticket"
-                        class="btn-secondary"
+                        class="btn-secondary crmwf_btn crmwf_btn_secondary"
                         groups="crm_workflow_custom.group_crm_support_user,crm_workflow_custom.group_crm_support_manager"/>
             </xpath>
 
             <!-- Workflow page -->
             <xpath expr="//sheet/notebook" position="inside">
                 <page string="Project Workflow"
+                      class="crmwf_workflow_page"
                       groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
-                    <group>
-                        <group string="Technical Evaluation">
+
+                    <group class="crmwf_row">
+                        <group string="Technical Evaluation" class="crmwf_card crmwf_card_technical">
                             <field name="technical_feasibility"/>
                             <field name="complexity_level"/>
                             <field name="estimated_duration"/>
                             <field name="project_deadline"/>
                         </group>
 
-                        <group string="Proposal Details">
+                        <group string="Proposal Details" class="crmwf_card crmwf_card_proposal">
                             <field name="proposal_summary" placeholder="Enter a short summary of the proposed solution..."/>
                             <field name="proposal_amount"/>
                             <field name="negotiation_notes" placeholder="Add any negotiation comments or client feedback..."/>
                         </group>
                     </group>
 
-                    <group>
-                        <group string="Approval Information">
+                    <group class="crmwf_row">
+                        <group string="Approval Information" class="crmwf_card crmwf_card_approval">
                             <field name="approval_state" readonly="1"/>
                             <field name="rejection_reason"
                                    invisible="approval_state != 'rejected'"
                                    placeholder="Enter the reason for rejection..."/>
                         </group>
 
-                        <group string="Follow-up">
+                        <group string="Follow-up" class="crmwf_card crmwf_card_followup">
                             <field name="last_followup_date"/>
                             <field name="next_followup_date"/>
                             <field name="followup_status"/>

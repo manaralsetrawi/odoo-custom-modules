@@ -1,0 +1,111 @@
+/* =========================================================
+   CRM Workflow Custom SCSS
+   Scoped only to custom classes to avoid conflicts
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   Workflow buttons
+   --------------------------------------------------------- */
+.crmwf_btn {
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    padding: 8px 14px !important;
+    margin-right: 8px !important;
+    margin-bottom: 8px !important;
+    min-height: 38px !important;
+    box-shadow: none !important;
+    transition: all 0.2s ease !important;
+}
+
+.crmwf_btn:hover {
+    transform: translateY(-1px);
+}
+
+.crmwf_btn_primary {
+    background-color: #0b2c3d !important;
+    border-color: #0b2c3d !important;
+}
+
+.crmwf_btn_primary:hover,
+.crmwf_btn_primary:focus {
+    background-color: #13445d !important;
+    border-color: #13445d !important;
+}
+
+.crmwf_btn_success {
+    font-weight: 700 !important;
+}
+
+.crmwf_btn_danger {
+    font-weight: 700 !important;
+}
+
+.crmwf_btn_secondary {
+    font-weight: 600 !important;
+}
+
+/* ---------------------------------------------------------
+   Support smart button
+   --------------------------------------------------------- */
+.crmwf_support_stat_btn {
+    border-radius: 10px !important;
+    margin-right: 8px !important;
+    margin-bottom: 8px !important;
+    transition: all 0.2s ease !important;
+}
+
+.crmwf_support_stat_btn:hover {
+    transform: translateY(-1px);
+}
+
+/* ---------------------------------------------------------
+   Workflow page cards
+   --------------------------------------------------------- */
+.crmwf_workflow_page {
+    padding-top: 10px;
+}
+
+.crmwf_row {
+    gap: 14px;
+}
+
+.crmwf_card {
+    background: #fafbfc !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 14px !important;
+    padding: 16px 18px !important;
+    margin-bottom: 16px !important;
+}
+
+.crmwf_card .o_horizontal_separator,
+.crmwf_card .o_form_label,
+.crmwf_card label {
+    font-weight: 700;
+}
+
+.crmwf_card_technical .o_horizontal_separator,
+.crmwf_card_proposal .o_horizontal_separator,
+.crmwf_card_approval .o_horizontal_separator,
+.crmwf_card_followup .o_horizontal_separator,
+.crmwf_card_support_main .o_horizontal_separator,
+.crmwf_card_support_side .o_horizontal_separator {
+    color: #0b2c3d !important;
+}
+
+/* ---------------------------------------------------------
+   Support form styling
+   --------------------------------------------------------- */
+.crmwf_support_form .crmwf_support_sheet {
+    padding-top: 10px;
+}
+
+.crmwf_support_notebook {
+    margin-top: 8px;
+}
+
+/* ---------------------------------------------------------
+   Optional subtle spacing for custom sections only
+   --------------------------------------------------------- */
+.crmwf_card .o_field_widget {
+    margin-bottom: 6px;
+}
