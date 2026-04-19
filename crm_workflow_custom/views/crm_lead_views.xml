@@ -6,6 +6,15 @@
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
 
+            <!-- Hide default confusing buttons by visible text -->
+            <xpath expr="//header//button[normalize-space()='Lost']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//header//button[normalize-space()='Enrich']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
             <!-- Support smart button -->
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_view_support_tickets"
@@ -17,28 +26,28 @@
                 </button>
             </xpath>
 
-            <!-- Custom workflow buttons -->
+            <!-- Custom workflow buttons only -->
             <xpath expr="//header" position="inside">
                 <button name="action_start_analysis"
                         type="object"
                         string="Start Analysis"
                         class="btn-primary crmwf_btn crmwf_btn_primary"
                         groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer"
-                        invisible="is_stage_analysis or is_stage_proposal or is_stage_waiting_approval or is_stage_approved or is_stage_rejected"/>
+                        invisible="not is_stage_new_inquiry and not is_stage_initial_discussion"/>
 
                 <button name="action_submit_proposal"
                         type="object"
                         string="Submit Proposal"
                         class="btn-primary crmwf_btn crmwf_btn_primary"
                         groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"
-                        invisible="is_stage_proposal or is_stage_waiting_approval or is_stage_approved or is_stage_rejected"/>
+                        invisible="not is_stage_analysis and not is_stage_solution_design"/>
 
                 <button name="action_send_to_approval"
                         type="object"
                         string="Send to Approval"
                         class="btn-primary crmwf_btn crmwf_btn_primary"
                         groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"
-                        invisible="is_stage_waiting_approval or is_stage_approved or is_stage_rejected"/>
+                        invisible="not is_stage_proposal"/>
 
                 <button name="action_approve_project"
                         type="object"
@@ -52,20 +61,22 @@
                         string="Reject"
                         class="btn-danger crmwf_btn crmwf_btn_danger"
                         groups="crm_workflow_custom.group_crm_workflow_manager"
-                        invisible="is_stage_approved or is_stage_rejected"/>
-
-                <button name="action_create_support_ticket"
-                        type="object"
-                        string="Create Support Ticket"
-                        class="btn-secondary crmwf_btn crmwf_btn_secondary"
-                        groups="crm_workflow_custom.group_crm_support_user,crm_workflow_custom.group_crm_support_manager"/>
+                        invisible="not is_stage_waiting_approval"/>
             </xpath>
 
-            <!-- Workflow page -->
+            <!-- Workflow pages -->
             <xpath expr="//sheet/notebook" position="inside">
-                <page string="Project Workflow"
+                <page string="Workflow Overview"
                       class="crmwf_workflow_page"
                       groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
+
+                    <div class="crmwf_hint_box">
+                        <div class="crmwf_hint_title">Workflow Guidance</div>
+                        <div class="crmwf_hint_text">
+                            Review the request, complete the technical evaluation, prepare the proposal,
+                            then send it for approval.
+                        </div>
+                    </div>
 
                     <group class="crmwf_row">
                         <group string="Technical Evaluation" class="crmwf_card crmwf_card_technical">
@@ -75,12 +86,19 @@
                             <field name="project_deadline"/>
                         </group>
 
-                        <group string="Proposal Details" class="crmwf_card crmwf_card_proposal">
+                        <group string="Proposal Details"
+                               class="crmwf_card crmwf_card_proposal"
+                               invisible="is_stage_new_inquiry and not proposal_summary and not proposal_amount">
                             <field name="proposal_summary" placeholder="Enter a short summary of the proposed solution..."/>
                             <field name="proposal_amount"/>
                             <field name="negotiation_notes" placeholder="Add any negotiation comments or client feedback..."/>
                         </group>
                     </group>
+                </page>
+
+                <page string="Approval & Follow-up"
+                      class="crmwf_workflow_page"
+                      groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
 
                     <group class="crmwf_row">
                         <group string="Approval Information" class="crmwf_card crmwf_card_approval">
@@ -90,7 +108,7 @@
                                    placeholder="Enter the reason for rejection..."/>
                         </group>
 
-                        <group string="Follow-up" class="crmwf_card crmwf_card_followup">
+                        <group string="Follow-up Tracking" class="crmwf_card crmwf_card_followup">
                             <field name="last_followup_date"/>
                             <field name="next_followup_date"/>
                             <field name="followup_status"/>

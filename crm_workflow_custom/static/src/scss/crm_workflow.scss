@@ -1,22 +1,15 @@
 /* =========================================================
    CRM Workflow Custom SCSS
-   Scoped only to custom classes/selectors for this module
+   Scoped to custom classes / targeted selectors only
    ========================================================= */
 
-/* ---------------------------------------------------------
-   Hide confusing default CRM buttons safely
-   --------------------------------------------------------- */
-button[name="action_set_won_rainbowman"] {
-    display: none !important;
-}
-
+/* Hide default CRM buttons that confuse this workflow */
+button[name="action_set_won_rainbowman"],
 button[name="action_open_lost_wizard"] {
     display: none !important;
 }
 
-/* ---------------------------------------------------------
-   Workflow buttons
-   --------------------------------------------------------- */
+/* Workflow buttons */
 .crmwf_btn {
     border-radius: 10px !important;
     font-weight: 600 !important;
@@ -51,13 +44,7 @@ button[name="action_open_lost_wizard"] {
     font-weight: 700 !important;
 }
 
-.crmwf_btn_secondary {
-    font-weight: 600 !important;
-}
-
-/* ---------------------------------------------------------
-   Support smart button
-   --------------------------------------------------------- */
+/* Support smart button */
 .crmwf_support_stat_btn {
     border-radius: 10px !important;
     margin-right: 8px !important;
@@ -69,23 +56,22 @@ button[name="action_open_lost_wizard"] {
     transform: translateY(-1px);
 }
 
-/* ---------------------------------------------------------
-   Workflow page cards
-   --------------------------------------------------------- */
+/* Workflow pages */
 .crmwf_workflow_page {
     padding-top: 10px;
 }
 
 .crmwf_row {
-    gap: 14px;
+    gap: 16px;
 }
 
 .crmwf_card {
     background: #fafbfc !important;
     border: 1px solid #e5e7eb !important;
-    border-radius: 14px !important;
-    padding: 16px 18px !important;
-    margin-bottom: 16px !important;
+    border-radius: 18px !important;
+    padding: 18px 20px !important;
+    margin-bottom: 18px !important;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
 }
 
 .crmwf_card .o_horizontal_separator,
@@ -97,23 +83,33 @@ button[name="action_open_lost_wizard"] {
 .crmwf_card_technical .o_horizontal_separator,
 .crmwf_card_proposal .o_horizontal_separator,
 .crmwf_card_approval .o_horizontal_separator,
-.crmwf_card_followup .o_horizontal_separator,
-.crmwf_card_support_main .o_horizontal_separator,
-.crmwf_card_support_side .o_horizontal_separator {
+.crmwf_card_followup .o_horizontal_separator {
     color: #0b2c3d !important;
 }
 
-/* ---------------------------------------------------------
-   Support form styling
-   --------------------------------------------------------- */
-.crmwf_support_form .crmwf_support_sheet {
-    padding-top: 10px;
+/* Hint box */
+.crmwf_hint_box {
+    background: #f4f8fb;
+    border: 1px solid #dbe5ec;
+    border-radius: 16px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
 }
 
-.crmwf_support_notebook {
-    margin-top: 8px;
+.crmwf_hint_title {
+    color: #0b2c3d;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
 }
 
+.crmwf_hint_text {
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* Slight extra spacing inside cards */
 .crmwf_card .o_field_widget {
     margin-bottom: 6px;
 }
