@@ -11,7 +11,8 @@
                 <button name="action_view_support_tickets"
                         type="object"
                         class="oe_stat_button"
-                        icon="fa-life-ring">
+                        icon="fa-life-ring"
+                        groups="crm_workflow_custom.group_crm_support_user,crm_workflow_custom.group_crm_support_manager">
                     <field name="support_ticket_count" widget="statinfo" string="Support Tickets"/>
                 </button>
             </xpath>
@@ -22,41 +23,48 @@
                         type="object"
                         string="Start Analysis"
                         class="btn-primary"
+                        groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer"
                         invisible="is_stage_analysis or is_stage_proposal or is_stage_waiting_approval or is_stage_approved or is_stage_rejected"/>
 
                 <button name="action_submit_proposal"
                         type="object"
                         string="Submit Proposal"
                         class="btn-primary"
+                        groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"
                         invisible="is_stage_proposal or is_stage_waiting_approval or is_stage_approved or is_stage_rejected"/>
 
                 <button name="action_send_to_approval"
                         type="object"
                         string="Send to Approval"
                         class="btn-primary"
+                        groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"
                         invisible="is_stage_waiting_approval or is_stage_approved or is_stage_rejected"/>
 
                 <button name="action_approve_project"
                         type="object"
                         string="Approve"
                         class="btn-success"
+                        groups="crm_workflow_custom.group_crm_workflow_manager"
                         invisible="not is_stage_waiting_approval"/>
 
                 <button name="action_reject_project"
                         type="object"
                         string="Reject"
                         class="btn-danger"
+                        groups="crm_workflow_custom.group_crm_workflow_manager"
                         invisible="is_stage_approved or is_stage_rejected"/>
 
                 <button name="action_create_support_ticket"
                         type="object"
                         string="Create Support Ticket"
-                        class="btn-secondary"/>
+                        class="btn-secondary"
+                        groups="crm_workflow_custom.group_crm_support_user,crm_workflow_custom.group_crm_support_manager"/>
             </xpath>
 
             <!-- Workflow page -->
             <xpath expr="//sheet/notebook" position="inside">
-                <page string="Project Workflow">
+                <page string="Project Workflow"
+                      groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
                     <group>
                         <group string="Technical Evaluation">
                             <field name="technical_feasibility"/>

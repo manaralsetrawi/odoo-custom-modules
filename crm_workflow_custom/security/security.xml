@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- =========================================================
+         CRM Workflow Groups
+         ========================================================= -->
+    <record id="group_crm_workflow_user" model="res.groups">
+        <field name="name">CRM Workflow User</field>
+        <field name="category_id" ref="base.module_category_sales_crm"/>
+        <field name="implied_ids" eval="[(4, ref('crm.group_use_lead'))]"/>
+    </record>
+
+    <record id="group_crm_workflow_manager" model="res.groups">
+        <field name="name">CRM Workflow Manager</field>
+        <field name="category_id" ref="base.module_category_sales_crm"/>
+        <field name="implied_ids" eval="[(4, ref('group_crm_workflow_user')), (4, ref('crm.group_sale_manager'))]"/>
+    </record>
+
+    <record id="group_crm_technical_reviewer" model="res.groups">
+        <field name="name">CRM Technical Reviewer</field>
+        <field name="category_id" ref="base.module_category_sales_crm"/>
+        <field name="implied_ids" eval="[(4, ref('group_crm_workflow_user'))]"/>
+    </record>
+
+    <!-- =========================================================
+         Support Groups
+         ========================================================= -->
+    <record id="group_crm_support_user" model="res.groups">
+        <field name="name">CRM Support User</field>
+        <field name="category_id" ref="base.module_category_sales_crm"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_crm_support_manager" model="res.groups">
+        <field name="name">CRM Support Manager</field>
+        <field name="category_id" ref="base.module_category_sales_crm"/>
+        <field name="implied_ids" eval="[(4, ref('group_crm_support_user'))]"/>
+    </record>
+
+    <!-- =========================================================
+         Record Rule: Support users can see only tickets assigned
+         to them OR tickets they created OR unassigned tickets
+         ========================================================= -->
+    <record id="rule_crm_support_ticket_user_own" model="ir.rule">
+        <field name="name">CRM Support Ticket - User Own or Unassigned</field>
+        <field name="model_id" ref="model_crm_support_ticket"/>
+        <field name="groups" eval="[(4, ref('group_crm_support_user'))]"/>
+        <field name="domain_force">
+            ['|', '|',
+                ('assigned_user_id', '=', user.id),
+                ('create_uid', '=', user.id),
+                ('assigned_user_id', '=', False)
+            ]
+        </field>
+    </record>
+
+    <!-- =========================================================
+         Record Rule: Support managers can see all tickets
+         ========================================================= -->
+    <record id="rule_crm_support_ticket_manager_all" model="ir.rule">
+        <field name="name">CRM Support Ticket - Manager All</field>
+        <field name="model_id" ref="model_crm_support_ticket"/>
+        <field name="groups" eval="[(4, ref('group_crm_support_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+</odoo>
