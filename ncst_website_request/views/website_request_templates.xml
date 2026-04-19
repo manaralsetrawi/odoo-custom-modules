@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Website Request Form Page -->
+    <template id="project_request_page" name="Project Request Page">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <h1 class="mb-3">Request a Service</h1>
+                        <p class="text-muted mb-4">
+                            Fill in the form below to send your request to NCST.
+                        </p>
+
+                        <form action="/project-request/submit" method="post" class="oe_website_request_form">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                            <!-- Full Name -->
+                            <div class="mb-3">
+                                <label for="full_name" class="form-label">Full Name</label>
+                                <input type="text" id="full_name" name="full_name" class="form-control" required="required"/>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" id="email" name="email" class="form-control" required="required"/>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="text" id="phone" name="phone" class="form-control"/>
+                            </div>
+
+                            <!-- Company Name -->
+                            <div class="mb-3">
+                                <label for="company_name" class="form-label">Company Name</label>
+                                <input type="text" id="company_name" name="company_name" class="form-control"/>
+                            </div>
+
+                            <!-- Message Type -->
+                            <div class="mb-3">
+                                <label for="message_type" class="form-label">Message Type</label>
+                                <select id="message_type" name="message_type" class="form-select" required="required">
+                                    <option value="">Select message type</option>
+                                    <option value="general_inquiry">General Inquiry</option>
+                                    <option value="ai_center_inquiry">AI Center Inquiry</option>
+                                    <option value="project_request">Project Request</option>
+                                </select>
+                            </div>
+
+                            <!-- Message -->
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Message</label>
+                                <textarea id="message" name="message" class="form-control" rows="4"></textarea>
+                            </div>
+
+                            <!-- Project Fields (hidden by default) -->
+                            <div id="project_request_fields" style="display: none;">
+
+                                <hr class="my-4"/>
+
+                                <h4 class="mb-3">Project Request Details</h4>
+
+                                <!-- Project Title -->
+                                <div class="mb-3">
+                                    <label for="project_title" class="form-label">Project Title</label>
+                                    <input type="text" id="project_title" name="project_title" class="form-control"/>
+                                </div>
+
+                                <!-- Project Type -->
+                                <div class="mb-3">
+                                    <label for="project_type" class="form-label">Project Type</label>
+                                    <input type="text" id="project_type" name="project_type" class="form-control"/>
+                                </div>
+
+                                <!-- Project Description -->
+                                <div class="mb-3">
+                                    <label for="project_description" class="form-label">Project Description</label>
+                                    <textarea id="project_description" name="project_description" class="form-control" rows="4"></textarea>
+                                </div>
+
+                                <!-- Requested Features -->
+                                <div class="mb-3">
+                                    <label for="requested_features" class="form-label">Requested Features</label>
+                                    <textarea id="requested_features" name="requested_features" class="form-control" rows="4"></textarea>
+                                </div>
+
+                                <!-- Estimated Timeline -->
+                                <div class="mb-3">
+                                    <label for="estimated_timeline" class="form-label">Estimated Timeline</label>
+                                    <input type="text" id="estimated_timeline" name="estimated_timeline" class="form-control"/>
+                                </div>
+
+                                <!-- Estimated Budget -->
+                                <div class="mb-3">
+                                    <label for="estimated_budget" class="form-label">Estimated Budget</label>
+                                    <input type="text" id="estimated_budget" name="estimated_budget" class="form-control"/>
+                                </div>
+
+                            </div>
+
+                            <!-- Submit -->
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Submit Request
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+
+    <!-- Thank You Page -->
+    <template id="project_request_thank_you" name="Project Request Thank You">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 text-center">
+                        <h1 class="mb-3">Thank You</h1>
+                        <p class="lead">
+                            Your request has been submitted successfully.
+                        </p>
+                        <p t-if="full_name">
+                            Thank you, <strong t-esc="full_name"/>.
+                        </p>
+                        <a href="/project-request" class="btn btn-primary mt-3">
+                            Submit Another Request
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>
