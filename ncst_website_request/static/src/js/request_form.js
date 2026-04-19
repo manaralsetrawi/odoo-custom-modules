@@ -8,17 +8,21 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
+    const projectInputs = projectFieldsContainer.querySelectorAll("input, textarea, select");
+
     function toggleProjectFields() {
-        if (messageTypeField.value === "project_request") {
-            projectFieldsContainer.style.display = "block";
-        } else {
-            projectFieldsContainer.style.display = "none";
+        const isProjectRequest = messageTypeField.value === "project_request";
+
+        projectFieldsContainer.style.display = isProjectRequest ? "block" : "none";
+
+        // Optional: clear project fields when hidden
+        if (!isProjectRequest) {
+            projectInputs.forEach((field) => {
+                field.value = "";
+            });
         }
     }
 
-    // Run on page load
     toggleProjectFields();
-
-    // Run when dropdown changes
     messageTypeField.addEventListener("change", toggleProjectFields);
 });

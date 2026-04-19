@@ -4,17 +4,12 @@ from odoo.http import request
 
 class NcstWebsiteRequestController(http.Controller):
 
-    @http.route('/project-request', type='http', auth='public', website=True)
-    def project_request_page(self, **kwargs):
-        """Render the public website request form page."""
-        return request.render('ncst_website_request.project_request_page')
-
     @http.route('/project-request/submit', type='http', auth='public', website=True, methods=['POST'], csrf=True)
     def project_request_submit(self, **post):
         """
         Handle website form submission and create a CRM lead.
-        This creates only an initial CRM request/lead.
-        It does NOT create a project and does NOT start the full internal flow.
+        This creates only an initial CRM lead/request.
+        It does NOT create a project and does NOT start the internal flow.
         """
 
         # Always visible fields
@@ -25,7 +20,7 @@ class NcstWebsiteRequestController(http.Controller):
         message_type = post.get('message_type', '').strip()
         message = post.get('message', '').strip()
 
-        # Project request fields (shown only when message_type = project_request)
+        # Project Request fields
         project_title = post.get('project_title', '').strip()
         project_type = post.get('project_type', '').strip()
         project_description = post.get('project_description', '').strip()
@@ -36,16 +31,19 @@ class NcstWebsiteRequestController(http.Controller):
         # Lead title
         lead_name = project_title if project_title else 'Website Request'
 
-        # Build description nicely
+        # Build lead description
         description_parts = [
             f"Message Type: {message_type or 'N/A'}",
-            f"Client Message: {message or 'N/A'}",
+            "",
+            "Client Message:",
+            message or 'N/A',
         ]
 
         if message_type == 'project_request':
             description_parts.extend([
                 "",
                 "Project Request Details:",
+                f"Project Title: {project_title or 'N/A'}",
                 f"Project Type: {project_type or 'N/A'}",
                 f"Project Description: {project_description or 'N/A'}",
                 f"Requested Features: {requested_features or 'N/A'}",
@@ -65,7 +63,5 @@ class NcstWebsiteRequestController(http.Controller):
             'description': description,
         })
 
-        # Show thank-you page
-        return request.render('ncst_website_request.project_request_thank_you', {
-            'full_name': full_name,
-        })
+        # Redirect back to contact page with success flag
+        return request.redirect('/contactus?submitted=1')
