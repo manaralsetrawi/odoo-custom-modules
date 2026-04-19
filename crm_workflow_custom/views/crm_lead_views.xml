@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
 
-            <!-- Add support smart button -->
+            <!-- Support smart button -->
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_view_support_tickets"
                         type="object"
@@ -16,7 +16,7 @@
                 </button>
             </xpath>
 
-            <!-- Add workflow buttons -->
+            <!-- Custom workflow buttons -->
             <xpath expr="//header" position="inside">
                 <button name="action_start_analysis"
                         type="object"
@@ -54,6 +54,7 @@
                         class="btn-secondary"/>
             </xpath>
 
+            <!-- Workflow page -->
             <xpath expr="//sheet/notebook" position="inside">
                 <page string="Project Workflow">
                     <group>
@@ -83,7 +84,7 @@
                             <field name="last_followup_date"/>
                             <field name="next_followup_date"/>
                             <field name="followup_status"/>
-                            <field name="inactive_alert" readonly="1"/>
+                            <field name="inactive_alert" readonly="1" widget="boolean_toggle"/>
                         </group>
                     </group>
                 </page>
