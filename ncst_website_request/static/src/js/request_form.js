@@ -12,10 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function toggleProjectFields() {
         const isProjectRequest = messageTypeField.value === "project_request";
-
         projectFieldsContainer.style.display = isProjectRequest ? "block" : "none";
 
-        // Optional: clear project fields when hidden
         if (!isProjectRequest) {
             projectInputs.forEach((field) => {
                 field.value = "";

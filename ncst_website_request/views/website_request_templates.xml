@@ -1,167 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!--
-        Inherit the Contact Us page and replace the default form
-        with the custom NCST request intake form.
-    -->
+    <!-- Inherit Contact Us page -->
     <template id="contactus_inherit_ncst_request_form" inherit_id="website.contactus">
-        
-        <!-- Replace the existing website form block -->
-        <xpath expr="//form[contains(@class, 's_website_form')]" position="replace">
 
-            <form action="/project-request/submit"
-                  method="post"
-                  class="s_website_form oe_website_request_form">
-                
-                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+        <!-- Replace the whole contact form section with our custom form -->
+        <xpath expr="//section[contains(@class, 's_website_form')]" position="replace">
 
-                <!-- Optional success message -->
-                <t t-if="request.params.get('submitted')">
-                    <div class="alert alert-success mb-4" role="alert">
-                        Your request has been submitted successfully.
+            <section class="s_website_form pt80 pb80" data-snippet="s_website_form">
+                <div class="container">
+                    <div class="row s_nb_column_fixed">
+                        
+                        <!-- Left side: custom form -->
+                        <div class="col-lg-8 pt16 pb16">
+                            <h2 class="mb-3">Contact Us</h2>
+                            <p class="text-muted mb-4">
+                                Contact us about anything related to our company or services.
+                                We'll do our best to get back to you as soon as possible.
+                            </p>
+
+                            <t t-if="request.params.get('submitted')">
+                                <div class="alert alert-success mb-4" role="alert">
+                                    Your request has been submitted successfully.
+                                </div>
+                            </t>
+
+                            <form action="/project-request/submit"
+                                  method="post"
+                                  class="oe_website_request_form">
+                                
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                <div class="row g-3">
+
+                                    <!-- Full Name -->
+                                    <div class="col-lg-6">
+                                        <label for="full_name" class="form-label">Full Name *</label>
+                                        <input type="text"
+                                               id="full_name"
+                                               name="full_name"
+                                               class="form-control"
+                                               required="required"/>
+                                    </div>
+
+                                    <!-- Phone -->
+                                    <div class="col-lg-6">
+                                        <label for="phone" class="form-label">Phone Number</label>
+                                        <input type="text"
+                                               id="phone"
+                                               name="phone"
+                                               class="form-control"/>
+                                    </div>
+
+                                    <!-- Email -->
+                                    <div class="col-12">
+                                        <label for="email" class="form-label">Email *</label>
+                                        <input type="email"
+                                               id="email"
+                                               name="email"
+                                               class="form-control"
+                                               required="required"/>
+                                    </div>
+
+                                    <!-- Company Name -->
+                                    <div class="col-12">
+                                        <label for="company_name" class="form-label">Company Name</label>
+                                        <input type="text"
+                                               id="company_name"
+                                               name="company_name"
+                                               class="form-control"/>
+                                    </div>
+
+                                    <!-- Message Type -->
+                                    <div class="col-12">
+                                        <label for="message_type" class="form-label">Message Type *</label>
+                                        <select id="message_type"
+                                                name="message_type"
+                                                class="form-select"
+                                                required="required">
+                                            <option value="">Select message type</option>
+                                            <option value="general_inquiry">General Inquiry</option>
+                                            <option value="ai_center_inquiry">AI Center Inquiry</option>
+                                            <option value="project_request">Project Request</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Message -->
+                                    <div class="col-12">
+                                        <label for="message" class="form-label">Message *</label>
+                                        <textarea id="message"
+                                                  name="message"
+                                                  class="form-control"
+                                                  rows="5"
+                                                  required="required"></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Hidden project fields -->
+                                <div id="project_request_fields" style="display: none;" class="mt-4">
+                                    <hr class="my-4"/>
+                                    <h4 class="mb-3">Project Request Details</h4>
+
+                                    <div class="row g-3">
+
+                                        <div class="col-12">
+                                            <label for="project_title" class="form-label">Project Title</label>
+                                            <input type="text"
+                                                   id="project_title"
+                                                   name="project_title"
+                                                   class="form-control"/>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label for="project_type" class="form-label">Project Type</label>
+                                            <input type="text"
+                                                   id="project_type"
+                                                   name="project_type"
+                                                   class="form-control"/>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label for="project_description" class="form-label">Project Description</label>
+                                            <textarea id="project_description"
+                                                      name="project_description"
+                                                      class="form-control"
+                                                      rows="4"></textarea>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label for="requested_features" class="form-label">Requested Features</label>
+                                            <textarea id="requested_features"
+                                                      name="requested_features"
+                                                      class="form-control"
+                                                      rows="4"></textarea>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <label for="estimated_timeline" class="form-label">Estimated Timeline</label>
+                                            <input type="text"
+                                                   id="estimated_timeline"
+                                                   name="estimated_timeline"
+                                                   class="form-control"/>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <label for="estimated_budget" class="form-label">Estimated Budget</label>
+                                            <input type="text"
+                                                   id="estimated_budget"
+                                                   name="estimated_budget"
+                                                   class="form-control"/>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 text-end">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        Submit
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Right side: keep company contact info -->
+                        <div class="col-lg-4 pt16 pb16">
+                            <h4>Nasser Center For Science &amp; Technology</h4>
+                            <ul class="list-unstyled mt-3">
+                                <li class="mb-2">Jaww, Kingdom of Bahrain</li>
+                                <li class="mb-2">+1 555-555-5556</li>
+                                <li class="mb-2">AICenter@ncst.com.bh</li>
+                            </ul>
+                        </div>
+
                     </div>
-                </t>
-
-                <div class="row g-3">
-
-                    <!-- Full Name -->
-                    <div class="col-lg-6">
-                        <label for="full_name" class="form-label">Full Name *</label>
-                        <input type="text"
-                               id="full_name"
-                               name="full_name"
-                               class="form-control s_website_form_input"
-                               required="required"/>
-                    </div>
-
-                    <!-- Phone -->
-                    <div class="col-lg-6">
-                        <label for="phone" class="form-label">Phone Number</label>
-                        <input type="text"
-                               id="phone"
-                               name="phone"
-                               class="form-control s_website_form_input"/>
-                    </div>
-
-                    <!-- Email -->
-                    <div class="col-12">
-                        <label for="email" class="form-label">Email *</label>
-                        <input type="email"
-                               id="email"
-                               name="email"
-                               class="form-control s_website_form_input"
-                               required="required"/>
-                    </div>
-
-                    <!-- Company Name -->
-                    <div class="col-12">
-                        <label for="company_name" class="form-label">Company Name</label>
-                        <input type="text"
-                               id="company_name"
-                               name="company_name"
-                               class="form-control s_website_form_input"/>
-                    </div>
-
-                    <!-- Message Type -->
-                    <div class="col-12">
-                        <label for="message_type" class="form-label">Message Type *</label>
-                        <select id="message_type"
-                                name="message_type"
-                                class="form-select s_website_form_input"
-                                required="required">
-                            <option value="">Select message type</option>
-                            <option value="general_inquiry">General Inquiry</option>
-                            <option value="ai_center_inquiry">AI Center Inquiry</option>
-                            <option value="project_request">Project Request</option>
-                        </select>
-                    </div>
-
-                    <!-- Message -->
-                    <div class="col-12">
-                        <label for="message" class="form-label">Message *</label>
-                        <textarea id="message"
-                                  name="message"
-                                  class="form-control s_website_form_input"
-                                  rows="5"
-                                  required="required"></textarea>
-                    </div>
-
                 </div>
-
-                <!-- Hidden project request fields -->
-                <div id="project_request_fields" style="display: none;" class="mt-4">
-
-                    <hr class="my-4"/>
-
-                    <h4 class="mb-3">Project Request Details</h4>
-
-                    <div class="row g-3">
-
-                        <!-- Project Title -->
-                        <div class="col-12">
-                            <label for="project_title" class="form-label">Project Title</label>
-                            <input type="text"
-                                   id="project_title"
-                                   name="project_title"
-                                   class="form-control s_website_form_input"/>
-                        </div>
-
-                        <!-- Project Type -->
-                        <div class="col-12">
-                            <label for="project_type" class="form-label">Project Type</label>
-                            <input type="text"
-                                   id="project_type"
-                                   name="project_type"
-                                   class="form-control s_website_form_input"/>
-                        </div>
-
-                        <!-- Project Description -->
-                        <div class="col-12">
-                            <label for="project_description" class="form-label">Project Description</label>
-                            <textarea id="project_description"
-                                      name="project_description"
-                                      class="form-control s_website_form_input"
-                                      rows="4"></textarea>
-                        </div>
-
-                        <!-- Requested Features -->
-                        <div class="col-12">
-                            <label for="requested_features" class="form-label">Requested Features</label>
-                            <textarea id="requested_features"
-                                      name="requested_features"
-                                      class="form-control s_website_form_input"
-                                      rows="4"></textarea>
-                        </div>
-
-                        <!-- Estimated Timeline -->
-                        <div class="col-lg-6">
-                            <label for="estimated_timeline" class="form-label">Estimated Timeline</label>
-                            <input type="text"
-                                   id="estimated_timeline"
-                                   name="estimated_timeline"
-                                   class="form-control s_website_form_input"/>
-                        </div>
-
-                        <!-- Estimated Budget -->
-                        <div class="col-lg-6">
-                            <label for="estimated_budget" class="form-label">Estimated Budget</label>
-                            <input type="text"
-                                   id="estimated_budget"
-                                   name="estimated_budget"
-                                   class="form-control s_website_form_input"/>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Submit -->
-                <div class="mt-4 text-end">
-                    <button type="submit" class="btn btn-primary px-4">
-                        Submit
-                    </button>
-                </div>
-            </form>
+            </section>
 
         </xpath>
     </template>
