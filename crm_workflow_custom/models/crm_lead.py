@@ -95,7 +95,9 @@ class CrmLead(models.Model):
     # Helper Boolean Fields For Button Visibility
     # =========================================================
     is_stage_new_inquiry = fields.Boolean(compute="_compute_stage_flags")
+    is_stage_initial_discussion = fields.Boolean(compute="_compute_stage_flags")
     is_stage_analysis = fields.Boolean(compute="_compute_stage_flags")
+    is_stage_solution_design = fields.Boolean(compute="_compute_stage_flags")
     is_stage_proposal = fields.Boolean(compute="_compute_stage_flags")
     is_stage_waiting_approval = fields.Boolean(compute="_compute_stage_flags")
     is_stage_approved = fields.Boolean(compute="_compute_stage_flags")
@@ -103,7 +105,6 @@ class CrmLead(models.Model):
 
     # =========================================================
     # Create Override
-    # Automatically create initial follow-up activity
     # =========================================================
     @api.model_create_multi
     def create(self, vals_list):
@@ -120,19 +121,19 @@ class CrmLead(models.Model):
     # =========================================================
     @api.depends('stage_id')
     def _compute_stage_flags(self):
-        """Set helper booleans based on current stage name."""
         for record in self:
             stage_name = (record.stage_id.name or '').strip()
 
             record.is_stage_new_inquiry = stage_name == 'New Inquiry'
+            record.is_stage_initial_discussion = stage_name == 'Initial Discussion'
             record.is_stage_analysis = stage_name == 'Requirement Analysis'
+            record.is_stage_solution_design = stage_name == 'Solution Design'
             record.is_stage_proposal = stage_name == 'Proposal Submitted'
             record.is_stage_waiting_approval = stage_name == 'Waiting Approval'
             record.is_stage_approved = stage_name == 'Approved'
             record.is_stage_rejected = stage_name == 'Rejected'
 
     def _compute_support_ticket_count(self):
-        """Count related support tickets for smart button."""
         for lead in self:
             lead.support_ticket_count = self.env['crm.support.ticket'].search_count([
                 ('lead_id', '=', lead.id)
@@ -142,14 +143,12 @@ class CrmLead(models.Model):
     # Helper Methods
     # =========================================================
     def _get_stage_by_name(self, stage_name):
-        """Get CRM stage by its exact name."""
         stage = self.env['crm.stage'].search([('name', '=', stage_name)], limit=1)
         if not stage:
             raise UserError(_("Stage '%s' was not found.") % stage_name)
         return stage
 
     def _create_followup_activity(self, summary, note=''):
-        """Create a To-Do activity for the responsible user."""
         activity_type = self.env.ref('mail.mail_activity_data_todo', raise_if_not_found=False)
         if not activity_type:
             return
@@ -171,10 +170,78 @@ class CrmLead(models.Model):
             })
 
     # =========================================================
+    # Stage Cleanup / Sync
+    # This keeps only your custom workflow stages active
+    # =========================================================
+    @api.model
+    def sync_workflow_stages(self):
+        stage_model = self.env['crm.stage'].sudo()
+        lead_model = self.env['crm.lead'].sudo()
+
+        desired_stages = [
+            {'name': 'New Inquiry', 'sequence': 1, 'is_won': False, 'fold': False},
+            {'name': 'Initial Discussion', 'sequence': 2, 'is_won': False, 'fold': False},
+            {'name': 'Requirement Analysis', 'sequence': 3, 'is_won': False, 'fold': False},
+            {'name': 'Solution Design', 'sequence': 4, 'is_won': False, 'fold': False},
+            {'name': 'Proposal Submitted', 'sequence': 5, 'is_won': False, 'fold': False},
+            {'name': 'Waiting Approval', 'sequence': 6, 'is_won': False, 'fold': False},
+            {'name': 'Approved', 'sequence': 7, 'is_won': True, 'fold': False},
+            {'name': 'Rejected', 'sequence': 8, 'is_won': False, 'fold': True},
+        ]
+
+        desired_names = [stage['name'] for stage in desired_stages]
+
+        # Create or update desired stages
+        created_or_existing = {}
+        for vals in desired_stages:
+            stage = stage_model.search([('name', '=', vals['name'])], limit=1)
+            if stage:
+                stage.write({
+                    'sequence': vals['sequence'],
+                    'is_won': vals['is_won'],
+                    'fold': vals['fold'],
+                    'active': True,
+                })
+            else:
+                stage = stage_model.create({
+                    'name': vals['name'],
+                    'sequence': vals['sequence'],
+                    'is_won': vals['is_won'],
+                    'fold': vals['fold'],
+                    'active': True,
+                })
+            created_or_existing[vals['name']] = stage
+
+        # Move old default stages to new ones before archiving
+        stage_mapping = {
+            'New': 'New Inquiry',
+            'Qualified': 'Initial Discussion',
+            'Proposition': 'Proposal Submitted',
+            'Won': 'Approved',
+            'Lost': 'Rejected',
+        }
+
+        for old_name, new_name in stage_mapping.items():
+            old_stage = stage_model.search([('name', '=', old_name)], limit=1)
+            new_stage = created_or_existing.get(new_name)
+            if old_stage and new_stage:
+                leads = lead_model.search([('stage_id', '=', old_stage.id)])
+                if leads:
+                    leads.write({'stage_id': new_stage.id})
+
+        # Archive all other stages not in your workflow
+        stages_to_archive = stage_model.search([
+            ('name', 'not in', desired_names)
+        ])
+        if stages_to_archive:
+            stages_to_archive.write({'active': False})
+
+        return True
+
+    # =========================================================
     # Workflow Actions
     # =========================================================
     def action_start_analysis(self):
-        """Move lead to Requirement Analysis stage."""
         for record in self:
             stage = record._get_stage_by_name('Requirement Analysis')
             record.stage_id = stage.id
@@ -187,7 +254,6 @@ class CrmLead(models.Model):
             )
 
     def action_submit_proposal(self):
-        """Move lead to Proposal Submitted stage after required checks."""
         for record in self:
             if not record.proposal_summary:
                 raise ValidationError(_("Please enter the proposal summary before submitting the proposal."))
@@ -208,7 +274,6 @@ class CrmLead(models.Model):
             )
 
     def action_send_to_approval(self):
-        """Move lead to Waiting Approval stage after required checks."""
         for record in self:
             if not record.proposal_summary:
                 raise ValidationError(_("Please enter the proposal summary before sending for approval."))
@@ -228,7 +293,6 @@ class CrmLead(models.Model):
             )
 
     def action_approve_project(self):
-        """Approve the project and move it to Approved stage."""
         for record in self:
             stage = record._get_stage_by_name('Approved')
             record.stage_id = stage.id
@@ -238,7 +302,6 @@ class CrmLead(models.Model):
             record.inactive_alert = False
 
     def action_reject_project(self):
-        """Reject the project and move it to Rejected stage."""
         for record in self:
             if not record.rejection_reason:
                 raise ValidationError(_("Please enter the rejection reason before rejecting the project."))
@@ -254,7 +317,6 @@ class CrmLead(models.Model):
     # Support Actions
     # =========================================================
     def action_create_support_ticket(self):
-        """Create support ticket directly from CRM lead."""
         self.ensure_one()
 
         ticket = self.env['crm.support.ticket'].create({
@@ -273,7 +335,6 @@ class CrmLead(models.Model):
         }
 
     def action_view_support_tickets(self):
-        """Open related support tickets."""
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
@@ -286,7 +347,6 @@ class CrmLead(models.Model):
 
     # =========================================================
     # Scheduled Action (Cron)
-    # Mark overdue leads and create reminder activity
     # =========================================================
     @api.model
     def _cron_check_inactive_leads(self):

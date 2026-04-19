@@ -1,7 +1,18 @@
 /* =========================================================
    CRM Workflow Custom SCSS
-   Scoped only to custom classes to avoid conflicts
+   Scoped only to custom classes/selectors for this module
    ========================================================= */
+
+/* ---------------------------------------------------------
+   Hide confusing default CRM buttons safely
+   --------------------------------------------------------- */
+button[name="action_set_won_rainbowman"] {
+    display: none !important;
+}
+
+button[name="action_open_lost_wizard"] {
+    display: none !important;
+}
 
 /* ---------------------------------------------------------
    Workflow buttons
@@ -103,9 +114,6 @@
     margin-top: 8px;
 }
 
-/* ---------------------------------------------------------
-   Optional subtle spacing for custom sections only
-   --------------------------------------------------------- */
 .crmwf_card .o_field_widget {
     margin-bottom: 6px;
 }

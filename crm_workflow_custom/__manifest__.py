@@ -13,6 +13,7 @@
         'security/ir.model.access.csv',
         'views/crm_sequence_data.xml',
         'views/crm_stage_data.xml',
+        'data/crm_stage_cleanup.xml',
         'views/crm_lead_views.xml',
         'views/crm_support_ticket_views.xml',
         'views/crm_reporting_views.xml',

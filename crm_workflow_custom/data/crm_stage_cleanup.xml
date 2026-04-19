@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Run stage cleanup on install/upgrade -->
+    <function model="crm.lead" name="sync_workflow_stages"/>
+</odoo>
