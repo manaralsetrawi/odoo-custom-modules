@@ -6,15 +6,6 @@
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
 
-            <!-- Hide default confusing buttons by visible text -->
-            <xpath expr="//header//button[normalize-space()='Lost']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-
-            <xpath expr="//header//button[normalize-space()='Enrich']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-
             <!-- Support smart button -->
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_view_support_tickets"
