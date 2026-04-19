@@ -2,49 +2,59 @@
 <odoo>
 
     <!-- =========================================================
-         Custom Search View (NO inheritance)
+         Custom Search View
          ========================================================= -->
     <record id="view_crm_lead_search_workflow_custom" model="ir.ui.view">
         <field name="name">crm.lead.search.workflow.custom</field>
         <field name="model">crm.lead</field>
         <field name="arch" type="xml">
-            <search>
-
+            <search string="CRM Workflow Search">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="user_id"/>
                 <field name="stage_id"/>
 
-                <separator/>
-
-                <!-- Filters -->
-                <filter string="Waiting Approval"
+                <filter name="filter_waiting_approval"
+                        string="Waiting Approval"
                         domain="[('approval_state', '=', 'to_approve')]"/>
 
-                <filter string="Approved"
+                <filter name="filter_approved"
+                        string="Approved"
                         domain="[('approval_state', '=', 'approved')]"/>
 
-                <filter string="Rejected"
+                <filter name="filter_rejected"
+                        string="Rejected"
                         domain="[('approval_state', '=', 'rejected')]"/>
 
-                <filter string="Needs Follow-up"
+                <filter name="filter_needs_followup"
+                        string="Needs Follow-up"
                         domain="[('inactive_alert', '=', True)]"/>
 
-                <filter string="Overdue Follow-up"
+                <filter name="filter_overdue_followup"
+                        string="Overdue Follow-up"
                         domain="[('followup_status', '=', 'overdue')]"/>
 
-                <separator/>
+                <group string="Group By">
+                    <filter name="group_by_stage"
+                            string="Stage"
+                            context="{'group_by': 'stage_id'}"/>
 
-                <!-- Group By -->
-                <group expand="0" string="Group By">
-                    <filter string="Stage" context="{'group_by': 'stage_id'}"/>
-                    <filter string="Approval State" context="{'group_by': 'approval_state'}"/>
-                    <filter string="Follow-up Status" context="{'group_by': 'followup_status'}"/>
-                    <filter string="Salesperson" context="{'group_by': 'user_id'}"/>
-                    <filter string="Customer" context="{'group_by': 'partner_id'}"/>
-                    <filter string="Project Deadline" context="{'group_by': 'project_deadline'}"/>
+                    <filter name="group_by_approval_state"
+                            string="Approval State"
+                            context="{'group_by': 'approval_state'}"/>
+
+                    <filter name="group_by_followup_status"
+                            string="Follow-up Status"
+                            context="{'group_by': 'followup_status'}"/>
+
+                    <filter name="group_by_salesperson"
+                            string="Salesperson"
+                            context="{'group_by': 'user_id'}"/>
+
+                    <filter name="group_by_customer"
+                            string="Customer"
+                            context="{'group_by': 'partner_id'}"/>
                 </group>
-
             </search>
         </field>
     </record>
@@ -56,9 +66,9 @@
         <field name="name">crm.lead.graph.workflow.custom</field>
         <field name="model">crm.lead</field>
         <field name="arch" type="xml">
-            <graph string="CRM Performance Analysis" type="bar">
+            <graph string="CRM Workflow Analysis" type="bar">
                 <field name="stage_id" type="row"/>
-                <field name="expected_revenue" type="measure"/>
+                <field name="proposal_amount" type="measure"/>
             </graph>
         </field>
     </record>
@@ -70,10 +80,10 @@
         <field name="name">crm.lead.pivot.workflow.custom</field>
         <field name="model">crm.lead</field>
         <field name="arch" type="xml">
-            <pivot string="CRM Performance Pivot">
+            <pivot string="CRM Workflow Pivot">
                 <field name="stage_id" type="row"/>
                 <field name="approval_state" type="col"/>
-                <field name="expected_revenue" type="measure"/>
+                <field name="proposal_amount" type="measure"/>
             </pivot>
         </field>
     </record>
