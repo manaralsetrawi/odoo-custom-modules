@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="stage_new_inquiry" model="crm.stage">
+        <field name="name">New Inquiry</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="stage_initial_discussion" model="crm.stage">
+        <field name="name">Initial Discussion</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="stage_requirement_analysis" model="crm.stage">
+        <field name="name">Requirement Analysis</field>
+        <field name="sequence">3</field>
+    </record>
+
+    <record id="stage_solution_design" model="crm.stage">
+        <field name="name">Solution Design</field>
+        <field name="sequence">4</field>
+    </record>
+
+    <record id="stage_proposal_submitted" model="crm.stage">
+        <field name="name">Proposal Submitted</field>
+        <field name="sequence">5</field>
+    </record>
+
+    <record id="stage_waiting_approval" model="crm.stage">
+        <field name="name">Waiting Approval</field>
+        <field name="sequence">6</field>
+    </record>
+
+    <record id="stage_approved" model="crm.stage">
+        <field name="name">Approved</field>
+        <field name="sequence">7</field>
+        <field name="is_won">True</field>
+    </record>
+
+    <record id="stage_rejected" model="crm.stage">
+        <field name="name">Rejected</field>
+        <field name="sequence">8</field>
+        <field name="fold">True</field>
+    </record>
+</odoo>

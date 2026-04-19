@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_crm_lead_form_workflow_custom" model="ir.ui.view">
+        <field name="name">crm.lead.form.workflow.custom</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header" position="inside">
+                <button name="action_start_analysis" type="object" string="Start Analysis" class="btn-primary"/>
+                <button name="action_submit_proposal" type="object" string="Submit Proposal" class="btn-primary"/>
+                <button name="action_send_to_approval" type="object" string="Send to Approval" class="btn-primary"/>
+                <button name="action_approve_project" type="object" string="Approve" class="btn-success"/>
+                <button name="action_reject_project" type="object" string="Reject" class="btn-danger"/>
+            </xpath>
+
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="Project Workflow">
+                    <group>
+                        <group string="Technical Evaluation">
+                            <field name="technical_feasibility"/>
+                            <field name="complexity_level"/>
+                            <field name="estimated_duration"/>
+                            <field name="project_deadline"/>
+                        </group>
+
+                        <group string="Proposal Details">
+                            <field name="proposal_summary"/>
+                            <field name="proposal_amount"/>
+                            <field name="negotiation_notes"/>
+                            <field name="approval_state" readonly="1"/>
+                            <field name="rejection_reason"/>
+                        </group>
+
+                        <group string="Follow-up">
+                            <field name="last_followup_date"/>
+                            <field name="next_followup_date"/>
+                            <field name="followup_status"/>
+                            <field name="inactive_alert" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
