@@ -75,7 +75,7 @@ class CrmLead(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Support Tickets',
             'res_model': 'crm.support.ticket',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('lead_id', '=', self.id)],
             'target': 'current',
         }

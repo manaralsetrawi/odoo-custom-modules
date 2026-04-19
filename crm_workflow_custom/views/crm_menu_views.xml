@@ -3,7 +3,7 @@
     <record id="action_crm_support_ticket" model="ir.actions.act_window">
         <field name="name">Support Tickets</field>
         <field name="res_model">crm.support.ticket</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem id="menu_crm_support_root"
