@@ -22,9 +22,24 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_mark_in_progress" type="object" string="Start Progress" class="btn-primary"/>
-                    <button name="action_mark_resolved" type="object" string="Resolve" class="btn-success"/>
-                    <button name="action_mark_closed" type="object" string="Close" class="btn-secondary"/>
+                    <button name="action_mark_in_progress"
+                            type="object"
+                            string="Start Progress"
+                            class="btn-primary"
+                            invisible="status != 'new'"/>
+
+                    <button name="action_mark_resolved"
+                            type="object"
+                            string="Resolve"
+                            class="btn-success"
+                            invisible="status not in ('in_progress', 'waiting_customer')"/>
+
+                    <button name="action_mark_closed"
+                            type="object"
+                            string="Close"
+                            class="btn-secondary"
+                            invisible="status != 'resolved'"/>
+
                     <field name="status" widget="statusbar" statusbar_visible="new,in_progress,waiting_customer,resolved,closed"/>
                 </header>
                 <sheet>
@@ -42,10 +57,10 @@
                     </group>
                     <notebook>
                         <page string="Description">
-                            <field name="description"/>
+                            <field name="description" placeholder="Describe the issue..."/>
                         </page>
                         <page string="Resolution">
-                            <field name="resolution_notes"/>
+                            <field name="resolution_notes" placeholder="Add resolution notes here..."/>
                         </page>
                     </notebook>
                 </sheet>
