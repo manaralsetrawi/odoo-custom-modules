@@ -11,6 +11,7 @@
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
+        'views/crm_sequence_data.xml'
         'views/crm_stage_data.xml',
         'views/crm_lead_views.xml',
         'views/crm_support_ticket_views.xml',

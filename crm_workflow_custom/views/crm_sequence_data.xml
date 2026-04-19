@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="seq_crm_support_ticket" model="ir.sequence">
+        <field name="name">CRM Support Ticket</field>
+        <field name="code">crm.support.ticket</field>
+        <field name="prefix">TCKT/</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+    </record>
+</odoo>

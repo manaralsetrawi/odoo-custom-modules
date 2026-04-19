@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class CrmSupportTicket(models.Model):
@@ -17,12 +17,6 @@ class CrmSupportTicket(models.Model):
         ('1', 'Medium'),
         ('2', 'High'),
     ], string="Priority", default='1', tracking=True)
-    
-    @api.model
-    def create(self, vals):
-        if vals.get('name', 'New') == 'New':
-            vals['name'] = self.env['ir.sequence'].next_by_code('crm.support.ticket') or 'New'
-        return super().create(vals)
 
     status = fields.Selection([
         ('new', 'New'),
@@ -35,6 +29,12 @@ class CrmSupportTicket(models.Model):
     assigned_user_id = fields.Many2one('res.users', string="Assigned To", tracking=True)
     resolution_notes = fields.Text(string="Resolution Notes")
 
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'New') == 'New':
+            vals['name'] = self.env['ir.sequence'].next_by_code('crm.support.ticket') or 'New'
+        return super().create(vals)
+
     def action_mark_in_progress(self):
         self.status = 'in_progress'
 
@@ -43,8 +43,3 @@ class CrmSupportTicket(models.Model):
 
     def action_mark_closed(self):
         self.status = 'closed'
-
-
-
-
-
