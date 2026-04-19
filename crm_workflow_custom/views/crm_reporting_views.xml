@@ -2,66 +2,50 @@
 <odoo>
 
     <!-- =========================================================
-         Search View for CRM Reporting
+         Custom Search View (NO inheritance)
          ========================================================= -->
     <record id="view_crm_lead_search_workflow_custom" model="ir.ui.view">
         <field name="name">crm.lead.search.workflow.custom</field>
         <field name="model">crm.lead</field>
-        <field name="inherit_id" ref="crm.crm_lead_view_search"/>
         <field name="arch" type="xml">
+            <search>
 
-            <!-- Add custom filters inside existing search -->
-            <xpath expr="//search" position="inside">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="stage_id"/>
 
                 <separator/>
 
-                <filter name="filter_waiting_approval"
-                        string="Waiting Approval"
+                <!-- Filters -->
+                <filter string="Waiting Approval"
                         domain="[('approval_state', '=', 'to_approve')]"/>
 
-                <filter name="filter_approved"
-                        string="Approved"
+                <filter string="Approved"
                         domain="[('approval_state', '=', 'approved')]"/>
 
-                <filter name="filter_rejected"
-                        string="Rejected"
+                <filter string="Rejected"
                         domain="[('approval_state', '=', 'rejected')]"/>
 
-                <filter name="filter_needs_followup"
-                        string="Needs Follow-up"
+                <filter string="Needs Follow-up"
                         domain="[('inactive_alert', '=', True)]"/>
 
-                <filter name="filter_overdue_followup"
-                        string="Overdue Follow-up"
+                <filter string="Overdue Follow-up"
                         domain="[('followup_status', '=', 'overdue')]"/>
 
                 <separator/>
 
-                <filter name="group_by_approval_state"
-                        string="Approval State"
-                        context="{'group_by': 'approval_state'}"/>
+                <!-- Group By -->
+                <group expand="0" string="Group By">
+                    <filter string="Stage" context="{'group_by': 'stage_id'}"/>
+                    <filter string="Approval State" context="{'group_by': 'approval_state'}"/>
+                    <filter string="Follow-up Status" context="{'group_by': 'followup_status'}"/>
+                    <filter string="Salesperson" context="{'group_by': 'user_id'}"/>
+                    <filter string="Customer" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Project Deadline" context="{'group_by': 'project_deadline'}"/>
+                </group>
 
-                <filter name="group_by_followup_status"
-                        string="Follow-up Status"
-                        context="{'group_by': 'followup_status'}"/>
-
-                <filter name="group_by_stage"
-                        string="Stage"
-                        context="{'group_by': 'stage_id'}"/>
-
-                <filter name="group_by_salesperson"
-                        string="Salesperson"
-                        context="{'group_by': 'user_id'}"/>
-
-                <filter name="group_by_customer"
-                        string="Customer"
-                        context="{'group_by': 'partner_id'}"/>
-
-                <filter name="group_by_deadline"
-                        string="Project Deadline"
-                        context="{'group_by': 'project_deadline'}"/>
-
-            </xpath>
+            </search>
         </field>
     </record>
 
@@ -95,7 +79,7 @@
     </record>
 
     <!-- =========================================================
-         Custom List View for Analysis
+         List View
          ========================================================= -->
     <record id="view_crm_lead_list_workflow_custom" model="ir.ui.view">
         <field name="name">crm.lead.list.workflow.custom</field>
@@ -116,14 +100,13 @@
     </record>
 
     <!-- =========================================================
-         Reporting Action
+         Action
          ========================================================= -->
     <record id="action_crm_workflow_analysis" model="ir.actions.act_window">
         <field name="name">CRM Workflow Analysis</field>
         <field name="res_model">crm.lead</field>
         <field name="view_mode">list,graph,pivot,form</field>
         <field name="search_view_id" ref="view_crm_lead_search_workflow_custom"/>
-        <field name="context">{'search_default_group_by_stage': 1}</field>
     </record>
 
 </odoo>
