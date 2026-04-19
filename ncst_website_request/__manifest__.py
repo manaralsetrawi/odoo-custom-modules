@@ -3,7 +3,7 @@
     'version': '1.0',
     'summary': 'Website request form for NCST project inquiries',
     'category': 'Website',
-    'author': 'Fatima - NCST',
+    'author': 'NCST',
     'license': 'LGPL-3',
     'depends': [
         'website',
@@ -11,7 +11,6 @@
     ],
     'data': [
         'views/website_request_templates.xml',
-        'views/website_request_menu.xml',
     ],
     'assets': {
         'web.assets_frontend': [

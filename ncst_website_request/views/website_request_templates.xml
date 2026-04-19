@@ -1,140 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Website Request Form Page -->
-    <template id="project_request_page" name="Project Request Page">
-        <t t-call="website.layout">
-            <div class="container py-5">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <h1 class="mb-3">Request a Service</h1>
-                        <p class="text-muted mb-4">
-                            Fill in the form below to send your request to NCST.
-                        </p>
+    <!--
+        Inherit the Contact Us page and replace the default form
+        with the custom NCST request intake form.
+    -->
+    <template id="contactus_inherit_ncst_request_form" inherit_id="website.contactus">
+        
+        <!-- Replace the existing website form block -->
+        <xpath expr="//form[contains(@class, 's_website_form')]" position="replace">
 
-                        <form action="/project-request/submit" method="post" class="oe_website_request_form">
-                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+            <form action="/project-request/submit"
+                  method="post"
+                  class="s_website_form oe_website_request_form">
+                
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
 
-                            <!-- Full Name -->
-                            <div class="mb-3">
-                                <label for="full_name" class="form-label">Full Name</label>
-                                <input type="text" id="full_name" name="full_name" class="form-control" required="required"/>
-                            </div>
+                <!-- Optional success message -->
+                <t t-if="request.params.get('submitted')">
+                    <div class="alert alert-success mb-4" role="alert">
+                        Your request has been submitted successfully.
+                    </div>
+                </t>
 
-                            <!-- Email -->
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" id="email" name="email" class="form-control" required="required"/>
-                            </div>
+                <div class="row g-3">
 
-                            <!-- Phone -->
-                            <div class="mb-3">
-                                <label for="phone" class="form-label">Phone</label>
-                                <input type="text" id="phone" name="phone" class="form-control"/>
-                            </div>
+                    <!-- Full Name -->
+                    <div class="col-lg-6">
+                        <label for="full_name" class="form-label">Full Name *</label>
+                        <input type="text"
+                               id="full_name"
+                               name="full_name"
+                               class="form-control s_website_form_input"
+                               required="required"/>
+                    </div>
 
-                            <!-- Company Name -->
-                            <div class="mb-3">
-                                <label for="company_name" class="form-label">Company Name</label>
-                                <input type="text" id="company_name" name="company_name" class="form-control"/>
-                            </div>
+                    <!-- Phone -->
+                    <div class="col-lg-6">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="text"
+                               id="phone"
+                               name="phone"
+                               class="form-control s_website_form_input"/>
+                    </div>
 
-                            <!-- Message Type -->
-                            <div class="mb-3">
-                                <label for="message_type" class="form-label">Message Type</label>
-                                <select id="message_type" name="message_type" class="form-select" required="required">
-                                    <option value="">Select message type</option>
-                                    <option value="general_inquiry">General Inquiry</option>
-                                    <option value="ai_center_inquiry">AI Center Inquiry</option>
-                                    <option value="project_request">Project Request</option>
-                                </select>
-                            </div>
+                    <!-- Email -->
+                    <div class="col-12">
+                        <label for="email" class="form-label">Email *</label>
+                        <input type="email"
+                               id="email"
+                               name="email"
+                               class="form-control s_website_form_input"
+                               required="required"/>
+                    </div>
 
-                            <!-- Message -->
-                            <div class="mb-3">
-                                <label for="message" class="form-label">Message</label>
-                                <textarea id="message" name="message" class="form-control" rows="4"></textarea>
-                            </div>
+                    <!-- Company Name -->
+                    <div class="col-12">
+                        <label for="company_name" class="form-label">Company Name</label>
+                        <input type="text"
+                               id="company_name"
+                               name="company_name"
+                               class="form-control s_website_form_input"/>
+                    </div>
 
-                            <!-- Project Fields (hidden by default) -->
-                            <div id="project_request_fields" style="display: none;">
+                    <!-- Message Type -->
+                    <div class="col-12">
+                        <label for="message_type" class="form-label">Message Type *</label>
+                        <select id="message_type"
+                                name="message_type"
+                                class="form-select s_website_form_input"
+                                required="required">
+                            <option value="">Select message type</option>
+                            <option value="general_inquiry">General Inquiry</option>
+                            <option value="ai_center_inquiry">AI Center Inquiry</option>
+                            <option value="project_request">Project Request</option>
+                        </select>
+                    </div>
 
-                                <hr class="my-4"/>
+                    <!-- Message -->
+                    <div class="col-12">
+                        <label for="message" class="form-label">Message *</label>
+                        <textarea id="message"
+                                  name="message"
+                                  class="form-control s_website_form_input"
+                                  rows="5"
+                                  required="required"></textarea>
+                    </div>
 
-                                <h4 class="mb-3">Project Request Details</h4>
+                </div>
 
-                                <!-- Project Title -->
-                                <div class="mb-3">
-                                    <label for="project_title" class="form-label">Project Title</label>
-                                    <input type="text" id="project_title" name="project_title" class="form-control"/>
-                                </div>
+                <!-- Hidden project request fields -->
+                <div id="project_request_fields" style="display: none;" class="mt-4">
 
-                                <!-- Project Type -->
-                                <div class="mb-3">
-                                    <label for="project_type" class="form-label">Project Type</label>
-                                    <input type="text" id="project_type" name="project_type" class="form-control"/>
-                                </div>
+                    <hr class="my-4"/>
 
-                                <!-- Project Description -->
-                                <div class="mb-3">
-                                    <label for="project_description" class="form-label">Project Description</label>
-                                    <textarea id="project_description" name="project_description" class="form-control" rows="4"></textarea>
-                                </div>
+                    <h4 class="mb-3">Project Request Details</h4>
 
-                                <!-- Requested Features -->
-                                <div class="mb-3">
-                                    <label for="requested_features" class="form-label">Requested Features</label>
-                                    <textarea id="requested_features" name="requested_features" class="form-control" rows="4"></textarea>
-                                </div>
+                    <div class="row g-3">
 
-                                <!-- Estimated Timeline -->
-                                <div class="mb-3">
-                                    <label for="estimated_timeline" class="form-label">Estimated Timeline</label>
-                                    <input type="text" id="estimated_timeline" name="estimated_timeline" class="form-control"/>
-                                </div>
+                        <!-- Project Title -->
+                        <div class="col-12">
+                            <label for="project_title" class="form-label">Project Title</label>
+                            <input type="text"
+                                   id="project_title"
+                                   name="project_title"
+                                   class="form-control s_website_form_input"/>
+                        </div>
 
-                                <!-- Estimated Budget -->
-                                <div class="mb-3">
-                                    <label for="estimated_budget" class="form-label">Estimated Budget</label>
-                                    <input type="text" id="estimated_budget" name="estimated_budget" class="form-control"/>
-                                </div>
+                        <!-- Project Type -->
+                        <div class="col-12">
+                            <label for="project_type" class="form-label">Project Type</label>
+                            <input type="text"
+                                   id="project_type"
+                                   name="project_type"
+                                   class="form-control s_website_form_input"/>
+                        </div>
 
-                            </div>
+                        <!-- Project Description -->
+                        <div class="col-12">
+                            <label for="project_description" class="form-label">Project Description</label>
+                            <textarea id="project_description"
+                                      name="project_description"
+                                      class="form-control s_website_form_input"
+                                      rows="4"></textarea>
+                        </div>
 
-                            <!-- Submit -->
-                            <div class="mt-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Submit Request
-                                </button>
-                            </div>
-                        </form>
+                        <!-- Requested Features -->
+                        <div class="col-12">
+                            <label for="requested_features" class="form-label">Requested Features</label>
+                            <textarea id="requested_features"
+                                      name="requested_features"
+                                      class="form-control s_website_form_input"
+                                      rows="4"></textarea>
+                        </div>
+
+                        <!-- Estimated Timeline -->
+                        <div class="col-lg-6">
+                            <label for="estimated_timeline" class="form-label">Estimated Timeline</label>
+                            <input type="text"
+                                   id="estimated_timeline"
+                                   name="estimated_timeline"
+                                   class="form-control s_website_form_input"/>
+                        </div>
+
+                        <!-- Estimated Budget -->
+                        <div class="col-lg-6">
+                            <label for="estimated_budget" class="form-label">Estimated Budget</label>
+                            <input type="text"
+                                   id="estimated_budget"
+                                   name="estimated_budget"
+                                   class="form-control s_website_form_input"/>
+                        </div>
+
                     </div>
                 </div>
-            </div>
-        </t>
-    </template>
 
-
-    <!-- Thank You Page -->
-    <template id="project_request_thank_you" name="Project Request Thank You">
-        <t t-call="website.layout">
-            <div class="container py-5">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8 text-center">
-                        <h1 class="mb-3">Thank You</h1>
-                        <p class="lead">
-                            Your request has been submitted successfully.
-                        </p>
-                        <p t-if="full_name">
-                            Thank you, <strong t-esc="full_name"/>.
-                        </p>
-                        <a href="/project-request" class="btn btn-primary mt-3">
-                            Submit Another Request
-                        </a>
-                    </div>
+                <!-- Submit -->
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn btn-primary px-4">
+                        Submit
+                    </button>
                 </div>
-            </div>
-        </t>
+            </form>
+
+        </xpath>
     </template>
 
 </odoo>
