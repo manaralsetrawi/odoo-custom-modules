@@ -171,7 +171,8 @@ class CrmLead(models.Model):
 
     # =========================================================
     # Stage Cleanup / Sync
-    # This keeps only your custom workflow stages active
+    # Safe version: creates/updates your stages and remaps old leads
+    # Does NOT use 'active' because crm.stage has no active field here
     # =========================================================
     @api.model
     def sync_workflow_stages(self):
@@ -189,9 +190,6 @@ class CrmLead(models.Model):
             {'name': 'Rejected', 'sequence': 8, 'is_won': False, 'fold': True},
         ]
 
-        desired_names = [stage['name'] for stage in desired_stages]
-
-        # Create or update desired stages
         created_or_existing = {}
         for vals in desired_stages:
             stage = stage_model.search([('name', '=', vals['name'])], limit=1)
@@ -200,7 +198,6 @@ class CrmLead(models.Model):
                     'sequence': vals['sequence'],
                     'is_won': vals['is_won'],
                     'fold': vals['fold'],
-                    'active': True,
                 })
             else:
                 stage = stage_model.create({
@@ -208,11 +205,10 @@ class CrmLead(models.Model):
                     'sequence': vals['sequence'],
                     'is_won': vals['is_won'],
                     'fold': vals['fold'],
-                    'active': True,
                 })
             created_or_existing[vals['name']] = stage
 
-        # Move old default stages to new ones before archiving
+        # Move leads from old default stages to your custom stages
         stage_mapping = {
             'New': 'New Inquiry',
             'Qualified': 'Initial Discussion',
@@ -224,17 +220,15 @@ class CrmLead(models.Model):
         for old_name, new_name in stage_mapping.items():
             old_stage = stage_model.search([('name', '=', old_name)], limit=1)
             new_stage = created_or_existing.get(new_name)
-            if old_stage and new_stage:
+            if old_stage and new_stage and old_stage.id != new_stage.id:
                 leads = lead_model.search([('stage_id', '=', old_stage.id)])
                 if leads:
                     leads.write({'stage_id': new_stage.id})
 
-        # Archive all other stages not in your workflow
-        stages_to_archive = stage_model.search([
-            ('name', 'not in', desired_names)
-        ])
-        if stages_to_archive:
-            stages_to_archive.write({'active': False})
+        # NOTE:
+        # We are not archiving/deleting old stages here because that caused issues
+        # and can be risky. We will hide default Won/Lost buttons with SCSS and
+        # you can manually remove unused stages later from CRM configuration if needed.
 
         return True
 
