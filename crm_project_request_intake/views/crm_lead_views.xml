@@ -116,6 +116,10 @@
             <xpath expr="//field[@name='mobile']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+            
+            <xpath expr="//page[@name='extra_info']" position="attributes">
+                <attribute name="invisible">type == 'lead'</attribute>
+            </xpath>
 
             <!-- Header buttons -->
             <xpath expr="//form/header" position="inside">
