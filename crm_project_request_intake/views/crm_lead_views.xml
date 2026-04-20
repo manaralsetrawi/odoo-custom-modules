@@ -14,9 +14,26 @@
                 <field name="intake_can_create_opportunity" invisible="1"/>
             </xpath>
 
-            <!-- Show request type in main form for testing -->
+            <!-- Make main submitted fields readonly for project requests -->
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="readonly">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='contact_name']" position="attributes">
+                <attribute name="readonly">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='email_from']" position="attributes">
+                <attribute name="readonly">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='phone']" position="attributes">
+                <attribute name="readonly">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <!-- Show request type in main form and make it readonly -->
             <xpath expr="//field[@name='name']" position="after">
-                <field name="request_type"/>
+                <field name="request_type" readonly="1"/>
             </xpath>
 
             <!-- Header buttons -->
@@ -52,26 +69,26 @@
 
             </xpath>
 
-            <!-- New tab -->
+            <!-- Project Request tab -->
             <xpath expr="//form/sheet/notebook" position="inside">
                 <page string="Project Request Intake" invisible="request_type != 'project_request'">
 
                     <group string="Client Submission">
                         <group>
-                            <field name="intake_client_name"/>
-                            <field name="intake_client_email"/>
-                            <field name="intake_client_phone"/>
-                            <field name="intake_company_name"/>
+                            <field name="intake_client_name" readonly="1"/>
+                            <field name="intake_client_email" readonly="1"/>
+                            <field name="intake_client_phone" readonly="1"/>
+                            <field name="intake_company_name" readonly="1"/>
                         </group>
                         <group>
-                            <field name="intake_project_title"/>
-                            <field name="intake_requested_budget"/>
-                            <field name="intake_requested_duration"/>
+                            <field name="intake_project_title" readonly="1"/>
+                            <field name="intake_requested_budget" readonly="1"/>
+                            <field name="intake_requested_duration" readonly="1"/>
                             <field name="intake_state" readonly="1"/>
                         </group>
                         <group colspan="2">
-                            <field name="intake_project_description"/>
-                            <field name="intake_requested_notes"/>
+                            <field name="intake_project_description" readonly="1"/>
+                            <field name="intake_requested_notes" readonly="1"/>
                         </group>
                     </group>
 
