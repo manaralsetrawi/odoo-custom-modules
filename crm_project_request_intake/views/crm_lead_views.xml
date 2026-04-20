@@ -140,8 +140,9 @@
             </xpath>
 
             <!-- Hide default Lost button -->
-            <xpath expr="//button[@name='action_set_lost']" position="replace"/>
-
+            <xpath expr="//header//button[@string='Lost']" position="replace"/>
+            
+            
             <!-- Hide Start Analysis button -->
             <xpath expr="//button[@name='action_start_analysis']" position="attributes">
                 <attribute name="invisible">1</attribute>
