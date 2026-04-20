@@ -36,12 +36,19 @@ class CrmProjectRequestLead(models.Model):
         ('under_review', 'Under Review'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
-        ('converted', 'Converted to Opportunity'),
     ], string='Intake Status', default='draft', tracking=True)
 
     intake_reviewed_by = fields.Many2one('res.users', string='Reviewed By', tracking=True)
     intake_review_date = fields.Datetime(string='Review Date', tracking=True)
     intake_rejection_reason = fields.Text(string='Rejection Reason', tracking=True)
+
+    intake_opportunity_id = fields.Many2one(
+        'crm.lead',
+        string='Created Opportunity',
+        readonly=True,
+        copy=False,
+        tracking=True,
+    )
 
     # =========================================================
     # Project Manager Fields
@@ -75,9 +82,15 @@ class CrmProjectRequestLead(models.Model):
         store=False
     )
 
-    intake_can_create_opportunity = fields.Boolean(
-        string='Can Create Opportunity',
-        compute='_compute_intake_can_create_opportunity',
+    intake_can_approve = fields.Boolean(
+        string='Can Approve',
+        compute='_compute_intake_button_flags',
+        store=False
+    )
+
+    intake_can_reject = fields.Boolean(
+        string='Can Reject',
+        compute='_compute_intake_button_flags',
         store=False
     )
 
@@ -86,13 +99,16 @@ class CrmProjectRequestLead(models.Model):
         for record in self:
             record.intake_is_project_request = record.request_type == 'project_request'
 
-    @api.depends('request_type', 'intake_state')
-    def _compute_intake_can_create_opportunity(self):
+    @api.depends('request_type', 'type', 'intake_state')
+    def _compute_intake_button_flags(self):
         for record in self:
-            record.intake_can_create_opportunity = (
+            is_reviewable = (
                 record.request_type == 'project_request'
-                and record.intake_state == 'approved'
+                and record.type == 'lead'
+                and record.intake_state == 'under_review'
             )
+            record.intake_can_approve = is_reviewable
+            record.intake_can_reject = is_reviewable
 
     # =========================================================
     # Helper Methods
@@ -119,8 +135,7 @@ class CrmProjectRequestLead(models.Model):
                     vals['intake_state'] = 'submitted'
                 if new_stage and not vals.get('stage_id'):
                     vals['stage_id'] = new_stage.id
-                if vals.get('type') != 'opportunity':
-                    vals['type'] = 'lead'
+                vals['type'] = 'lead'
 
         return super().create(vals_list)
 
@@ -150,55 +165,66 @@ class CrmProjectRequestLead(models.Model):
     def action_intake_start_review(self):
         stage = self._get_stage_by_xmlid('crm_project_request_intake.crm_stage_project_request_review')
         for record in self:
-            if record.request_type != 'project_request':
-                raise ValidationError(_("Only project requests can be reviewed through this flow."))
+            if record.request_type != 'project_request' or record.type != 'lead':
+                raise ValidationError(_("Only project request leads can start review."))
+
+            if record.intake_state != 'submitted':
+                raise ValidationError(_("Only submitted requests can be moved to under review."))
 
             record.intake_state = 'under_review'
             record.stage_id = stage.id
 
+    def action_intake_open_reject_wizard(self):
+        self.ensure_one()
+
+        if self.request_type != 'project_request' or self.type != 'lead':
+            raise ValidationError(_("Only project request leads can be rejected."))
+
+        if self.intake_state != 'under_review':
+            raise ValidationError(_("Only requests under review can be rejected."))
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Reject Project Request'),
+            'res_model': 'project.request.reject.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_lead_id': self.id,
+            },
+        }
+
     def action_intake_approve_request(self):
-        stage = self._get_stage_by_xmlid('crm_project_request_intake.crm_stage_project_request_approved')
+        approved_stage = self._get_stage_by_xmlid('crm_project_request_intake.crm_stage_project_request_approved')
+        opportunity_stage = self._get_stage_by_xmlid('crm_project_request_intake.crm_stage_project_request_opportunity')
+
         for record in self:
-            if record.request_type != 'project_request':
-                raise ValidationError(_("Only project requests can be approved through this flow."))
+            if record.request_type != 'project_request' or record.type != 'lead':
+                raise ValidationError(_("Only project request leads can be approved."))
+
+            if record.intake_state != 'under_review':
+                raise ValidationError(_("Only requests under review can be approved."))
+
+            opportunity_vals = {
+                'name': record.intake_project_title or record.name,
+                'type': 'opportunity',
+                'partner_name': record.intake_company_name or record.partner_name,
+                'contact_name': record.intake_client_name or record.contact_name,
+                'email_from': record.intake_client_email or record.email_from,
+                'phone': record.intake_client_phone or record.phone,
+                'description': record.intake_project_description or record.description,
+                'user_id': record.user_id.id,
+                'team_id': record.team_id.id,
+                'stage_id': opportunity_stage.id if opportunity_stage else False,
+            }
+
+            opportunity = self.env['crm.lead'].create(opportunity_vals)
 
             record.intake_state = 'approved'
             record.intake_reviewed_by = self.env.user
             record.intake_review_date = fields.Datetime.now()
-            record.stage_id = stage.id
-
-    def action_intake_reject_request(self):
-        stage = self._get_stage_by_xmlid('crm_project_request_intake.crm_stage_project_request_rejected')
-        for record in self:
-            if record.request_type != 'project_request':
-                raise ValidationError(_("Only project requests can be rejected through this flow."))
-
-            if not record.intake_rejection_reason:
-                raise ValidationError(_("Please enter the rejection reason before rejecting the request."))
-
-            record.intake_state = 'rejected'
-            record.intake_reviewed_by = self.env.user
-            record.intake_review_date = fields.Datetime.now()
-            record.stage_id = stage.id
-
-    def action_intake_create_project_opportunity(self):
-        stage = self._get_stage_by_xmlid('crm_project_request_intake.crm_stage_project_request_opportunity')
-        for record in self:
-            if record.request_type != 'project_request':
-                raise ValidationError(_("Only project requests can be converted into opportunities."))
-
-            if record.intake_state != 'approved':
-                raise ValidationError(_("Only approved project requests can be converted into opportunities."))
-
-            if not record.intake_project_requirements:
-                raise ValidationError(_("Please fill in the project requirements before creating the opportunity."))
-
-            if not record.intake_solution_summary:
-                raise ValidationError(_("Please fill in the solution summary before creating the opportunity."))
-
-            record.type = 'opportunity'
-            record.intake_state = 'converted'
-            record.stage_id = stage.id
+            record.intake_opportunity_id = opportunity.id
+            record.stage_id = approved_stage.id
 
     # =========================================================
     # Optional Helper When Website Creates Request

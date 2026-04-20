@@ -165,7 +165,7 @@
                         groups="crm_workflow_custom.group_crm_workflow_manager"
                         invisible="type != 'lead' or request_type != 'project_request' or intake_state != 'under_review'"/>
 
-                <button name="action_intake_reject_request"
+                <button name="action_intake_open_reject_wizard"
                         string="Reject Request"
                         type="object"
                         class="btn-danger"
