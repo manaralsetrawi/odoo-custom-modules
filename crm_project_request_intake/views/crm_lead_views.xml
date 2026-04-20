@@ -14,9 +14,9 @@
                 <field name="intake_can_create_opportunity" invisible="1"/>
             </xpath>
 
-            <!-- Main title readonly for project requests -->
+            <!-- Main title readonly -->
             <xpath expr="//field[@name='name']" position="attributes">
-                <attribute name="readonly">request_type == 'project_request'</attribute>
+                <attribute name="readonly">1</attribute>
             </xpath>
 
             <!-- Show request type after title -->
@@ -24,12 +24,20 @@
                 <field name="request_type" readonly="1"/>
             </xpath>
 
-            <!-- Main submitted contact fields -->
-            <xpath expr="//field[@name='contact_name']" position="attributes">
-                <attribute name="readonly">1</attribute>
+            <!-- Contact name readonly -->
+            <xpath expr="//field[@name='contact_name']" position="replace">
+                <field name="contact_name" readonly="1"/>
             </xpath>
 
+            <!-- Email readonly as plain char -->
+            <xpath expr="//field[@name='email_from']" position="replace">
+                <field name="email_from" readonly="1"/>
+            </xpath>
 
+            <!-- Phone readonly as plain char -->
+            <xpath expr="//field[@name='phone']" position="replace">
+                <field name="phone" readonly="1"/>
+            </xpath>
 
             <!-- Hide unwanted standard fields for project requests -->
             <xpath expr="//field[@name='partner_id']" position="attributes">
@@ -64,6 +72,10 @@
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
+            <xpath expr="//label[@for='street']" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
+            </xpath>
+
             <xpath expr="//field[@name='website']" position="attributes">
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
@@ -84,21 +96,15 @@
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
-            <!-- Hide title field -->
             <xpath expr="//field[@name='title']" position="attributes">
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
-            <!-- Fallback if your form uses function/job title instead -->
             <xpath expr="//field[@name='function']" position="attributes">
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
-            <!-- Hide address label if it still remains -->
-            <xpath expr="//label[@for='street']" position="attributes">
-                <attribute name="invisible">request_type == 'project_request'</attribute>
-            </xpath>
-
+            <!-- Hide Salesperson and Sales Team -->
             <xpath expr="//field[@name='user_id']" position="attributes">
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
@@ -106,31 +112,9 @@
             <xpath expr="//field[@name='team_id']" position="attributes">
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
-
-
-                        <!-- Replace Email field with plain readonly char rendering -->
-            <xpath expr="//field[@name='email_from']" position="replace">
-                <field name="email_from" readonly="1" widget="char"/>
-            </xpath>
-
-            <!-- Replace Phone field with plain readonly char rendering -->
-            <xpath expr="//field[@name='phone']" position="replace">
-                <field name="phone" readonly="1" widget="char"/>
-            </xpath>
-
-
-            <xpath expr="//field[@name='user_id']" position="attributes">
-                <attribute name="invisible">request_type == 'project_request'</attribute>
-            </xpath>
-
-            <xpath expr="//field[@name='team_id']" position="attributes">
-                <attribute name="invisible">request_type == 'project_request'</attribute>
-            </xpath>
-
 
             <!-- Header buttons -->
             <xpath expr="//form/header" position="inside">
-
                 <button name="action_intake_start_review"
                         string="Start Review"
                         type="object"
@@ -158,7 +142,6 @@
                         class="btn-primary"
                         groups="crm_workflow_custom.group_crm_workflow_manager"
                         invisible="not intake_can_create_opportunity"/>
-
             </xpath>
 
             <!-- Project Request tab -->
