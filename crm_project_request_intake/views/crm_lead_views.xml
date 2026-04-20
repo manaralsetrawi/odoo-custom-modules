@@ -90,6 +90,54 @@
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
+                        <!-- Make Email and Phone readonly for project requests -->
+            <xpath expr="//field[@name='email_from']" position="attributes">
+                <attribute name="readonly">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='phone']" position="attributes">
+                <attribute name="readonly">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <!-- Hide Title -->
+            <xpath expr="//field[@name='function']" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <!-- Hide Priority -->
+            <xpath expr="//field[@name='priority']" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <!-- Hide Address fields -->
+            <xpath expr="//field[@name='street']" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='street2']" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='city']" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='state_id']" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='zip']" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='country_id']" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <xpath expr="//label[@for='street']" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
+            </xpath>
+
             <!-- Header buttons -->
             <xpath expr="//form/header" position="inside">
 
