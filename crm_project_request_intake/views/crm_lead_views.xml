@@ -129,22 +129,22 @@
                 <attribute name="invisible">type == 'lead'</attribute>
             </xpath>
 
-                        <!-- Hide default Convert to Opportunity button -->
-            <xpath expr="//button[@name='action_set_opportunity']" position="attributes">
+            <!-- Hide default Convert to Opportunity button -->
+            <xpath expr="//button[@string='Convert to Opportunity']" position="attributes">
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
             <!-- Hide default Enrich button -->
-            <xpath expr="//button[@name='action_enrich']" position="attributes">
+            <xpath expr="//button[@string='Enrich']" position="attributes">
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
             <!-- Hide default Lost button -->
-            <xpath expr="//button[@name='action_set_lost']" position="attributes">
+            <xpath expr="//button[@string='Lost']" position="attributes">
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
-            <!-- Hide Start Analysis button from your friend's module -->
+            <!-- Hide Start Analysis button -->
             <xpath expr="//button[@name='action_start_analysis']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
