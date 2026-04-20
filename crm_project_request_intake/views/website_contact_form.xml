@@ -13,6 +13,14 @@
             <attribute name="id">crm_project_request_form</attribute>
         </xpath>
 
+        <xpath expr="//form" position="attributes">
+            <attribute name="action">/project_request/submit</attribute>
+            <attribute name="method">post</attribute>
+            <attribute name="novalidate">novalidate</attribute>
+            <attribute name="id">crm_project_request_form</attribute>
+            <attribute name="class">o_mark_required</attribute>
+        </xpath>
+
         <!-- Replace all existing form content -->
         <xpath expr="//form/*" position="replace">
 
