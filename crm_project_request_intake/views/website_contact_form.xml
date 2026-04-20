@@ -11,11 +11,6 @@
             <attribute name="method">post</attribute>
         </xpath>
 
-        <!-- Hide existing submit button(s) inside the original form -->
-        <xpath expr="//form//button[@type='submit']" position="attributes">
-            <attribute name="style">display: none !important;</attribute>
-        </xpath>
-
         <!-- Add full custom form fields -->
         <xpath expr="//form" position="inside">
 
@@ -121,7 +116,6 @@
                 </div>
             </div>
 
-            <!-- New submit button at bottom -->
             <div class="mt-4 d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary px-4 py-2">
                     Submit
