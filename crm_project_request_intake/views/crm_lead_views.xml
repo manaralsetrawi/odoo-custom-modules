@@ -140,9 +140,7 @@
             </xpath>
 
             <!-- Hide default Lost button -->
-            <xpath expr="//button[@string='Lost']" position="attributes">
-                <attribute name="invisible">request_type == 'project_request'</attribute>
-            </xpath>
+            <xpath expr="//button[@name='action_set_lost']" position="replace"/>
 
             <!-- Hide Start Analysis button -->
             <xpath expr="//button[@name='action_start_analysis']" position="attributes">
