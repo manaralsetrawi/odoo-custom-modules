@@ -1,6 +1,10 @@
+import logging
+
 from odoo import http, _
 from odoo.http import request
 from werkzeug.urls import url_encode
+
+_logger = logging.getLogger(__name__)
 
 
 class CrmProjectRequestController(http.Controller):
@@ -55,44 +59,63 @@ class CrmProjectRequestController(http.Controller):
 
     @http.route('/project_request/submit', type='http', auth='public', website=True, csrf=True)
     def submit_project_request(self, **post):
-        errors = self._validate_submission(post)
-        if errors:
-            query = url_encode({'form_error': ' | '.join(errors)})
-            return request.redirect('/contactus?%s' % query)
+        _logger.warning("PROJECT REQUEST SUBMIT STARTED")
+        _logger.warning("POST DATA: %s", post)
 
-        request_type = post.get('request_type', 'general_inquiry')
+        try:
+            errors = self._validate_submission(post)
+            _logger.warning("VALIDATION ERRORS: %s", errors)
 
-        if request_type != 'project_request':
+            if errors:
+                query = url_encode({'form_error': ' | '.join(errors)})
+                _logger.warning("REDIRECTING BACK TO CONTACT US WITH ERRORS")
+                return request.redirect('/contactus?%s' % query)
+
+            request_type = post.get('request_type', 'general_inquiry')
+            _logger.warning("REQUEST TYPE: %s", request_type)
+
+            if request_type != 'project_request':
+                lead_vals = {
+                    'name': post.get('subject') or post.get('name') or 'General Inquiry',
+                    'contact_name': post.get('name'),
+                    'email_from': post.get('email'),
+                    'phone': post.get('phone'),
+                    'description': post.get('description') or post.get('message'),
+                    'request_type': 'general_inquiry',
+                    'type': 'lead',
+                }
+                _logger.warning("CREATING GENERAL INQUIRY LEAD: %s", lead_vals)
+                lead = request.env['crm.lead'].sudo().create(lead_vals)
+                _logger.warning("GENERAL INQUIRY LEAD CREATED ID: %s", lead.id)
+                return request.redirect('/contactus?success=1')
+
             lead_vals = {
-                'name': post.get('subject') or post.get('name') or 'General Inquiry',
+                'name': post.get('intake_project_title') or post.get('subject') or 'Project Request',
                 'contact_name': post.get('name'),
                 'email_from': post.get('email'),
                 'phone': post.get('phone'),
-                'description': post.get('description') or post.get('message'),
-                'request_type': 'general_inquiry',
-                'type': 'lead',
+                'description': post.get('intake_project_description') or post.get('message'),
+                'request_type': 'project_request',
+                'intake_client_name': post.get('name'),
+                'intake_client_email': post.get('email'),
+                'intake_client_phone': post.get('phone'),
+                'intake_company_name': post.get('intake_company_name'),
+                'intake_project_title': post.get('intake_project_title'),
+                'intake_project_description': post.get('intake_project_description'),
+                'intake_requested_budget': float(post.get('intake_requested_budget') or 0.0),
+                'intake_requested_duration': post.get('intake_requested_duration'),
+                'intake_requested_notes': post.get('intake_requested_notes'),
             }
-            request.env['crm.lead'].sudo().create(lead_vals)
-            return request.redirect('/contactus')
+            _logger.warning("CREATING PROJECT REQUEST LEAD: %s", lead_vals)
 
-        lead_vals = {
-            'name': post.get('intake_project_title') or post.get('subject') or 'Project Request',
-            'contact_name': post.get('name'),
-            'email_from': post.get('email'),
-            'phone': post.get('phone'),
-            'description': post.get('intake_project_description') or post.get('message'),
-            'request_type': 'project_request',
-            'intake_client_name': post.get('name'),
-            'intake_client_email': post.get('email'),
-            'intake_client_phone': post.get('phone'),
-            'intake_company_name': post.get('intake_company_name'),
-            'intake_project_title': post.get('intake_project_title'),
-            'intake_project_description': post.get('intake_project_description'),
-            'intake_requested_budget': float(post.get('intake_requested_budget') or 0.0),
-            'intake_requested_duration': post.get('intake_requested_duration'),
-            'intake_requested_notes': post.get('intake_requested_notes'),
-        }
+            lead = request.env['crm.lead'].sudo().create_project_request_lead(lead_vals)
+            _logger.warning("PROJECT REQUEST LEAD CREATED ID: %s", lead.id)
 
-        request.env['crm.lead'].sudo().create_project_request_lead(lead_vals)
+            return request.redirect('/contactus?success=1')
 
-        return request.redirect('/contactus')
+        except Exception as e:
+            _logger.exception("PROJECT REQUEST SUBMISSION FAILED: %s", e)
+            return request.make_response(
+                "Submission failed. Check Odoo server log.",
+                headers=[('Content-Type', 'text/plain')]
+            )
