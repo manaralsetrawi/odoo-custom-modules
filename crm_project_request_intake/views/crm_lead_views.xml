@@ -105,6 +105,14 @@
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="readonly">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='team_id']" position="attributes">
+                <attribute name="readonly">request_type == 'project_request'</attribute>
+            </xpath>
+
             <!-- Header buttons -->
             <xpath expr="//form/header" position="inside">
 
