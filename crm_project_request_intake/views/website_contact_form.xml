@@ -5,6 +5,7 @@
               inherit_id="website.contactus"
               name="Contact Us Project Request Fields">
 
+        <!-- Change the form attributes -->
         <xpath expr="//form" position="attributes">
             <attribute name="action">/project_request/submit</attribute>
             <attribute name="method">post</attribute>
@@ -12,11 +13,8 @@
             <attribute name="id">crm_project_request_form</attribute>
         </xpath>
 
-
-
-
-
-        <xpath expr="//form" position="inside">
+        <!-- Replace all existing form content -->
+        <xpath expr="//form/*" position="replace">
 
             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
 
