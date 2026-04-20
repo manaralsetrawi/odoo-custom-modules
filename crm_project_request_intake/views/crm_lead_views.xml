@@ -113,6 +113,10 @@
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
+            <xpath expr="//field[@name='mobile']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
             <!-- Header buttons -->
             <xpath expr="//form/header" position="inside">
                 <button name="action_intake_start_review"
