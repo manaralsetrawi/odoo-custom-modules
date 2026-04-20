@@ -5,160 +5,149 @@
               inherit_id="website.contactus"
               name="Contact Us Project Request Fields">
 
-        <!-- Change the form attributes -->
-        <xpath expr="//form" position="attributes">
-            <attribute name="action">/project_request/submit</attribute>
-            <attribute name="method">post</attribute>
-            <attribute name="novalidate">novalidate</attribute>
-            <attribute name="id">crm_project_request_form</attribute>
-        </xpath>
+        <!-- Replace the whole original form -->
+        <xpath expr="//form" position="replace">
+            <form action="/project_request/submit"
+                  method="post"
+                  id="crm_project_request_form"
+                  class="o_mark_required"
+                  novalidate="novalidate">
 
-        <xpath expr="//form" position="attributes">
-            <attribute name="action">/project_request/submit</attribute>
-            <attribute name="method">post</attribute>
-            <attribute name="novalidate">novalidate</attribute>
-            <attribute name="id">crm_project_request_form</attribute>
-            <attribute name="class">o_mark_required</attribute>
-        </xpath>
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
 
-        <!-- Replace all existing form content -->
-        <xpath expr="//form/*" position="replace">
-
-            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-
-            <div id="crm_project_request_custom_fields">
-                <div id="form_validation_alert"
-                     class="alert alert-danger d-none"
-                     role="alert">
-                    Please fix the highlighted fields before submitting the form.
-                </div>
-
-                <div class="row g-3 mt-2">
-
-                    <div class="col-12">
-                        <label for="pr_name" class="form-label">Full Name</label>
-                        <input type="text"
-                               name="name"
-                               id="pr_name"
-                               class="form-control"
-                               data-label="Full Name"
-                               required="required"/>
+                <div id="crm_project_request_custom_fields">
+                    <div id="form_validation_alert"
+                         class="alert alert-danger d-none"
+                         role="alert">
+                        Please fix the highlighted fields before submitting the form.
                     </div>
 
-                    <div class="col-md-6">
-                        <label for="pr_email" class="form-label">Email</label>
-                        <input type="email"
-                               name="email"
-                               id="pr_email"
-                               class="form-control"
-                               data-label="Email"
-                               required="required"/>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="pr_phone" class="form-label">Phone Number</label>
-                        <input type="text"
-                               name="phone"
-                               id="pr_phone"
-                               class="form-control"
-                               data-label="Phone Number"
-                               required="required"/>
-                    </div>
-
-                    <div class="col-12">
-                        <label for="pr_request_type" class="form-label">Message Type</label>
-                        <select name="request_type"
-                                id="pr_request_type"
-                                class="form-select"
-                                data-label="Message Type"
-                                required="required">
-                            <option value="general_inquiry" selected="selected">General Inquiry</option>
-                            <option value="project_request">Project Request</option>
-                        </select>
-                    </div>
-
-                    <div class="col-12">
-                        <label for="pr_message" class="form-label">Message</label>
-                        <textarea name="message"
-                                  id="pr_message"
-                                  class="form-control"
-                                  rows="4"
-                                  data-label="Message"
-                                  required="required"></textarea>
-                    </div>
-
-                </div>
-
-                <div id="project_request_fields" class="mt-4 d-none">
-                    <div class="row g-3">
+                    <div class="row g-3 mt-2">
 
                         <div class="col-12">
-                            <label for="pr_company_name" class="form-label">Company Name</label>
+                            <label for="pr_name" class="form-label">Full Name</label>
                             <input type="text"
-                                   name="intake_company_name"
-                                   id="pr_company_name"
+                                   name="name"
+                                   id="pr_name"
                                    class="form-control"
-                                   data-label="Company Name"/>
+                                   data-label="Full Name"
+                                   required="required"/>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="pr_email" class="form-label">Email</label>
+                            <input type="email"
+                                   name="email"
+                                   id="pr_email"
+                                   class="form-control"
+                                   data-label="Email"
+                                   required="required"/>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="pr_phone" class="form-label">Phone Number</label>
+                            <input type="text"
+                                   name="phone"
+                                   id="pr_phone"
+                                   class="form-control"
+                                   data-label="Phone Number"
+                                   required="required"/>
                         </div>
 
                         <div class="col-12">
-                            <label for="pr_project_title" class="form-label">Project Title</label>
-                            <input type="text"
-                                   name="intake_project_title"
-                                   id="pr_project_title"
-                                   class="form-control"
-                                   data-label="Project Title"/>
+                            <label for="pr_request_type" class="form-label">Message Type</label>
+                            <select name="request_type"
+                                    id="pr_request_type"
+                                    class="form-select"
+                                    data-label="Message Type"
+                                    required="required">
+                                <option value="general_inquiry" selected="selected">General Inquiry</option>
+                                <option value="project_request">Project Request</option>
+                            </select>
                         </div>
 
                         <div class="col-12">
-                            <label for="pr_project_description" class="form-label">Project Description</label>
-                            <textarea name="intake_project_description"
-                                      id="pr_project_description"
+                            <label for="pr_message" class="form-label">Message</label>
+                            <textarea name="message"
+                                      id="pr_message"
                                       class="form-control"
                                       rows="4"
-                                      data-label="Project Description"></textarea>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="pr_requested_budget" class="form-label">Expected Budget</label>
-                            <input type="number"
-                                   step="0.01"
-                                   min="0"
-                                   name="intake_requested_budget"
-                                   id="pr_requested_budget"
-                                   class="form-control"
-                                   data-label="Expected Budget"/>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="pr_requested_duration" class="form-label">Expected Duration</label>
-                            <input type="text"
-                                   name="intake_requested_duration"
-                                   id="pr_requested_duration"
-                                   class="form-control"
-                                   placeholder="Example: 3 months"
-                                   data-label="Expected Duration"/>
-                        </div>
-
-                        <div class="col-12">
-                            <label for="pr_requested_notes" class="form-label">Additional Notes</label>
-                            <textarea name="intake_requested_notes"
-                                      id="pr_requested_notes"
-                                      class="form-control"
-                                      rows="3"
-                                      data-label="Additional Notes"></textarea>
+                                      data-label="Message"
+                                      required="required"></textarea>
                         </div>
 
                     </div>
-                </div>
 
-                <div class="mt-4 d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary px-4 py-2" id="pr_submit_btn">
-                        Submit
-                    </button>
-                </div>
-            </div>
+                    <div id="project_request_fields" class="mt-4 d-none">
+                        <div class="row g-3">
 
+                            <div class="col-12">
+                                <label for="pr_company_name" class="form-label">Company Name</label>
+                                <input type="text"
+                                       name="intake_company_name"
+                                       id="pr_company_name"
+                                       class="form-control"
+                                       data-label="Company Name"/>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="pr_project_title" class="form-label">Project Title</label>
+                                <input type="text"
+                                       name="intake_project_title"
+                                       id="pr_project_title"
+                                       class="form-control"
+                                       data-label="Project Title"/>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="pr_project_description" class="form-label">Project Description</label>
+                                <textarea name="intake_project_description"
+                                          id="pr_project_description"
+                                          class="form-control"
+                                          rows="4"
+                                          data-label="Project Description"></textarea>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="pr_requested_budget" class="form-label">Expected Budget</label>
+                                <input type="number"
+                                       step="0.01"
+                                       min="0"
+                                       name="intake_requested_budget"
+                                       id="pr_requested_budget"
+                                       class="form-control"
+                                       data-label="Expected Budget"/>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="pr_requested_duration" class="form-label">Expected Duration</label>
+                                <input type="text"
+                                       name="intake_requested_duration"
+                                       id="pr_requested_duration"
+                                       class="form-control"
+                                       placeholder="Example: 3 months"
+                                       data-label="Expected Duration"/>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="pr_requested_notes" class="form-label">Additional Notes</label>
+                                <textarea name="intake_requested_notes"
+                                          id="pr_requested_notes"
+                                          class="form-control"
+                                          rows="3"
+                                          data-label="Additional Notes"></textarea>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary px-4 py-2" id="pr_submit_btn">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </form>
         </xpath>
 
     </template>
