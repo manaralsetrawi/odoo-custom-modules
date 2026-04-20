@@ -70,51 +70,38 @@ class CrmProjectRequestController(http.Controller):
                 query = url_encode({'form_error': ' | '.join(errors)})
                 return request.redirect('/contactus?%s' % query)
 
-            request_type = post.get('request_type', 'general_inquiry')
+            request_type = (post.get('request_type') or 'general_inquiry').strip()
             _logger.warning("REQUEST TYPE: %s", request_type)
 
-            if request_type != 'project_request':
+            # Only project request creates a CRM lead
+            if request_type == 'project_request':
                 lead_vals = {
-                    'name': post.get('name') or 'General Inquiry',
+                    'name': post.get('intake_project_title') or 'Project Request',
                     'contact_name': post.get('name'),
                     'email_from': post.get('email'),
                     'phone': post.get('phone'),
-                    'description': post.get('message'),
-                    'request_type': 'general_inquiry',
-                    'type': 'lead',
+                    'description': post.get('intake_project_description') or post.get('message'),
+                    'request_type': 'project_request',
+                    'intake_client_name': post.get('name'),
+                    'intake_client_email': post.get('email'),
+                    'intake_client_phone': post.get('phone'),
+                    'intake_company_name': post.get('intake_company_name'),
+                    'intake_project_title': post.get('intake_project_title'),
+                    'intake_project_description': post.get('intake_project_description'),
+                    'intake_requested_budget': float(post.get('intake_requested_budget') or 0.0),
+                    'intake_requested_duration': post.get('intake_requested_duration'),
+                    'intake_requested_notes': post.get('intake_requested_notes'),
                 }
-                _logger.warning("GENERAL LEAD VALS: %s", lead_vals)
-                lead = request.env['crm.lead'].sudo().create(lead_vals)
-                _logger.warning("GENERAL LEAD CREATED: %s", lead.id)
-                return request.redirect('/contactus?success=1')
+                _logger.warning("PROJECT LEAD VALS: %s", lead_vals)
 
-            lead_vals = {
-                'name': post.get('intake_project_title') or 'Project Request',
-                'contact_name': post.get('name'),
-                'email_from': post.get('email'),
-                'phone': post.get('phone'),
-                'description': post.get('intake_project_description') or post.get('message'),
-                'request_type': 'project_request',
-                'intake_client_name': post.get('name'),
-                'intake_client_email': post.get('email'),
-                'intake_client_phone': post.get('phone'),
-                'intake_company_name': post.get('intake_company_name'),
-                'intake_project_title': post.get('intake_project_title'),
-                'intake_project_description': post.get('intake_project_description'),
-                'intake_requested_budget': float(post.get('intake_requested_budget') or 0.0),
-                'intake_requested_duration': post.get('intake_requested_duration'),
-                'intake_requested_notes': post.get('intake_requested_notes'),
-            }
-            _logger.warning("PROJECT LEAD VALS: %s", lead_vals)
-
-            lead = request.env['crm.lead'].sudo().create_project_request_lead(lead_vals)
-            _logger.warning("PROJECT LEAD CREATED: %s", lead.id)
+                lead = request.env['crm.lead'].sudo().create_project_request_lead(lead_vals)
+                _logger.warning("PROJECT LEAD CREATED: %s", lead.id)
+            else:
+                _logger.warning("GENERAL INQUIRY RECEIVED - NO CRM LEAD CREATED")
 
             return request.redirect('/contactus?success=1')
 
-        except Exception as e:
+        except Exception:
             _logger.exception("PROJECT REQUEST SUBMISSION FAILED")
-            return request.make_response(
-                "Submission failed. Check Odoo server log.",
-                headers=[('Content-Type', 'text/plain')]
-            )
+            query = url_encode({'form_error': 'Submission failed. Please try again.'})
+            return request.redirect('/contactus?%s' % query)

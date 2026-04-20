@@ -32,6 +32,19 @@
 
                             <div class="col-lg-6">
                                 <div class="crm_request_form_card">
+                                        <t t-if="request.params.get('success')">
+                                            <div class="alert alert-success" role="alert">
+                                                Your request has been submitted successfully.
+                                            </div>
+                                        </t>
+
+                                        <t t-if="request.params.get('form_error')">
+                                            <div class="alert alert-danger" role="alert">
+                                                <t t-esc="request.params.get('form_error')"/>
+                                            </div>
+                                        </t>
+
+
                                     <form action="/project_request/submit"
                                           method="post"
                                           id="crm_project_request_form"
