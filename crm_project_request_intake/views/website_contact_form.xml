@@ -12,24 +12,20 @@
             <attribute name="id">crm_project_request_form</attribute>
         </xpath>
 
-        
+
         <!-- Disable required validation on original default fields if they exist -->
         <xpath expr="//form//*[@name='subject']" position="attributes">
             <attribute name="required">false</attribute>
         </xpath>
 
-        <xpath expr="//form//*[@name='company_name']" position="attributes">
-            <attribute name="required">false</attribute>
-        </xpath>
+
 
         <!-- Hide original default fields if they exist -->
         <xpath expr="//form//*[@name='subject']/ancestor::div[1]" position="attributes">
             <attribute name="style">display: none !important;</attribute>
         </xpath>
 
-        <xpath expr="//form//*[@name='company_name']/ancestor::div[1]" position="attributes">
-            <attribute name="style">display: none !important;</attribute>
-        </xpath>
+
 
 
 
