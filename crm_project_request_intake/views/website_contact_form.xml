@@ -11,24 +11,40 @@
             <attribute name="method">post</attribute>
         </xpath>
 
-        <!-- Add all custom fields at the end of the form -->
+        <!-- Hide existing submit button(s) inside the original form -->
+        <xpath expr="//form//button[@type='submit']" position="attributes">
+            <attribute name="style">display: none !important;</attribute>
+        </xpath>
+
+        <!-- Add full custom form fields -->
         <xpath expr="//form" position="inside">
 
             <div class="row g-3 mt-2">
 
                 <div class="col-12">
                     <label for="name" class="form-label">Full Name</label>
-                    <input type="text" name="name" id="name" class="form-control" required="required"/>
+                    <input type="text"
+                           name="name"
+                           id="name"
+                           class="form-control"
+                           required="required"/>
                 </div>
 
                 <div class="col-md-6">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" name="email" id="email" class="form-control" required="required"/>
+                    <input type="email"
+                           name="email"
+                           id="email"
+                           class="form-control"
+                           required="required"/>
                 </div>
 
                 <div class="col-md-6">
                     <label for="phone" class="form-label">Phone Number</label>
-                    <input type="text" name="phone" id="phone" class="form-control"/>
+                    <input type="text"
+                           name="phone"
+                           id="phone"
+                           class="form-control"/>
                 </div>
 
                 <div class="col-12">
@@ -41,7 +57,10 @@
 
                 <div class="col-12">
                     <label for="message" class="form-label">Message</label>
-                    <textarea name="message" id="message" class="form-control" rows="4"></textarea>
+                    <textarea name="message"
+                              id="message"
+                              class="form-control"
+                              rows="4"></textarea>
                 </div>
 
             </div>
@@ -51,12 +70,18 @@
 
                     <div class="col-12">
                         <label for="intake_company_name" class="form-label">Company Name</label>
-                        <input type="text" name="intake_company_name" id="intake_company_name" class="form-control"/>
+                        <input type="text"
+                               name="intake_company_name"
+                               id="intake_company_name"
+                               class="form-control"/>
                     </div>
 
                     <div class="col-12">
                         <label for="intake_project_title" class="form-label">Project Title</label>
-                        <input type="text" name="intake_project_title" id="intake_project_title" class="form-control"/>
+                        <input type="text"
+                               name="intake_project_title"
+                               id="intake_project_title"
+                               class="form-control"/>
                     </div>
 
                     <div class="col-12">
@@ -94,6 +119,13 @@
                     </div>
 
                 </div>
+            </div>
+
+            <!-- New submit button at bottom -->
+            <div class="mt-4 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary px-4 py-2">
+                    Submit
+                </button>
             </div>
 
         </xpath>
