@@ -1,5 +1,5 @@
 from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 
 class CrmProjectRequestLead(models.Model):
@@ -95,16 +95,69 @@ class CrmProjectRequestLead(models.Model):
             )
 
     # =========================================================
+    # Helper Methods
+    # =========================================================
+    def _get_stage_by_xmlid(self, xmlid):
+        stage = self.env.ref(xmlid, raise_if_not_found=False)
+        if not stage:
+            raise UserError(_("The required CRM stage was not found: %s") % xmlid)
+        return stage
+
+    # =========================================================
+    # Create / Write Overrides
+    # =========================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        new_stage = self.env.ref(
+            'crm_project_request_intake.crm_stage_project_request_new',
+            raise_if_not_found=False
+        )
+
+        for vals in vals_list:
+            if vals.get('request_type') == 'project_request':
+                if not vals.get('intake_state') or vals.get('intake_state') == 'draft':
+                    vals['intake_state'] = 'submitted'
+                if new_stage and not vals.get('stage_id'):
+                    vals['stage_id'] = new_stage.id
+                if vals.get('type') != 'opportunity':
+                    vals['type'] = 'lead'
+
+        return super().create(vals_list)
+
+    def write(self, vals):
+        result = super().write(vals)
+
+        new_stage = self.env.ref(
+            'crm_project_request_intake.crm_stage_project_request_new',
+            raise_if_not_found=False
+        )
+
+        if 'request_type' in vals:
+            for record in self:
+                if record.request_type == 'project_request':
+                    if record.intake_state == 'draft':
+                        record.intake_state = 'submitted'
+                    if new_stage and not record.stage_id:
+                        record.stage_id = new_stage.id
+                    if record.type != 'opportunity':
+                        record.type = 'lead'
+
+        return result
+
+    # =========================================================
     # Workflow Actions
     # =========================================================
     def action_intake_start_review(self):
+        stage = self._get_stage_by_xmlid('crm_project_request_intake.crm_stage_project_request_review')
         for record in self:
             if record.request_type != 'project_request':
                 raise ValidationError(_("Only project requests can be reviewed through this flow."))
 
             record.intake_state = 'under_review'
+            record.stage_id = stage.id
 
     def action_intake_approve_request(self):
+        stage = self._get_stage_by_xmlid('crm_project_request_intake.crm_stage_project_request_approved')
         for record in self:
             if record.request_type != 'project_request':
                 raise ValidationError(_("Only project requests can be approved through this flow."))
@@ -112,8 +165,10 @@ class CrmProjectRequestLead(models.Model):
             record.intake_state = 'approved'
             record.intake_reviewed_by = self.env.user
             record.intake_review_date = fields.Datetime.now()
+            record.stage_id = stage.id
 
     def action_intake_reject_request(self):
+        stage = self._get_stage_by_xmlid('crm_project_request_intake.crm_stage_project_request_rejected')
         for record in self:
             if record.request_type != 'project_request':
                 raise ValidationError(_("Only project requests can be rejected through this flow."))
@@ -124,8 +179,10 @@ class CrmProjectRequestLead(models.Model):
             record.intake_state = 'rejected'
             record.intake_reviewed_by = self.env.user
             record.intake_review_date = fields.Datetime.now()
+            record.stage_id = stage.id
 
     def action_intake_create_project_opportunity(self):
+        stage = self._get_stage_by_xmlid('crm_project_request_intake.crm_stage_project_request_opportunity')
         for record in self:
             if record.request_type != 'project_request':
                 raise ValidationError(_("Only project requests can be converted into opportunities."))
@@ -141,15 +198,25 @@ class CrmProjectRequestLead(models.Model):
 
             record.type = 'opportunity'
             record.intake_state = 'converted'
+            record.stage_id = stage.id
 
     # =========================================================
     # Optional Helper When Website Creates Request
     # =========================================================
     @api.model
     def create_project_request_lead(self, vals):
+        stage = self.env.ref(
+            'crm_project_request_intake.crm_stage_project_request_new',
+            raise_if_not_found=False
+        )
+
         vals.update({
             'request_type': 'project_request',
             'type': 'lead',
             'intake_state': 'submitted',
         })
+
+        if stage:
+            vals['stage_id'] = stage.id
+
         return self.create(vals)

@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- =========================================================
-         CRM Lead Form Inheritance
-         ========================================================= -->
     <record id="view_crm_lead_form_project_request_intake" model="ir.ui.view">
         <field name="name">crm.lead.form.project.request.intake</field>
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
 
-            <!-- =====================================================
-                 Add hidden helper fields for attrs / visibility
-                 ===================================================== -->
+            <!-- Hidden helper fields -->
             <xpath expr="//form/sheet" position="inside">
-                <field name="request_type" invisible="1"/>
                 <field name="intake_state" invisible="1"/>
                 <field name="intake_is_project_request" invisible="1"/>
                 <field name="intake_can_create_opportunity" invisible="1"/>
             </xpath>
 
-            <!-- =====================================================
-                 Header Buttons
-                 ===================================================== -->
+            <!-- Show request type in main form for testing -->
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="request_type"/>
+            </xpath>
+
+            <!-- Header buttons -->
             <xpath expr="//form/header" position="inside">
 
                 <button name="action_intake_start_review"
@@ -55,15 +52,10 @@
 
             </xpath>
 
-            <!-- =====================================================
-                 Add a new notebook page
-                 ===================================================== -->
+            <!-- New tab -->
             <xpath expr="//form/sheet/notebook" position="inside">
                 <page string="Project Request Intake" invisible="request_type != 'project_request'">
 
-                    <!-- =============================================
-                         Client Submission
-                         ============================================= -->
                     <group string="Client Submission">
                         <group>
                             <field name="intake_client_name"/>
@@ -83,9 +75,6 @@
                         </group>
                     </group>
 
-                    <!-- =============================================
-                         Review Information
-                         ============================================= -->
                     <group string="Review Information">
                         <group>
                             <field name="intake_reviewed_by" readonly="1"/>
@@ -94,13 +83,10 @@
                         <group>
                             <field name="intake_rejection_reason"
                                    groups="crm_workflow_custom.group_crm_workflow_manager"
-                                   invisible="intake_state != 'rejected' and intake_state != 'under_review' and intake_state != 'submitted'"/>
+                                   invisible="intake_state not in ['submitted', 'under_review', 'rejected']"/>
                         </group>
                     </group>
 
-                    <!-- =============================================
-                         Project Manager Details
-                         ============================================= -->
                     <group string="Project Manager Details"
                            groups="crm_workflow_custom.group_crm_workflow_manager"
                            invisible="intake_state not in ['approved', 'converted']">

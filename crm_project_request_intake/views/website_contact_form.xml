@@ -1,3 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <template id="website_contact_form_inherit_project_request"
+              inherit_id="website.contactus"
+              name="Contact Us Project Request Fields">
+
+        <!-- Add message type and project request fields inside the contact form -->
+        <xpath expr="//form" position="inside">
+
+            <div class="mb-3">
+                <label for="request_type" class="form-label">Message Type</label>
+                <select name="request_type" id="request_type" class="form-select">
+                    <option value="general_inquiry" selected="selected">General Inquiry</option>
+                    <option value="project_request">Project Request</option>
+                </select>
+            </div>
+
+            <div id="project_request_fields" style="display: none;">
+
+                <div class="mb-3">
+                    <label for="intake_company_name" class="form-label">Company Name</label>
+                    <input type="text" name="intake_company_name" id="intake_company_name" class="form-control"/>
+                </div>
+
+                <div class="mb-3">
+                    <label for="intake_project_title" class="form-label">Project Title</label>
+                    <input type="text" name="intake_project_title" id="intake_project_title" class="form-control"/>
+                </div>
+
+                <div class="mb-3">
+                    <label for="intake_project_description" class="form-label">Project Description</label>
+                    <textarea name="intake_project_description" id="intake_project_description" class="form-control" rows="4"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="intake_requested_budget" class="form-label">Expected Budget</label>
+                    <input type="number" step="0.01" name="intake_requested_budget" id="intake_requested_budget" class="form-control"/>
+                </div>
+
+                <div class="mb-3">
+                    <label for="intake_requested_duration" class="form-label">Expected Duration</label>
+                    <input type="text" name="intake_requested_duration" id="intake_requested_duration" class="form-control" placeholder="Example: 3 months"/>
+                </div>
+
+                <div class="mb-3">
+                    <label for="intake_requested_notes" class="form-label">Additional Notes</label>
+                    <textarea name="intake_requested_notes" id="intake_requested_notes" class="form-control" rows="3"></textarea>
+                </div>
+
+            </div>
+
+        </xpath>
+
+    </template>
+
 </odoo>
