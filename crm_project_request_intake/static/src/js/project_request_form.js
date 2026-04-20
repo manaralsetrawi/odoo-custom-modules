@@ -6,11 +6,17 @@ publicWidget.registry.ProjectRequestForm = publicWidget.Widget.extend({
     selector: "#crm_project_request_form",
 
     start: function () {
+        this._toggleProjectFields();
         this._bindEvents();
         return this._super.apply(this, arguments);
     },
 
     _bindEvents: function () {
+        const requestTypeField = this.el.querySelector("#pr_request_type");
+        if (requestTypeField) {
+            requestTypeField.addEventListener("change", this._toggleProjectFields.bind(this));
+        }
+
         this.el.addEventListener("submit", this._onSubmit.bind(this));
 
         const fields = this.el.querySelectorAll("input, textarea, select");
@@ -24,6 +30,40 @@ publicWidget.registry.ProjectRequestForm = publicWidget.Widget.extend({
                 this._refreshAlertState();
             });
         });
+    },
+
+    _toggleProjectFields: function () {
+        const requestTypeField = this.el.querySelector("#pr_request_type");
+        const projectFields = this.el.querySelector("#project_request_fields");
+
+        if (!requestTypeField || !projectFields) {
+            return;
+        }
+
+        const isProjectRequest = requestTypeField.value === "project_request";
+        projectFields.classList.toggle("d-none", !isProjectRequest);
+
+        const conditionalFields = [
+            "#pr_company_name",
+            "#pr_project_title",
+            "#pr_project_description",
+            "#pr_requested_budget",
+            "#pr_requested_duration",
+            "#pr_requested_notes",
+        ];
+
+        conditionalFields.forEach((selector) => {
+            const field = this.el.querySelector(selector);
+            if (!field) {
+                return;
+            }
+            field.required = isProjectRequest;
+            if (!isProjectRequest) {
+                this._clearFieldError(field);
+            }
+        });
+
+        this._refreshAlertState();
     },
 
     _onSubmit: function (ev) {
@@ -51,19 +91,26 @@ publicWidget.registry.ProjectRequestForm = publicWidget.Widget.extend({
 
     _validateForm: function () {
         const errors = [];
+        const requestType = this.el.querySelector("#pr_request_type")?.value || "general_inquiry";
+
         const requiredFields = [
             "#pr_name",
             "#pr_email",
             "#pr_phone",
             "#pr_request_type",
             "#pr_message",
-            "#pr_company_name",
-            "#pr_project_title",
-            "#pr_project_description",
-            "#pr_requested_budget",
-            "#pr_requested_duration",
-            "#pr_requested_notes",
         ];
+
+        if (requestType === "project_request") {
+            requiredFields.push(
+                "#pr_company_name",
+                "#pr_project_title",
+                "#pr_project_description",
+                "#pr_requested_budget",
+                "#pr_requested_duration",
+                "#pr_requested_notes"
+            );
+        }
 
         requiredFields.forEach((selector) => {
             const field = this.el.querySelector(selector);
