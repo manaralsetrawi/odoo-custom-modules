@@ -99,18 +99,12 @@
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
-             <!-- Force Salesperson field to readonly -->
-            <xpath expr="//field[@name='user_id']" position="replace">
-                <field name="user_id"
-                       readonly="1"
-                       options="{'no_open': True, 'no_create': True, 'no_quick_create': True}"/>
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
-            <!-- Force Sales Team field to readonly -->
-            <xpath expr="//field[@name='team_id']" position="replace">
-                <field name="team_id"
-                       readonly="1"
-                       options="{'no_open': True, 'no_create': True, 'no_quick_create': True}"/>
+            <xpath expr="//field[@name='team_id']" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
             <!-- Force Email field to readonly -->
