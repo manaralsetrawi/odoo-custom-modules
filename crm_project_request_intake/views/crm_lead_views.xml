@@ -107,14 +107,24 @@
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
-            <!-- Force Email field to readonly -->
+
+                        <!-- Replace Email field with plain readonly char rendering -->
             <xpath expr="//field[@name='email_from']" position="replace">
-                <field name="email_from" readonly="1"/>
+                <field name="email_from" readonly="1" widget="char"/>
             </xpath>
 
-            <!-- Force Phone field to readonly -->
+            <!-- Replace Phone field with plain readonly char rendering -->
             <xpath expr="//field[@name='phone']" position="replace">
-                <field name="phone" readonly="1"/>
+                <field name="phone" readonly="1" widget="char"/>
+            </xpath>
+
+
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='team_id']" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
 
