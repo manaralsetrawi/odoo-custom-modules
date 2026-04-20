@@ -180,11 +180,11 @@
     <!-- =========================================================
          Route page binding
          ========================================================= -->
-    <record id="project_request_page_view" model="website.page">
+    <!-- <record id="project_request_page_view" model="website.page">
         <field name="name">Project Request</field>
         <field name="url">/project-request</field>
         <field name="view_id" ref="project_request_page"/>
         <field name="is_published">True</field>
-    </record>
+    </record> -->
 
 </odoo>
