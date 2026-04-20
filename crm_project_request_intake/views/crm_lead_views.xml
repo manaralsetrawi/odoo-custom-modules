@@ -116,8 +116,8 @@
             <xpath expr="//field[@name='mobile']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            
-            <xpath expr="//page[@name='extra_info']" position="attributes">
+
+            <xpath expr="//page[@string='Extra Info']" position="attributes">
                 <attribute name="invisible">type == 'lead'</attribute>
             </xpath>
 
