@@ -26,10 +26,17 @@ publicWidget.registry.ProjectRequestForm = publicWidget.Widget.extend({
             return;
         }
 
-        if (requestTypeField.value === 'project_request') {
-            projectFields.style.display = 'block';
-        } else {
-            projectFields.style.display = 'none';
+        const isProjectRequest = requestTypeField.value === 'project_request';
+        projectFields.style.display = isProjectRequest ? 'block' : 'none';
+
+        const projectTitle = this.el.querySelector('#intake_project_title');
+        const projectDescription = this.el.querySelector('#intake_project_description');
+
+        if (projectTitle) {
+            projectTitle.required = isProjectRequest;
+        }
+        if (projectDescription) {
+            projectDescription.required = isProjectRequest;
         }
     },
 });
