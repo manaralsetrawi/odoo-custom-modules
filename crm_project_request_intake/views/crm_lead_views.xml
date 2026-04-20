@@ -29,13 +29,7 @@
                 <attribute name="readonly">1</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='email_from']" position="attributes">
-                <attribute name="readonly">1</attribute>
-            </xpath>
 
-            <xpath expr="//field[@name='phone']" position="attributes">
-                <attribute name="readonly">1</attribute>
-            </xpath>
 
             <!-- Hide unwanted standard fields for project requests -->
             <xpath expr="//field[@name='partner_id']" position="attributes">
@@ -105,23 +99,30 @@
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='user_id']" position="attributes">
-                <attribute name="readonly">request_type == 'project_request'</attribute>
+             <!-- Force Salesperson field to readonly -->
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="user_id"
+                       readonly="1"
+                       options="{'no_open': True, 'no_create': True, 'no_quick_create': True}"/>
             </xpath>
 
-            <xpath expr="//field[@name='team_id']" position="attributes">
-                <attribute name="readonly">request_type == 'project_request'</attribute>
+            <!-- Force Sales Team field to readonly -->
+            <xpath expr="//field[@name='team_id']" position="replace">
+                <field name="team_id"
+                       readonly="1"
+                       options="{'no_open': True, 'no_create': True, 'no_quick_create': True}"/>
             </xpath>
 
-            <xpath expr="//field[@name='user_id']" position="attributes">
-                <attribute name="readonly">1</attribute>
-                <attribute name="options">{'no_open': True, 'no_create': True, 'no_quick_create': True}</attribute>
+            <!-- Force Email field to readonly -->
+            <xpath expr="//field[@name='email_from']" position="replace">
+                <field name="email_from" readonly="1"/>
             </xpath>
 
-            <xpath expr="//field[@name='team_id']" position="attributes">
-                <attribute name="readonly">1</attribute>
-                <attribute name="options">{'no_open': True, 'no_create': True, 'no_quick_create': True}</attribute>
+            <!-- Force Phone field to readonly -->
+            <xpath expr="//field[@name='phone']" position="replace">
+                <field name="phone" readonly="1"/>
             </xpath>
+
 
             <!-- Header buttons -->
             <xpath expr="//form/header" position="inside">
