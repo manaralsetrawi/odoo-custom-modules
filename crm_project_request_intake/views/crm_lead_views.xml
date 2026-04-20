@@ -121,6 +121,15 @@
                 <attribute name="invisible">type == 'lead'</attribute>
             </xpath>
 
+            <xpath expr="//page[@string='Workflow Overview']" position="attributes">
+                <attribute name="invisible">type == 'lead'</attribute>
+            </xpath>
+
+            <xpath expr="//page[@string='Approval &amp; Follow-up']" position="attributes">
+                <attribute name="invisible">type == 'lead'</attribute>
+            </xpath>
+
+
             <!-- Header buttons -->
             <xpath expr="//form/header" position="inside">
                 <button name="action_intake_start_review"
