@@ -1,3 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <!-- =========================================================
+         CRM Lead Form Inheritance
+         ========================================================= -->
+    <record id="view_crm_lead_form_project_request_intake" model="ir.ui.view">
+        <field name="name">crm.lead.form.project.request.intake</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- =====================================================
+                 Add hidden helper fields for attrs / visibility
+                 ===================================================== -->
+            <xpath expr="//form/sheet" position="inside">
+                <field name="request_type" invisible="1"/>
+                <field name="intake_state" invisible="1"/>
+                <field name="intake_is_project_request" invisible="1"/>
+                <field name="intake_can_create_opportunity" invisible="1"/>
+            </xpath>
+
+            <!-- =====================================================
+                 Header Buttons
+                 ===================================================== -->
+            <xpath expr="//form/header" position="inside">
+
+                <button name="action_intake_start_review"
+                        string="Start Review"
+                        type="object"
+                        class="btn-primary"
+                        groups="crm_workflow_custom.group_crm_workflow_manager"
+                        invisible="request_type != 'project_request' or intake_state not in ['submitted']"/>
+
+                <button name="action_intake_approve_request"
+                        string="Approve Request"
+                        type="object"
+                        class="btn-success"
+                        groups="crm_workflow_custom.group_crm_workflow_manager"
+                        invisible="request_type != 'project_request' or intake_state not in ['submitted', 'under_review']"/>
+
+                <button name="action_intake_reject_request"
+                        string="Reject Request"
+                        type="object"
+                        class="btn-danger"
+                        groups="crm_workflow_custom.group_crm_workflow_manager"
+                        invisible="request_type != 'project_request' or intake_state not in ['submitted', 'under_review']"/>
+
+                <button name="action_intake_create_project_opportunity"
+                        string="Create Opportunity"
+                        type="object"
+                        class="btn-primary"
+                        groups="crm_workflow_custom.group_crm_workflow_manager"
+                        invisible="not intake_can_create_opportunity"/>
+
+            </xpath>
+
+            <!-- =====================================================
+                 Add a new notebook page
+                 ===================================================== -->
+            <xpath expr="//form/sheet/notebook" position="inside">
+                <page string="Project Request Intake" invisible="request_type != 'project_request'">
+
+                    <!-- =============================================
+                         Client Submission
+                         ============================================= -->
+                    <group string="Client Submission">
+                        <group>
+                            <field name="intake_client_name"/>
+                            <field name="intake_client_email"/>
+                            <field name="intake_client_phone"/>
+                            <field name="intake_company_name"/>
+                        </group>
+                        <group>
+                            <field name="intake_project_title"/>
+                            <field name="intake_requested_budget"/>
+                            <field name="intake_requested_duration"/>
+                            <field name="intake_state" readonly="1"/>
+                        </group>
+                        <group colspan="2">
+                            <field name="intake_project_description"/>
+                            <field name="intake_requested_notes"/>
+                        </group>
+                    </group>
+
+                    <!-- =============================================
+                         Review Information
+                         ============================================= -->
+                    <group string="Review Information">
+                        <group>
+                            <field name="intake_reviewed_by" readonly="1"/>
+                            <field name="intake_review_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="intake_rejection_reason"
+                                   groups="crm_workflow_custom.group_crm_workflow_manager"
+                                   invisible="intake_state != 'rejected' and intake_state != 'under_review' and intake_state != 'submitted'"/>
+                        </group>
+                    </group>
+
+                    <!-- =============================================
+                         Project Manager Details
+                         ============================================= -->
+                    <group string="Project Manager Details"
+                           groups="crm_workflow_custom.group_crm_workflow_manager"
+                           invisible="intake_state not in ['approved', 'converted']">
+                        <group>
+                            <field name="intake_technical_feasibility"/>
+                            <field name="intake_complexity_level"/>
+                            <field name="intake_estimated_budget_final"/>
+                            <field name="intake_estimated_duration_final"/>
+                            <field name="intake_project_deadline"/>
+                        </group>
+                        <group>
+                            <field name="intake_meeting_notes"/>
+                            <field name="intake_project_requirements"/>
+                            <field name="intake_solution_summary"/>
+                        </group>
+                    </group>
+
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
 </odoo>
