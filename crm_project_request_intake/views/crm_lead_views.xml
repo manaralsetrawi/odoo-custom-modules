@@ -132,13 +132,13 @@
 
             <!-- Hide default Convert to Opportunity button only when record is a lead -->
             <xpath expr="//button[@string='Convert to Opportunity']" position="attributes">
-                <attribute name="invisible">type == 'lead' request_type == 'project_request'</attribute>
+                <attribute name="invisible">type == 'lead'</attribute>
             </xpath>
 
             <!-- Hide default Enrich button only when record is a lead -->
-            <!-- <xpath expr="//button[@string='Enrich']" position="attributes">
+            <xpath expr="//button[@string='Enrich']" position="attributes">
                 <attribute name="invisible">type == 'lead'</attribute>
-            </xpath> -->
+            </xpath>
 
             <!-- Hide default Lost button only when record is a lead -->
             <xpath expr="//header//button[@string='Lost']" position="attributes">
