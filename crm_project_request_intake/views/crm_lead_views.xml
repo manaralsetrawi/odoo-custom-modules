@@ -136,9 +136,7 @@
             </xpath>
 
             <!-- Hide default Enrich button only when record is a lead -->
-            <!-- <xpath expr="//button[@string='Enrich']" position="attributes">
-                <attribute name="invisible">type == 'lead'</attribute>
-            </xpath> -->
+           <xpath expr="//header//button[@string='Enrich']" position="replace"/>
 
             <!-- Hide default Lost button only when record is a lead -->
             <xpath expr="//header//button[@string='Lost']" position="attributes">
