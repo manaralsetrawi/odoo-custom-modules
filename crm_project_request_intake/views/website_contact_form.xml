@@ -16,6 +16,9 @@
         <!-- Add full custom form fields -->
         <xpath expr="//form" position="inside">
 
+            <!-- CSRF token -->
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
             <!-- Validation alert -->
             <div id="form_validation_alert"
                  class="alert alert-danger d-none"
@@ -142,7 +145,6 @@
                 </div>
             </div>
 
-            <!-- Submit button -->
             <div class="mt-4 d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary px-4 py-2">
                     Submit
