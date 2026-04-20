@@ -113,6 +113,16 @@
                 <attribute name="readonly">request_type == 'project_request'</attribute>
             </xpath>
 
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="options">{'no_open': True, 'no_create': True, 'no_quick_create': True}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='team_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="options">{'no_open': True, 'no_create': True, 'no_quick_create': True}</attribute>
+            </xpath>
+
             <!-- Header buttons -->
             <xpath expr="//form/header" position="inside">
 
