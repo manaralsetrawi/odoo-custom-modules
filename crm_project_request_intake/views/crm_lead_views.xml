@@ -165,19 +165,19 @@
                         groups="crm_workflow_custom.group_crm_workflow_manager"
                         invisible="request_type != 'project_request' or intake_state not in ['submitted', 'under_review']"/>
 
+                <button name="action_intake_approve_request"
+                        string="Approve Request"
+                        type="object"
+                        class="btn-success"
+                        groups="crm_workflow_custom.group_crm_workflow_manager"
+                        invisible="request_type != 'project_request' or intake_state != 'under_review'"/>
+
                 <button name="action_intake_reject_request"
                         string="Reject Request"
                         type="object"
                         class="btn-danger"
                         groups="crm_workflow_custom.group_crm_workflow_manager"
-                        invisible="request_type != 'project_request' or intake_state not in ['submitted', 'under_review']"/>
-
-                <button name="action_intake_create_project_opportunity"
-                        string="Create Opportunity"
-                        type="object"
-                        class="btn-primary"
-                        groups="crm_workflow_custom.group_crm_workflow_manager"
-                        invisible="not intake_can_create_opportunity"/>
+                        invisible="request_type != 'project_request' or intake_state != 'under_review'"/>
             </xpath>
 
             <!-- Project Request tab -->
