@@ -5,11 +5,11 @@
         <field name="name">crm.lead.kanban.workflow.custom</field>
         <field name="model">crm.lead</field>
 
-        <field name="inherit_id" ref="crm.crm_lead_view_kanban_inherit"/>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
 
         <field name="arch" type="xml">
 
-            <!-- Safely add content inside card -->
+            <!-- Safely inject extra info into card -->
             <xpath expr="//div[contains(@class, 'o_kanban_record_body')]" position="inside">
 
                 <div class="crmwf_kanban_extra">
