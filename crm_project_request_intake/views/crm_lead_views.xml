@@ -11,7 +11,7 @@
             <xpath expr="//form/sheet" position="inside">
                 <field name="intake_state" invisible="1"/>
                 <field name="intake_is_project_request" invisible="1"/>
-                <field name="intake_can_create_opportunity" invisible="1"/>
+                <!-- <field name="intake_can_create_opportunity" invisible="1"/> -->
             </xpath>
 
             <!-- Main title readonly -->
