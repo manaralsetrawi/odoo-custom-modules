@@ -234,11 +234,11 @@
     <field name="arch" type="xml">
 
         <xpath expr="//page[@name='crmwf_workflow_overview']" position="attributes">
-            <attribute name="invisible">request_type == 'project_request'</attribute>
+            <attribute name="invisible">type == 'lead'</attribute>
         </xpath>
 
         <xpath expr="//page[@name='crmwf_approval_followup']" position="attributes">
-            <attribute name="invisible">request_type == 'project_request'</attribute>
+            <attribute name="invisible">type == 'lead'</attribute>
         </xpath>
 
     </field>
