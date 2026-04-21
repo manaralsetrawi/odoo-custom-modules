@@ -273,6 +273,21 @@ class CrmLead(models.Model):
             record.inactive_alert = False
 
     def action_reject_project(self):
+        self.ensure_one()
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Reject Project'),
+            'res_model': 'crm.reject.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_lead_id': self.id,
+                'default_rejection_reason': self.rejection_reason or '',
+            },
+        }
+
+    def action_reject_project_confirm(self):
         for record in self:
             if not record.rejection_reason:
                 raise ValidationError(_("Please enter the rejection reason before rejecting the project."))

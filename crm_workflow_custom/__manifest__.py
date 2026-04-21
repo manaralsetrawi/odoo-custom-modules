@@ -19,6 +19,7 @@
         'views/crm_reporting_views.xml',
         'views/crm_menu_views.xml',
         'views/crm_kanban_views.xml',
+        'views/crm_reject_wizard_views.xml',
         'data/crm_reminder_cron.xml',
     ],
     'assets': {
