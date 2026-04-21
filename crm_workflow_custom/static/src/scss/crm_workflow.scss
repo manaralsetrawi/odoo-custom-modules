@@ -151,9 +151,16 @@ h2.row.g-0.pb-3.pb-sm-4 {
     flex-shrink: 0;
 }
 
+.crmwf_kanban_label {
+    font-weight: 700;
+    color: #0f172a;
+    min-width: 72px;
+    display: inline-block;
+}
+
 /* Make status rows more readable */
-.crmwf_kanban_extra .crmwf_kanban_line:nth-child(2),
-.crmwf_kanban_extra .crmwf_kanban_line:nth-child(3) {
+.crmwf_kanban_line_state,
+.crmwf_kanban_line_followup {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 10px;
@@ -161,11 +168,6 @@ h2.row.g-0.pb-3.pb-sm-4 {
 }
 
 /* Slight emphasis for deadline row */
-.crmwf_kanban_extra .crmwf_kanban_line:nth-child(1) {
+.crmwf_kanban_line_deadline {
     font-weight: 600;
-}
-
-/* Better breathing room under card title when our block appears */
-.crmwf_kanban_extra + .crmwf_kanban_line {
-    margin-top: 6px;
 }

@@ -13,19 +13,34 @@
 
                 <div class="crmwf_kanban_extra">
 
-                    <div class="crmwf_kanban_line">
+                    <div class="crmwf_kanban_line crmwf_kanban_line_deadline">
                         <i class="fa fa-calendar"/>
+                        <span class="crmwf_kanban_label">Deadline:</span>
                         <field name="project_deadline"/>
                     </div>
 
-                    <div class="crmwf_kanban_line">
+                    <div class="crmwf_kanban_line crmwf_kanban_line_state">
                         <i class="fa fa-check-circle"/>
+                        <span class="crmwf_kanban_label">Approval:</span>
                         <field name="approval_state"/>
                     </div>
 
-                    <div class="crmwf_kanban_line">
+                    <div class="crmwf_kanban_line crmwf_kanban_line_followup">
                         <i class="fa fa-bell"/>
+                        <span class="crmwf_kanban_label">Follow-up:</span>
                         <field name="followup_status"/>
+                    </div>
+
+                    <div class="crmwf_kanban_line crmwf_kanban_line_contact">
+                        <i class="fa fa-user"/>
+                        <span class="crmwf_kanban_label">Client:</span>
+                        <field name="partner_id"/>
+                    </div>
+
+                    <div class="crmwf_kanban_line crmwf_kanban_line_owner">
+                        <i class="fa fa-user-circle"/>
+                        <span class="crmwf_kanban_label">Owner:</span>
+                        <field name="user_id"/>
                     </div>
 
                 </div>
