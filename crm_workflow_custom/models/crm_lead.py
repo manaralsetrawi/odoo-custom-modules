@@ -169,10 +169,52 @@ class CrmLead(models.Model):
                 'date_deadline': fields.Date.today(),
             })
 
+    def _get_proposal_validation_errors(self):
+        """
+        Collect all validation issues at once so the user does not
+        have to fix fields one by one.
+        """
+        self.ensure_one()
+        errors = []
+
+        # Technical feasibility must be confirmed before proposal/approval
+        if not self.technical_feasibility or self.technical_feasibility == 'pending':
+            errors.append(_("Technical Feasibility Status must be set."))
+
+        if self.technical_feasibility == 'not_feasible':
+            errors.append(_("This request cannot move forward because Technical Feasibility Status is set to Not Feasible."))
+
+        # Main workflow fields
+        if not self.complexity_level:
+            errors.append(_("Complexity Level is required."))
+
+        if not self.estimated_duration:
+            errors.append(_("Estimated Delivery Duration is required."))
+
+        if not self.project_deadline:
+            errors.append(_("Project Deadline is required."))
+
+        if not self.proposal_summary:
+            errors.append(_("Proposal Summary is required."))
+
+        if not self.proposal_amount:
+            errors.append(_("Estimated Project Value is required."))
+
+        return errors
+
+    def _raise_combined_validation_error(self, errors, action_label):
+        """
+        Show all validation issues in one message instead of one-by-one.
+        """
+        if errors:
+            message = _("Please complete the following before %s:\n- %s") % (
+                action_label,
+                "\n- ".join(errors)
+            )
+            raise ValidationError(message)
+
     # =========================================================
     # Stage Cleanup / Sync
-    # Safe version: creates/updates your stages and remaps old leads
-    # Does NOT use 'active' because crm.stage has no active field here
     # =========================================================
     @api.model
     def sync_workflow_stages(self):
@@ -187,7 +229,7 @@ class CrmLead(models.Model):
             {'name': 'Proposal Submitted', 'sequence': 5, 'is_won': False, 'fold': False},
             {'name': 'Waiting Approval', 'sequence': 6, 'is_won': False, 'fold': False},
             {'name': 'Approved', 'sequence': 7, 'is_won': True, 'fold': False},
-            {'name': 'Rejected', 'sequence': 8, 'is_won': False, 'fold': True},
+            {'name': 'Rejected', 'sequence': 8, 'is_won': False, 'fold': False},
         ]
 
         created_or_existing = {}
@@ -208,7 +250,6 @@ class CrmLead(models.Model):
                 })
             created_or_existing[vals['name']] = stage
 
-        # Move leads from old default stages to your custom stages
         stage_mapping = {
             'New': 'New Inquiry',
             'Qualified': 'Initial Discussion',
@@ -224,11 +265,6 @@ class CrmLead(models.Model):
                 leads = lead_model.search([('stage_id', '=', old_stage.id)])
                 if leads:
                     leads.write({'stage_id': new_stage.id})
-
-        # NOTE:
-        # We are not archiving/deleting old stages here because that caused issues
-        # and can be risky. We will hide default Won/Lost buttons with SCSS and
-        # you can manually remove unused stages later from CRM configuration if needed.
 
         return True
 
@@ -249,12 +285,8 @@ class CrmLead(models.Model):
 
     def action_submit_proposal(self):
         for record in self:
-            if not record.proposal_summary:
-                raise ValidationError(_("Please enter the proposal summary before submitting the proposal."))
-            if not record.proposal_amount:
-                raise ValidationError(_("Please enter the estimated project value before submitting the proposal."))
-            if not record.project_deadline:
-                raise ValidationError(_("Please enter the project deadline before submitting the proposal."))
+            errors = record._get_proposal_validation_errors()
+            record._raise_combined_validation_error(errors, _("submitting the proposal"))
 
             stage = record._get_stage_by_name('Proposal Submitted')
             record.stage_id = stage.id
@@ -269,12 +301,8 @@ class CrmLead(models.Model):
 
     def action_send_to_approval(self):
         for record in self:
-            if not record.proposal_summary:
-                raise ValidationError(_("Please enter the proposal summary before sending for approval."))
-            if not record.proposal_amount:
-                raise ValidationError(_("Please enter the estimated project value before sending for approval."))
-            if not record.project_deadline:
-                raise ValidationError(_("Please enter the project deadline before sending for approval."))
+            errors = record._get_proposal_validation_errors()
+            record._raise_combined_validation_error(errors, _("sending for approval"))
 
             stage = record._get_stage_by_name('Waiting Approval')
             record.stage_id = stage.id

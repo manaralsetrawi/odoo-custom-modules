@@ -86,18 +86,26 @@
 
                     <group class="crmwf_row">
                         <group string="Technical Evaluation" class="crmwf_card crmwf_card_technical">
-                            <field name="technical_feasibility"/>
-                            <field name="complexity_level"/>
-                            <field name="estimated_duration"/>
-                            <field name="project_deadline"/>
+                            <field name="technical_feasibility"
+                                   required="is_stage_analysis or is_stage_solution_design or is_stage_proposal"/>
+                            <field name="complexity_level"
+                                   required="is_stage_analysis or is_stage_solution_design or is_stage_proposal"/>
+                            <field name="estimated_duration"
+                                   required="is_stage_analysis or is_stage_solution_design or is_stage_proposal"/>
+                            <field name="project_deadline"
+                                   required="is_stage_analysis or is_stage_solution_design or is_stage_proposal"/>
                         </group>
 
                         <group string="Proposal Details"
                                class="crmwf_card crmwf_card_proposal"
                                invisible="is_stage_new_inquiry and not proposal_summary and not proposal_amount">
-                            <field name="proposal_summary" placeholder="Enter a short summary of the proposed solution..."/>
-                            <field name="proposal_amount"/>
-                            <field name="negotiation_notes" placeholder="Add any negotiation comments or client feedback..."/>
+                            <field name="proposal_summary"
+                                   placeholder="Enter a short summary of the proposed solution..."
+                                   required="is_stage_analysis or is_stage_solution_design or is_stage_proposal"/>
+                            <field name="proposal_amount"
+                                   required="is_stage_analysis or is_stage_solution_design or is_stage_proposal"/>
+                            <field name="negotiation_notes"
+                                   placeholder="Add any negotiation comments or client feedback..."/>
                         </group>
                     </group>
                 </page>
