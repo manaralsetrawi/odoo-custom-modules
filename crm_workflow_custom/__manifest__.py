@@ -6,6 +6,7 @@
     'author': 'Your Name',
     'depends': [
         'crm',
+        'crm_project_request_intake'
         'mail',
     ],
     'data': [
