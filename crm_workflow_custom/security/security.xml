@@ -37,31 +37,5 @@
         <field name="implied_ids" eval="[(4, ref('group_crm_support_user'))]"/>
     </record>
 
-    <!-- =========================================================
-         Record Rule: Support users can see only tickets assigned
-         to them OR tickets they created OR unassigned tickets
-         ========================================================= -->
-    <record id="rule_crm_support_ticket_user_own" model="ir.rule">
-        <field name="name">CRM Support Ticket - User Own or Unassigned</field>
-        <field name="model_id" ref="model_crm_support_ticket"/>
-        <field name="groups" eval="[(4, ref('group_crm_support_user'))]"/>
-        <field name="domain_force">
-            ['|', '|',
-                ('assigned_user_id', '=', user.id),
-                ('create_uid', '=', user.id),
-                ('assigned_user_id', '=', False)
-            ]
-        </field>
-    </record>
-
-    <!-- =========================================================
-         Record Rule: Support managers can see all tickets
-         ========================================================= -->
-    <record id="rule_crm_support_ticket_manager_all" model="ir.rule">
-        <field name="name">CRM Support Ticket - Manager All</field>
-        <field name="model_id" ref="model_crm_support_ticket"/>
-        <field name="groups" eval="[(4, ref('group_crm_support_manager'))]"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-    </record>
 
 </odoo>
