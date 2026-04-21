@@ -117,8 +117,8 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
 
-<!-- hereeeeeee -->
-<!-- Example only: replace with the real technical names from parent view -->
+            <!-- hereeeeeee -->
+            <!-- Example only: replace with the real technical names from parent view -->
             <!-- <xpath expr="//page[@name='extra_info']" position="attributes">
                 <attribute name="invisible">type == 'lead'</attribute>
             </xpath>
@@ -230,5 +230,26 @@
 
         </field>
     </record>
+
+    
+    <record id="view_crm_lead_form_hide_workflow_tabs_for_project_request" model="ir.ui.view">
+        <field name="name">crm.lead.form.hide.workflow.tabs.for.project.request</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm_workflow_custom.view_crm_lead_form_workflow_custom"/>
+        <field name="arch" type="xml">
+
+            <!-- Hide Workflow Overview tab -->
+            <xpath expr="//page[.//field[@name='technical_feasibility'] and .//field[@name='proposal_summary']]" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
+            </xpath>
+
+            <!-- Hide Approval & Follow-up tab -->
+            <xpath expr="//page[.//field[@name='approval_state'] and .//field[@name='followup_status']]" position="attributes">
+                <attribute name="invisible">request_type == 'project_request'</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
 
 </odoo>
