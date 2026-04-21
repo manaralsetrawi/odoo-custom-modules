@@ -118,3 +118,37 @@ h2.row.g-0.pb-3.pb-sm-4 {
 .crmwf_card .o_field_widget {
     margin-bottom: 6px;
 }
+
+/* ==============================
+   Kanban Card Custom Design
+   ============================== */
+
+.crmwf_kanban_card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 12px 14px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.crmwf_kanban_title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0b2c3d;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.crmwf_kanban_line {
+    font-size: 12px;
+    color: #475569;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.crmwf_kanban_line i {
+    color: #0b2c3d;
+    font-size: 11px;
+}
