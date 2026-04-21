@@ -16,7 +16,7 @@
 
             <!-- Show request type after title -->
             <xpath expr="//field[@name='name']" position="after">
-                <field name="request_type" readonly="1"/>
+                <field name="request_type" />
             </xpath>
 
             <!-- Contact name readonly -->
@@ -136,9 +136,9 @@
                 <attribute name="invisible">type == 'lead'</attribute>
             </xpath> -->
 
-            <!-- Hide Start Analysis button only when record is a lead -->
+            <!-- Keep the workflow visibility logic and also hide it for leads -->
             <xpath expr="//button[@name='action_start_analysis']" position="attributes">
-                <attribute name="invisible">type == 'lead'</attribute>
+                <attribute name="invisible">type == 'lead' or not show_start_analysis_btn</attribute>
             </xpath>
 
             <!-- hereeeee -->
