@@ -4,28 +4,27 @@
     <record id="view_crm_lead_kanban_workflow_custom" model="ir.ui.view">
         <field name="name">crm.lead.kanban.workflow.custom</field>
         <field name="model">crm.lead</field>
-
         <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
 
         <field name="arch" type="xml">
 
-            <!-- Safely inject extra info into card -->
-            <xpath expr="//div[contains(@class, 'o_kanban_record_body')]" position="inside">
+            <!-- Inject inside main kanban template -->
+            <xpath expr="//templates/t/div" position="inside">
 
                 <div class="crmwf_kanban_extra">
 
                     <div class="crmwf_kanban_line">
-                        <i class="fa fa-calendar"/> 
+                        <i class="fa fa-calendar"/>
                         <field name="project_deadline"/>
                     </div>
 
                     <div class="crmwf_kanban_line">
-                        <i class="fa fa-check-circle"/> 
+                        <i class="fa fa-check-circle"/>
                         <field name="approval_state"/>
                     </div>
 
                     <div class="crmwf_kanban_line">
-                        <i class="fa fa-bell"/> 
+                        <i class="fa fa-bell"/>
                         <field name="followup_status"/>
                     </div>
 
