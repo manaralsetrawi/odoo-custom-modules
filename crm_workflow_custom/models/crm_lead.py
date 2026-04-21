@@ -5,9 +5,6 @@ from odoo.exceptions import UserError, ValidationError
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
-    # =========================================================
-    # Workflow / Project Fields
-    # =========================================================
     technical_feasibility = fields.Selection([
         ('pending', 'Pending'),
         ('feasible', 'Feasible'),
@@ -20,35 +17,12 @@ class CrmLead(models.Model):
         ('high', 'High'),
     ], string="Complexity Level", tracking=True)
 
-    estimated_duration = fields.Char(
-        string="Estimated Delivery Duration",
-        tracking=True
-    )
-
-    project_deadline = fields.Date(
-        string="Project Deadline",
-        tracking=True
-    )
-
-    proposal_summary = fields.Text(
-        string="Proposal Summary",
-        tracking=True
-    )
-
-    proposal_amount = fields.Float(
-        string="Estimated Project Value",
-        tracking=True
-    )
-
-    negotiation_notes = fields.Text(
-        string="Negotiation Notes",
-        tracking=True
-    )
-
-    rejection_reason = fields.Text(
-        string="Rejection Reason",
-        tracking=True
-    )
+    estimated_duration = fields.Char(string="Estimated Delivery Duration", tracking=True)
+    project_deadline = fields.Date(string="Project Deadline", tracking=True)
+    proposal_summary = fields.Text(string="Proposal Summary", tracking=True)
+    proposal_amount = fields.Float(string="Estimated Project Value", tracking=True)
+    negotiation_notes = fields.Text(string="Negotiation Notes", tracking=True)
+    rejection_reason = fields.Text(string="Rejection Reason", tracking=True)
 
     approval_state = fields.Selection([
         ('not_needed', 'Not Needed'),
@@ -57,18 +31,8 @@ class CrmLead(models.Model):
         ('rejected', 'Rejected'),
     ], string="Approval State", default='not_needed', tracking=True)
 
-    # =========================================================
-    # Follow-up Fields
-    # =========================================================
-    last_followup_date = fields.Date(
-        string="Last Follow-up Date",
-        tracking=True
-    )
-
-    next_followup_date = fields.Date(
-        string="Next Follow-up Date",
-        tracking=True
-    )
+    last_followup_date = fields.Date(string="Last Follow-up Date", tracking=True)
+    next_followup_date = fields.Date(string="Next Follow-up Date", tracking=True)
 
     followup_status = fields.Selection([
         ('not_started', 'Not Started'),
@@ -77,23 +41,14 @@ class CrmLead(models.Model):
         ('overdue', 'Overdue'),
     ], string="Follow-up Status", default='not_started', tracking=True)
 
-    inactive_alert = fields.Boolean(
-        string="Needs Follow-up",
-        default=False,
-        tracking=True
-    )
+    inactive_alert = fields.Boolean(string="Needs Follow-up", default=False, tracking=True)
 
-    # =========================================================
-    # Support Integration
-    # =========================================================
     support_ticket_count = fields.Integer(
         string="Support Ticket Count",
         compute="_compute_support_ticket_count"
     )
 
-    # =========================================================
-    # Helper Boolean Fields For Button Visibility
-    # =========================================================
+    # Stage helpers
     is_stage_new_inquiry = fields.Boolean(compute="_compute_stage_flags")
     is_stage_initial_discussion = fields.Boolean(compute="_compute_stage_flags")
     is_stage_analysis = fields.Boolean(compute="_compute_stage_flags")
@@ -103,9 +58,13 @@ class CrmLead(models.Model):
     is_stage_approved = fields.Boolean(compute="_compute_stage_flags")
     is_stage_rejected = fields.Boolean(compute="_compute_stage_flags")
 
-    # =========================================================
-    # Create Override
-    # =========================================================
+    # Dedicated button visibility flags
+    show_start_analysis_btn = fields.Boolean(compute="_compute_action_buttons")
+    show_submit_proposal_btn = fields.Boolean(compute="_compute_action_buttons")
+    show_send_to_approval_btn = fields.Boolean(compute="_compute_action_buttons")
+    show_approve_btn = fields.Boolean(compute="_compute_action_buttons")
+    show_reject_btn = fields.Boolean(compute="_compute_action_buttons")
+
     @api.model_create_multi
     def create(self, vals_list):
         records = super().create(vals_list)
@@ -116,9 +75,6 @@ class CrmLead(models.Model):
             )
         return records
 
-    # =========================================================
-    # Compute Methods
-    # =========================================================
     @api.depends('stage_id')
     def _compute_stage_flags(self):
         for record in self:
@@ -133,15 +89,23 @@ class CrmLead(models.Model):
             record.is_stage_approved = stage_name == 'Approved'
             record.is_stage_rejected = stage_name == 'Rejected'
 
+    @api.depends('stage_id')
+    def _compute_action_buttons(self):
+        for record in self:
+            stage_name = (record.stage_id.name or '').strip()
+
+            record.show_start_analysis_btn = stage_name in ['New Inquiry', 'Initial Discussion']
+            record.show_submit_proposal_btn = stage_name in ['Requirement Analysis', 'Solution Design']
+            record.show_send_to_approval_btn = stage_name == 'Proposal Submitted'
+            record.show_approve_btn = stage_name == 'Waiting Approval'
+            record.show_reject_btn = stage_name == 'Waiting Approval'
+
     def _compute_support_ticket_count(self):
         for lead in self:
             lead.support_ticket_count = self.env['crm.support.ticket'].search_count([
                 ('lead_id', '=', lead.id)
             ])
 
-    # =========================================================
-    # Helper Methods
-    # =========================================================
     def _get_stage_by_name(self, stage_name):
         stage = self.env['crm.stage'].search([('name', '=', stage_name)], limit=1)
         if not stage:
@@ -170,21 +134,15 @@ class CrmLead(models.Model):
             })
 
     def _get_proposal_validation_errors(self):
-        """
-        Collect all validation issues at once so the user does not
-        have to fix fields one by one.
-        """
         self.ensure_one()
         errors = []
 
-        # Technical feasibility must be confirmed before proposal/approval
         if not self.technical_feasibility or self.technical_feasibility == 'pending':
             errors.append(_("Technical Feasibility Status must be set."))
 
         if self.technical_feasibility == 'not_feasible':
             errors.append(_("This request cannot move forward because Technical Feasibility Status is set to Not Feasible."))
 
-        # Main workflow fields
         if not self.complexity_level:
             errors.append(_("Complexity Level is required."))
 
@@ -203,9 +161,6 @@ class CrmLead(models.Model):
         return errors
 
     def _raise_combined_validation_error(self, errors, action_label):
-        """
-        Show all validation issues in one message instead of one-by-one.
-        """
         if errors:
             message = _("Please complete the following before %s:\n- %s") % (
                 action_label,
@@ -213,9 +168,6 @@ class CrmLead(models.Model):
             )
             raise ValidationError(message)
 
-    # =========================================================
-    # Stage Cleanup / Sync
-    # =========================================================
     @api.model
     def sync_workflow_stages(self):
         stage_model = self.env['crm.stage'].sudo()
@@ -268,9 +220,6 @@ class CrmLead(models.Model):
 
         return True
 
-    # =========================================================
-    # Workflow Actions
-    # =========================================================
     def action_start_analysis(self):
         for record in self:
             stage = record._get_stage_by_name('Requirement Analysis')
@@ -335,9 +284,6 @@ class CrmLead(models.Model):
             record.last_followup_date = fields.Date.today()
             record.inactive_alert = False
 
-    # =========================================================
-    # Support Actions
-    # =========================================================
     def action_create_support_ticket(self):
         self.ensure_one()
 
@@ -367,9 +313,6 @@ class CrmLead(models.Model):
             'target': 'current',
         }
 
-    # =========================================================
-    # Scheduled Action (Cron)
-    # =========================================================
     @api.model
     def _cron_check_inactive_leads(self):
         today = fields.Date.today()
