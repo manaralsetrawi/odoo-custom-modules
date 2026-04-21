@@ -43,10 +43,6 @@ class CrmLead(models.Model):
 
     inactive_alert = fields.Boolean(string="Needs Follow-up", default=False, tracking=True)
 
-    support_ticket_count = fields.Integer(
-        string="Support Ticket Count",
-        compute="_compute_support_ticket_count"
-    )
 
     # Stage helpers
     is_stage_new_inquiry = fields.Boolean(compute="_compute_stage_flags", store=True)
@@ -99,12 +95,6 @@ class CrmLead(models.Model):
             record.show_send_to_approval_btn = stage_name == 'Proposal Submitted'
             record.show_approve_btn = stage_name == 'Waiting Approval'
             record.show_reject_btn = stage_name == 'Waiting Approval'
-
-    def _compute_support_ticket_count(self):
-        for lead in self:
-            lead.support_ticket_count = self.env['crm.support.ticket'].search_count([
-                ('lead_id', '=', lead.id)
-            ])
 
     def _get_stage_by_name(self, stage_name):
         stage = self.env['crm.stage'].search([('name', '=', stage_name)], limit=1)
@@ -298,35 +288,6 @@ class CrmLead(models.Model):
             record.followup_status = 'done'
             record.last_followup_date = fields.Date.today()
             record.inactive_alert = False
-
-    def action_create_support_ticket(self):
-        self.ensure_one()
-
-        ticket = self.env['crm.support.ticket'].create({
-            'lead_id': self.id,
-            'partner_id': self.partner_id.id,
-            'subject': self.name or "Support Request",
-        })
-
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Support Ticket',
-            'res_model': 'crm.support.ticket',
-            'view_mode': 'form',
-            'res_id': ticket.id,
-            'target': 'current',
-        }
-
-    def action_view_support_tickets(self):
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Support Tickets',
-            'res_model': 'crm.support.ticket',
-            'view_mode': 'list,form',
-            'domain': [('lead_id', '=', self.id)],
-            'target': 'current',
-        }
 
     @api.model
     def _cron_check_inactive_leads(self):
