@@ -119,7 +119,7 @@
 
 <!-- hereeeeeee -->
 <!-- Example only: replace with the real technical names from parent view -->
-            <xpath expr="//page[@name='extra_info']" position="attributes">
+            <!-- <xpath expr="//page[@name='extra_info']" position="attributes">
                 <attribute name="invisible">type == 'lead'</attribute>
             </xpath>
 
@@ -129,7 +129,7 @@
 
             <xpath expr="//page[@name='approval_followup']" position="attributes">
                 <attribute name="invisible">type == 'lead'</attribute>
-            </xpath>
+            </xpath> -->
 
             <xpath expr="//button[@name='action_convert_to_opportunity']" position="attributes">
                 <attribute name="invisible">1</attribute>
