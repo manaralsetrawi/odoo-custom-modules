@@ -119,41 +119,53 @@ h2.row.g-0.pb-3.pb-sm-4 {
     margin-bottom: 6px;
 }
 
-/* ==============================
-   Kanban Card Custom Design
-   ============================== */
-
-.crmwf_kanban_card {
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 12px 14px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-}
-
-.crmwf_kanban_title {
-    font-size: 14px;
-    font-weight: 700;
-    color: #0b2c3d;
-    display: block;
-    margin-bottom: 6px;
+/* =========================================================
+   Kanban extra workflow info
+   ========================================================= */
+.crmwf_kanban_extra {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e5e7eb;
 }
 
 .crmwf_kanban_line {
-    font-size: 12px;
-    color: #475569;
-    margin-bottom: 4px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #334155;
+    line-height: 1.35;
+}
+
+.crmwf_kanban_line:last-child {
+    margin-bottom: 0;
 }
 
 .crmwf_kanban_line i {
     color: #0b2c3d;
-    font-size: 11px;
+    font-size: 13px;
+    width: 14px;
+    text-align: center;
+    flex-shrink: 0;
 }
-.crmwf_kanban_extra {
-    margin-top: 8px;
-    border-top: 1px solid #eee;
-    padding-top: 6px;
+
+/* Make status rows more readable */
+.crmwf_kanban_extra .crmwf_kanban_line:nth-child(2),
+.crmwf_kanban_extra .crmwf_kanban_line:nth-child(3) {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 6px 8px;
+}
+
+/* Slight emphasis for deadline row */
+.crmwf_kanban_extra .crmwf_kanban_line:nth-child(1) {
+    font-weight: 600;
+}
+
+/* Better breathing room under card title when our block appears */
+.crmwf_kanban_extra + .crmwf_kanban_line {
+    margin-top: 6px;
 }
