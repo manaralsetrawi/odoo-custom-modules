@@ -131,7 +131,7 @@
                 <attribute name="invisible">type == 'lead'</attribute>
             </xpath> -->
 
-            <xpath expr="//button[@name='action_convert_to_opportunity']" position="attributes">
+            <!-- <xpath expr="//button[@name='action_convert_to_opportunity']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
 
@@ -139,7 +139,7 @@
 
             <xpath expr="//header//button[@name='action_set_lost']" position="attributes">
                 <attribute name="invisible">type == 'lead'</attribute>
-            </xpath>
+            </xpath> -->
 
             <!-- Hide Start Analysis button only when record is a lead -->
             <xpath expr="//button[@name='action_start_analysis']" position="attributes">
