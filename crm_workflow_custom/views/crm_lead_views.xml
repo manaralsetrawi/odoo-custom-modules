@@ -40,9 +40,10 @@
             </xpath>
 
             <xpath expr="//field[@name='name']" position="after">
-                <field name="request_type" readonly="not is_stage_new_inquiry or type ='lead'"/>
+                <field name="request_type" readonly="type == 'lead' or not is_stage_new_inquiry"/>
             </xpath>
-                        <xpath expr="//field[@name='tag_ids']" position="attributes">
+            
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
 
