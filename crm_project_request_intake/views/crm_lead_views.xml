@@ -4,7 +4,7 @@
     <record id="view_crm_lead_form_project_request_intake" model="ir.ui.view">
         <field name="name">crm.lead.form.project.request.intake</field>
         <field name="model">crm.lead</field>
-        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="inherit_id" ref="crm_workflow_custom.view_crm_lead_form_workflow_custom"/> 
         <field name="arch" type="xml">
 
             <!-- Hidden helper fields -->
@@ -18,6 +18,11 @@
             <!-- <xpath expr="//field[@name='name']" position="after">
                 <field name="request_type" />
             </xpath> -->
+
+            <!-- Show request type after title -->
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="request_type" readonly="type == 'lead' or not is_stage_new_inquiry"/>
+            </xpath>
 
             <!-- Contact name readonly -->
             <xpath expr="//field[@name='contact_name']" position="replace">
