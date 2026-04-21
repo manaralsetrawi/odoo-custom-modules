@@ -238,13 +238,11 @@
     <field name="inherit_id" ref="crm_workflow_custom.view_crm_lead_form_workflow_custom"/>
     <field name="arch" type="xml">
 
-        <!-- Hide Workflow Overview tab -->
-        <xpath expr="//page[@string='Workflow Overview']" position="attributes">
+        <xpath expr="//page[@name='crmwf_workflow_overview']" position="attributes">
             <attribute name="invisible">request_type == 'project_request'</attribute>
         </xpath>
 
-        <!-- Hide Approval & Follow-up tab -->
-        <xpath expr="//page[@string='Approval &amp; Follow-up']" position="attributes">
+        <xpath expr="//page[@name='crmwf_approval_followup']" position="attributes">
             <attribute name="invisible">request_type == 'project_request'</attribute>
         </xpath>
 
