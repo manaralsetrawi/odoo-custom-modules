@@ -9,6 +9,11 @@ button[name="action_open_lost_wizard"] {
     display: none !important;
 }
 
+/* Hide leftover default probability summary row: "at %" */
+h2.row.g-0.pb-3.pb-sm-4 {
+    display: none !important;
+}
+
 /* Workflow buttons */
 .crmwf_btn {
     border-radius: 10px !important;
