@@ -210,7 +210,7 @@
 
                     <group string="Project Manager Details"
                            groups="crm_workflow_custom.group_crm_workflow_manager"
-                           invisible="intake_state not in ['approved', 'converted']">
+                           invisible="intake_state != 'approved'">
                         <group>
                             <field name="intake_technical_feasibility"/>
                             <field name="intake_complexity_level"/>
