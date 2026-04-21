@@ -1,9 +1,9 @@
 {
     'name': 'CRM Workflow Custom',
     'version': '18.0.1.0.0',
-    'summary': 'Custom CRM workflow, reminders, approvals, dashboards, and support integration',
+    'summary': 'Custom CRM workflow, reminders, approvals, dashboards, and reporting',
     'category': 'Sales/CRM',
-    'author': 'Your Name',
+    'author': 'Manar Alsetrawi',
     'depends': [
         'crm',
         'mail',
@@ -15,7 +15,6 @@
         'views/crm_stage_data.xml',
         'data/crm_stage_cleanup.xml',
         'views/crm_lead_views.xml',
-        'views/crm_support_ticket_views.xml',
         'views/crm_reporting_views.xml',
         'views/crm_menu_views.xml',
         'views/crm_kanban_views.xml',
