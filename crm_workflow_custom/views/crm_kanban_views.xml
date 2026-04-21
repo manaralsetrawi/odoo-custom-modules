@@ -4,44 +4,26 @@
     <record id="view_crm_lead_kanban_workflow_custom" model="ir.ui.view">
         <field name="name">crm.lead.kanban.workflow.custom</field>
         <field name="model">crm.lead</field>
-        <field name="inherit_id" ref="crm.crm_lead_view_kanban"/>
+
+        <field name="inherit_id" ref="crm.crm_lead_view_kanban_inherit"/>
+
         <field name="arch" type="xml">
 
-            <!-- Replace main kanban content -->
-            <xpath expr="//div[contains(@class, 'o_kanban_record_body')]" position="replace">
+            <!-- Safely add content inside card -->
+            <xpath expr="//div[contains(@class, 'o_kanban_record_body')]" position="inside">
 
-                <div class="o_kanban_record_body crmwf_kanban_card">
+                <div class="crmwf_kanban_extra">
 
-                    <!-- Title -->
-                    <strong class="crmwf_kanban_title">
-                        <field name="name"/>
-                    </strong>
-
-                    <!-- Customer -->
-                    <div class="crmwf_kanban_line">
-                        <i class="fa fa-user"/> 
-                        <field name="partner_id"/>
-                    </div>
-
-                    <!-- Salesperson -->
-                    <div class="crmwf_kanban_line">
-                        <i class="fa fa-user-circle"/> 
-                        <field name="user_id"/>
-                    </div>
-
-                    <!-- Project Deadline -->
                     <div class="crmwf_kanban_line">
                         <i class="fa fa-calendar"/> 
                         <field name="project_deadline"/>
                     </div>
 
-                    <!-- Approval State -->
                     <div class="crmwf_kanban_line">
                         <i class="fa fa-check-circle"/> 
                         <field name="approval_state"/>
                     </div>
 
-                    <!-- Follow-up Status -->
                     <div class="crmwf_kanban_line">
                         <i class="fa fa-bell"/> 
                         <field name="followup_status"/>
