@@ -49,21 +49,20 @@ class CrmLead(models.Model):
     )
 
     # Stage helpers
-    is_stage_new_inquiry = fields.Boolean(compute="_compute_stage_flags")
-    is_stage_initial_discussion = fields.Boolean(compute="_compute_stage_flags")
-    is_stage_analysis = fields.Boolean(compute="_compute_stage_flags")
-    is_stage_solution_design = fields.Boolean(compute="_compute_stage_flags")
-    is_stage_proposal = fields.Boolean(compute="_compute_stage_flags")
-    is_stage_waiting_approval = fields.Boolean(compute="_compute_stage_flags")
-    is_stage_approved = fields.Boolean(compute="_compute_stage_flags")
-    is_stage_rejected = fields.Boolean(compute="_compute_stage_flags")
+    is_stage_new_inquiry = fields.Boolean(compute="_compute_stage_flags", store=True)
+    is_stage_initial_discussion = fields.Boolean(compute="_compute_stage_flags", store=True)
+    is_stage_analysis = fields.Boolean(compute="_compute_stage_flags", store=True)
+    is_stage_solution_design = fields.Boolean(compute="_compute_stage_flags", store=True)
+    is_stage_proposal = fields.Boolean(compute="_compute_stage_flags", store=True)
+    is_stage_waiting_approval = fields.Boolean(compute="_compute_stage_flags", store=True)
+    is_stage_approved = fields.Boolean(compute="_compute_stage_flags", store=True)
+    is_stage_rejected = fields.Boolean(compute="_compute_stage_flags", store=True)
 
-    # Dedicated button visibility flags
-    show_start_analysis_btn = fields.Boolean(compute="_compute_action_buttons")
-    show_submit_proposal_btn = fields.Boolean(compute="_compute_action_buttons")
-    show_send_to_approval_btn = fields.Boolean(compute="_compute_action_buttons")
-    show_approve_btn = fields.Boolean(compute="_compute_action_buttons")
-    show_reject_btn = fields.Boolean(compute="_compute_action_buttons")
+    show_start_analysis_btn = fields.Boolean(compute="_compute_action_buttons", store=True)
+    show_submit_proposal_btn = fields.Boolean(compute="_compute_action_buttons", store=True)
+    show_send_to_approval_btn = fields.Boolean(compute="_compute_action_buttons", store=True)
+    show_approve_btn = fields.Boolean(compute="_compute_action_buttons", store=True)
+    show_reject_btn = fields.Boolean(compute="_compute_action_buttons", store=True)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -75,8 +74,8 @@ class CrmLead(models.Model):
             )
         return records
 
-    @api.depends('stage_id')
-    def _compute_stage_flags(self):
+    @api.depends('stage_id', 'stage_id.name')
+    def _compute_action_buttons(self):      
         for record in self:
             stage_name = (record.stage_id.name or '').strip()
 
