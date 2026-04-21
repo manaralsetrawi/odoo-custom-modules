@@ -6,6 +6,11 @@
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
 
+            <!-- Hide default Lost button safely using exact action button target -->
+            <xpath expr="//header//button[@type='action' and @name='661']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
             <!-- Support smart button -->
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_view_support_tickets"
