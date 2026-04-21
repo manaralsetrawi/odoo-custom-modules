@@ -171,3 +171,8 @@ h2.row.g-0.pb-3.pb-sm-4 {
 .crmwf_kanban_line_deadline {
     font-weight: 600;
 }
+
+/* Hide enrich button which is not relevant to this workflow and confuses users */
+button[name="iap_enrich"] {
+    display: none !important;
+}
