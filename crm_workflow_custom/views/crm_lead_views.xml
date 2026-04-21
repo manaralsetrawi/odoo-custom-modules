@@ -15,8 +15,35 @@
                 </div>
             </xpath>
 
-            <!-- Hide Lost button safely -->
+            <!-- Add hidden helper fields so button invisibility logic works reliably -->
+            <xpath expr="//form/sheet" position="inside">
+                <field name="is_stage_new_inquiry" invisible="1"/>
+                <field name="is_stage_initial_discussion" invisible="1"/>
+                <field name="is_stage_analysis" invisible="1"/>
+                <field name="is_stage_solution_design" invisible="1"/>
+                <field name="is_stage_proposal" invisible="1"/>
+                <field name="is_stage_waiting_approval" invisible="1"/>
+                <field name="is_stage_approved" invisible="1"/>
+                <field name="is_stage_rejected" invisible="1"/>
+            </xpath>
+
+            <!-- Hide default Lost button safely -->
             <xpath expr="//header//button[@type='action' and @name='661']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Hide default Enrich button safely -->
+            <xpath expr="//header//button[@type='object' and @name='iap_enrich']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Hide Expected Closing -->
+            <xpath expr="//field[@name='date_deadline']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Hide Tags -->
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
 
@@ -33,20 +60,23 @@
 
             <!-- Custom workflow buttons -->
             <xpath expr="//header" position="inside">
+                <!-- Show only in New Inquiry / Initial Discussion -->
                 <button name="action_start_analysis"
                         type="object"
                         string="Start Analysis"
                         class="btn-primary crmwf_btn crmwf_btn_primary"
                         groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer"
-                        invisible="not is_stage_new_inquiry and not is_stage_initial_discussion"/>
+                        invisible="not (is_stage_new_inquiry or is_stage_initial_discussion)"/>
 
+                <!-- Show only in Requirement Analysis / Solution Design -->
                 <button name="action_submit_proposal"
                         type="object"
                         string="Submit Proposal"
                         class="btn-primary crmwf_btn crmwf_btn_primary"
                         groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"
-                        invisible="not is_stage_analysis and not is_stage_solution_design"/>
+                        invisible="not (is_stage_analysis or is_stage_solution_design)"/>
 
+                <!-- Show only in Proposal Submitted -->
                 <button name="action_send_to_approval"
                         type="object"
                         string="Send to Approval"
@@ -54,6 +84,7 @@
                         groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"
                         invisible="not is_stage_proposal"/>
 
+                <!-- Show only in Waiting Approval -->
                 <button name="action_approve_project"
                         type="object"
                         string="Approve"
@@ -61,6 +92,7 @@
                         groups="crm_workflow_custom.group_crm_workflow_manager"
                         invisible="not is_stage_waiting_approval"/>
 
+                <!-- Show only in Waiting Approval -->
                 <button name="action_reject_project"
                         type="object"
                         string="Reject"
