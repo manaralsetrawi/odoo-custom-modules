@@ -15,9 +15,9 @@
             </xpath>
 
             <!-- Show request type after title -->
-            <xpath expr="//field[@name='name']" position="after">
+            <!-- <xpath expr="//field[@name='name']" position="after">
                 <field name="request_type" />
-            </xpath>
+            </xpath> -->
 
             <!-- Contact name readonly -->
             <xpath expr="//field[@name='contact_name']" position="replace">
