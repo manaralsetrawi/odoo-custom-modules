@@ -14,11 +14,6 @@
                 <!-- <field name="intake_can_create_opportunity" invisible="1"/> -->
             </xpath>
 
-            <!-- Main title readonly -->
-            <xpath expr="//field[@name='name']" position="attributes">
-                <attribute name="readonly">1</attribute>
-            </xpath>
-
             <!-- Show request type after title -->
             <xpath expr="//field[@name='name']" position="after">
                 <field name="request_type" readonly="1"/>
