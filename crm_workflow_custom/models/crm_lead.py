@@ -58,6 +58,7 @@ class CrmLead(models.Model):
     is_stage_approved = fields.Boolean(compute="_compute_stage_flags", store=True)
     is_stage_rejected = fields.Boolean(compute="_compute_stage_flags", store=True)
 
+    # Button visibility helpers
     show_start_analysis_btn = fields.Boolean(compute="_compute_action_buttons", store=True)
     show_submit_proposal_btn = fields.Boolean(compute="_compute_action_buttons", store=True)
     show_send_to_approval_btn = fields.Boolean(compute="_compute_action_buttons", store=True)
@@ -75,7 +76,7 @@ class CrmLead(models.Model):
         return records
 
     @api.depends('stage_id', 'stage_id.name')
-    def _compute_action_buttons(self):      
+    def _compute_stage_flags(self):
         for record in self:
             stage_name = (record.stage_id.name or '').strip()
 
@@ -88,7 +89,7 @@ class CrmLead(models.Model):
             record.is_stage_approved = stage_name == 'Approved'
             record.is_stage_rejected = stage_name == 'Rejected'
 
-    @api.depends('stage_id')
+    @api.depends('stage_id', 'stage_id.name')
     def _compute_action_buttons(self):
         for record in self:
             stage_name = (record.stage_id.name or '').strip()
