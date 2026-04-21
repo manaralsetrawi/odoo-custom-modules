@@ -240,12 +240,12 @@
 
             <!-- Hide Workflow Overview tab -->
             <xpath expr="//page[.//field[@name='technical_feasibility'] and .//field[@name='proposal_summary']]" position="attributes">
-                <attribute name="invisible">request_type == 'project_request'</attribute>
+                <attribute name="invisible">type == 'lead'</attribute>
             </xpath>
 
             <!-- Hide Approval & Follow-up tab -->
             <xpath expr="//page[.//field[@name='approval_state'] and .//field[@name='followup_status']]" position="attributes">
-                <attribute name="invisible">request_type == 'project_request'</attribute>
+                <attribute name="invisible">type == 'lead'</attribute>
             </xpath>
 
         </field>
