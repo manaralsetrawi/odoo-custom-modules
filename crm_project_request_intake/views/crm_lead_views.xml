@@ -117,29 +117,27 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
 
-            <xpath expr="//page[@string='Extra Info']" position="attributes">
+<!-- hereeeeeee -->
+<!-- Example only: replace with the real technical names from parent view -->
+            <xpath expr="//page[@name='extra_info']" position="attributes">
                 <attribute name="invisible">type == 'lead'</attribute>
             </xpath>
 
-            <xpath expr="//page[@string='Workflow Overview']" position="attributes">
+            <xpath expr="//page[@name='workflow_overview']" position="attributes">
                 <attribute name="invisible">type == 'lead'</attribute>
             </xpath>
 
-            <xpath expr="//page[@string='Approval &amp; Follow-up']" position="attributes">
+            <xpath expr="//page[@name='approval_followup']" position="attributes">
                 <attribute name="invisible">type == 'lead'</attribute>
             </xpath>
 
-
-            <!-- Hide default Convert to Opportunity button only when record is a lead -->
-            <xpath expr="//button[@string='Convert to Opportunity']" position="attributes">
+            <xpath expr="//button[@name='action_convert_to_opportunity']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
 
-            <!-- Hide default Enrich button only when record is a lead -->
-           <xpath expr="//header//button[@string='Enrich']" position="replace"/>
+            <xpath expr="//header//button[@name='action_enrich']" position="replace"/>
 
-            <!-- Hide default Lost button only when record is a lead -->
-            <xpath expr="//header//button[@string='Lost']" position="attributes">
+            <xpath expr="//header//button[@name='action_set_lost']" position="attributes">
                 <attribute name="invisible">type == 'lead'</attribute>
             </xpath>
 
@@ -147,6 +145,8 @@
             <xpath expr="//button[@name='action_start_analysis']" position="attributes">
                 <attribute name="invisible">type == 'lead'</attribute>
             </xpath>
+
+            <!-- hereeeee -->
 
 
             <!-- Header buttons -->
