@@ -31,6 +31,7 @@ Main features:
         'views/crm_lead_views.xml',
         'views/project_request_reject_wizard_views.xml',
         'views/website_contact_form.xml',
+        'views/crm_client_segment_views.xml',
         'views/crm_project_request_menu.xml',
     ],
     'assets': {

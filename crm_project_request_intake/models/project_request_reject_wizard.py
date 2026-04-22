@@ -44,8 +44,6 @@ class ProjectRequestRejectWizard(models.TransientModel):
 
         lead.write({
             'intake_state': 'rejected',
-            'intake_reviewed_by': self.env.user.id,
-            'intake_review_date': fields.Datetime.now(),
             'intake_rejection_reason': full_reason,
             'stage_id': rejected_stage.id,
         })
