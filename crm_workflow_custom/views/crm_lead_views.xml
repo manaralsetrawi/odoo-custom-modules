@@ -55,13 +55,12 @@
             </xpath>
 
             <!-- Main workflow buttons -->
-            <xpath expr="//header" position="inside">
                 <button name="action_start_analysis"
                         type="object"
                         string="Start Analysis"
                         class="btn-primary crmwf_btn crmwf_btn_primary"
                         groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"
-                        invisible="not show_start_analysis_btn"/>
+                        invisible="type == 'lead' or not show_start_analysis_btn"/>
 
                 <button name="action_submit_proposal"
                         type="object"
@@ -208,9 +207,8 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm_workflow_custom.view_crm_lead_form_workflow_custom"/>
         <field name="arch" type="xml">
-
             <xpath expr="//button[@name='action_start_analysis']" position="attributes">
-                <attribute name="invisible">not show_start_analysis_btn</attribute>
+                <attribute name="invisible">type == 'lead' or not show_start_analysis_btn</attribute>
             </xpath>
 
             <xpath expr="//button[@name='action_submit_proposal']" position="attributes">
