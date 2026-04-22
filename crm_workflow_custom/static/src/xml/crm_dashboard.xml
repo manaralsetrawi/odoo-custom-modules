@@ -65,11 +65,12 @@
                             </thead>
                             <tbody>
                                 <t t-foreach="state.data.recent_requests" t-as="req" t-key="req.id">
-                                    <tr>
+                                    <tr class="crmdsh_clickable_row"
+                                        t-on-click="() => this.openLeadRecord(req.id)">
                                         <td>
                                             <a href="#"
                                                class="crmdsh_link"
-                                               t-on-click.prevent="() => this.openLeadRecord(req.id)">
+                                               t-on-click.stop.prevent="() => this.openLeadRecord(req.id)">
                                                 <t t-esc="req.name"/>
                                             </a>
                                         </td>
@@ -103,11 +104,12 @@
                             </thead>
                             <tbody>
                                 <t t-foreach="state.data.waiting_approval_requests" t-as="req" t-key="req.id">
-                                    <tr>
+                                    <tr class="crmdsh_clickable_row"
+                                        t-on-click="() => this.openLeadRecord(req.id)">
                                         <td>
                                             <a href="#"
                                                class="crmdsh_link"
-                                               t-on-click.prevent="() => this.openLeadRecord(req.id)">
+                                               t-on-click.stop.prevent="() => this.openLeadRecord(req.id)">
                                                 <t t-esc="req.name"/>
                                             </a>
                                         </td>
@@ -139,11 +141,12 @@
                             </thead>
                             <tbody>
                                 <t t-foreach="state.data.overdue_requests" t-as="req" t-key="req.id">
-                                    <tr>
+                                    <tr class="crmdsh_clickable_row"
+                                        t-on-click="() => this.openLeadRecord(req.id)">
                                         <td>
                                             <a href="#"
                                                class="crmdsh_link"
-                                               t-on-click.prevent="() => this.openLeadRecord(req.id)">
+                                               t-on-click.stop.prevent="() => this.openLeadRecord(req.id)">
                                                 <t t-esc="req.name"/>
                                             </a>
                                         </td>

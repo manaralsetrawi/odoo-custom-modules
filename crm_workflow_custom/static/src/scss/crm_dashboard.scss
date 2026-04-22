@@ -264,3 +264,11 @@
 .crmdsh_card:hover .crmdsh_card_value {
     opacity: 0.95;
 }
+.crmdsh_clickable_row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.crmdsh_clickable_row:hover td {
+    background-color: #f8fafc;
+}
