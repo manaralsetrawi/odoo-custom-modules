@@ -198,7 +198,7 @@
                 <!-- ===================================================== -->
                 <page string="Project Review Details"
                       groups="crm_workflow_custom.group_crm_workflow_manager"
-                      invisible="request_type != 'project_request' or intake_state not in ['under_review', 'approved']">
+                      invisible="request_type != 'project_request' or intake_state in ['draft', 'submitted', 'rejected']">
 
                     <group string="Project Classification" col="2">
                         <group>
