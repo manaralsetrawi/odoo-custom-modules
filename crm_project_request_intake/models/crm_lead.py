@@ -170,40 +170,10 @@ class CrmProjectRequestLead(models.Model):
     # =========================================================
     @api.model_create_multi
     def create(self, vals_list):
-        new_stage = self.env.ref(
-            'crm_project_request_intake.crm_stage_project_request_new',
-            raise_if_not_found=False
-        )
-
-        for vals in vals_list:
-            if vals.get('request_type') == 'project_request':
-                if not vals.get('intake_state') or vals.get('intake_state') == 'draft':
-                    vals['intake_state'] = 'submitted'
-                if new_stage and not vals.get('stage_id'):
-                    vals['stage_id'] = new_stage.id
-                vals['type'] = 'lead'
-
         return super().create(vals_list)
 
     def write(self, vals):
-        result = super().write(vals)
-
-        new_stage = self.env.ref(
-            'crm_project_request_intake.crm_stage_project_request_new',
-            raise_if_not_found=False
-        )
-
-        if 'request_type' in vals:
-            for record in self:
-                if record.request_type == 'project_request':
-                    if record.intake_state == 'draft':
-                        record.intake_state = 'submitted'
-                    if new_stage and not record.stage_id:
-                        record.stage_id = new_stage.id
-                    if record.type != 'opportunity':
-                        record.type = 'lead'
-
-        return result
+        return super().write(vals)
 
     # =========================================================
     # Workflow Actions
