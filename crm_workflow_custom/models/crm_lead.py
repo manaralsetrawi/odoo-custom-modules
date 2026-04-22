@@ -43,7 +43,6 @@ class CrmLead(models.Model):
 
     inactive_alert = fields.Boolean(string="Needs Follow-up", default=False, tracking=True)
 
-
     # Stage helpers
     is_stage_new_inquiry = fields.Boolean(compute="_compute_stage_flags", store=True)
     is_stage_initial_discussion = fields.Boolean(compute="_compute_stage_flags", store=True)
@@ -127,6 +126,10 @@ class CrmLead(models.Model):
         self.ensure_one()
         errors = []
 
+        # Contact required only for your internal flow records, not lead-based intake records
+        if self.type != 'lead' and not self.partner_id:
+            errors.append(_("Contact is required."))
+
         if not self.technical_feasibility or self.technical_feasibility == 'pending':
             errors.append(_("Technical Feasibility Status must be set."))
 
@@ -147,6 +150,8 @@ class CrmLead(models.Model):
 
         if not self.proposal_amount:
             errors.append(_("Estimated Project Value is required."))
+        elif self.proposal_amount <= 0:
+            errors.append(_("Estimated Project Value must be greater than 0."))
 
         return errors
 
