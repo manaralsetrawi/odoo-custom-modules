@@ -353,25 +353,6 @@ class CrmProjectRequestLead(models.Model):
                 }
                 partner = Partner.create(partner_vals)
 
-            # Optional: create a child contact person if company exists and client name is provided
-            contact_person = partner
-            if partner.is_company and record.intake_client_name:
-                existing_contact = Partner.search([
-                    ('parent_id', '=', partner.id),
-                    ('name', '=', record.intake_client_name)
-                ], limit=1)
-
-                if existing_contact:
-                    contact_person = existing_contact
-                else:
-                    contact_person = Partner.create({
-                        'name': record.intake_client_name,
-                        'parent_id': partner.id,
-                        'type': 'contact',
-                        'email': record.intake_client_email or record.email_from,
-                        'phone': record.intake_client_phone or record.phone,
-                        'company_type': 'person',
-                    })
 
             # =========================================================
             # Create Opportunity linked to Contact
