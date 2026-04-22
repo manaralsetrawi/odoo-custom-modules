@@ -484,3 +484,18 @@ button[name="iap_enrich"] {
         display: none !important;
     }
 }
+.o_kanban_view.o_crm_kanban_view {
+    .crmwf_kanban_deadline_row {
+        gap: 10px;
+    }
+
+    .crmwf_kanban_deadline_row .crmwf_kanban_meta_label {
+        margin-right: 4px;
+    }
+
+    .crmwf_kanban_deadline_row .o_field_widget,
+    .crmwf_kanban_deadline_row .o_field_date,
+    .crmwf_kanban_deadline_row span {
+        margin-left: 2px;
+    }
+}
