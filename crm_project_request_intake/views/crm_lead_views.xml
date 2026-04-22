@@ -15,7 +15,7 @@
 
             <!-- Show request type after title -->
             <xpath expr="//field[@name='name']" position="after">
-                <field name="request_type" readonly="type == 'lead' or not is_stage_new_inquiry"/>
+                <field name="request_type" readonly="1"/>
             </xpath>
 
             <!-- Contact name readonly -->

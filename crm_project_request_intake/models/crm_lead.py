@@ -61,7 +61,7 @@ class CrmProjectRequestLead(models.Model):
     request_type = fields.Selection([
         ('general_inquiry', 'General Inquiry'),
         ('project_request', 'Project Request'),
-    ], string='Request Type', default='general_inquiry', tracking=True)
+    ], string='Request Type', default='project_request', tracking=True)
 
     # =========================================================
     # Client Submission Fields
