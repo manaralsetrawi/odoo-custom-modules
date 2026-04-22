@@ -1,0 +1,68 @@
+.crmdsh_wrapper {
+    padding: 20px;
+}
+
+.crmdsh_header {
+    margin-bottom: 18px;
+}
+
+.crmdsh_header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0b2c3d;
+    margin-bottom: 4px;
+}
+
+.crmdsh_header p {
+    color: #64748b;
+    margin-bottom: 0;
+}
+
+.crmdsh_cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.crmdsh_card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.crmdsh_card_title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.crmdsh_card_value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0b2c3d;
+}
+
+.crmdsh_sections {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+}
+
+.crmdsh_section {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.crmdsh_section h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0b2c3d;
+    margin-bottom: 14px;
+}
