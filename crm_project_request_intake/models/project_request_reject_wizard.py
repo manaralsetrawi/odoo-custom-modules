@@ -25,17 +25,20 @@ class ProjectRequestRejectWizard(models.TransientModel):
             raise ValidationError(_("No lead was found for rejection."))
 
         if lead.request_type != 'project_request' or lead.type != 'lead':
-            raise ValidationError(_("Only project request leads can be rejected."))
+            raise ValidationError(
+                _("Only project request leads can be rejected."))
 
         if lead.intake_state != 'under_review':
-            raise ValidationError(_("Only requests under review can be rejected."))
+            raise ValidationError(
+                _("Only requests under review can be rejected."))
 
         rejected_stage = lead._get_stage_by_xmlid(
             'crm_project_request_intake.crm_stage_project_request_rejected'
         )
 
         full_reason = "%s\n\n%s" % (
-            dict(self._fields['rejection_category'].selection).get(self.rejection_category, ''),
+            dict(self._fields['rejection_category'].selection).get(
+                self.rejection_category, ''),
             self.rejection_reason,
         )
 
@@ -47,4 +50,7 @@ class ProjectRequestRejectWizard(models.TransientModel):
             'stage_id': rejected_stage.id,
         })
 
-        return {'type': 'ir.actions.act_window_close'}
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
