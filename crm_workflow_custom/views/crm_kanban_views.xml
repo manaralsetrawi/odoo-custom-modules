@@ -13,7 +13,7 @@
             </xpath>
 
             <!-- Remove default CRM subtitle block (duplicate client text) -->
-            <xpath expr="//templates//t[@t-if='record.partner_id.raw_value']" position="replace"/>
+            <!-- <xpath expr="//templates//t[@t-if='record.partner_id.raw_value']" position="replace"/> -->
             <!-- Improve title appearance -->
             <xpath expr="//templates//field[@name='name']" position="replace">
                 <div class="crmwf_kanban_title">
