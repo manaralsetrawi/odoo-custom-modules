@@ -235,7 +235,7 @@ class CrmProjectRequestLead(models.Model):
             'crm_project_request_intake.crm_stage_project_request_approved'
         )
         initial_discussion_stage = self._get_stage_by_xmlid(
-            'crm_workflow_custom.crm_stage_initial_discussion'
+            'crm_workflow_custom.stage_initial_discussion'
         )
 
         for record in self:
