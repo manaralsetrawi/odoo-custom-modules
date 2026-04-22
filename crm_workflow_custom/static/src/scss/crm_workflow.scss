@@ -515,3 +515,15 @@ button[name="iap_enrich"] {
         margin-right: 4px;
     }
 }
+/* Hide leftover default CRM subtitle/contact text inside kanban cards */
+.o_kanban_view.o_crm_kanban_view {
+    .crmwf_kanban_card {
+        .o_text_overflow.text-muted,
+        .text-muted.o_text_overflow,
+        .o_kanban_record_subtitle,
+        .o_kanban_record_subtitle span,
+        .o_kanban_record_subtitle div {
+            display: none !important;
+        }
+    }
+}
