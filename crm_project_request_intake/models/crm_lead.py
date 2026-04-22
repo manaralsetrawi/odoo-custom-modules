@@ -251,6 +251,59 @@ class CrmProjectRequestLead(models.Model):
             if record.intake_state != 'under_review':
                 raise ValidationError(_("Only requests under review can be approved."))
 
+            # =========================================================
+            # Required Project Review Details Validation
+            # =========================================================
+            missing_fields = []
+
+            if not record.review_project_type:
+                missing_fields.append(_("Project Type"))
+
+            if not record.review_complexity:
+                missing_fields.append(_("Project Complexity"))
+
+            if not record.review_client_segment:
+                missing_fields.append(_("Client Segment"))
+
+            if not record.intake_technical_feasibility == 'pending':
+                missing_fields.append(_("Technical Feasibility"))
+
+            if record.intake_estimated_budget_final:
+                missing_fields.append(_("Final Estimated Budget"))
+
+            if not record.intake_estimated_duration_final:
+                missing_fields.append(_("Final Estimated Duration"))
+
+            if not record.intake_project_deadline:
+                missing_fields.append(_("Project Deadline"))
+
+            if not record.intake_project_requirements:
+                missing_fields.append(_("Project Requirements"))
+
+            if not record.intake_solution_summary:
+                missing_fields.append(_("Solution Summary"))
+
+            if not record.review_recommendation:
+                missing_fields.append(_("Manager Recommendation"))
+
+            # At least one technical scope option should be selected
+            if not any([
+                record.review_has_web_development,
+                record.review_has_ios_development,
+                record.review_has_android_development,
+                record.review_has_ai_features,
+                record.review_has_chatbot,
+                record.review_has_dashboard,
+                record.review_has_api_integration,
+            ]):
+                missing_fields.append(_("At least one Technical Scope option"))
+
+            if missing_fields:
+                raise ValidationError(_(
+                    "You cannot approve this request until the Project Review Details are completed.\n\n"
+                    "Please fill in:\n- %s"
+                ) % "\n- ".join(missing_fields))
+
             opportunity_vals = {
                 'name': record.intake_project_title or record.name,
                 'type': 'opportunity',
@@ -271,6 +324,10 @@ class CrmProjectRequestLead(models.Model):
             record.intake_review_date = fields.Datetime.now()
             record.intake_opportunity_id = opportunity.id
             record.stage_id = approved_stage.id
+
+            record.message_post(
+                body=_("Project request approved and converted into an opportunity.")
+            )
 
     # =========================================================
     # Optional Helper When Website Creates Request
