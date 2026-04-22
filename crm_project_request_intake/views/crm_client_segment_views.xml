@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree View -->
-    <record id="view_crm_client_segment_tree" model="ir.ui.view">
-        <field name="name">crm.client.segment.tree</field>
+    <!-- List View -->
+    <record id="view_crm_client_segment_list" model="ir.ui.view">
+        <field name="name">crm.client.segment.list</field>
         <field name="model">crm.client.segment</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="code"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -38,7 +38,7 @@
     <record id="action_crm_client_segment" model="ir.actions.act_window">
         <field name="name">Client Segments</field>
         <field name="res_model">crm.client.segment</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
 </odoo>
