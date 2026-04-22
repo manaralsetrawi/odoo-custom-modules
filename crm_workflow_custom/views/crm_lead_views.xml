@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+
     <record id="view_crm_lead_form_workflow_custom" model="ir.ui.view">
         <field name="name">crm.lead.form.workflow.custom</field>
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
 
+            <!-- Title -->
             <xpath expr="//div[contains(@class, 'oe_title')]" position="replace">
                 <div class="oe_title">
                     <h1>
@@ -14,6 +16,7 @@
                 </div>
             </xpath>
 
+            <!-- Helper fields -->
             <xpath expr="//form/sheet" position="inside">
                 <field name="is_stage_new_inquiry" invisible="1"/>
                 <field name="is_stage_initial_discussion" invisible="1"/>
@@ -31,25 +34,34 @@
                 <field name="show_reject_btn" invisible="1"/>
             </xpath>
 
+            <!-- Contact required only for internal flow -->
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="required">type != 'lead'</attribute>
+            </xpath>
+
+            <!-- Hide default Lost button -->
             <xpath expr="//header//button[@type='action' and @name='661']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
 
+            <!-- Hide Expected Closing -->
             <xpath expr="//field[@name='date_deadline']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            
+
+            <!-- Hide Tags -->
             <xpath expr="//field[@name='tag_ids']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
 
+            <!-- Main workflow buttons -->
             <xpath expr="//header" position="inside">
                 <button name="action_start_analysis"
                         type="object"
                         string="Start Analysis"
                         class="btn-primary crmwf_btn crmwf_btn_primary"
-                        groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer"
-                        invisible="not show_start_analysis_btn"/>
+                        groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"
+                        invisible="type == 'lead' or not show_start_analysis_btn"/>
 
                 <button name="action_submit_proposal"
                         type="object"
@@ -80,50 +92,94 @@
                         invisible="not show_reject_btn"/>
             </xpath>
 
+            <!-- Important summary outside tabs: show only from analysis onward -->
+            <xpath expr="//sheet/notebook" position="before">
+                <div class="crmwf_summary_wrap"
+                     invisible="type == 'lead' or is_stage_new_inquiry or is_stage_initial_discussion">
+                    <group class="crmwf_row">
+
+                        <!-- Editable for Technical Reviewer + Manager -->
+                        <group string="Workflow Summary"
+                               class="crmwf_card crmwf_card_summary"
+                               groups="crm_workflow_custom.group_crm_technical_reviewer,crm_workflow_custom.group_crm_workflow_manager">
+                            <field name="technical_feasibility"/>
+                            <field name="complexity_level"/>
+                            <field name="approval_state" readonly="1"/>
+                        </group>
+
+                        <group string="Planning Summary"
+                               class="crmwf_card crmwf_card_summary"
+                               groups="crm_workflow_custom.group_crm_technical_reviewer,crm_workflow_custom.group_crm_workflow_manager">
+                            <field name="estimated_duration"/>
+                            <field name="project_deadline"/>
+                            <field name="proposal_amount"/>
+                        </group>
+
+                        <!-- Readonly for Workflow User -->
+                        <group string="Workflow Summary"
+                               class="crmwf_card crmwf_card_summary"
+                               groups="crm_workflow_custom.group_crm_workflow_user">
+                            <field name="technical_feasibility" readonly="1"/>
+                            <field name="complexity_level" readonly="1"/>
+                            <field name="approval_state" readonly="1"/>
+                        </group>
+
+                        <group string="Planning Summary"
+                               class="crmwf_card crmwf_card_summary"
+                               groups="crm_workflow_custom.group_crm_workflow_user">
+                            <field name="estimated_duration" readonly="1"/>
+                            <field name="project_deadline" readonly="1"/>
+                            <field name="proposal_amount" readonly="1"/>
+                        </group>
+
+                    </group>
+                </div>
+            </xpath>
+
+            <!-- Tabs -->
             <xpath expr="//sheet/notebook" position="inside">
+
+                <!-- Show from Requirement Analysis onward -->
                 <page name="crmwf_workflow_overview"
                       string="Workflow Overview"
                       class="crmwf_workflow_page"
-                      groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
+                      groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer"
+                      invisible="is_stage_new_inquiry or is_stage_initial_discussion">
 
                     <div class="crmwf_hint_box">
                         <div class="crmwf_hint_title">Workflow Guidance</div>
                         <div class="crmwf_hint_text">
-                            Review the request, complete the technical evaluation, prepare the proposal,
-                            then send it for approval.
+                            Review the request, complete the technical evaluation, prepare the proposal, then send it for approval.
                         </div>
                     </div>
 
                     <group class="crmwf_row">
-                        <group string="Technical Evaluation" class="crmwf_card crmwf_card_technical">
-                            <field name="technical_feasibility"
-                                   required="is_stage_analysis or is_stage_solution_design or is_stage_proposal"/>
-                            <field name="complexity_level"
-                                   required="is_stage_analysis or is_stage_solution_design or is_stage_proposal"/>
-                            <field name="estimated_duration"
-                                   required="is_stage_analysis or is_stage_solution_design or is_stage_proposal"/>
-                            <field name="project_deadline"
-                                   required="is_stage_analysis or is_stage_solution_design or is_stage_proposal"/>
-                        </group>
-
                         <group string="Proposal Details"
                                class="crmwf_card crmwf_card_proposal"
-                               invisible="is_stage_new_inquiry and not proposal_summary and not proposal_amount">
+                               groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager">
                             <field name="proposal_summary"
                                    placeholder="Enter a short summary of the proposed solution..."
-                                   required="is_stage_analysis or is_stage_solution_design or is_stage_proposal"/>
-                            <field name="proposal_amount"
                                    required="is_stage_analysis or is_stage_solution_design or is_stage_proposal"/>
                             <field name="negotiation_notes"
                                    placeholder="Add any negotiation comments or client feedback..."/>
                         </group>
+
+                        <!-- Readonly proposal view for Technical Reviewer -->
+                        <group string="Proposal Details"
+                               class="crmwf_card crmwf_card_proposal"
+                               groups="crm_workflow_custom.group_crm_technical_reviewer">
+                            <field name="proposal_summary" readonly="1"/>
+                            <field name="negotiation_notes" readonly="1"/>
+                        </group>
                     </group>
                 </page>
 
+                <!-- Show only from Waiting Approval onward -->
                 <page name="crmwf_approval_followup"
                       string="Approval &amp; Follow-up"
                       class="crmwf_workflow_page"
-                      groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
+                      groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer"
+                      invisible="not (is_stage_waiting_approval or is_stage_approved or is_stage_rejected)">
 
                     <group class="crmwf_row">
                         <group string="Approval Information" class="crmwf_card crmwf_card_approval">
@@ -141,8 +197,39 @@
                         </group>
                     </group>
                 </page>
+
             </xpath>
 
         </field>
     </record>
+
+    <record id="view_crm_lead_form_workflow_button_visibility_fix" model="ir.ui.view">
+        <field name="name">crm.lead.form.workflow.button.visibility.fix</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm_workflow_custom.view_crm_lead_form_workflow_custom"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//button[@name='action_start_analysis']" position="attributes">
+                <attribute name="invisible">type == 'lead' or not show_start_analysis_btn</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_submit_proposal']" position="attributes">
+                <attribute name="invisible">not show_submit_proposal_btn</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_send_to_approval']" position="attributes">
+                <attribute name="invisible">not show_send_to_approval_btn</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_approve_project']" position="attributes">
+                <attribute name="invisible">not show_approve_btn</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_reject_project']" position="attributes">
+                <attribute name="invisible">not show_reject_btn</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
 </odoo>

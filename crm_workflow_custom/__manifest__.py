@@ -18,11 +18,15 @@
         'views/crm_reporting_views.xml',
         'views/crm_kanban_views.xml',
         'views/crm_reject_wizard_views.xml',
+        'views/crm_dashboard_views.xml',
         'data/crm_reminder_cron.xml',
     ],
     'assets': {
         'web.assets_backend': [
+            'crm_workflow_custom/static/src/js/crm_dashboard.js',
+            'crm_workflow_custom/static/src/xml/crm_dashboard.xml',
             'crm_workflow_custom/static/src/scss/crm_workflow.scss',
+            'crm_workflow_custom/static/src/scss/crm_dashboard.scss',
         ],
     },
     'installable': True,
