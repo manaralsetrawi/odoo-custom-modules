@@ -5,42 +5,67 @@
         <field name="name">crm.lead.kanban.workflow.custom</field>
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
-
         <field name="arch" type="xml">
 
-            <!-- Inject inside main kanban template -->
+            <!-- Add custom class to the main card -->
+            <xpath expr="//templates/t/div" position="attributes">
+                <attribute name="class" add=" crmwf_kanban_card" separator=" "/>
+            </xpath>
+
+            <!-- Improve title appearance -->
+            <xpath expr="//templates//field[@name='name']" position="replace">
+                <div class="crmwf_kanban_title">
+                    <field name="name"/>
+                </div>
+            </xpath>
+
+            <!-- Inject workflow info inside main kanban template -->
             <xpath expr="//templates/t/div" position="inside">
 
                 <div class="crmwf_kanban_extra">
 
-                    <div class="crmwf_kanban_line crmwf_kanban_line_deadline">
-                        <i class="fa fa-calendar"/>
-                        <span class="crmwf_kanban_label">Deadline:</span>
-                        <field name="project_deadline"/>
+                    <div class="crmwf_kanban_deadline_row">
+                        <div class="crmwf_kanban_meta_value">
+                            <i class="fa fa-calendar"/>
+                            <span class="crmwf_kanban_meta_label">Deadline:</span>
+                            <field name="project_deadline"/>
+                        </div>
                     </div>
 
-                    <div class="crmwf_kanban_line crmwf_kanban_line_state">
-                        <i class="fa fa-check-circle"/>
-                        <span class="crmwf_kanban_label">Approval:</span>
-                        <field name="approval_state"/>
+                    <div class="crmwf_kanban_status_row">
+                        <div class="crmwf_kanban_status_badge">
+                            <i class="fa fa-check-circle"/>
+                            <span class="crmwf_kanban_meta_label">Approval:</span>
+                            <span class="crmwf_kanban_meta_value">
+                                <field name="approval_state"/>
+                            </span>
+                        </div>
                     </div>
 
-                    <div class="crmwf_kanban_line crmwf_kanban_line_followup">
-                        <i class="fa fa-bell"/>
-                        <span class="crmwf_kanban_label">Follow-up:</span>
-                        <field name="followup_status"/>
+                    <div class="crmwf_kanban_followup_row">
+                        <div class="crmwf_kanban_followup_badge">
+                            <i class="fa fa-bell"/>
+                            <span class="crmwf_kanban_meta_label">Follow-up:</span>
+                            <span class="crmwf_kanban_meta_value">
+                                <field name="followup_status"/>
+                            </span>
+                        </div>
                     </div>
 
-                    <div class="crmwf_kanban_line crmwf_kanban_line_contact">
+                    <div class="crmwf_kanban_client_row">
                         <i class="fa fa-user"/>
-                        <span class="crmwf_kanban_label">Client:</span>
-                        <field name="partner_id"/>
+                        <span class="crmwf_kanban_meta_label">Client:</span>
+                        <span class="crmwf_kanban_meta_value">
+                            <field name="partner_id"/>
+                        </span>
                     </div>
 
-                    <div class="crmwf_kanban_line crmwf_kanban_line_owner">
+                    <div class="crmwf_kanban_owner_row">
                         <i class="fa fa-user-circle"/>
-                        <span class="crmwf_kanban_label">Owner:</span>
-                        <field name="user_id"/>
+                        <span class="crmwf_kanban_meta_label">Owner:</span>
+                        <span class="crmwf_kanban_meta_value">
+                            <field name="user_id"/>
+                        </span>
                     </div>
 
                 </div>
