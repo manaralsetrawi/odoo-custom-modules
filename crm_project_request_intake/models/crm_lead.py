@@ -259,10 +259,10 @@ class CrmProjectRequestLead(models.Model):
             if not record.review_client_segment_id:
                 missing_fields.append(_("Client Segment"))
 
-            if not record.intake_technical_feasibility == 'pending':
+            if record.intake_technical_feasibility == 'pending':
                 missing_fields.append(_("Technical Feasibility"))
 
-            if record.intake_estimated_budget_final:
+            if not record.intake_estimated_budget_final:
                 missing_fields.append(_("Final Estimated Budget"))
 
             if not record.intake_estimated_duration_final:
