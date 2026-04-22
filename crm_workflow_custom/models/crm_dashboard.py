@@ -43,6 +43,7 @@ class CrmDashboard(models.Model):
                 'name': rec.name or '-',
                 'customer': rec.partner_id.name or rec.partner_name or rec.contact_name or '-',
                 'stage': rec.stage_id.name or '-',
+                'stage_class': self._get_stage_badge_class(rec.stage_id.name or ''),
             }
             for rec in recent_requests_records
         ]
@@ -78,3 +79,17 @@ class CrmDashboard(models.Model):
             'waiting_approval_requests': waiting_approval_requests,
             'overdue_requests': overdue_requests,
         }
+
+    def _get_stage_badge_class(self, stage_name):
+        mapping = {
+            'New Inquiry': 'crmdsh_badge_new',
+            'Initial Discussion': 'crmdsh_badge_discussion',
+            'Requirement Analysis': 'crmdsh_badge_analysis',
+            'Solution Design': 'crmdsh_badge_solution',
+            'Proposal Submitted': 'crmdsh_badge_proposal',
+            'Waiting Approval': 'crmdsh_badge_waiting',
+            'Approved': 'crmdsh_badge_approved',
+            'Rejected': 'crmdsh_badge_rejected',
+            'Under Review': 'crmdsh_badge_review',
+        }
+        return mapping.get(stage_name, 'crmdsh_badge_default')

@@ -190,3 +190,64 @@
         font-size: 28px;
     }
 }
+.crmdsh_link {
+    color: #0b2c3d;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.crmdsh_link:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+.crmdsh_badge_default {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.crmdsh_badge_new {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.crmdsh_badge_discussion {
+    background: #eef2ff;
+    color: #4f46e5;
+}
+
+.crmdsh_badge_analysis {
+    background: #ecfeff;
+    color: #0891b2;
+}
+
+.crmdsh_badge_solution {
+    background: #f5f3ff;
+    color: #7c3aed;
+}
+
+.crmdsh_badge_proposal {
+    background: #fff7ed;
+    color: #ea580c;
+}
+
+.crmdsh_badge_waiting {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.crmdsh_badge_approved {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.crmdsh_badge_rejected {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.crmdsh_badge_review {
+    background: #e0f2fe;
+    color: #0369a1;
+}

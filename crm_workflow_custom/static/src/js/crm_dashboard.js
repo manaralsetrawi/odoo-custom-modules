@@ -7,6 +7,8 @@ import { useService } from "@web/core/utils/hooks";
 class CrmDashboard extends Component {
     setup() {
         this.orm = useService("orm");
+        this.action = useService("action");
+
         this.state = useState({
             data: {
                 total_requests: 0,
@@ -27,6 +29,17 @@ class CrmDashboard extends Component {
                 "get_dashboard_data",
                 []
             );
+        });
+    }
+
+    openLeadRecord(recordId) {
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            name: "CRM Request",
+            res_model: "crm.lead",
+            res_id: recordId,
+            views: [[false, "form"]],
+            target: "current",
         });
     }
 }
