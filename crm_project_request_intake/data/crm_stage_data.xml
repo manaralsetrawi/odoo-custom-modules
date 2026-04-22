@@ -1,3 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <record id="crm_stage_project_request_new" model="crm.stage">
+        <field name="name">New Project Request</field>
+        <field name="sequence">5</field>
+    </record>
+
+    <record id="crm_stage_project_request_review" model="crm.stage">
+        <field name="name">Under Review</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="crm_stage_project_request_approved" model="crm.stage">
+        <field name="name">Approved Request</field>
+        <field name="sequence">15</field>
+    </record>
+
+    <record id="crm_stage_project_request_rejected" model="crm.stage">
+        <field name="name">Rejected Request</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="crm_stage_project_request_opportunity" model="crm.stage">
+        <field name="name">Project Opportunity</field>
+        <field name="sequence">25</field>
+    </record>
+
 </odoo>
