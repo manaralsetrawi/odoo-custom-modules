@@ -277,6 +277,8 @@ class CrmProjectRequestLead(models.Model):
             'crm_workflow_custom.stage_initial_discussion'
         )
 
+        Partner = self.env['res.partner']
+
         for record in self:
             if record.request_type != 'project_request' or record.type != 'lead':
                 raise ValidationError(_("Only project request leads can be approved."))
@@ -325,10 +327,60 @@ class CrmProjectRequestLead(models.Model):
                     "Please fill in:\n- %s"
                 ) % "\n- ".join(missing_fields))
 
+            # =========================================================
+            # Find or Create Contact in Contacts module
+            # =========================================================
+            partner = False
+
+            if record.intake_client_email:
+                partner = Partner.search([
+                    ('email', '=', record.intake_client_email)
+                ], limit=1)
+
+            if not partner and record.intake_company_name:
+                partner = Partner.search([
+                    ('name', '=', record.intake_company_name),
+                    ('is_company', '=', True)
+                ], limit=1)
+
+            if not partner:
+                partner_vals = {
+                    'name': record.intake_company_name or record.intake_client_name or record.contact_name or _("New Contact"),
+                    'email': record.intake_client_email or record.email_from,
+                    'phone': record.intake_client_phone or record.phone,
+                    'is_company': bool(record.intake_company_name),
+                    'company_type': 'company' if record.intake_company_name else 'person',
+                }
+                partner = Partner.create(partner_vals)
+
+            # Optional: create a child contact person if company exists and client name is provided
+            contact_person = partner
+            if partner.is_company and record.intake_client_name:
+                existing_contact = Partner.search([
+                    ('parent_id', '=', partner.id),
+                    ('name', '=', record.intake_client_name)
+                ], limit=1)
+
+                if existing_contact:
+                    contact_person = existing_contact
+                else:
+                    contact_person = Partner.create({
+                        'name': record.intake_client_name,
+                        'parent_id': partner.id,
+                        'type': 'contact',
+                        'email': record.intake_client_email or record.email_from,
+                        'phone': record.intake_client_phone or record.phone,
+                        'company_type': 'person',
+                    })
+
+            # =========================================================
+            # Create Opportunity linked to Contact
+            # =========================================================
             opportunity_vals = {
                 'name': record.intake_project_title or record.name,
                 'type': 'opportunity',
-                'partner_name': record.intake_company_name or record.partner_name,
+                'partner_id': contact_person.id,
+                'partner_name': record.intake_company_name or partner.name,
                 'contact_name': record.intake_client_name or record.contact_name,
                 'email_from': record.intake_client_email or record.email_from,
                 'phone': record.intake_client_phone or record.phone,
@@ -346,8 +398,9 @@ class CrmProjectRequestLead(models.Model):
             })
 
             record.message_post(
-                body=_("Project request approved and converted into an opportunity in Initial Discussion stage.")
+                body=_("Project request approved, contact created/linked, and opportunity created in Initial Discussion stage.")
             )
+
 
     # =========================================================
     # Optional Helper When Website Creates Request
