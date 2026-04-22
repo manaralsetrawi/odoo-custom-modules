@@ -6,14 +6,11 @@ class CrmProjectRequestLead(models.Model):
     _inherit = 'crm.lead'
 
     # Project review fields
-    review_project_type = fields.Selection([
-        ('web', 'Web Development'),
-        ('mobile', 'Mobile Application'),
-        ('ai', 'AI Solution'),
-        ('chatbot', 'Chatbot'),
-        ('erp', 'ERP / Business System'),
-        ('other', 'Other'),
-    ], string='Project Type', tracking=True)
+    review_project_type_id = fields.Many2one(
+        'crm.project.type',
+        string='Project Type',
+        tracking=True,
+    )
 
     review_has_web_development = fields.Boolean(
         string='Web Development', tracking=True)
@@ -257,7 +254,7 @@ class CrmProjectRequestLead(models.Model):
             # =========================================================
             missing_fields = []
 
-            if not record.review_project_type:
+            if not record.review_project_type_id:
                 missing_fields.append(_("Project Type"))
 
             if not record.review_complexity:
