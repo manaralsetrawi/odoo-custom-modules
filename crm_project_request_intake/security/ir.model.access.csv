@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_project_request_reject_wizard_manager,project.request.reject.wizard.manager,model_project_request_reject_wizard,crm_workflow_custom.group_crm_workflow_manager,1,1,1,1
 access_crm_client_segment_manager,crm.client.segment.manager,model_crm_client_segment,crm_workflow_custom.group_crm_workflow_manager,1,1,1,1
+access_crm_project_type_manager,crm.project.type.manager,model_crm_project_type,crm_workflow_custom.group_crm_workflow_manager,1,1,1,1
+access_crm_project_feature_manager,crm.project.feature.manager,model_crm_project_feature,crm_workflow_custom.group_crm_workflow_manager,1,1,1,1
