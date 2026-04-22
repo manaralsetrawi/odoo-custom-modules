@@ -5,6 +5,52 @@ from odoo.exceptions import ValidationError, UserError
 class CrmProjectRequestLead(models.Model):
     _inherit = 'crm.lead'
 
+
+        # Project review fields
+    review_project_type = fields.Selection([
+        ('web', 'Web Development'),
+        ('mobile', 'Mobile Application'),
+        ('ai', 'AI Solution'),
+        ('chatbot', 'Chatbot'),
+        ('erp', 'ERP / Business System'),
+        ('other', 'Other'),
+    ], string='Project Type', tracking=True)
+
+    review_has_web_development = fields.Boolean(string='Web Development', tracking=True)
+    review_has_ios_development = fields.Boolean(string='iOS Development', tracking=True)
+    review_has_android_development = fields.Boolean(string='Android Development', tracking=True)
+    review_has_ai_features = fields.Boolean(string='AI Related', tracking=True)
+    review_has_chatbot = fields.Boolean(string='Chatbot', tracking=True)
+    review_has_dashboard = fields.Boolean(string='Dashboard / Reporting', tracking=True)
+    review_has_api_integration = fields.Boolean(string='API Integration', tracking=True)
+
+    review_project_features = fields.Text(string='Project Features', tracking=True)
+
+    review_complexity = fields.Selection([
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+    ], string='Project Complexity', tracking=True)
+
+    review_priority_level = fields.Selection([
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+    ], string='Priority Level', tracking=True)
+
+    review_client_segment = fields.Selection([
+        ('education', 'Education'),
+        ('government', 'Government'),
+        ('private', 'Private Sector'),
+        ('startup', 'Startup'),
+        ('other', 'Other'),
+    ], string='Client Segment', tracking=True)
+
+    review_estimated_team = fields.Char(string='Suggested Team / Resources', tracking=True)
+    review_risk_notes = fields.Text(string='Risk Notes', tracking=True)
+    review_recommendation = fields.Text(string='Manager Recommendation', tracking=True)
+
+
     # =========================================================
     # Request Type
     # =========================================================
