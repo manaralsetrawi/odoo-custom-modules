@@ -34,7 +34,7 @@
                 <field name="show_reject_btn" invisible="1"/>
             </xpath>
 
-            <!-- Contact required only for your internal flow -->
+            <!-- Contact required only for internal flow -->
             <xpath expr="//field[@name='partner_id']" position="attributes">
                 <attribute name="required">type != 'lead'</attribute>
             </xpath>
@@ -60,7 +60,7 @@
                         type="object"
                         string="Start Analysis"
                         class="btn-primary crmwf_btn crmwf_btn_primary"
-                        groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer"
+                        groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"
                         invisible="not show_start_analysis_btn"/>
 
                 <button name="action_submit_proposal"
@@ -97,17 +97,41 @@
                 <div class="crmwf_summary_wrap"
                      invisible="type == 'lead' or is_stage_new_inquiry or is_stage_initial_discussion">
                     <group class="crmwf_row">
-                        <group string="Workflow Summary" class="crmwf_card crmwf_card_summary">
+
+                        <!-- Editable for Technical Reviewer + Manager -->
+                        <group string="Workflow Summary"
+                               class="crmwf_card crmwf_card_summary"
+                               groups="crm_workflow_custom.group_crm_technical_reviewer,crm_workflow_custom.group_crm_workflow_manager">
                             <field name="technical_feasibility"/>
                             <field name="complexity_level"/>
                             <field name="approval_state" readonly="1"/>
                         </group>
 
-                        <group string="Planning Summary" class="crmwf_card crmwf_card_summary">
+                        <group string="Planning Summary"
+                               class="crmwf_card crmwf_card_summary"
+                               groups="crm_workflow_custom.group_crm_technical_reviewer,crm_workflow_custom.group_crm_workflow_manager">
                             <field name="estimated_duration"/>
                             <field name="project_deadline"/>
                             <field name="proposal_amount"/>
                         </group>
+
+                        <!-- Readonly for Workflow User -->
+                        <group string="Workflow Summary"
+                               class="crmwf_card crmwf_card_summary"
+                               groups="crm_workflow_custom.group_crm_workflow_user">
+                            <field name="technical_feasibility" readonly="1"/>
+                            <field name="complexity_level" readonly="1"/>
+                            <field name="approval_state" readonly="1"/>
+                        </group>
+
+                        <group string="Planning Summary"
+                               class="crmwf_card crmwf_card_summary"
+                               groups="crm_workflow_custom.group_crm_workflow_user">
+                            <field name="estimated_duration" readonly="1"/>
+                            <field name="project_deadline" readonly="1"/>
+                            <field name="proposal_amount" readonly="1"/>
+                        </group>
+
                     </group>
                 </div>
             </xpath>
@@ -130,12 +154,22 @@
                     </div>
 
                     <group class="crmwf_row">
-                        <group string="Proposal Details" class="crmwf_card crmwf_card_proposal">
+                        <group string="Proposal Details"
+                               class="crmwf_card crmwf_card_proposal"
+                               groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager">
                             <field name="proposal_summary"
                                    placeholder="Enter a short summary of the proposed solution..."
                                    required="is_stage_analysis or is_stage_solution_design or is_stage_proposal"/>
                             <field name="negotiation_notes"
                                    placeholder="Add any negotiation comments or client feedback..."/>
+                        </group>
+
+                        <!-- Readonly proposal view for Technical Reviewer -->
+                        <group string="Proposal Details"
+                               class="crmwf_card crmwf_card_proposal"
+                               groups="crm_workflow_custom.group_crm_technical_reviewer">
+                            <field name="proposal_summary" readonly="1"/>
+                            <field name="negotiation_notes" readonly="1"/>
                         </group>
                     </group>
                 </page>
