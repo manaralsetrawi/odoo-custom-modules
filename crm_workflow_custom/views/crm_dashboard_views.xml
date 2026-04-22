@@ -1,128 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- Client action -->
     <record id="action_crm_dashboard" model="ir.actions.client">
         <field name="name">CRM Dashboard</field>
         <field name="tag">crm_dashboard_tag</field>
     </record>
 
-    <!-- Dashboard menu -->
     <menuitem id="menu_crm_dashboard"
               name="Dashboard"
               parent="crm.crm_menu_root"
               action="action_crm_dashboard"
               sequence="5"
               groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"/>
-
-    <!-- QWeb template -->
-    <template id="crm_dashboard_template" name="CRM Dashboard Template">
-        <div class="o_crm_dashboard_view crmdsh_wrapper">
-            <div class="crmdsh_header">
-                <h1>CRM Workflow Dashboard</h1>
-                <p>Overview of project requests, approvals, and follow-up status.</p>
-            </div>
-
-            <div class="crmdsh_cards">
-                <div class="crmdsh_card">
-                    <div class="crmdsh_card_title">Total Requests</div>
-                    <div class="crmdsh_card_value" t-esc="state.data.total_requests"/>
-                </div>
-
-                <div class="crmdsh_card">
-                    <div class="crmdsh_card_title">New Inquiries</div>
-                    <div class="crmdsh_card_value" t-esc="state.data.new_inquiries"/>
-                </div>
-
-                <div class="crmdsh_card">
-                    <div class="crmdsh_card_title">Waiting Approval</div>
-                    <div class="crmdsh_card_value" t-esc="state.data.waiting_approval"/>
-                </div>
-
-                <div class="crmdsh_card">
-                    <div class="crmdsh_card_title">Approved</div>
-                    <div class="crmdsh_card_value" t-esc="state.data.approved_requests"/>
-                </div>
-
-                <div class="crmdsh_card">
-                    <div class="crmdsh_card_title">Rejected</div>
-                    <div class="crmdsh_card_value" t-esc="state.data.rejected_requests"/>
-                </div>
-
-                <div class="crmdsh_card">
-                    <div class="crmdsh_card_title">Overdue Follow-ups</div>
-                    <div class="crmdsh_card_value" t-esc="state.data.overdue_followups"/>
-                </div>
-            </div>
-
-            <div class="crmdsh_sections">
-                <div class="crmdsh_section">
-                    <h2>Recent Requests</h2>
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Request</th>
-                                <th>Customer</th>
-                                <th>Stage</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-foreach="state.data.recent_requests" t-as="req" t-key="req.id">
-                                <tr>
-                                    <td><t t-esc="req.name"/></td>
-                                    <td><t t-esc="req.partner_id and req.partner_id[1] or '-'"/></td>
-                                    <td><t t-esc="req.stage_id and req.stage_id[1] or '-'"/></td>
-                                </tr>
-                            </t>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="crmdsh_section">
-                    <h2>Waiting Approval</h2>
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Request</th>
-                                <th>Customer</th>
-                                <th>Owner</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-foreach="state.data.waiting_approval_requests" t-as="req" t-key="req.id">
-                                <tr>
-                                    <td><t t-esc="req.name"/></td>
-                                    <td><t t-esc="req.partner_id and req.partner_id[1] or '-'"/></td>
-                                    <td><t t-esc="req.user_id and req.user_id[1] or '-'"/></td>
-                                </tr>
-                            </t>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="crmdsh_section">
-                    <h2>Overdue Follow-ups</h2>
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Request</th>
-                                <th>Next Follow-up</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-foreach="state.data.overdue_requests" t-as="req" t-key="req.id">
-                                <tr>
-                                    <td><t t-esc="req.name"/></td>
-                                    <td><t t-esc="req.next_followup_date or '-'"/></td>
-                                    <td><t t-esc="req.followup_status or '-'"/></td>
-                                </tr>
-                            </t>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </template>
 
 </odoo>
