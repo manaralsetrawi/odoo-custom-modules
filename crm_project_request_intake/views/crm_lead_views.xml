@@ -4,20 +4,14 @@
     <record id="view_crm_lead_form_project_request_intake" model="ir.ui.view">
         <field name="name">crm.lead.form.project.request.intake</field>
         <field name="model">crm.lead</field>
-        <field name="inherit_id" ref="crm_workflow_custom.view_crm_lead_form_workflow_custom"/> 
+        <field name="inherit_id" ref="crm_workflow_custom.view_crm_lead_form_workflow_custom"/>
         <field name="arch" type="xml">
 
             <!-- Hidden helper fields -->
             <xpath expr="//form/sheet" position="inside">
                 <field name="intake_state" invisible="1"/>
                 <field name="intake_is_project_request" invisible="1"/>
-                <!-- <field name="intake_can_create_opportunity" invisible="1"/> -->
             </xpath>
-
-            <!-- Show request type after title -->
-            <!-- <xpath expr="//field[@name='name']" position="after">
-                <field name="request_type" />
-            </xpath> -->
 
             <!-- Show request type after title -->
             <xpath expr="//field[@name='name']" position="after">
@@ -29,12 +23,12 @@
                 <field name="contact_name" readonly="1"/>
             </xpath>
 
-            <!-- Email readonly as plain char -->
+            <!-- Email readonly -->
             <xpath expr="//field[@name='email_from']" position="replace">
                 <field name="email_from" readonly="1"/>
             </xpath>
 
-            <!-- Phone readonly as plain char -->
+            <!-- Phone readonly -->
             <xpath expr="//field[@name='phone']" position="replace">
                 <field name="phone" readonly="1"/>
             </xpath>
@@ -89,7 +83,7 @@
             </xpath>
 
             <xpath expr="//field[@name='mobile']" position="attributes">
-                <attribute name="invisible">request_type == 'project_request'</attribute>
+                <attribute name="invisible">1</attribute>
             </xpath>
 
             <xpath expr="//field[@name='priority']" position="attributes">
@@ -113,41 +107,10 @@
                 <attribute name="invisible">request_type == 'project_request'</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='mobile']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-
-            <!-- hereeeeeee -->
-            <!-- Example only: replace with the real technical names from parent view -->
-            <!-- <xpath expr="//page[@name='extra_info']" position="attributes">
-                <attribute name="invisible">type == 'lead'</attribute>
-            </xpath>
-
-            <xpath expr="//page[@name='workflow_overview']" position="attributes">
-                <attribute name="invisible">type == 'lead'</attribute>
-            </xpath>
-
-            <xpath expr="//page[@name='approval_followup']" position="attributes">
-                <attribute name="invisible">type == 'lead'</attribute>
-            </xpath> -->
-
-            <!-- <xpath expr="//button[@name='action_convert_to_opportunity']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-
-            <xpath expr="//header//button[@name='action_enrich']" position="replace"/>
-
-            <xpath expr="//header//button[@name='action_set_lost']" position="attributes">
-                <attribute name="invisible">type == 'lead'</attribute>
-            </xpath> -->
-
-            <!-- Keep the workflow visibility logic and also hide it for leads -->
+            <!-- Hide workflow button for leads -->
             <xpath expr="//button[@name='action_start_analysis']" position="attributes">
                 <attribute name="invisible">type == 'lead' or not show_start_analysis_btn</attribute>
             </xpath>
-
-            <!-- hereeeee -->
-
 
             <!-- Header buttons -->
             <xpath expr="//form/header" position="inside">
@@ -173,7 +136,7 @@
                         invisible="type != 'lead' or request_type != 'project_request' or intake_state != 'under_review'"/>
             </xpath>
 
-            <!-- Project Request tab -->
+            <!-- Notebook tabs -->
             <xpath expr="//form/sheet/notebook" position="inside">
 
                 <!-- ===================================================== -->
@@ -190,6 +153,12 @@
                         </group>
                         <group>
                             <field name="intake_state" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Review Information"
+                           invisible="type != 'lead' or intake_state == 'submitted'">
+                        <group>
                             <field name="intake_reviewed_by" readonly="1"/>
                             <field name="intake_review_date" readonly="1"/>
                         </group>
@@ -213,14 +182,13 @@
                         <field name="intake_requested_notes" readonly="1" nolabel="0"/>
                     </group>
 
-                    <separator string="Review Outcome"
-                            invisible="intake_state not in ['under_review', 'approved', 'rejected']"/>
+                    <separator string="Rejection Details"
+                               invisible="type != 'lead' or intake_state != 'rejected'"/>
 
-                    <group invisible="intake_state not in ['under_review', 'approved', 'rejected']">
+                    <group invisible="type != 'lead' or intake_state != 'rejected'">
                         <field name="intake_rejection_reason"
-                            groups="crm_workflow_custom.group_crm_workflow_manager"
-                            readonly="1"
-                            invisible="type != 'lead' or intake_state != 'rejected'"/>
+                               groups="crm_workflow_custom.group_crm_workflow_manager"
+                               readonly="1"/>
                     </group>
 
                 </page>
@@ -229,8 +197,8 @@
                 <!-- Project Review Details Tab -->
                 <!-- ===================================================== -->
                 <page string="Project Review Details"
-                    groups="crm_workflow_custom.group_crm_workflow_manager"
-                    invisible="request_type != 'project_request' or intake_state not in ['under_review', 'approved']">
+                      groups="crm_workflow_custom.group_crm_workflow_manager"
+                      invisible="request_type != 'project_request' or intake_state not in ['under_review', 'approved']">
 
                     <group string="Project Classification" col="2">
                         <group>
@@ -266,17 +234,17 @@
 
                     <group>
                         <field name="review_project_features"
-                            placeholder="Write the important project modules, pages, functions, integrations, or requested features"/>
+                               placeholder="Write the important project modules, pages, functions, integrations, or requested features"/>
                         <field name="intake_meeting_notes"
-                            placeholder="Write key points discussed with the client during the meeting"/>
+                               placeholder="Write key points discussed with the client during the meeting"/>
                         <field name="intake_project_requirements"
-                            placeholder="Write the confirmed business and technical requirements"/>
+                               placeholder="Write the confirmed business and technical requirements"/>
                         <field name="intake_solution_summary"
-                            placeholder="Summarize the proposed solution approach"/>
+                               placeholder="Summarize the proposed solution approach"/>
                         <field name="review_recommendation"
-                            placeholder="Write the manager recommendation before approval"/>
+                               placeholder="Write the manager recommendation before approval"/>
                         <field name="review_risk_notes"
-                            placeholder="Write any risks, dependencies, or technical concerns"/>
+                               placeholder="Write any risks, dependencies, or technical concerns"/>
                     </group>
 
                 </page>
@@ -285,23 +253,21 @@
         </field>
     </record>
 
-    
-<record id="view_crm_lead_form_hide_workflow_tabs_for_project_request" model="ir.ui.view">
-    <field name="name">crm.lead.form.hide.workflow.tabs.for.project.request</field>
-    <field name="model">crm.lead</field>
-    <field name="inherit_id" ref="crm_workflow_custom.view_crm_lead_form_workflow_custom"/>
-    <field name="arch" type="xml">
+    <record id="view_crm_lead_form_hide_workflow_tabs_for_project_request" model="ir.ui.view">
+        <field name="name">crm.lead.form.hide.workflow.tabs.for.project.request</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm_workflow_custom.view_crm_lead_form_workflow_custom"/>
+        <field name="arch" type="xml">
 
-        <xpath expr="//page[@name='crmwf_workflow_overview']" position="attributes">
-            <attribute name="invisible">type == 'lead'</attribute>
-        </xpath>
+            <xpath expr="//page[@name='crmwf_workflow_overview']" position="attributes">
+                <attribute name="invisible">type == 'lead'</attribute>
+            </xpath>
 
-        <xpath expr="//page[@name='crmwf_approval_followup']" position="attributes">
-            <attribute name="invisible">type == 'lead'</attribute>
-        </xpath>
+            <xpath expr="//page[@name='crmwf_approval_followup']" position="attributes">
+                <attribute name="invisible">type == 'lead'</attribute>
+            </xpath>
 
-    </field>
-</record>
-
+        </field>
+    </record>
 
 </odoo>
