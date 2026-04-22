@@ -32,7 +32,6 @@ Main features:
         'views/project_request_reject_wizard_views.xml',
         'views/website_contact_form.xml',
         'views/crm_client_segment_views.xml',
-        'views/crm_lead_tag_views.xml',
         'views/crm_project_type_views.xml',
         'views/crm_project_request_menu.xml',
     ],
