@@ -253,8 +253,10 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
 
-            <xpath expr="//button[@type='action' and @name='661']" position="replace"/>
-
+            <xpath expr="//header//button[@type='action' and @name='661']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
             <xpath expr="//page[@name='crmwf_workflow_overview']" position="attributes">
                 <attribute name="invisible">type == 'lead'</attribute>
             </xpath>
