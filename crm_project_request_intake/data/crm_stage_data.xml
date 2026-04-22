@@ -21,9 +21,6 @@
         <field name="sequence">20</field>
     </record>
 
-    <record id="crm_stage_project_request_opportunity" model="crm.stage">
-        <field name="name">Project Opportunity</field>
-        <field name="sequence">25</field>
-    </record>
+
 
 </odoo>
