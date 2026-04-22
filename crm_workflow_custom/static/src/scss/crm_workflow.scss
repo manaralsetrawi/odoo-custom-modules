@@ -373,3 +373,114 @@ button[name="iap_enrich"] {
         padding: 14px !important;
     }
 }
+/* =========================================
+   CRM Workflow Kanban Final Typography Polish
+   ========================================= */
+
+.o_kanban_view.o_crm_kanban_view {
+    .crmwf_kanban_title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #243444;
+        line-height: 1.35;
+        margin-bottom: 10px;
+        word-break: break-word;
+    }
+
+    .crmwf_kanban_deadline_row,
+    .crmwf_kanban_status_row,
+    .crmwf_kanban_followup_row,
+    .crmwf_kanban_client_row,
+    .crmwf_kanban_owner_row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .crmwf_kanban_deadline_row {
+        padding-top: 6px;
+        border-top: 1px solid #e9eef3;
+        color: #475569;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .crmwf_kanban_deadline_row .fa,
+    .crmwf_kanban_client_row .fa,
+    .crmwf_kanban_owner_row .fa {
+        width: 16px;
+        text-align: center;
+        color: #64748b;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .crmwf_kanban_status_badge,
+    .crmwf_kanban_followup_badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 8px 12px;
+        border-radius: 14px;
+        border: 1px solid #dbe3ea;
+        background: #f8fafc;
+    }
+
+    .crmwf_kanban_status_badge .fa,
+    .crmwf_kanban_followup_badge .fa {
+        font-size: 14px;
+        color: #334155;
+        flex-shrink: 0;
+    }
+
+    .crmwf_kanban_meta_label {
+        font-weight: 700;
+        color: #1e293b;
+        min-width: 72px;
+        display: inline-block;
+    }
+
+    .crmwf_kanban_meta_value {
+        color: #475569;
+        font-weight: 500;
+        line-height: 1.45;
+        word-break: break-word;
+    }
+
+    .crmwf_kanban_client_row,
+    .crmwf_kanban_owner_row {
+        color: #475569;
+        font-size: 14px;
+    }
+
+    .crmwf_kanban_client_row .crmwf_kanban_meta_label,
+    .crmwf_kanban_owner_row .crmwf_kanban_meta_label {
+        min-width: 56px;
+    }
+
+    /* soften default field rendering inside kanban */
+    .crmwf_kanban_extra .o_field_widget,
+    .crmwf_kanban_extra span,
+    .crmwf_kanban_extra div {
+        font-size: 14px;
+    }
+
+    /* cleaner footer */
+    .crmwf_kanban_footer {
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px solid #eef2f6;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    /* hide duplicate raw text lines that Odoo may render below custom rows */
+    .crmwf_kanban_extra + div.o_kanban_record_bottom,
+    .crmwf_kanban_extra ~ div.text-muted,
+    .crmwf_kanban_extra ~ span.text-muted {
+        display: none !important;
+    }
+}
