@@ -12,6 +12,9 @@
                 <attribute name="class" add=" crmwf_kanban_card" separator=" "/>
             </xpath>
 
+            <!-- Remove default CRM subtitle block (duplicate client text) -->
+            <xpath expr="//templates//div[hasclass('o_kanban_record_subtitle')]" position="replace"/>
+
             <!-- Improve title appearance -->
             <xpath expr="//templates//field[@name='name']" position="replace">
                 <div class="crmwf_kanban_title">
@@ -21,7 +24,6 @@
 
             <!-- Inject workflow info inside main kanban template -->
             <xpath expr="//templates/t/div" position="inside">
-
                 <div class="crmwf_kanban_extra">
 
                     <div class="crmwf_kanban_deadline_row">
@@ -69,7 +71,6 @@
                     </div>
 
                 </div>
-
             </xpath>
 
         </field>
