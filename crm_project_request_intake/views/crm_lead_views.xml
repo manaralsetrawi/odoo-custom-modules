@@ -248,10 +248,10 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm_workflow_custom.view_crm_lead_form_workflow_custom"/>
         <field name="arch" type="xml">
-
-            <xpath expr="//button[@type='action' and @name='662']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
+        
+            <!-- Remove Lost button -->
+            <xpath expr="//button[@type='action' and @name='661']" position="replace"/>
+            <xpath expr="//button[@name='action_open_lost_wizard']" position="replace"/>
 
             <xpath expr="//button[@type='action' and @name='661']" position="replace"/>
 
