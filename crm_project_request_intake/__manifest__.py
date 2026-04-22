@@ -33,6 +33,7 @@ Main features:
         'views/website_contact_form.xml',
         'views/crm_client_segment_views.xml',
         'views/crm_project_type_views.xml',
+        'views/crm_project_feature_views.xml',
         'views/crm_project_request_menu.xml',
     ],
     'assets': {
