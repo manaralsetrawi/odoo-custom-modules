@@ -1,3 +1,5 @@
+import re
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
@@ -95,6 +97,34 @@ class CrmLead(models.Model):
             record.show_approve_btn = stage_name == 'Waiting Approval'
             record.show_reject_btn = stage_name == 'Waiting Approval'
 
+    @api.constrains('partner_id', 'type')
+    def _check_internal_contact_required(self):
+        for record in self:
+            if record.type != 'lead' and not record.partner_id:
+                raise ValidationError(_("Contact is required."))
+
+    @api.constrains('estimated_duration')
+    def _check_estimated_duration_value(self):
+        for record in self:
+            value = (record.estimated_duration or '').strip()
+            if not value:
+                continue
+
+            if value.startswith('-'):
+                raise ValidationError(_("Estimated Delivery Duration cannot be negative."))
+
+            number_match = re.match(r'^(-?\d+(?:\.\d+)?)', value)
+            if number_match:
+                numeric_value = float(number_match.group(1))
+                if numeric_value <= 0:
+                    raise ValidationError(_("Estimated Delivery Duration must be greater than 0."))
+
+    @api.constrains('proposal_amount')
+    def _check_proposal_amount_value(self):
+        for record in self:
+            if record.proposal_amount and record.proposal_amount <= 0:
+                raise ValidationError(_("Estimated Project Value must be greater than 0."))
+
     def _get_stage_by_name(self, stage_name):
         stage = self.env['crm.stage'].search([('name', '=', stage_name)], limit=1)
         if not stage:
@@ -126,7 +156,6 @@ class CrmLead(models.Model):
         self.ensure_one()
         errors = []
 
-        # Contact required only for your internal flow records, not lead-based intake records
         if self.type != 'lead' and not self.partner_id:
             errors.append(_("Contact is required."))
 
@@ -141,6 +170,16 @@ class CrmLead(models.Model):
 
         if not self.estimated_duration:
             errors.append(_("Estimated Delivery Duration is required."))
+        else:
+            value = (self.estimated_duration or '').strip()
+            if value.startswith('-'):
+                errors.append(_("Estimated Delivery Duration cannot be negative."))
+            else:
+                number_match = re.match(r'^(-?\d+(?:\.\d+)?)', value)
+                if number_match:
+                    numeric_value = float(number_match.group(1))
+                    if numeric_value <= 0:
+                        errors.append(_("Estimated Delivery Duration must be greater than 0."))
 
         if not self.project_deadline:
             errors.append(_("Project Deadline is required."))

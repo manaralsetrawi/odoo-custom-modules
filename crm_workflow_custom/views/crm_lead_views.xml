@@ -34,7 +34,7 @@
                 <field name="show_reject_btn" invisible="1"/>
             </xpath>
 
-            <!-- Contact required only for your internal flow records -->
+            <!-- Contact required only for your internal flow -->
             <xpath expr="//field[@name='partner_id']" position="attributes">
                 <attribute name="required">type != 'lead'</attribute>
             </xpath>
@@ -92,9 +92,10 @@
                         invisible="not show_reject_btn"/>
             </xpath>
 
-            <!-- Important workflow summary outside tabs -->
+            <!-- Important summary outside tabs: show only from analysis onward -->
             <xpath expr="//sheet/notebook" position="before">
-                <div class="crmwf_summary_wrap" invisible="type == 'lead'">
+                <div class="crmwf_summary_wrap"
+                     invisible="type == 'lead' or is_stage_new_inquiry or is_stage_initial_discussion">
                     <group class="crmwf_row">
                         <group string="Workflow Summary" class="crmwf_card crmwf_card_summary">
                             <field name="technical_feasibility"/>
@@ -111,12 +112,15 @@
                 </div>
             </xpath>
 
-            <!-- Workflow tabs -->
+            <!-- Tabs -->
             <xpath expr="//sheet/notebook" position="inside">
+
+                <!-- Show from Requirement Analysis onward -->
                 <page name="crmwf_workflow_overview"
                       string="Workflow Overview"
                       class="crmwf_workflow_page"
-                      groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
+                      groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer"
+                      invisible="is_stage_new_inquiry or is_stage_initial_discussion">
 
                     <div class="crmwf_hint_box">
                         <div class="crmwf_hint_title">Workflow Guidance</div>
@@ -136,10 +140,12 @@
                     </group>
                 </page>
 
+                <!-- Show only from Waiting Approval onward -->
                 <page name="crmwf_approval_followup"
                       string="Approval &amp; Follow-up"
                       class="crmwf_workflow_page"
-                      groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
+                      groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer"
+                      invisible="not (is_stage_waiting_approval or is_stage_approved or is_stage_rejected)">
 
                     <group class="crmwf_row">
                         <group string="Approval Information" class="crmwf_card crmwf_card_approval">
@@ -157,12 +163,12 @@
                         </group>
                     </group>
                 </page>
+
             </xpath>
 
         </field>
     </record>
 
-    <!-- Extra visibility fix so buttons always follow computed helper fields -->
     <record id="view_crm_lead_form_workflow_button_visibility_fix" model="ir.ui.view">
         <field name="name">crm.lead.form.workflow.button.visibility.fix</field>
         <field name="model">crm.lead</field>
