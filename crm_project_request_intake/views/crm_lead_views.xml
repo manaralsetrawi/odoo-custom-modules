@@ -216,18 +216,8 @@
 
                     <separator string="Technical Scope"/>
 
-                    <group string="Development and Features" col="2">
-                        <group>
-                            <field name="review_has_web_development"/>
-                            <field name="review_has_ios_development"/>
-                            <field name="review_has_android_development"/>
-                            <field name="review_has_dashboard"/>
-                        </group>
-                        <group>
-                            <field name="review_has_ai_features"/>
-                            <field name="review_has_chatbot"/>
-                            <field name="review_has_api_integration"/>
-                        </group>
+                    <group string="Development and Features">
+                        <field name="review_project_feature_ids" widget="many2many_tags"/>
                     </group>
 
                     <separator string="Internal Project Analysis"/>

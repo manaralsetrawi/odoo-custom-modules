@@ -12,18 +12,14 @@ class CrmProjectRequestLead(models.Model):
         tracking=True,
     )
 
-    review_has_web_development = fields.Boolean(
-        string='Web Development', tracking=True)
-    review_has_ios_development = fields.Boolean(
-        string='iOS Development', tracking=True)
-    review_has_android_development = fields.Boolean(
-        string='Android Development', tracking=True)
-    review_has_ai_features = fields.Boolean(string='AI Related', tracking=True)
-    review_has_chatbot = fields.Boolean(string='Chatbot', tracking=True)
-    review_has_dashboard = fields.Boolean(
-        string='Dashboard / Reporting', tracking=True)
-    review_has_api_integration = fields.Boolean(
-        string='API Integration', tracking=True)
+    review_project_feature_ids = fields.Many2many(
+        'crm.project.feature',
+        'crm_lead_project_feature_rel',
+        'lead_id',
+        'feature_id',
+        string='Development and Features',
+        tracking=True,
+    )
 
     review_project_features = fields.Text(
         string='Project Features', tracking=True)
@@ -285,16 +281,8 @@ class CrmProjectRequestLead(models.Model):
                 missing_fields.append(_("Manager Recommendation"))
 
             # At least one technical scope option should be selected
-            if not any([
-                record.review_has_web_development,
-                record.review_has_ios_development,
-                record.review_has_android_development,
-                record.review_has_ai_features,
-                record.review_has_chatbot,
-                record.review_has_dashboard,
-                record.review_has_api_integration,
-            ]):
-                missing_fields.append(_("At least one Technical Scope option"))
+            if not record.review_project_feature_ids:
+                missing_fields.append(_("Development and Features"))
 
             if missing_fields:
                 raise ValidationError(_(
