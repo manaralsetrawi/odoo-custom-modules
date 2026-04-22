@@ -5,7 +5,9 @@ from odoo.exceptions import ValidationError, UserError
 class CrmProjectRequestLead(models.Model):
     _inherit = 'crm.lead'
 
-    # Project review fields
+    # =========================================================
+    # Project Review Fields
+    # =========================================================
     review_project_type_id = fields.Many2one(
         'crm.project.type',
         string='Project Type',
@@ -22,7 +24,9 @@ class CrmProjectRequestLead(models.Model):
     )
 
     review_project_features = fields.Text(
-        string='Project Features', tracking=True)
+        string='Project Features',
+        tracking=True,
+    )
 
     review_complexity = fields.Selection([
         ('low', 'Low'),
@@ -43,10 +47,19 @@ class CrmProjectRequestLead(models.Model):
     )
 
     review_estimated_team = fields.Char(
-        string='Suggested Team / Resources', tracking=True)
-    review_risk_notes = fields.Text(string='Risk Notes', tracking=True)
+        string='Suggested Team / Resources',
+        tracking=True,
+    )
+
+    review_risk_notes = fields.Text(
+        string='Risk Notes',
+        tracking=True,
+    )
+
     review_recommendation = fields.Text(
-        string='Manager Recommendation', tracking=True)
+        string='Manager Recommendation',
+        tracking=True,
+    )
 
     # =========================================================
     # Request Type
@@ -65,15 +78,25 @@ class CrmProjectRequestLead(models.Model):
     intake_company_name = fields.Char(string='Company Name', tracking=True)
 
     intake_project_title = fields.Char(
-        string='Requested Project Title', tracking=True)
+        string='Requested Project Title',
+        tracking=True,
+    )
     intake_project_description = fields.Text(
-        string='Requested Project Description', tracking=True)
+        string='Requested Project Description',
+        tracking=True,
+    )
     intake_requested_budget = fields.Float(
-        string='Requested Budget', tracking=True)
+        string='Requested Budget',
+        tracking=True,
+    )
     intake_requested_duration = fields.Char(
-        string='Requested Duration', tracking=True)
+        string='Requested Duration',
+        tracking=True,
+    )
     intake_requested_notes = fields.Text(
-        string='Additional Notes', tracking=True)
+        string='Additional Notes',
+        tracking=True,
+    )
 
     # =========================================================
     # Internal Workflow Fields
@@ -87,10 +110,18 @@ class CrmProjectRequestLead(models.Model):
     ], string='Intake Status', default='draft', tracking=True)
 
     intake_reviewed_by = fields.Many2one(
-        'res.users', string='Reviewed By', tracking=True)
-    intake_review_date = fields.Datetime(string='Review Date', tracking=True)
+        'res.users',
+        string='Reviewed By',
+        tracking=True,
+    )
+    intake_review_date = fields.Datetime(
+        string='Review Date',
+        tracking=True,
+    )
     intake_rejection_reason = fields.Text(
-        string='Rejection Reason', tracking=True)
+        string='Rejection Reason',
+        tracking=True,
+    )
 
     intake_opportunity_id = fields.Many2one(
         'crm.lead',
@@ -103,9 +134,14 @@ class CrmProjectRequestLead(models.Model):
     # =========================================================
     # Project Manager Fields
     # =========================================================
-    intake_meeting_notes = fields.Text(string='Meeting Notes', tracking=True)
+    intake_meeting_notes = fields.Text(
+        string='Meeting Notes',
+        tracking=True,
+    )
     intake_project_requirements = fields.Text(
-        string='Project Requirements', tracking=True)
+        string='Project Requirements',
+        tracking=True,
+    )
 
     intake_technical_feasibility = fields.Selection([
         ('pending', 'Pending'),
@@ -120,13 +156,21 @@ class CrmProjectRequestLead(models.Model):
     ], string='Complexity Level', tracking=True)
 
     intake_estimated_budget_final = fields.Float(
-        string='Final Estimated Budget', tracking=True)
+        string='Final Estimated Budget',
+        tracking=True,
+    )
     intake_estimated_duration_final = fields.Char(
-        string='Final Estimated Duration', tracking=True)
+        string='Final Estimated Duration',
+        tracking=True,
+    )
     intake_project_deadline = fields.Date(
-        string='Project Deadline', tracking=True)
+        string='Project Deadline',
+        tracking=True,
+    )
     intake_solution_summary = fields.Text(
-        string='Solution Summary', tracking=True)
+        string='Solution Summary',
+        tracking=True,
+    )
 
     # =========================================================
     # Helper Fields
@@ -134,21 +178,24 @@ class CrmProjectRequestLead(models.Model):
     intake_is_project_request = fields.Boolean(
         string='Is Project Request',
         compute='_compute_intake_is_project_request',
-        store=False
+        store=False,
     )
 
     intake_can_approve = fields.Boolean(
         string='Can Approve',
         compute='_compute_intake_button_flags',
-        store=False
+        store=False,
     )
 
     intake_can_reject = fields.Boolean(
         string='Can Reject',
         compute='_compute_intake_button_flags',
-        store=False
+        store=False,
     )
 
+    # =========================================================
+    # Compute Methods
+    # =========================================================
     @api.depends('request_type')
     def _compute_intake_is_project_request(self):
         for record in self:
@@ -171,8 +218,7 @@ class CrmProjectRequestLead(models.Model):
     def _get_stage_by_xmlid(self, xmlid):
         stage = self.env.ref(xmlid, raise_if_not_found=False)
         if not stage:
-            raise UserError(
-                _("The required CRM stage was not found: %s") % xmlid)
+            raise UserError(_("The required CRM stage was not found: %s") % xmlid)
         return stage
 
     # =========================================================
@@ -188,36 +234,32 @@ class CrmProjectRequestLead(models.Model):
     # =========================================================
     # Workflow Actions
     # =========================================================
-
     def action_intake_start_review(self):
-        stage = self._get_stage_by_xmlid(
-            'crm_project_request_intake.crm_stage_project_request_review')
         for record in self:
             if record.request_type != 'project_request' or record.type != 'lead':
-                raise ValidationError(
-                    _("Only project request leads can start review."))
+                raise ValidationError(_("Only project request leads can start review."))
 
             if record.intake_state != 'submitted':
-                raise ValidationError(
-                    _("Only submitted requests can be moved to under review."))
+                raise ValidationError(_("Only submitted requests can be moved to under review."))
 
             record.write({
                 'intake_state': 'under_review',
                 'intake_reviewed_by': self.env.user.id,
                 'intake_review_date': fields.Datetime.now(),
-                'stage_id': stage.id,
             })
+
+            record.message_post(
+                body=_("Project request moved to Under Review.")
+            )
 
     def action_intake_open_reject_wizard(self):
         self.ensure_one()
 
         if self.request_type != 'project_request' or self.type != 'lead':
-            raise ValidationError(
-                _("Only project request leads can be rejected."))
+            raise ValidationError(_("Only project request leads can be rejected."))
 
         if self.intake_state != 'under_review':
-            raise ValidationError(
-                _("Only requests under review can be rejected."))
+            raise ValidationError(_("Only requests under review can be rejected."))
 
         return {
             'type': 'ir.actions.act_window',
@@ -231,23 +273,16 @@ class CrmProjectRequestLead(models.Model):
         }
 
     def action_intake_approve_request(self):
-        approved_stage = self._get_stage_by_xmlid(
-            'crm_project_request_intake.crm_stage_project_request_approved'
-        )
         initial_discussion_stage = self._get_stage_by_xmlid(
-            'crm_workflow_custom.crm_stage_initial_discussion'
+            'crm_workflow_custom.stage_initial_discussion'
         )
 
         for record in self:
             if record.request_type != 'project_request' or record.type != 'lead':
-                raise ValidationError(
-                    _("Only project request leads can be approved.")
-                )
+                raise ValidationError(_("Only project request leads can be approved."))
 
             if record.intake_state != 'under_review':
-                raise ValidationError(
-                    _("Only requests under review can be approved.")
-                )
+                raise ValidationError(_("Only requests under review can be approved."))
 
             missing_fields = []
 
@@ -260,7 +295,7 @@ class CrmProjectRequestLead(models.Model):
             if not record.review_client_segment_id:
                 missing_fields.append(_("Client Segment"))
 
-            if not record.intake_technical_feasibility:
+            if record.intake_technical_feasibility == 'pending':
                 missing_fields.append(_("Technical Feasibility"))
 
             if not record.intake_estimated_budget_final:
@@ -308,31 +343,20 @@ class CrmProjectRequestLead(models.Model):
             record.write({
                 'intake_state': 'approved',
                 'intake_opportunity_id': opportunity.id,
-                'stage_id': approved_stage.id,
             })
 
             record.message_post(
-                body=_(
-                    "Project request approved and converted into an opportunity in Initial Discussion stage.")
+                body=_("Project request approved and converted into an opportunity in Initial Discussion stage.")
             )
+
     # =========================================================
     # Optional Helper When Website Creates Request
     # =========================================================
-
     @api.model
     def create_project_request_lead(self, vals):
-        stage = self.env.ref(
-            'crm_project_request_intake.crm_stage_project_request_new',
-            raise_if_not_found=False
-        )
-
         vals.update({
             'request_type': 'project_request',
             'type': 'lead',
             'intake_state': 'submitted',
         })
-
-        if stage:
-            vals['stage_id'] = stage.id
-
         return self.create(vals)
