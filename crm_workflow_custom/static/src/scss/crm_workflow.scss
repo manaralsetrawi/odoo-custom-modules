@@ -176,3 +176,200 @@ h2.row.g-0.pb-3.pb-sm-4 {
 button[name="iap_enrich"] {
     display: none !important;
 }
+/* =========================================
+   CRM Workflow Kanban Polish
+   ========================================= */
+
+.o_kanban_view.o_crm_kanban_view {
+    .o_kanban_group {
+        padding-right: 14px;
+    }
+
+    .o_kanban_record {
+        margin-bottom: 14px !important;
+        border-radius: 18px !important;
+        border: 1px solid #dbe3ea !important;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05) !important;
+        overflow: hidden;
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+        background: #ffffff;
+    }
+
+    .o_kanban_record:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08) !important;
+    }
+
+    .o_kanban_record_body {
+        padding: 16px 16px 14px !important;
+    }
+
+    .o_kanban_group_header {
+        padding-bottom: 12px;
+        margin-bottom: 6px;
+    }
+
+    .o_column_title {
+        font-weight: 800;
+        color: #0b2c3d;
+        font-size: 15px;
+    }
+
+    .o_kanban_counter {
+        font-weight: 700;
+    }
+}
+
+/* Workflow custom card content */
+.o_kanban_view.o_crm_kanban_view {
+    .oe_kanban_global_click {
+        border-radius: 18px !important;
+    }
+
+    .crmwf_kanban_deadline_row,
+    .crmwf_kanban_status_row,
+    .crmwf_kanban_followup_row,
+    .crmwf_kanban_client_row,
+    .crmwf_kanban_owner_row {
+        margin-bottom: 10px;
+    }
+
+    .crmwf_kanban_deadline_row {
+        padding-top: 4px;
+        border-top: 1px solid #e9eef3;
+    }
+
+    .crmwf_kanban_status_badge,
+    .crmwf_kanban_followup_badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 12px;
+        border-radius: 14px;
+        border: 1px solid #dbe3ea;
+        background: #f8fafc;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .crmwf_kanban_meta_label {
+        font-weight: 800;
+        color: #0f172a;
+        min-width: 72px;
+    }
+
+    .crmwf_kanban_meta_value {
+        color: #334155;
+        font-weight: 600;
+    }
+
+    .crmwf_kanban_title {
+        font-size: 17px;
+        font-weight: 800;
+        color: #243444;
+        line-height: 1.35;
+        margin-bottom: 12px;
+        word-break: break-word;
+    }
+
+    .crmwf_kanban_footer {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid #eef2f6;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .crmwf_kanban_avatar_wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+}
+
+/* Stage-specific badge colors */
+.o_kanban_view.o_crm_kanban_view {
+    .crmwf_kanban_stage_new {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+        color: #2563eb;
+    }
+
+    .crmwf_kanban_stage_discussion {
+        background: #eef2ff;
+        border-color: #c7d2fe;
+        color: #4f46e5;
+    }
+
+    .crmwf_kanban_stage_analysis {
+        background: #ecfeff;
+        border-color: #a5f3fc;
+        color: #0891b2;
+    }
+
+    .crmwf_kanban_stage_solution {
+        background: #f5f3ff;
+        border-color: #ddd6fe;
+        color: #7c3aed;
+    }
+
+    .crmwf_kanban_stage_proposal {
+        background: #fff7ed;
+        border-color: #fed7aa;
+        color: #ea580c;
+    }
+
+    .crmwf_kanban_stage_waiting {
+        background: #fef3c7;
+        border-color: #fde68a;
+        color: #b45309;
+    }
+
+    .crmwf_kanban_stage_approved {
+        background: #dcfce7;
+        border-color: #bbf7d0;
+        color: #15803d;
+    }
+
+    .crmwf_kanban_stage_rejected {
+        background: #fee2e2;
+        border-color: #fecaca;
+        color: #dc2626;
+    }
+
+    .crmwf_kanban_followup_overdue {
+        background: #fef2f2;
+        border-color: #fecaca;
+        color: #dc2626;
+    }
+
+    .crmwf_kanban_followup_ongoing {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+        color: #2563eb;
+    }
+
+    .crmwf_kanban_followup_done {
+        background: #ecfdf5;
+        border-color: #a7f3d0;
+        color: #059669;
+    }
+
+    .crmwf_kanban_followup_not_started {
+        background: #f8fafc;
+        border-color: #dbe3ea;
+        color: #475569;
+    }
+}
+
+/* Better spacing on smaller widths */
+@media (max-width: 1400px) {
+    .o_kanban_view.o_crm_kanban_view .o_kanban_group {
+        padding-right: 10px;
+    }
+
+    .o_kanban_view.o_crm_kanban_view .o_kanban_record_body {
+        padding: 14px !important;
+    }
+}
