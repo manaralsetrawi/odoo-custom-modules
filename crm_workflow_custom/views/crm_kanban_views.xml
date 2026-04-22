@@ -12,9 +12,6 @@
                 <attribute name="class" add=" crmwf_kanban_card" separator=" "/>
             </xpath>
 
-            <!-- Hide original partner/company text to avoid duplicate client name -->
-            <xpath expr="//templates//field[@name='partner_name']" position="replace"/>
-
             <!-- Improve title appearance -->
             <xpath expr="//templates//field[@name='name']" position="replace">
                 <div class="crmwf_kanban_title">

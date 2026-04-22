@@ -499,3 +499,19 @@ button[name="iap_enrich"] {
         margin-left: 2px;
     }
 }
+.o_kanban_view.o_crm_kanban_view {
+    .crmwf_kanban_extra ~ div.text-muted,
+    .crmwf_kanban_extra ~ span.text-muted,
+    .crmwf_kanban_extra ~ div.o_text_overflow,
+    .crmwf_kanban_extra ~ span.o_text_overflow {
+        display: none !important;
+    }
+
+    .crmwf_kanban_deadline_row {
+        gap: 10px;
+    }
+
+    .crmwf_kanban_deadline_row .crmwf_kanban_meta_label {
+        margin-right: 4px;
+    }
+}
