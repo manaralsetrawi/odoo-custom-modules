@@ -218,9 +218,9 @@
 
                     <group invisible="intake_state not in ['under_review', 'approved', 'rejected']">
                         <field name="intake_rejection_reason"
-                            readonly="1"
                             groups="crm_workflow_custom.group_crm_workflow_manager"
-                            invisible="intake_state != 'rejected'"/>
+                            readonly="1"
+                            invisible="type != 'lead' or intake_state != 'rejected'"/>
                     </group>
 
                 </page>
