@@ -175,9 +175,13 @@
 
             <!-- Project Request tab -->
             <xpath expr="//form/sheet/notebook" position="inside">
+
+                <!-- ===================================================== -->
+                <!-- Project Request Intake Tab -->
+                <!-- ===================================================== -->
                 <page string="Project Request Intake" invisible="request_type != 'project_request'">
 
-                    <group string="Client Submission">
+                    <group string="Client Information" col="2">
                         <group>
                             <field name="intake_client_name" readonly="1"/>
                             <field name="intake_client_email" readonly="1"/>
@@ -185,71 +189,96 @@
                             <field name="intake_company_name" readonly="1"/>
                         </group>
                         <group>
-                            <field name="intake_project_title" readonly="1"/>
-                            <field name="intake_requested_budget" readonly="1"/>
-                            <field name="intake_requested_duration" readonly="1"/>
                             <field name="intake_state" readonly="1"/>
-                        </group>
-                        <group colspan="2">
-                            <field name="intake_project_description" readonly="1"/>
-                            <field name="intake_requested_notes" readonly="1"/>
-                        </group>
-                    </group>
-
-                    <group string="Review Information">
-                        <group>
                             <field name="intake_reviewed_by" readonly="1"/>
                             <field name="intake_review_date" readonly="1"/>
                         </group>
+                    </group>
+
+                    <separator string="Requested Project Details"/>
+
+                    <group col="2">
                         <group>
-                            <field name="intake_rejection_reason"
-                                   groups="crm_workflow_custom.group_crm_workflow_manager"
-                                   invisible="intake_state not in ['submitted', 'under_review', 'rejected']"/>
+                            <field name="intake_project_title" readonly="1"/>
+                            <field name="intake_requested_budget" readonly="1"/>
+                            <field name="intake_requested_duration" readonly="1"/>
                         </group>
+                        <group>
+                            <field name="request_type" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="intake_project_description" readonly="1" nolabel="0"/>
+                        <field name="intake_requested_notes" readonly="1" nolabel="0"/>
+                    </group>
+
+                    <separator string="Review Outcome"
+                            invisible="intake_state not in ['under_review', 'approved', 'rejected']"/>
+
+                    <group invisible="intake_state not in ['under_review', 'approved', 'rejected']">
+                        <field name="intake_rejection_reason"
+                            groups="crm_workflow_custom.group_crm_workflow_manager"
+                            readonly="1"
+                            invisible="type != 'lead' or intake_state != 'rejected'"/>
                     </group>
 
                 </page>
 
+                <!-- ===================================================== -->
+                <!-- Project Review Details Tab -->
+                <!-- ===================================================== -->
                 <page string="Project Review Details"
                     groups="crm_workflow_custom.group_crm_workflow_manager"
                     invisible="request_type != 'project_request' or intake_state not in ['under_review', 'approved']">
 
-                    <group string="Project Classification">
+                    <group string="Project Classification" col="2">
                         <group>
-                            <field name="review_project_type"/>
+                            <field name="review_project_type" placeholder="Select the main project type"/>
                             <field name="review_complexity"/>
                             <field name="review_client_segment"/>
                             <field name="intake_technical_feasibility"/>
                         </group>
                         <group>
-                            <field name="intake_estimated_budget_final"/>
-                            <field name="intake_estimated_duration_final"/>
+                            <field name="intake_estimated_budget_final" placeholder="Enter final estimated budget"/>
+                            <field name="intake_estimated_duration_final" placeholder="Example: 3 months"/>
                             <field name="intake_project_deadline"/>
                         </group>
                     </group>
 
-                    <group string="Technical Scope">
+                    <separator string="Technical Scope"/>
+
+                    <group string="Development and Features" col="2">
                         <group>
                             <field name="review_has_web_development"/>
                             <field name="review_has_ios_development"/>
                             <field name="review_has_android_development"/>
+                            <field name="review_has_dashboard"/>
                         </group>
                         <group>
                             <field name="review_has_ai_features"/>
                             <field name="review_has_chatbot"/>
-                            <field name="review_has_dashboard"/>
                             <field name="review_has_api_integration"/>
                         </group>
                     </group>
 
-                    <group string="Project Analysis">
-                        <field name="review_project_features"/>
-                        <field name="intake_meeting_notes"/>
-                        <field name="intake_project_requirements"/>
-                        <field name="intake_solution_summary"/>
-                        <field name="review_recommendation"/>
-                        <field name="review_risk_notes"/>
+                    <separator string="Internal Project Analysis"/>
+
+                    <group>
+                        <field name="review_project_features"
+                            placeholder="Write the important project modules, pages, functions, integrations, or requested features"/>
+                        <field name="intake_meeting_notes"
+                            placeholder="Write key points discussed with the client during the meeting"/>
+                        <field name="intake_project_requirements"
+                            placeholder="Write the confirmed business and technical requirements"/>
+                        <field name="intake_solution_summary"
+                            placeholder="Summarize the proposed solution approach"/>
+                        <field name="review_recommendation"
+                            placeholder="Write the manager recommendation before approval"/>
+                        <field name="review_risk_notes"
+                            placeholder="Write any risks, dependencies, or technical concerns"/>
                     </group>
+
                 </page>
             </xpath>
 
