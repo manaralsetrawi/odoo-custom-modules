@@ -42,6 +42,42 @@ class CrmDashboard extends Component {
             target: "current",
         });
     }
+
+    openFilteredRequests(filterType) {
+        let domain = [];
+        let actionName = "CRM Requests";
+
+        if (filterType === "new_inquiries") {
+            domain = [["stage_id.name", "=", "New Inquiry"]];
+            actionName = "New Inquiries";
+        } else if (filterType === "waiting_approval") {
+            domain = [["stage_id.name", "=", "Waiting Approval"]];
+            actionName = "Waiting Approval Requests";
+        } else if (filterType === "approved") {
+            domain = [["stage_id.name", "=", "Approved"]];
+            actionName = "Approved Requests";
+        } else if (filterType === "rejected") {
+            domain = [["stage_id.name", "=", "Rejected"]];
+            actionName = "Rejected Requests";
+        } else if (filterType === "overdue_followups") {
+            domain = [["followup_status", "=", "overdue"]];
+            actionName = "Overdue Follow-ups";
+        }
+
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            name: actionName,
+            res_model: "crm.lead",
+            view_mode: "list,kanban,form",
+            views: [
+                [false, "list"],
+                [false, "kanban"],
+                [false, "form"],
+            ],
+            target: "current",
+            domain: domain,
+        });
+    }
 }
 
 CrmDashboard.template = "crm_workflow_custom.crm_dashboard_template";

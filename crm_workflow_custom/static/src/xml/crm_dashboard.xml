@@ -11,32 +11,38 @@
             </div>
 
             <div class="crmdsh_cards">
-                <div class="crmdsh_card crmdsh_card_total">
+                <div class="crmdsh_card crmdsh_card_total"
+                     t-on-click="() => this.openFilteredRequests('total')">
                     <div class="crmdsh_card_title">Total Requests</div>
                     <div class="crmdsh_card_value" t-esc="state.data.total_requests"/>
                 </div>
 
-                <div class="crmdsh_card crmdsh_card_new">
+                <div class="crmdsh_card crmdsh_card_new"
+                     t-on-click="() => this.openFilteredRequests('new_inquiries')">
                     <div class="crmdsh_card_title">New Inquiries</div>
                     <div class="crmdsh_card_value" t-esc="state.data.new_inquiries"/>
                 </div>
 
-                <div class="crmdsh_card crmdsh_card_waiting">
+                <div class="crmdsh_card crmdsh_card_waiting"
+                     t-on-click="() => this.openFilteredRequests('waiting_approval')">
                     <div class="crmdsh_card_title">Waiting Approval</div>
                     <div class="crmdsh_card_value" t-esc="state.data.waiting_approval"/>
                 </div>
 
-                <div class="crmdsh_card crmdsh_card_approved">
+                <div class="crmdsh_card crmdsh_card_approved"
+                     t-on-click="() => this.openFilteredRequests('approved')">
                     <div class="crmdsh_card_title">Approved</div>
                     <div class="crmdsh_card_value" t-esc="state.data.approved_requests"/>
                 </div>
 
-                <div class="crmdsh_card crmdsh_card_rejected">
+                <div class="crmdsh_card crmdsh_card_rejected"
+                     t-on-click="() => this.openFilteredRequests('rejected')">
                     <div class="crmdsh_card_title">Rejected</div>
                     <div class="crmdsh_card_value" t-esc="state.data.rejected_requests"/>
                 </div>
 
-                <div class="crmdsh_card crmdsh_card_overdue">
+                <div class="crmdsh_card crmdsh_card_overdue"
+                     t-on-click="() => this.openFilteredRequests('overdue_followups')">
                     <div class="crmdsh_card_title">Overdue Follow-ups</div>
                     <div class="crmdsh_card_value" t-esc="state.data.overdue_followups"/>
                 </div>

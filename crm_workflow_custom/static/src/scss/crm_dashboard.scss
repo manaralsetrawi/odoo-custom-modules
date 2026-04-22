@@ -251,3 +251,16 @@
     background: #e0f2fe;
     color: #0369a1;
 }
+.crmdsh_card {
+    cursor: pointer;
+}
+
+.crmdsh_card:focus,
+.crmdsh_card:active {
+    outline: none;
+}
+
+.crmdsh_card:hover .crmdsh_card_title,
+.crmdsh_card:hover .crmdsh_card_value {
+    opacity: 0.95;
+}
