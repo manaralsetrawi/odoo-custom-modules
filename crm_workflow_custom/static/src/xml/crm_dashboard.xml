@@ -2,7 +2,7 @@
 <templates xml:space="preserve">
 
     <t t-name="crm_workflow_custom.crm_dashboard_template">
-        <div class="o_crm_dashboard_view crmdsh_wrapper">
+        <div class="o_action o_crm_dashboard_view crmdsh_wrapper">
             <div class="crmdsh_header">
                 <div>
                     <h1>CRM Workflow Dashboard</h1>

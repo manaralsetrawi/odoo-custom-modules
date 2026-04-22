@@ -2,6 +2,7 @@
     padding: 24px;
     background: #f8fafc;
     min-height: 100%;
+    padding-bottom: 40px;
 }
 
 .crmdsh_header {
@@ -178,12 +179,6 @@
 }
 
 .o_crm_dashboard_view {
-    overflow-y: auto !important;
-    height: auto !important;
-    max-height: none !important;
-}
-
-.crmdsh_wrapper {
-    min-height: auto !important;
-    padding-bottom: 40px;
+    height: 100%;
+    overflow-y: auto;
 }
