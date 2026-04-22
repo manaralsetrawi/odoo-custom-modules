@@ -249,11 +249,7 @@
         <field name="inherit_id" ref="crm_workflow_custom.view_crm_lead_form_workflow_custom"/>
         <field name="arch" type="xml">
 
-            <xpath expr="//button[@name='action_convert_to_opportunity']" position="attributes">
-                <attribute name="invisible">
-                    1
-                </attribute>
-            </xpath>
+
 
             <xpath expr="//page[@name='crmwf_workflow_overview']" position="attributes">
                 <attribute name="invisible">type == 'lead'</attribute>
