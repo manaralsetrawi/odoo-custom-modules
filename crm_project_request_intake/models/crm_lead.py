@@ -232,22 +232,23 @@ class CrmProjectRequestLead(models.Model):
 
     def action_intake_approve_request(self):
         approved_stage = self._get_stage_by_xmlid(
-            'crm_project_request_intake.crm_stage_project_request_approved')
-        opportunity_stage = self._get_stage_by_xmlid(
-            'crm_project_request_intake.crm_stage_project_request_opportunity')
+            'crm_project_request_intake.crm_stage_project_request_approved'
+        )
+        initial_discussion_stage = self._get_stage_by_xmlid(
+            'crm_workflow_custom.crm_stage_initial_discussion'
+        )
 
         for record in self:
             if record.request_type != 'project_request' or record.type != 'lead':
                 raise ValidationError(
-                    _("Only project request leads can be approved."))
+                    _("Only project request leads can be approved.")
+                )
 
             if record.intake_state != 'under_review':
                 raise ValidationError(
-                    _("Only requests under review can be approved."))
+                    _("Only requests under review can be approved.")
+                )
 
-            # =========================================================
-            # Required Project Review Details Validation
-            # =========================================================
             missing_fields = []
 
             if not record.review_project_type_id:
@@ -280,7 +281,6 @@ class CrmProjectRequestLead(models.Model):
             if not record.review_recommendation:
                 missing_fields.append(_("Manager Recommendation"))
 
-            # At least one technical scope option should be selected
             if not record.review_project_feature_ids:
                 missing_fields.append(_("Development and Features"))
 
@@ -300,24 +300,25 @@ class CrmProjectRequestLead(models.Model):
                 'description': record.intake_project_description or record.description,
                 'user_id': record.user_id.id,
                 'team_id': record.team_id.id,
-                'stage_id': opportunity_stage.id if opportunity_stage else False,
+                'stage_id': initial_discussion_stage.id,
             }
 
             opportunity = self.env['crm.lead'].create(opportunity_vals)
 
-            record.intake_state = 'approved'
-            record.intake_reviewed_by = self.env.user
-            record.intake_review_date = fields.Datetime.now()
-            record.intake_opportunity_id = opportunity.id
-            record.stage_id = approved_stage.id
+            record.write({
+                'intake_state': 'approved',
+                'intake_opportunity_id': opportunity.id,
+                'stage_id': approved_stage.id,
+            })
 
             record.message_post(
-                body=_("Project request approved and converted into an opportunity.")
+                body=_(
+                    "Project request approved and converted into an opportunity in Initial Discussion stage.")
             )
-
     # =========================================================
     # Optional Helper When Website Creates Request
     # =========================================================
+
     @api.model
     def create_project_request_lead(self, vals):
         stage = self.env.ref(
