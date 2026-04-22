@@ -25,17 +25,47 @@ class CrmDashboard(models.Model):
         rejected_requests = lead_model.search_count([('stage_id.name', '=', 'Rejected')])
         overdue_followups = lead_model.search_count([('followup_status', '=', 'overdue')])
 
-        recent_requests = lead_model.search([], order='create_date desc', limit=5)
-        waiting_approval_requests = lead_model.search(
+        recent_requests_records = lead_model.search([], order='create_date desc', limit=5)
+        waiting_approval_records = lead_model.search(
             [('stage_id.name', '=', 'Waiting Approval')],
             order='write_date desc',
             limit=5
         )
-        overdue_requests = lead_model.search(
+        overdue_records = lead_model.search(
             [('followup_status', '=', 'overdue')],
             order='next_followup_date asc',
             limit=5
         )
+
+        recent_requests = [
+            {
+                'id': rec.id,
+                'name': rec.name or '-',
+                'customer': rec.partner_id.name or rec.partner_name or rec.contact_name or '-',
+                'stage': rec.stage_id.name or '-',
+            }
+            for rec in recent_requests_records
+        ]
+
+        waiting_approval_requests = [
+            {
+                'id': rec.id,
+                'name': rec.name or '-',
+                'customer': rec.partner_id.name or rec.partner_name or rec.contact_name or '-',
+                'owner': rec.user_id.name or '-',
+            }
+            for rec in waiting_approval_records
+        ]
+
+        overdue_requests = [
+            {
+                'id': rec.id,
+                'name': rec.name or '-',
+                'next_followup_date': str(rec.next_followup_date) if rec.next_followup_date else '-',
+                'status': dict(rec._fields['followup_status'].selection).get(rec.followup_status, '-') if rec.followup_status else '-',
+            }
+            for rec in overdue_records
+        ]
 
         return {
             'total_requests': total_requests,
