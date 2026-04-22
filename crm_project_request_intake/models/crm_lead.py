@@ -43,13 +43,11 @@ class CrmProjectRequestLead(models.Model):
         ('high', 'High'),
     ], string='Priority Level', tracking=True)
 
-    review_client_segment = fields.Selection([
-        ('education', 'Education'),
-        ('government', 'Government'),
-        ('private', 'Private Sector'),
-        ('startup', 'Startup'),
-        ('other', 'Other'),
-    ], string='Client Segment', tracking=True)
+    review_client_segment_id = fields.Many2one(
+        'crm.client.segment',
+        string='Client Segment',
+        tracking=True,
+    )
 
     review_estimated_team = fields.Char(
         string='Suggested Team / Resources', tracking=True)
@@ -265,7 +263,7 @@ class CrmProjectRequestLead(models.Model):
             if not record.review_complexity:
                 missing_fields.append(_("Project Complexity"))
 
-            if not record.review_client_segment:
+            if not record.review_client_segment_id:
                 missing_fields.append(_("Client Segment"))
 
             if not record.intake_technical_feasibility == 'pending':
