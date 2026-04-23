@@ -88,7 +88,6 @@ class CrmProjectRequestController(http.Controller):
             'subject': subject,
             'email_from': company_email,
             'email_to': company_email,
-            'email_bcc': email,
             'reply_to': email or company_email,
             'body_html': body_html,
         }
