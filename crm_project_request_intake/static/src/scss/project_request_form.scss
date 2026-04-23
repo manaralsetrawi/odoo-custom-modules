@@ -11,3 +11,131 @@ button[name="action_open_lost_wizard"] {
     display: none !important;
     visibility: hidden !important;
 }
+
+
+// Website design 
+.crm_project_request_page {
+    background: #f7f9fc;
+}
+
+.crm_request_hero {
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+}
+
+.crm_request_intro {
+    margin-bottom: 1.5rem;
+}
+
+.crm_request_badge {
+    display: inline-block;
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    background: rgba(11, 44, 61, 0.08);
+    color: #0b2c3d;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.crm_request_title {
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.crm_request_text {
+    max-width: 760px;
+    margin: 0 auto;
+    font-size: 1.08rem;
+    line-height: 1.8;
+    color: #4b5563;
+}
+
+.crm_request_info_card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 1.4rem 1.6rem;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.crm_request_info_card h5 {
+    color: #0b2c3d;
+    font-weight: 700;
+    margin-bottom: 0.9rem;
+}
+
+.crm_request_info_card ul {
+    padding-left: 1.2rem;
+    margin: 0;
+}
+
+.crm_request_info_card li {
+    margin-bottom: 0.45rem;
+    color: #374151;
+}
+
+.crm_request_form_card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 2rem;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+}
+
+.crm_request_form_title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #0b2c3d;
+    margin-bottom: 1.25rem;
+}
+
+.crm_request_section_title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0b2c3d;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.crm_project_request_page .form-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.45rem;
+}
+
+.crm_project_request_page .form-control,
+.crm_project_request_page .form-select {
+    min-height: 48px;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #1f2937;
+    box-shadow: none;
+}
+
+.crm_project_request_page textarea.form-control {
+    min-height: 120px;
+    padding-top: 0.85rem;
+}
+
+.crm_project_request_page .form-control:focus,
+.crm_project_request_page .form-select:focus {
+    border-color: #0b2c3d;
+    box-shadow: 0 0 0 0.2rem rgba(11, 44, 61, 0.12);
+}
+
+#pr_submit_btn {
+    background: #0b2c3d;
+    border-color: #0b2c3d;
+    border-radius: 12px;
+    font-weight: 600;
+    min-width: 140px;
+}
+
+#pr_submit_btn:hover {
+    background: #12445f;
+    border-color: #12445f;
+}
