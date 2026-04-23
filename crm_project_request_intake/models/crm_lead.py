@@ -313,8 +313,6 @@ class CrmProjectRequestLead(models.Model):
         if not self.review_client_segment_id:
             missing_fields.append(_("Client Segment"))
         
-        if not self.review_estimated_team or not self.review_estimated_team.strip():
-            missing_fields.append(_("Suggested Team / Resources"))
 
         if not self.review_project_feature_ids:
             missing_fields.append(_("Development and Features"))
