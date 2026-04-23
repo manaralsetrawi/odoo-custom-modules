@@ -16,6 +16,12 @@ class HrEmployee(models.Model):
         store=False,
     )
 
+    assignment_line_ids = fields.One2many(
+        'project.team.assignment.line',
+        'employee_id',
+        string='Project Assignment Lines',
+    )
+
     @api.depends('monthly_capacity')
     def _compute_remaining_capacity(self):
         AssignmentLine = self.env['project.team.assignment.line']

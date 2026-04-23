@@ -7,10 +7,21 @@
         <field name="inherit_id" ref="crm_workflow_custom.view_crm_lead_form_workflow_custom"/>
         <field name="arch" type="xml">
 
-            <!-- Hidden helper fields -->
+            <!-- Hidden helper fields + smart button -->
             <xpath expr="//form/sheet" position="inside">
                 <field name="intake_state" invisible="1"/>
                 <field name="intake_is_project_request" invisible="1"/>
+                <field name="assignment_count" invisible="1"/>
+
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_project_assignments"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-users"
+                            invisible="type != 'opportunity'">
+                        <field name="assignment_count" string="Assignments" widget="statinfo"/>
+                    </button>
+                </div>
             </xpath>
 
             <!-- Show request type after title -->

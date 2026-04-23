@@ -45,4 +45,32 @@
             sequence="50"
             groups="crm_workflow_custom.group_crm_workflow_manager"/>
 
+
+            <!-- Root/Parent menu under CRM -->
+      <menuitem id="menu_project_resource_management_root"
+                  name="Project Resource Management"
+                  parent="crm.crm_menu_root"
+                  sequence="90"/>
+
+      <menuitem id="menu_project_assignments"
+                  name="Project Assignments"
+                  parent="menu_project_resource_management_root"
+                  action="action_project_team_assignment"
+                  sequence="10"/>
+
+      <menuitem id="menu_resource_allocations"
+                  name="Resource Allocations"
+                  parent="menu_project_resource_management_root"
+                  action="action_project_team_assignment_line"
+                  sequence="20"/>
+
+      <menuitem id="menu_project_assignment_teams"
+                  name="Assignment Teams"
+                  parent="menu_project_resource_management_root"
+                  action="action_project_assignment_team"
+                  sequence="30"/>
+
+
+
+
 </odoo>

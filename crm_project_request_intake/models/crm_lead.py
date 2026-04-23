@@ -215,6 +215,32 @@ class CrmProjectRequestLead(models.Model):
         tracking=True,
     )
 
+    assignment_count = fields.Integer(
+    string='Assignment Count',
+    compute='_compute_assignment_count',
+    )
+
+    assignment_ids = fields.One2many(
+        'project.team.assignment',
+        'lead_id',
+        string='Project Assignments',
+    )
+
+    def _compute_assignment_count(self):
+        for rec in self:
+            rec.assignment_count = len(rec.assignment_ids)
+
+
+    def action_view_project_assignments(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Project Assignments'),
+            'res_model': 'project.team.assignment',
+            'view_mode': 'list,form',
+            'domain': [('lead_id', '=', self.id)],
+            'context': {'default_lead_id': self.id},
+        }
 
     # =========================================================
     # Compute Methods
