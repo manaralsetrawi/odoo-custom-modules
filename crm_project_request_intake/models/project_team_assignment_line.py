@@ -26,9 +26,15 @@ class ProjectTeamAssignmentLine(models.Model):
     )
 
     workload_percentage = fields.Float(
-        string='Workload (%)',
+        string='Total Allocation (%)',
         required=True,
         default=0.0,
+    )
+
+    monthly_reserved_percentage = fields.Float(
+        string='Monthly Reserved (%)',
+        compute='_compute_monthly_reserved_percentage',
+        store=False,
     )
 
     notes = fields.Char(string='Notes')
@@ -41,3 +47,19 @@ class ProjectTeamAssignmentLine(models.Model):
                 ('member_ids', 'in', line.employee_id.id)
             ], limit=1)
             line.employee_team_id = team.id if team else False
+
+    @api.depends(
+        'workload_percentage',
+        'assignment_id.planned_start_date',
+        'assignment_id.planned_end_date',
+    )
+    def _compute_monthly_reserved_percentage(self):
+        for line in self:
+            months = 1
+            if line.assignment_id.planned_start_date and line.assignment_id.planned_end_date:
+                start = line.assignment_id.planned_start_date
+                end = line.assignment_id.planned_end_date
+                months = ((end.year - start.year) * 12) + (end.month - start.month) + 1
+                if months < 1:
+                    months = 1
+            line.monthly_reserved_percentage = line.workload_percentage / months

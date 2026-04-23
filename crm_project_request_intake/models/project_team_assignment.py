@@ -1,5 +1,6 @@
 from odoo import api, fields, models
 
+
 class ProjectTeamAssignment(models.Model):
     _name = 'project.team.assignment'
     _description = 'Project Team Assignment'
@@ -35,11 +36,20 @@ class ProjectTeamAssignment(models.Model):
         string='Assigned Resources',
     )
 
-    planned_start_date = fields.Date(string='Planned Start Date', required=True)
+    planned_start_date = fields.Date(
+        string='Planned Start Date',
+        required=True
+    )
+
+    planned_end_date = fields.Date(
+        string='Planned End Date',
+        required=True
+    )
+
     estimated_duration_months = fields.Integer(
         string='Estimated Duration (Months)',
         default=1,
-        required=True
+        required=True,
     )
 
     workload_percentage = fields.Float(
@@ -49,7 +59,6 @@ class ProjectTeamAssignment(models.Model):
     )
 
     notes = fields.Text(string='Notes')
-
 
     @api.depends('assignment_line_ids.workload_percentage')
     def _compute_workload_percentage(self):
