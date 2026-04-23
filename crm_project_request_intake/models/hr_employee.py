@@ -11,7 +11,7 @@ class HrEmployee(models.Model):
     )
 
     remaining_capacity = fields.Float(
-        string='Remaining Capacity (%)',
+        string='Monthly Remaining Capacity (%)',
         compute='_compute_remaining_capacity',
         store=False,
     )
@@ -22,12 +22,11 @@ class HrEmployee(models.Model):
         string='Project Assignment Lines',
     )
 
-    @api.depends('monthly_capacity')
+    @api.depends(
+        'monthly_capacity',
+        'assignment_line_ids.monthly_reserved_percentage',
+    )
     def _compute_remaining_capacity(self):
-        AssignmentLine = self.env['project.team.assignment.line']
         for employee in self:
-            lines = AssignmentLine.search([
-                ('employee_id', '=', employee.id),
-            ])
-            used_capacity = sum(lines.mapped('workload_percentage'))
+            used_capacity = sum(employee.assignment_line_ids.mapped('monthly_reserved_percentage'))
             employee.remaining_capacity = employee.monthly_capacity - used_capacity

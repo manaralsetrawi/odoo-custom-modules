@@ -28,7 +28,7 @@ class ProjectAssignmentTeam(models.Model):
     )
 
     monthly_capacity = fields.Float(
-        string='Monthly Capacity (%)',
+        string='Monthly Remaining Capacity (%)',
         default=100.0,
         required=True,
     )
@@ -45,8 +45,13 @@ class ProjectAssignmentTeam(models.Model):
         string='Assignments',
     )
 
-    @api.depends('monthly_capacity', 'assignment_ids.workload_percentage')
+    @api.depends(
+        'monthly_capacity',
+        'assignment_ids.assignment_line_ids.monthly_reserved_percentage',
+    )
     def _compute_remaining_capacity(self):
         for team in self:
-            total_workload = sum(team.assignment_ids.mapped('workload_percentage'))
-            team.remaining_capacity = team.monthly_capacity - total_workload
+            used_capacity = sum(
+                team.assignment_ids.mapped('assignment_line_ids.monthly_reserved_percentage')
+            )
+            team.remaining_capacity = team.monthly_capacity - used_capacity

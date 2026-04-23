@@ -53,7 +53,7 @@ class ProjectTeamAssignment(models.Model):
     )
 
     workload_percentage = fields.Float(
-        string='Total Workload (%)',
+        string='Total Project Allocation (%)',
         compute='_compute_workload_percentage',
         store=True,
     )

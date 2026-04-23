@@ -30,6 +30,7 @@ class ProjectTeamAssignmentLine(models.Model):
         required=True,
         default=0.0,
     )
+    
 
     monthly_reserved_percentage = fields.Float(
         string='Monthly Reserved (%)',
