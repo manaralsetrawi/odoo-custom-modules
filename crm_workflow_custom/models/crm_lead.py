@@ -112,12 +112,12 @@ class CrmLead(models.Model):
 
     def _compute_can_edit_proposal_fields(self):
         user = self.env.user
-        can_edit = (
-            user.has_group('crm_workflow_custom.group_crm_workflow_user') or
-            user.has_group('crm_workflow_custom.group_crm_workflow_manager')
-        )
+        is_manager = user.has_group('crm_workflow_custom.group_crm_workflow_manager')
+        is_reviewer = user.has_group('crm_workflow_custom.group_crm_technical_reviewer')
+        is_workflow_user = user.has_group('crm_workflow_custom.group_crm_workflow_user')
+
         for record in self:
-            record.can_edit_proposal_fields = can_edit
+            record.can_edit_proposal_fields = is_manager or (is_workflow_user and not is_reviewer)
 
     @api.constrains('partner_id', 'type')
     def _check_internal_contact_required(self):
