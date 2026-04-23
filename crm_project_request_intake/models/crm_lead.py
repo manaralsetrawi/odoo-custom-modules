@@ -309,23 +309,12 @@ class CrmProjectRequestLead(models.Model):
         if not self.review_project_type_id:
             missing_fields.append(_("Project Type"))
 
-        if not self.review_complexity:
-            missing_fields.append(_("Project Complexity"))
 
         if not self.review_client_segment_id:
             missing_fields.append(_("Client Segment"))
-
-        if not self.intake_technical_feasibility or self.intake_technical_feasibility == 'pending':
-            missing_fields.append(_("Technical Feasibility"))
-
-        if not self.intake_estimated_budget_final:
-            missing_fields.append(_("Final Estimated Budget"))
-
-        if not self.intake_estimated_duration_final or not self.intake_estimated_duration_final.strip():
-            missing_fields.append(_("Final Estimated Duration"))
-
-        if not self.intake_project_deadline:
-            missing_fields.append(_("Project Deadline"))
+        
+        if not self.review_estimated_team or not self.review_estimated_team.strip():
+            missing_fields.append(_("Suggested Team / Resources"))
 
         if not self.review_project_feature_ids:
             missing_fields.append(_("Development and Features"))
