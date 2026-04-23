@@ -12,8 +12,6 @@
                 <attribute name="class" add=" crmwf_kanban_card" separator=" "/>
             </xpath>
 
-            <!-- Remove default CRM subtitle block (duplicate client text) -->
-            <!-- <xpath expr="//templates//t[@t-if='record.partner_id.raw_value']" position="replace"/> -->
             <!-- Improve title appearance -->
             <xpath expr="//templates//field[@name='name']" position="replace">
                 <div class="crmwf_kanban_title">
@@ -21,8 +19,12 @@
                 </div>
             </xpath>
 
+            <!-- Remove default partner line to avoid duplicate client name -->
+            <xpath expr="//templates//field[@name='partner_id']" position="replace"/>
+
             <!-- Inject workflow info inside main kanban template -->
             <xpath expr="//templates/t/div" position="inside">
+
                 <div class="crmwf_kanban_extra">
 
                     <div class="crmwf_kanban_deadline_row">
@@ -70,6 +72,7 @@
                     </div>
 
                 </div>
+
             </xpath>
 
         </field>
