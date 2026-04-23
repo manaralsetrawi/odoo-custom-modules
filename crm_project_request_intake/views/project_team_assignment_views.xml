@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_project_team_assignment_list" model="ir.ui.view">
+        <field name="name">project.team.assignment.list</field>
+        <field name="model">project.team.assignment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="lead_id"/>
+                <field name="team_id"/>
+                <field name="planned_start_date"/>
+                <field name="estimated_duration_months"/>
+                <field name="workload_percentage"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_project_team_assignment_form" model="ir.ui.view">
+        <field name="name">project.team.assignment.form</field>
+        <field name="model">project.team.assignment</field>
+        <field name="arch" type="xml">
+            <form string="Team Assignment">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="lead_id"/>
+                            <field name="team_id"/>
+                            <field name="planned_start_date"/>
+                        </group>
+                        <group>
+                            <field name="estimated_duration_months"/>
+                            <field name="workload_percentage"/>
+                        </group>
+                    </group>
+
+                    <group string="Assigned Employees">
+                        <field name="assigned_employee_ids" widget="many2many_tags"/>
+                    </group>
+
+                    <group string="Notes">
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_project_team_assignment" model="ir.actions.act_window">
+        <field name="name">Team Assignments</field>
+        <field name="res_model">project.team.assignment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

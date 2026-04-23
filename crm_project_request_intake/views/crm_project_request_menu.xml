@@ -37,11 +37,11 @@
           action="action_project_assignment_team"
           sequence="40"
           groups="crm_workflow_custom.group_crm_workflow_manager"/>
-
-    <menuitem id="menu_project_team_availability"
-            name="Team Availability"
+      
+      <menuitem id="menu_project_team_assignment"
+            name="Team Assignments"
             parent="menu_crm_project_request_config_section"
-            action="action_project_team_availability"
+            action="action_project_team_assignment"
             sequence="50"
             groups="crm_workflow_custom.group_crm_workflow_manager"/>
 
