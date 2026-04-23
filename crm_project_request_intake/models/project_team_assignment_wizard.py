@@ -129,8 +129,7 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
         if not self.planned_start_date:
             raise ValidationError(_("Please enter the planned start date."))
 
-        month_start, month_end = self._get_month_date_range(
-            self.planned_start_date)
+        month_start, month_end = self._get_month_date_range(self.planned_start_date)
 
         existing_assignments = self.env['project.team.assignment'].search([
             ('team_id', '=', self.selected_team_id.id),
@@ -143,7 +142,8 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
 
         if remaining_capacity < self.required_workload_percentage:
             raise ValidationError(
-                _("The selected team does not have enough remaining capacity for this month."))
+                _("The selected team does not have enough remaining capacity for this month.")
+            )
 
         lead = self.lead_id
         opportunity = lead
@@ -155,52 +155,25 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
                 raise_if_not_found=False
             )
             if not initial_discussion_stage:
-                raise ValidationError(
-                    _("Initial Discussion stage was not found."))
+                raise ValidationError(_("Initial Discussion stage was not found."))
 
             Partner = self.env['res.partner']
             partner = False
 
+            # Try to find existing individual contact by email
             if lead.intake_client_email:
                 partner = Partner.search([
                     ('email', '=', lead.intake_client_email)
                 ], limit=1)
 
-            if not partner and lead.intake_company_name:
-                partner = Partner.search([
-                    ('name', '=', lead.intake_company_name),
-                    ('is_company', '=', True)
-                ], limit=1)
-
+            # If not found, create only one person contact
             if not partner:
-                partner_vals = {
-                    'name': lead.intake_company_name or lead.intake_client_name or lead.contact_name or _("New Contact"),
+                partner = Partner.create({
+                    'name': lead.intake_client_name or lead.contact_name or _("New Contact"),
                     'email': lead.intake_client_email or lead.email_from,
                     'phone': lead.intake_client_phone or lead.phone,
-                    'is_company': bool(lead.intake_company_name),
-                    'company_type': 'company' if lead.intake_company_name else 'person',
-                }
-                partner = Partner.create(partner_vals)
-
-            contact_person = partner
-
-            if partner.is_company and lead.intake_client_name:
-                existing_contact = Partner.search([
-                    ('parent_id', '=', partner.id),
-                    ('name', '=', lead.intake_client_name)
-                ], limit=1)
-
-                if existing_contact:
-                    contact_person = existing_contact
-                else:
-                    contact_person = Partner.create({
-                        'name': lead.intake_client_name,
-                        'parent_id': partner.id,
-                        'type': 'contact',
-                        'email': lead.intake_client_email or lead.email_from,
-                        'phone': lead.intake_client_phone or lead.phone,
-                        'company_type': 'person',
-                    })
+                    'company_type': 'person',
+                })
 
             opportunity_vals = {
                 'name': lead.intake_project_title or lead.name,
@@ -208,8 +181,9 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
                 'request_type': lead.request_type,
                 'intake_state': 'approved',
 
-                'partner_id': contact_person.id,
-                'partner_name': lead.intake_company_name or partner.name,
+                # Standard CRM / contact fields
+                'partner_id': partner.id,
+                'partner_name': False,
                 'contact_name': lead.intake_client_name or lead.contact_name,
                 'email_from': lead.intake_client_email or lead.email_from,
                 'phone': lead.intake_client_phone or lead.phone,
@@ -218,6 +192,7 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
                 'team_id': lead.team_id.id,
                 'stage_id': initial_discussion_stage.id,
 
+                # Intake fields
                 'intake_client_name': lead.intake_client_name,
                 'intake_client_email': lead.intake_client_email,
                 'intake_client_phone': lead.intake_client_phone,
@@ -230,6 +205,7 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
                 'intake_reviewed_by': lead.intake_reviewed_by.id,
                 'intake_review_date': lead.intake_review_date,
 
+                # Review fields
                 'review_project_type_id': lead.review_project_type_id.id,
                 'review_client_segment_id': lead.review_client_segment_id.id,
                 'review_complexity': lead.review_complexity,
@@ -240,6 +216,7 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
                 'review_risk_notes': lead.review_risk_notes,
                 'review_recommendation': lead.review_recommendation,
 
+                # Project manager fields
                 'intake_meeting_notes': lead.intake_meeting_notes,
                 'intake_project_requirements': lead.intake_project_requirements,
                 'intake_technical_feasibility': lead.intake_technical_feasibility,
@@ -249,6 +226,7 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
                 'intake_project_deadline': lead.intake_project_deadline,
                 'intake_solution_summary': lead.intake_solution_summary,
 
+                # Planning / assignment
                 'planned_start_date': self.planned_start_date,
                 'assigned_team_id': self.selected_team_id.id,
                 'assigned_employee_ids': [(6, 0, self.assigned_employee_ids.ids)],
@@ -263,12 +241,11 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
             })
 
             lead.message_post(
-                body=_(
-                    "Project request approved and converted into an opportunity: %s") % opportunity.name
+                body=_("Project request approved and converted into an opportunity: %s") % opportunity.name
             )
 
         else:
-            # already an opportunity
+            # Already an opportunity: just update assignment info
             opportunity.write({
                 'assigned_team_id': self.selected_team_id.id,
                 'assigned_employee_ids': [(6, 0, self.assigned_employee_ids.ids)],
