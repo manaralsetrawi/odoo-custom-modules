@@ -70,11 +70,18 @@ class CrmProjectRequestController(http.Controller):
             raise ValueError("No outgoing mail server email was found.")
 
         subject = "New General Inquiry from Website: %s" % (name or "No Name")
+        company = request.env.company
+        base_url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        logo_url = "%s/web/image/res.company/%s/logo" % (base_url, company.id)
 
         body_html = """
         <div style="margin:0; padding:0; background-color:#f4f6f8;">
             <div style="max-width:700px; margin:0 auto; background-color:#ffffff; padding:30px; font-family:Arial, sans-serif; color:#333333; border:1px solid #dddddd; border-radius:8px;">
-                
+
+                <div style="text-align:center; margin-bottom:20px;">
+                    <img src="%s" alt="Company Logo" style="max-height:80px; max-width:220px;"/>
+                </div>
+
                 <div style="border-bottom:2px solid #0b2c3d; padding-bottom:15px; margin-bottom:25px;">
                     <h2 style="margin:0; color:#0b2c3d;">New General Inquiry</h2>
                     <p style="margin:8px 0 0 0; font-size:14px; color:#666666;">
@@ -110,6 +117,7 @@ class CrmProjectRequestController(http.Controller):
             </div>
         </div>
         """ % (
+            logo_url,
             name or '',
             email or '',
             phone or '',
@@ -133,41 +141,46 @@ class CrmProjectRequestController(http.Controller):
             client_subject = "We received your inquiry"
             
             client_body_html = """
-            <div style="margin:0; padding:0; background-color:#f4f6f8;">
-                <div style="max-width:700px; margin:0 auto; background-color:#ffffff; padding:30px; font-family:Arial, sans-serif; color:#333333; border:1px solid #dddddd; border-radius:8px;">
+<div style="margin:0; padding:0; background-color:#f4f6f8;">
+    <div style="max-width:700px; margin:0 auto; background-color:#ffffff; padding:30px; font-family:Arial, sans-serif; color:#333333; border:1px solid #dddddd; border-radius:8px;">
 
-                    <div style="border-bottom:2px solid #0b2c3d; padding-bottom:15px; margin-bottom:25px;">
-                        <h2 style="margin:0; color:#0b2c3d;">Inquiry Received Successfully</h2>
-                    </div>
+        <div style="text-align:center; margin-bottom:20px;">
+            <img src="%s" alt="Company Logo" style="max-height:80px; max-width:220px;"/>
+        </div>
 
-                    <p>Dear %s,</p>
+        <div style="border-bottom:2px solid #0b2c3d; padding-bottom:15px; margin-bottom:25px;">
+            <h2 style="margin:0; color:#0b2c3d;">Inquiry Received Successfully</h2>
+        </div>
 
-                    <p>
-                        Thank you for contacting us. Your inquiry has been received successfully.
-                    </p>
+        <p>Dear %s,</p>
 
-                    <p>
-                        Our team will review your message and get back to you as soon as possible.
-                    </p>
+        <p>
+            Thank you for contacting us. Your inquiry has been received successfully.
+        </p>
 
-                    <div style="margin-top:20px;">
-                        <p style="font-weight:bold; margin-bottom:10px;">Your Message:</p>
-                        <div style="background-color:#f8f9fa; border:1px solid #e0e0e0; padding:15px; border-radius:6px; line-height:1.6;">
-                            %s
-                        </div>
-                    </div>
+        <p>
+            Our team will review your message and get back to you as soon as possible.
+        </p>
 
-                    <p style="margin-top:25px;">
-                        Best regards,<br/>
-                        NCST Team
-                    </p>
-
-                    <div style="margin-top:30px; border-top:1px solid #dddddd; padding-top:15px; font-size:12px; color:#777777;">
-                        This is an automated acknowledgement email. Please do not reply directly to this message unless instructed otherwise.
-                    </div>
-                </div>
+        <div style="margin-top:20px;">
+            <p style="font-weight:bold; margin-bottom:10px;">Your Message:</p>
+            <div style="background-color:#f8f9fa; border:1px solid #e0e0e0; padding:15px; border-radius:6px; line-height:1.6;">
+                %s
             </div>
-            """ % (
+        </div>
+
+        <p style="margin-top:25px;">
+            Best regards,<br/>
+            NCST Team
+        </p>
+
+        <div style="margin-top:30px; border-top:1px solid #dddddd; padding-top:15px; font-size:12px; color:#777777;">
+            This is an automated acknowledgement email. Please do not reply directly to this message unless instructed otherwise.
+        </div>
+    </div>
+</div>
+""" % (
+                logo_url,
                 name or 'Client',
                 message or '',
             )
