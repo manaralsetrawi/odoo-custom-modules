@@ -57,6 +57,49 @@ class CrmProjectRequestController(http.Controller):
 
         return errors
 
+    def _send_general_inquiry_email(self, post):
+        name = (post.get('name') or '').strip()
+        email = (post.get('email') or '').strip()
+        phone = (post.get('phone') or '').strip()
+        message = (post.get('message') or '').strip()
+
+        mail_server = request.env['ir.mail_server'].sudo().search([], limit=1)
+        company_email = mail_server.smtp_user if mail_server and mail_server.smtp_user else False
+
+        if not company_email:
+            raise ValueError("No outgoing mail server email was found.")
+
+        subject = "New General Inquiry from Website: %s" % (name or "No Name")
+
+        body_html = """
+            <p><strong>New general inquiry received from the website.</strong></p>
+            <p><strong>Full Name:</strong> %s</p>
+            <p><strong>Email:</strong> %s</p>
+            <p><strong>Phone Number:</strong> %s</p>
+            <p><strong>Message:</strong><br/>%s</p>
+        """ % (
+            name or '',
+            email or '',
+            phone or '',
+            message or '',
+        )
+
+        mail_values = {
+            'subject': subject,
+            'email_from': company_email,
+            'email_to': company_email,
+            'email_bcc': email,
+            'reply_to': email or company_email,
+            'body_html': body_html,
+        }
+
+        mail = request.env['mail.mail'].sudo().create(mail_values)
+        mail.send()
+
+        _logger.warning("GENERAL INQUIRY EMAIL SENT TO: %s", company_email)
+
+
+
     @http.route('/project_request/submit', type='http', auth='public', website=True, csrf=True)
     def submit_project_request(self, **post):
         _logger.warning("=== PROJECT REQUEST SUBMIT START ===")
@@ -97,8 +140,8 @@ class CrmProjectRequestController(http.Controller):
                 lead = request.env['crm.lead'].sudo().create_project_request_lead(lead_vals)
                 _logger.warning("PROJECT LEAD CREATED: %s", lead.id)
             else:
-                _logger.warning("GENERAL INQUIRY RECEIVED - NO CRM LEAD CREATED")
-
+                _logger.warning("GENERAL INQUIRY RECEIVED - SENDING EMAIL")
+                self._send_general_inquiry_email(post)
             return request.redirect('/contactus?success=1')
 
         except Exception:

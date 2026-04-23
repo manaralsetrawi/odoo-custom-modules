@@ -10,3 +10,4 @@ from . import hr_employee
 from . import project_team_assignment_line
 from . import project_team_assignment_wizard_line
 from . import crm_email_log
+from . import res_config_settings
