@@ -193,6 +193,29 @@ class CrmProjectRequestLead(models.Model):
         store=False,
     )
 
+
+    assigned_team_id = fields.Many2one(
+    'project.assignment.team',
+    string='Assigned Team',
+    tracking=True,
+    )
+
+    assigned_employee_ids = fields.Many2many(
+        'hr.employee',
+        'crm_lead_assigned_employee_rel',
+        'lead_id',
+        'employee_id',
+        string='Assigned Employees',
+        tracking=True,
+        domain="[('department_id.name', '=', 'AI Research and Development')]",
+    )
+
+    planned_start_date = fields.Date(
+        string='Planned Project Start Date',
+        tracking=True,
+    )
+
+
     # =========================================================
     # Compute Methods
     # =========================================================
@@ -352,6 +375,25 @@ class CrmProjectRequestLead(models.Model):
                     'company_type': 'company' if record.intake_company_name else 'person',
                 }
                 partner = Partner.create(partner_vals)
+                contact_person = partner
+
+            if partner.is_company and record.intake_client_name:
+                existing_contact = Partner.search([
+                    ('parent_id', '=', partner.id),
+                    ('name', '=', record.intake_client_name)
+                ], limit=1)
+
+                if existing_contact:
+                    contact_person = existing_contact
+                else:
+                    contact_person = Partner.create({
+                        'name': record.intake_client_name,
+                        'parent_id': partner.id,
+                        'type': 'contact',
+                        'email': record.intake_client_email or record.email_from,
+                        'phone': record.intake_client_phone or record.phone,
+                        'company_type': 'person',
+                    })
 
 
             # =========================================================
@@ -369,6 +411,11 @@ class CrmProjectRequestLead(models.Model):
                 'user_id': record.user_id.id,
                 'team_id': record.team_id.id,
                 'stage_id': initial_discussion_stage.id,
+                'review_project_type_id': record.review_project_type_id.id,
+                'review_client_segment_id': record.review_client_segment_id.id,
+                'review_complexity': record.review_complexity,
+                'review_project_feature_ids': [(6, 0, record.review_project_feature_ids.ids)],
+                'planned_start_date': record.planned_start_date,
             }
 
             opportunity = self.env['crm.lead'].create(opportunity_vals)
@@ -381,6 +428,17 @@ class CrmProjectRequestLead(models.Model):
             record.message_post(
                 body=_("Project request approved, contact created/linked, and opportunity created in Initial Discussion stage.")
             )
+
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Assign Project Team'),
+                'res_model': 'project.team.assignment.wizard',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'default_lead_id': opportunity.id,
+                },
+            }
 
 
     # =========================================================

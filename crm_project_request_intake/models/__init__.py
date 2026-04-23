@@ -3,3 +3,6 @@ from . import project_request_reject_wizard
 from . import crm_client_segment
 from . import crm_project_type
 from . import crm_project_feature
+from . import project_assignment_team
+from . import project_team_availability
+from . import project_team_assignment_wizard
