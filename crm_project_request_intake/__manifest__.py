@@ -35,7 +35,7 @@ Main features:
         'views/crm_project_type_views.xml',
         'views/crm_project_feature_views.xml',
         'views/project_assignment_team_views.xml',
-        'views/project_team_availability_views.xml',
+        'views/project_team_assignment_views.xml',
         'views/project_team_assignment_wizard_views.xml',
         'views/crm_project_request_menu.xml',
     ],

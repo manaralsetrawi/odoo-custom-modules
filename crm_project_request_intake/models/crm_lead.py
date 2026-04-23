@@ -375,7 +375,8 @@ class CrmProjectRequestLead(models.Model):
                     'company_type': 'company' if record.intake_company_name else 'person',
                 }
                 partner = Partner.create(partner_vals)
-                contact_person = partner
+           
+            contact_person = partner
 
             if partner.is_company and record.intake_client_name:
                 existing_contact = Partner.search([

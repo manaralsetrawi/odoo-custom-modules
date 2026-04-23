@@ -12,10 +12,13 @@
                             <field name="lead_id" readonly="1"/>
                             <field name="project_type_id" readonly="1"/>
                             <field name="planned_start_date"/>
+                            <field name="estimated_duration_months"/>
+                            <field name="required_workload_percentage"/>
                         </group>
+
                         <group>
                             <field name="suggested_team_id" readonly="1"/>
-                            <field name="selected_team_id"/>
+                            <field name="selected_team_id" options="{'no_create': True}"/>
                         </group>
                     </group>
 
@@ -23,7 +26,7 @@
                         <field name="assigned_employee_ids" widget="many2many_tags"/>
                     </group>
 
-                    <group>
+                    <group string="Notes">
                         <field name="assignment_notes"/>
                     </group>
                 </sheet>
