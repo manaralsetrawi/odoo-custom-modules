@@ -1,5 +1,5 @@
 import re
-
+from datetime import timedelta
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
@@ -131,6 +131,29 @@ class CrmLead(models.Model):
         for record in self:
             record.can_edit_proposal_fields = is_manager or (is_workflow_user and not is_reviewer)
 
+    # Auto-fill planning fields based on complexity level
+    @api.onchange('complexity_level')
+    def _onchange_complexity_level_auto_fill_planning(self):
+        duration_map = {
+            'low': 30,
+            'medium': 90,
+            'high': 180,
+        }
+
+        for record in self:
+            if not record.complexity_level:
+                continue
+
+            suggested_days = duration_map.get(record.complexity_level)
+            if not suggested_days:
+                continue
+
+            if not record.estimated_duration:
+                record.estimated_duration = f"{suggested_days} days"
+
+            if not record.project_deadline:
+                record.project_deadline = fields.Date.today() + timedelta(days=suggested_days)
+                
     @api.constrains('partner_id', 'type')
     def _check_internal_contact_required(self):
         for record in self:
