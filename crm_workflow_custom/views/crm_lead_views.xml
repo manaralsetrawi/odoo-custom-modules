@@ -35,6 +35,7 @@
 
                 <field name="can_edit_technical_fields" invisible="1"/>
                 <field name="can_edit_proposal_fields" invisible="1"/>
+                <field name="can_use_flow_buttons" invisible="1"/>
             </xpath>
 
             <!-- Contact required only for internal flow -->
@@ -64,21 +65,21 @@
                         string="Start Analysis"
                         class="btn-primary crmwf_btn crmwf_btn_primary"
                         groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"
-                        invisible="type == 'lead' or not show_start_analysis_btn"/>
+                        invisible="type == 'lead' or not show_start_analysis_btn or not can_use_flow_buttons"/>
 
                 <button name="action_submit_proposal"
                         type="object"
                         string="Submit Proposal"
                         class="btn-primary crmwf_btn crmwf_btn_primary"
                         groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"
-                        invisible="not show_submit_proposal_btn"/>
+                        invisible="not show_submit_proposal_btn or not can_use_flow_buttons"/>
 
                 <button name="action_send_to_approval"
                         type="object"
                         string="Send to Approval"
                         class="btn-primary crmwf_btn crmwf_btn_primary"
                         groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"
-                        invisible="not show_send_to_approval_btn"/>
+                        invisible="not show_send_to_approval_btn or not can_use_flow_buttons"/>
 
                 <button name="action_approve_project"
                         type="object"
@@ -119,6 +120,12 @@
 
                     </group>
                 </div>
+            </xpath>
+
+            <!-- Make stage statusbar readonly so users cannot click stages manually -->
+            <xpath expr="//field[@name='stage_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="options">{'clickable': False}</attribute>
             </xpath>
 
             <!-- Tabs -->
@@ -189,15 +196,15 @@
         <field name="arch" type="xml">
 
             <xpath expr="//button[@name='action_start_analysis']" position="attributes">
-                <attribute name="invisible">type == 'lead' or not show_start_analysis_btn</attribute>
+                <attribute name="invisible">type == 'lead' or not show_start_analysis_btn or not can_use_flow_buttons</attribute>
             </xpath>
 
             <xpath expr="//button[@name='action_submit_proposal']" position="attributes">
-                <attribute name="invisible">not show_submit_proposal_btn</attribute>
+                <attribute name="invisible">not show_submit_proposal_btn or not can_use_flow_buttons</attribute>
             </xpath>
 
             <xpath expr="//button[@name='action_send_to_approval']" position="attributes">
-                <attribute name="invisible">not show_send_to_approval_btn</attribute>
+                <attribute name="invisible">not show_send_to_approval_btn or not can_use_flow_buttons</attribute>
             </xpath>
 
             <xpath expr="//button[@name='action_approve_project']" position="attributes">

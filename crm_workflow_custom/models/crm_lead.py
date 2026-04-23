@@ -66,6 +66,18 @@ class CrmLead(models.Model):
     can_edit_technical_fields = fields.Boolean(compute="_compute_can_edit_technical_fields")
     can_edit_proposal_fields = fields.Boolean(compute="_compute_can_edit_proposal_fields")
 
+    # General helper to determine if any flow buttons should be shown
+    can_use_flow_buttons = fields.Boolean(compute="_compute_can_use_flow_buttons")
+
+    def _compute_can_use_flow_buttons(self):
+        user = self.env.user
+        is_manager = user.has_group('crm_workflow_custom.group_crm_workflow_manager')
+        is_reviewer = user.has_group('crm_workflow_custom.group_crm_technical_reviewer')
+        is_workflow_user = user.has_group('crm_workflow_custom.group_crm_workflow_user')
+
+        for record in self:
+            record.can_use_flow_buttons = is_manager or (is_workflow_user and not is_reviewer)
+
     @api.model_create_multi
     def create(self, vals_list):
         records = super().create(vals_list)
