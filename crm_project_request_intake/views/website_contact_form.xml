@@ -12,25 +12,27 @@
                         <div class="row justify-content-center">
                             <div class="col-lg-10 col-xl-8">
 
-                                <div class="crm_request_intro text-center mb-5">
+                                <div class="crm_request_intro text-center mb-4">
                                     <span class="crm_request_badge">Contact Us</span>
                                     <h1 class="crm_request_title mt-3">Let’s Discuss Your Request</h1>
                                     <p class="crm_request_text">
                                         Contact us for general inquiries or submit a project request with the main details.
                                         Our team will review your request and follow up with you.
                                     </p>
+                                </div>
 
-                                    <div class="crm_request_info_card mt-4 text-start">
-                                        <h5>What happens next?</h5>
-                                        <ul class="mb-0">
-                                            <li>Your request is submitted to the CRM system.</li>
-                                            <li>The project manager reviews the details.</li>
-                                            <li>If approved, the request continues to the next workflow stage.</li>
-                                        </ul>
-                                    </div>
+                                <div class="crm_request_info_card mb-4">
+                                    <h5>What happens next?</h5>
+                                    <ul class="mb-0">
+                                        <li>Your request is submitted to the CRM system.</li>
+                                        <li>The project manager reviews the details.</li>
+                                        <li>If approved, the request continues to the next workflow stage.</li>
+                                    </ul>
                                 </div>
 
                                 <div class="crm_request_form_card">
+                                    <h4 class="crm_request_form_title">Send Us a Message</h4>
+
                                     <t t-if="request.params.get('success')">
                                         <div class="alert alert-success" role="alert">
                                             Your request has been submitted successfully.
