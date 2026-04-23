@@ -24,32 +24,22 @@ button[name="action_open_lost_wizard"] {
 }
 
 .crm_request_intro {
-    margin-bottom: 1rem;
-}
-
-.crm_request_badge {
-    display: inline-block;
-    padding: 0.45rem 1rem;
-    border-radius: 999px;
-    background: rgba(11, 44, 61, 0.08);
-    color: #0b2c3d;
-    font-size: 0.9rem;
-    font-weight: 600;
+    margin-bottom: 1.2rem;
 }
 
 .crm_request_title {
-    font-size: 2.4rem;
+    font-size: 2.5rem;
     font-weight: 700;
     color: #1f2937;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.85rem;
     line-height: 1.2;
 }
 
 .crm_request_text {
-    max-width: 700px;
+    max-width: 760px;
     margin: 0 auto;
-    font-size: 1.02rem;
-    line-height: 1.75;
+    font-size: 1.04rem;
+    line-height: 1.8;
     color: #4b5563;
 }
 
@@ -57,28 +47,28 @@ button[name="action_open_lost_wizard"] {
     background: #ffffff;
     border: 1px solid #e8ebf0;
     border-radius: 18px;
-    padding: 1.1rem 1.25rem;
+    padding: 1.15rem 1.35rem;
     box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
-    max-width: 740px;
-    margin: 0 auto 1.25rem auto;
+    max-width: 860px;
+    margin: 0 auto 1.35rem auto;
 }
 
 .crm_request_info_card h5 {
     color: #0b2c3d;
     font-weight: 700;
     margin-bottom: 0.75rem;
-    font-size: 1.05rem;
+    font-size: 1.08rem;
 }
 
 .crm_request_info_card ul {
-    padding-left: 1.15rem;
+    padding-left: 1.2rem;
     margin: 0;
 }
 
 .crm_request_info_card li {
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.4rem;
     color: #374151;
-    line-height: 1.6;
+    line-height: 1.65;
 }
 
 .crm_request_form_card {
@@ -87,7 +77,7 @@ button[name="action_open_lost_wizard"] {
     border-radius: 24px;
     padding: 2rem 2rem 1.75rem;
     box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
-    max-width: 740px;
+    max-width: 860px;
     margin: 0 auto;
 }
 
@@ -116,7 +106,7 @@ button[name="action_open_lost_wizard"] {
 
 .crm_project_request_page .form-control,
 .crm_project_request_page .form-select {
-    min-height: 50px;
+    min-height: 52px;
     border-radius: 14px;
     border: 1px solid #d6dbe3;
     background: #ffffff;
@@ -128,14 +118,30 @@ button[name="action_open_lost_wizard"] {
 }
 
 .crm_project_request_page textarea.form-control {
-    min-height: 130px;
+    min-height: 140px;
     padding-top: 0.85rem;
+    resize: vertical;
 }
 
 .crm_project_request_page .form-control:focus,
 .crm_project_request_page .form-select:focus {
     border-color: #0b2c3d;
     box-shadow: 0 0 0 0.18rem rgba(11, 44, 61, 0.10);
+}
+
+.crm_project_request_page .form-control.is-invalid,
+.crm_project_request_page .form-select.is-invalid,
+.crm_project_request_page textarea.is-invalid {
+    border-color: #dc3545 !important;
+    background-image: none;
+    box-shadow: 0 0 0 0.18rem rgba(220, 53, 69, 0.12);
+}
+
+.crm_project_request_page .form-control.is-invalid:focus,
+.crm_project_request_page .form-select.is-invalid:focus,
+.crm_project_request_page textarea.is-invalid:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.16);
 }
 
 #pr_submit_btn {
@@ -151,4 +157,40 @@ button[name="action_open_lost_wizard"] {
 #pr_submit_btn:hover {
     background: #12445f;
     border-color: #12445f;
+}
+
+@media (max-width: 991.98px) {
+    .crm_request_title {
+        font-size: 2.1rem;
+    }
+
+    .crm_request_form_card,
+    .crm_request_info_card {
+        padding: 1.4rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .crm_request_hero {
+        padding-top: 1.5rem;
+        padding-bottom: 2.25rem;
+    }
+
+    .crm_request_title {
+        font-size: 1.8rem;
+    }
+
+    .crm_request_text {
+        font-size: 0.97rem;
+    }
+
+    .crm_request_form_card,
+    .crm_request_info_card {
+        border-radius: 18px;
+        padding: 1.1rem;
+    }
+
+    #pr_submit_btn {
+        width: 100%;
+    }
 }

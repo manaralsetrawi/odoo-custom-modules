@@ -7,21 +7,20 @@
 
         <xpath expr="//div[@id='wrap']" position="replace">
             <div id="wrap" class="oe_structure crm_project_request_page">
-                <section class="crm_request_hero py-5">
+                <section class="crm_request_hero">
                     <div class="container">
                         <div class="row justify-content-center">
-                            <div class="col-lg-9 col-xl-7">
+                            <div class="col-lg-11 col-xl-9">
 
-                                <div class="crm_request_intro text-center mb-4">
-                                    <span class="crm_request_badge">Contact Us</span>
-                                    <h1 class="crm_request_title mt-3">Let’s Discuss Your Request</h1>
+                                <div class="crm_request_intro text-center">
+                                    <h1 class="crm_request_title">Let’s Discuss Your Request</h1>
                                     <p class="crm_request_text">
                                         Contact us for general inquiries or submit a project request with the main details.
                                         Our team will review your request and follow up with you.
                                     </p>
                                 </div>
 
-                                <div class="crm_request_info_card mb-4">
+                                <div class="crm_request_info_card">
                                     <h5>What happens next?</h5>
                                     <ul class="mb-0">
                                         <li>Your request is submitted to the CRM system.</li>
@@ -46,47 +45,47 @@
                                     </t>
 
                                     <form action="/project_request/submit"
-                                        method="post"
-                                        id="crm_project_request_form"
-                                        novalidate="novalidate">
+                                          method="post"
+                                          id="crm_project_request_form"
+                                          novalidate="novalidate">
 
                                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
 
                                         <div id="form_validation_alert"
-                                            class="alert alert-danger d-none"
-                                            role="alert">
+                                             class="alert alert-danger d-none"
+                                             role="alert">
                                             Please fix the highlighted fields before submitting the form.
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="pr_name" class="form-label">Full Name</label>
                                             <input type="text"
-                                                name="name"
-                                                id="pr_name"
-                                                class="form-control"
-                                                data-label="Full Name"
-                                                required="required"/>
+                                                   name="name"
+                                                   id="pr_name"
+                                                   class="form-control"
+                                                   data-label="Full Name"
+                                                   required="required"/>
                                         </div>
 
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <label for="pr_email" class="form-label">Email</label>
                                                 <input type="email"
-                                                    name="email"
-                                                    id="pr_email"
-                                                    class="form-control"
-                                                    data-label="Email"
-                                                    required="required"/>
+                                                       name="email"
+                                                       id="pr_email"
+                                                       class="form-control"
+                                                       data-label="Email"
+                                                       required="required"/>
                                             </div>
 
                                             <div class="col-md-6">
                                                 <label for="pr_phone" class="form-label">Phone Number</label>
                                                 <input type="text"
-                                                    name="phone"
-                                                    id="pr_phone"
-                                                    class="form-control"
-                                                    data-label="Phone Number"
-                                                    required="required"/>
+                                                       name="phone"
+                                                       id="pr_phone"
+                                                       class="form-control"
+                                                       data-label="Phone Number"
+                                                       required="required"/>
                                             </div>
                                         </div>
 
@@ -105,11 +104,11 @@
                                         <div class="mt-3">
                                             <label for="pr_message" class="form-label">Message</label>
                                             <textarea name="message"
-                                                    id="pr_message"
-                                                    class="form-control"
-                                                    rows="4"
-                                                    data-label="Message"
-                                                    required="required"></textarea>
+                                                      id="pr_message"
+                                                      class="form-control"
+                                                      rows="5"
+                                                      data-label="Message"
+                                                      required="required"></textarea>
                                         </div>
 
                                         <div id="project_request_fields" class="mt-4 d-none">
@@ -118,64 +117,64 @@
                                             <div class="mb-3">
                                                 <label for="pr_company_name" class="form-label">Company Name</label>
                                                 <input type="text"
-                                                    name="intake_company_name"
-                                                    id="pr_company_name"
-                                                    class="form-control"
-                                                    data-label="Company Name"/>
+                                                       name="intake_company_name"
+                                                       id="pr_company_name"
+                                                       class="form-control"
+                                                       data-label="Company Name"/>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="pr_project_title" class="form-label">Project Title</label>
                                                 <input type="text"
-                                                    name="intake_project_title"
-                                                    id="pr_project_title"
-                                                    class="form-control"
-                                                    data-label="Project Title"/>
+                                                       name="intake_project_title"
+                                                       id="pr_project_title"
+                                                       class="form-control"
+                                                       data-label="Project Title"/>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="pr_project_description" class="form-label">Project Description</label>
                                                 <textarea name="intake_project_description"
-                                                        id="pr_project_description"
-                                                        class="form-control"
-                                                        rows="4"
-                                                        data-label="Project Description"></textarea>
+                                                          id="pr_project_description"
+                                                          class="form-control"
+                                                          rows="4"
+                                                          data-label="Project Description"></textarea>
                                             </div>
 
                                             <div class="row g-3">
                                                 <div class="col-md-6">
                                                     <label for="pr_requested_budget" class="form-label">Expected Budget</label>
                                                     <input type="number"
-                                                        step="0.01"
-                                                        min="0"
-                                                        name="intake_requested_budget"
-                                                        id="pr_requested_budget"
-                                                        class="form-control"
-                                                        data-label="Expected Budget"/>
+                                                           step="0.01"
+                                                           min="0"
+                                                           name="intake_requested_budget"
+                                                           id="pr_requested_budget"
+                                                           class="form-control"
+                                                           data-label="Expected Budget"/>
                                                 </div>
 
                                                 <div class="col-md-6">
                                                     <label for="pr_requested_duration" class="form-label">Expected Duration</label>
                                                     <input type="text"
-                                                        name="intake_requested_duration"
-                                                        id="pr_requested_duration"
-                                                        class="form-control"
-                                                        placeholder="Example: 3 months"
-                                                        data-label="Expected Duration"/>
+                                                           name="intake_requested_duration"
+                                                           id="pr_requested_duration"
+                                                           class="form-control"
+                                                           placeholder="Example: 3 months"
+                                                           data-label="Expected Duration"/>
                                                 </div>
                                             </div>
 
                                             <div class="mt-3">
                                                 <label for="pr_requested_notes" class="form-label">Additional Notes</label>
                                                 <textarea name="intake_requested_notes"
-                                                        id="pr_requested_notes"
-                                                        class="form-control"
-                                                        rows="3"
-                                                        data-label="Additional Notes"></textarea>
+                                                          id="pr_requested_notes"
+                                                          class="form-control"
+                                                          rows="3"
+                                                          data-label="Additional Notes"></textarea>
                                             </div>
                                         </div>
 
-                                        <div class="mt-4 d-flex justify-content-end">
+                                        <div class="mt-4 d-flex justify-content-end align-items-center">
                                             <button type="submit"
                                                     class="btn btn-primary px-4 py-2"
                                                     id="pr_submit_btn">
