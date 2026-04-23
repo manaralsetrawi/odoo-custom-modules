@@ -406,6 +406,162 @@ class CrmProjectRequestLead(models.Model):
             },
         }
 
+
+    def _get_company_email_for_notifications(self):
+        self.ensure_one()
+        mail_server = self.env['ir.mail_server'].sudo().search([], limit=1)
+        return mail_server.smtp_user if mail_server and mail_server.smtp_user else False
+
+
+    def _send_project_request_approval_email(self):
+        self.ensure_one()
+
+        company_email = self._get_company_email_for_notifications()
+        client_email = self.intake_client_email or self.email_from
+
+        if not company_email or not client_email:
+            return
+
+        logo_url = "https://ncst.edu.bh/wp-content/uploads/2025/05/ncst-logo.png"
+        subject = "Your project request has been approved"
+
+        body_html = """
+        <div style="margin:0; padding:0; background-color:#f4f6f8;">
+            <div style="max-width:700px; margin:0 auto; background-color:#ffffff; padding:30px; font-family:Arial, sans-serif; color:#333333; border:1px solid #dddddd; border-radius:8px;">
+
+                <div style="text-align:center; margin-bottom:20px;">
+                    <img src="%s" alt="Company Logo" style="max-height:80px; max-width:220px;"/>
+                </div>
+
+                <div style="border-bottom:2px solid #0b2c3d; padding-bottom:15px; margin-bottom:25px;">
+                    <h2 style="margin:0; color:#0b2c3d;">Project Request Approved</h2>
+                </div>
+
+                <p>Dear %s,</p>
+
+                <p>
+                    We are pleased to inform you that your project request has been reviewed and approved.
+                </p>
+
+                <p>
+                    Our team will proceed with the next steps and may contact you if additional coordination is required.
+                </p>
+
+                <div style="margin-top:20px;">
+                    <p style="font-weight:bold; margin-bottom:10px;">Request Summary:</p>
+                    <table style="width:100%%; border-collapse:collapse; font-size:14px;">
+                        <tr>
+                            <td style="padding:8px 0; width:180px; font-weight:bold;">Project Title:</td>
+                            <td style="padding:8px 0;">%s</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:8px 0; font-weight:bold;">Project Type:</td>
+                            <td style="padding:8px 0;">%s</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <p style="margin-top:25px;">
+                    Best regards,<br/>
+                    NCST Team
+                </p>
+
+                <div style="margin-top:30px; border-top:1px solid #dddddd; padding-top:15px; font-size:12px; color:#777777;">
+                    This is an automated notification email.
+                </div>
+            </div>
+        </div>
+        """ % (
+            logo_url,
+            self.intake_client_name or self.contact_name or 'Client',
+            self.intake_project_title or self.name or '-',
+            self.review_project_type_id.name or '-',
+        )
+
+        self.env['mail.mail'].sudo().create({
+            'subject': subject,
+            'email_from': company_email,
+            'email_to': client_email,
+            'reply_to': company_email,
+            'body_html': body_html,
+        }).send()
+
+
+    def _send_project_request_rejection_email(self):
+        self.ensure_one()
+
+        company_email = self._get_company_email_for_notifications()
+        client_email = self.intake_client_email or self.email_from
+
+        if not company_email or not client_email:
+            return
+
+        logo_url = "https://ncst.edu.bh/wp-content/uploads/2025/05/ncst-logo.png"
+        subject = "Update on your project request"
+
+        body_html = """
+        <div style="margin:0; padding:0; background-color:#f4f6f8;">
+            <div style="max-width:700px; margin:0 auto; background-color:#ffffff; padding:30px; font-family:Arial, sans-serif; color:#333333; border:1px solid #dddddd; border-radius:8px;">
+
+                <div style="text-align:center; margin-bottom:20px;">
+                    <img src="%s" alt="Company Logo" style="max-height:80px; max-width:220px;"/>
+                </div>
+
+                <div style="border-bottom:2px solid #0b2c3d; padding-bottom:15px; margin-bottom:25px;">
+                    <h2 style="margin:0; color:#0b2c3d;">Project Request Review Result</h2>
+                </div>
+
+                <p>Dear %s,</p>
+
+                <p>
+                    Thank you for your interest and for submitting your project request.
+                    After review, we regret to inform you that we are unable to proceed with the request at this time.
+                </p>
+
+                <div style="margin-top:20px;">
+                    <p style="font-weight:bold; margin-bottom:10px;">Request Summary:</p>
+                    <table style="width:100%%; border-collapse:collapse; font-size:14px;">
+                        <tr>
+                            <td style="padding:8px 0; width:180px; font-weight:bold;">Project Title:</td>
+                            <td style="padding:8px 0;">%s</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="margin-top:20px;">
+                    <p style="font-weight:bold; margin-bottom:10px;">Reason:</p>
+                    <div style="background-color:#f8f9fa; border:1px solid #e0e0e0; padding:15px; border-radius:6px; line-height:1.6;">
+                        %s
+                    </div>
+                </div>
+
+                <p style="margin-top:25px;">
+                    Best regards,<br/>
+                    NCST Team
+                </p>
+
+                <div style="margin-top:30px; border-top:1px solid #dddddd; padding-top:15px; font-size:12px; color:#777777;">
+                    This is an automated notification email.
+                </div>
+            </div>
+        </div>
+        """ % (
+            logo_url,
+            self.intake_client_name or self.contact_name or 'Client',
+            self.intake_project_title or self.name or '-',
+            self.intake_rejection_reason or 'Not specified.',
+        )
+
+        self.env['mail.mail'].sudo().create({
+            'subject': subject,
+            'email_from': company_email,
+            'email_to': client_email,
+            'reply_to': company_email,
+            'body_html': body_html,
+        }).send()
+
+
+
     # =========================================================
     # Optional Helper When Website Creates Request
     # =========================================================

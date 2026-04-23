@@ -303,6 +303,7 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
                 'intake_opportunity_id': opportunity.id,
                 'active': False,
             })
+            lead._send_project_request_approval_email()
 
             lead.message_post(
                 body=_("Project request approved and converted into an opportunity: %s") % opportunity.name

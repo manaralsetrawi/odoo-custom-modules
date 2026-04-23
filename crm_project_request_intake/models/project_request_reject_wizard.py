@@ -47,6 +47,7 @@ class ProjectRequestRejectWizard(models.TransientModel):
             'intake_rejection_reason': full_reason,
             'stage_id': rejected_stage.id,
         })
+        lead._send_project_request_rejection_email()
 
         return {
             'type': 'ir.actions.client',
