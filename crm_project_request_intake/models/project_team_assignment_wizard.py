@@ -9,9 +9,12 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
     _name = 'project.team.assignment.wizard'
     _description = 'Project Team Assignment Wizard'
 
-    lead_id = fields.Many2one('crm.lead', string='Lead/Opportunity', required=True)
-    project_type_id = fields.Many2one('crm.project.type', string='Project Type', readonly=True)
-    planned_start_date = fields.Date(string='Planned Start Date', required=True)
+    lead_id = fields.Many2one(
+        'crm.lead', string='Lead/Opportunity', required=True)
+    project_type_id = fields.Many2one(
+        'crm.project.type', string='Project Type', readonly=True)
+    planned_start_date = fields.Date(
+        string='Planned Start Date', required=True)
 
     estimated_duration_months = fields.Integer(
         string='Estimated Duration (Months)',
@@ -101,7 +104,8 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
                 ('planned_start_date', '<=', month_end),
             ])
 
-            used_capacity = sum(same_month_assignments.mapped('workload_percentage'))
+            used_capacity = sum(
+                same_month_assignments.mapped('workload_percentage'))
             remaining_capacity = team.monthly_capacity - used_capacity
 
             if remaining_capacity >= required_workload and remaining_capacity > best_remaining:
@@ -113,7 +117,8 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
     @api.onchange('selected_team_id')
     def _onchange_selected_team_id(self):
         if self.selected_team_id:
-            self.assigned_employee_ids = [(6, 0, self.selected_team_id.member_ids.ids)]
+            self.assigned_employee_ids = [
+                (6, 0, self.selected_team_id.member_ids.ids)]
 
     def action_confirm_assignment(self):
         self.ensure_one()
@@ -124,7 +129,8 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
         if not self.planned_start_date:
             raise ValidationError(_("Please enter the planned start date."))
 
-        month_start, month_end = self._get_month_date_range(self.planned_start_date)
+        month_start, month_end = self._get_month_date_range(
+            self.planned_start_date)
 
         existing_assignments = self.env['project.team.assignment'].search([
             ('team_id', '=', self.selected_team_id.id),
@@ -136,16 +142,141 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
         remaining_capacity = self.selected_team_id.monthly_capacity - used_capacity
 
         if remaining_capacity < self.required_workload_percentage:
-            raise ValidationError(_("The selected team does not have enough remaining capacity for this month."))
+            raise ValidationError(
+                _("The selected team does not have enough remaining capacity for this month."))
 
-        self.lead_id.write({
-            'assigned_team_id': self.selected_team_id.id,
-            'assigned_employee_ids': [(6, 0, self.assigned_employee_ids.ids)],
-            'planned_start_date': self.planned_start_date,
-        })
+        lead = self.lead_id
+        opportunity = lead
+
+        # If this is still a project request lead, create the opportunity now
+        if lead.type == 'lead' and lead.request_type == 'project_request':
+            initial_discussion_stage = self.env.ref(
+                'crm_workflow_custom.stage_initial_discussion',
+                raise_if_not_found=False
+            )
+            if not initial_discussion_stage:
+                raise ValidationError(
+                    _("Initial Discussion stage was not found."))
+
+            Partner = self.env['res.partner']
+            partner = False
+
+            if lead.intake_client_email:
+                partner = Partner.search([
+                    ('email', '=', lead.intake_client_email)
+                ], limit=1)
+
+            if not partner and lead.intake_company_name:
+                partner = Partner.search([
+                    ('name', '=', lead.intake_company_name),
+                    ('is_company', '=', True)
+                ], limit=1)
+
+            if not partner:
+                partner_vals = {
+                    'name': lead.intake_company_name or lead.intake_client_name or lead.contact_name or _("New Contact"),
+                    'email': lead.intake_client_email or lead.email_from,
+                    'phone': lead.intake_client_phone or lead.phone,
+                    'is_company': bool(lead.intake_company_name),
+                    'company_type': 'company' if lead.intake_company_name else 'person',
+                }
+                partner = Partner.create(partner_vals)
+
+            contact_person = partner
+
+            if partner.is_company and lead.intake_client_name:
+                existing_contact = Partner.search([
+                    ('parent_id', '=', partner.id),
+                    ('name', '=', lead.intake_client_name)
+                ], limit=1)
+
+                if existing_contact:
+                    contact_person = existing_contact
+                else:
+                    contact_person = Partner.create({
+                        'name': lead.intake_client_name,
+                        'parent_id': partner.id,
+                        'type': 'contact',
+                        'email': lead.intake_client_email or lead.email_from,
+                        'phone': lead.intake_client_phone or lead.phone,
+                        'company_type': 'person',
+                    })
+
+            opportunity_vals = {
+                'name': lead.intake_project_title or lead.name,
+                'type': 'opportunity',
+                'request_type': lead.request_type,
+                'intake_state': 'approved',
+
+                'partner_id': contact_person.id,
+                'partner_name': lead.intake_company_name or partner.name,
+                'contact_name': lead.intake_client_name or lead.contact_name,
+                'email_from': lead.intake_client_email or lead.email_from,
+                'phone': lead.intake_client_phone or lead.phone,
+                'description': lead.intake_project_description or lead.description,
+                'user_id': lead.user_id.id,
+                'team_id': lead.team_id.id,
+                'stage_id': initial_discussion_stage.id,
+
+                'intake_client_name': lead.intake_client_name,
+                'intake_client_email': lead.intake_client_email,
+                'intake_client_phone': lead.intake_client_phone,
+                'intake_company_name': lead.intake_company_name,
+                'intake_project_title': lead.intake_project_title,
+                'intake_project_description': lead.intake_project_description,
+                'intake_requested_budget': lead.intake_requested_budget,
+                'intake_requested_duration': lead.intake_requested_duration,
+                'intake_requested_notes': lead.intake_requested_notes,
+                'intake_reviewed_by': lead.intake_reviewed_by.id,
+                'intake_review_date': lead.intake_review_date,
+
+                'review_project_type_id': lead.review_project_type_id.id,
+                'review_client_segment_id': lead.review_client_segment_id.id,
+                'review_complexity': lead.review_complexity,
+                'review_priority_level': lead.review_priority_level,
+                'review_project_feature_ids': [(6, 0, lead.review_project_feature_ids.ids)],
+                'review_project_features': lead.review_project_features,
+                'review_estimated_team': lead.review_estimated_team,
+                'review_risk_notes': lead.review_risk_notes,
+                'review_recommendation': lead.review_recommendation,
+
+                'intake_meeting_notes': lead.intake_meeting_notes,
+                'intake_project_requirements': lead.intake_project_requirements,
+                'intake_technical_feasibility': lead.intake_technical_feasibility,
+                'intake_complexity_level': lead.intake_complexity_level,
+                'intake_estimated_budget_final': lead.intake_estimated_budget_final,
+                'intake_estimated_duration_final': lead.intake_estimated_duration_final,
+                'intake_project_deadline': lead.intake_project_deadline,
+                'intake_solution_summary': lead.intake_solution_summary,
+
+                'planned_start_date': self.planned_start_date,
+                'assigned_team_id': self.selected_team_id.id,
+                'assigned_employee_ids': [(6, 0, self.assigned_employee_ids.ids)],
+            }
+
+            opportunity = self.env['crm.lead'].create(opportunity_vals)
+
+            lead.write({
+                'intake_state': 'approved',
+                'intake_opportunity_id': opportunity.id,
+                'active': False,
+            })
+
+            lead.message_post(
+                body=_(
+                    "Project request approved and converted into an opportunity: %s") % opportunity.name
+            )
+
+        else:
+            # already an opportunity
+            opportunity.write({
+                'assigned_team_id': self.selected_team_id.id,
+                'assigned_employee_ids': [(6, 0, self.assigned_employee_ids.ids)],
+                'planned_start_date': self.planned_start_date,
+            })
 
         self.env['project.team.assignment'].create({
-            'lead_id': self.lead_id.id,
+            'lead_id': opportunity.id,
             'team_id': self.selected_team_id.id,
             'assigned_employee_ids': [(6, 0, self.assigned_employee_ids.ids)],
             'planned_start_date': self.planned_start_date,
@@ -154,8 +285,14 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
             'notes': self.assignment_notes,
         })
 
-        self.lead_id.message_post(
+        opportunity.message_post(
             body=_("Project team assigned: %s") % self.selected_team_id.name
         )
 
-        return {'type': 'ir.actions.act_window_close'}
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'crm.lead',
+            'res_id': opportunity.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
