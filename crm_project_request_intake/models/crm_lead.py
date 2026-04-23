@@ -403,6 +403,12 @@ class CrmProjectRequestLead(models.Model):
             opportunity_vals = {
                 'name': record.intake_project_title or record.name,
                 'type': 'opportunity',
+
+                # keep project request behavior
+                'request_type': record.request_type,
+                'intake_state': 'approved',
+
+                # standard CRM/contact fields
                 'partner_id': contact_person.id,
                 'partner_name': record.intake_company_name or partner.name,
                 'contact_name': record.intake_client_name or record.contact_name,
@@ -412,22 +418,59 @@ class CrmProjectRequestLead(models.Model):
                 'user_id': record.user_id.id,
                 'team_id': record.team_id.id,
                 'stage_id': initial_discussion_stage.id,
+
+                # intake fields
+                'intake_client_name': record.intake_client_name,
+                'intake_client_email': record.intake_client_email,
+                'intake_client_phone': record.intake_client_phone,
+                'intake_company_name': record.intake_company_name,
+                'intake_project_title': record.intake_project_title,
+                'intake_project_description': record.intake_project_description,
+                'intake_requested_budget': record.intake_requested_budget,
+                'intake_requested_duration': record.intake_requested_duration,
+                'intake_requested_notes': record.intake_requested_notes,
+                'intake_reviewed_by': record.intake_reviewed_by.id,
+                'intake_review_date': record.intake_review_date,
+
+                # review fields
                 'review_project_type_id': record.review_project_type_id.id,
                 'review_client_segment_id': record.review_client_segment_id.id,
                 'review_complexity': record.review_complexity,
+                'review_priority_level': record.review_priority_level,
                 'review_project_feature_ids': [(6, 0, record.review_project_feature_ids.ids)],
+                'review_project_features': record.review_project_features,
+                'review_estimated_team': record.review_estimated_team,
+                'review_risk_notes': record.review_risk_notes,
+                'review_recommendation': record.review_recommendation,
+
+                # project manager fields
+                'intake_meeting_notes': record.intake_meeting_notes,
+                'intake_project_requirements': record.intake_project_requirements,
+                'intake_technical_feasibility': record.intake_technical_feasibility,
+                'intake_complexity_level': record.intake_complexity_level,
+                'intake_estimated_budget_final': record.intake_estimated_budget_final,
+                'intake_estimated_duration_final': record.intake_estimated_duration_final,
+                'intake_project_deadline': record.intake_project_deadline,
+                'intake_solution_summary': record.intake_solution_summary,
+
+                # planning
                 'planned_start_date': record.planned_start_date,
             }
 
             opportunity = self.env['crm.lead'].create(opportunity_vals)
 
+            record.message_post(
+                body=_("Project request approved, contact created/linked, and opportunity created in Initial Discussion stage.")
+            )
+
             record.write({
                 'intake_state': 'approved',
                 'intake_opportunity_id': opportunity.id,
+                'active': False,
             })
 
             record.message_post(
-                body=_("Project request approved, contact created/linked, and opportunity created in Initial Discussion stage.")
+                body=_("Project request approved and converted into an opportunity: %s") % opportunity.name
             )
 
             return {

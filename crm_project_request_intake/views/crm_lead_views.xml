@@ -157,7 +157,7 @@
                     </group>
 
                     <group string="Review Information"
-                           invisible="type != 'lead' or intake_state == 'submitted'">
+                           invisible="intake_state == 'submitted'">
                         <group>
                             <field name="intake_reviewed_by" readonly="1"/>
                             <field name="intake_review_date" readonly="1"/>
