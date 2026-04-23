@@ -32,7 +32,9 @@
                 <field name="show_send_to_approval_btn" invisible="1"/>
                 <field name="show_approve_btn" invisible="1"/>
                 <field name="show_reject_btn" invisible="1"/>
+
                 <field name="can_edit_technical_fields" invisible="1"/>
+                <field name="can_edit_proposal_fields" invisible="1"/>
             </xpath>
 
             <!-- Contact required only for internal flow -->
@@ -96,20 +98,20 @@
             <!-- Important summary outside tabs: show only from analysis onward -->
             <xpath expr="//sheet/notebook" position="before">
                 <div class="crmwf_summary_wrap"
-                    invisible="type == 'lead' or is_stage_new_inquiry or is_stage_initial_discussion">
+                     invisible="type == 'lead' or is_stage_new_inquiry or is_stage_initial_discussion">
                     <group class="crmwf_row">
 
                         <group string="Workflow Summary"
-                            class="crmwf_card crmwf_card_summary"
-                            groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
+                               class="crmwf_card crmwf_card_summary"
+                               groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
                             <field name="technical_feasibility" readonly="not can_edit_technical_fields"/>
                             <field name="complexity_level" readonly="not can_edit_technical_fields"/>
                             <field name="approval_state" readonly="1"/>
                         </group>
 
                         <group string="Planning Summary"
-                            class="crmwf_card crmwf_card_summary"
-                            groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
+                               class="crmwf_card crmwf_card_summary"
+                               groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
                             <field name="estimated_duration" readonly="not can_edit_technical_fields"/>
                             <field name="project_deadline" readonly="not can_edit_technical_fields"/>
                             <field name="proposal_amount" readonly="not can_edit_technical_fields"/>
@@ -139,20 +141,14 @@
                     <group class="crmwf_row">
                         <group string="Proposal Details"
                                class="crmwf_card crmwf_card_proposal"
-                               groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager">
+                               groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
                             <field name="proposal_summary"
                                    placeholder="Enter a short summary of the proposed solution..."
-                                   required="is_stage_analysis or is_stage_solution_design or is_stage_proposal"/>
+                                   required="(is_stage_analysis or is_stage_solution_design or is_stage_proposal) and can_edit_proposal_fields"
+                                   readonly="not can_edit_proposal_fields"/>
                             <field name="negotiation_notes"
-                                   placeholder="Add any negotiation comments or client feedback..."/>
-                        </group>
-
-                        <!-- Readonly proposal view for Technical Reviewer -->
-                        <group string="Proposal Details"
-                               class="crmwf_card crmwf_card_proposal"
-                               groups="crm_workflow_custom.group_crm_technical_reviewer">
-                            <field name="proposal_summary" readonly="1"/>
-                            <field name="negotiation_notes" readonly="1"/>
+                                   placeholder="Add any negotiation comments or client feedback..."
+                                   readonly="not can_edit_proposal_fields"/>
                         </group>
                     </group>
                 </page>

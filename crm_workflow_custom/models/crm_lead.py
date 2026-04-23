@@ -62,9 +62,9 @@ class CrmLead(models.Model):
     show_approve_btn = fields.Boolean(compute="_compute_action_buttons", store=True)
     show_reject_btn = fields.Boolean(compute="_compute_action_buttons", store=True)
 
-    can_edit_technical_fields = fields.Boolean(
-    compute="_compute_can_edit_technical_fields"
-)
+    # Role helpers
+    can_edit_technical_fields = fields.Boolean(compute="_compute_can_edit_technical_fields")
+    can_edit_proposal_fields = fields.Boolean(compute="_compute_can_edit_proposal_fields")
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -102,12 +102,22 @@ class CrmLead(models.Model):
             record.show_reject_btn = stage_name == 'Waiting Approval'
 
     def _compute_can_edit_technical_fields(self):
+        user = self.env.user
+        can_edit = (
+            user.has_group('crm_workflow_custom.group_crm_technical_reviewer') or
+            user.has_group('crm_workflow_custom.group_crm_workflow_manager')
+        )
         for record in self:
-            user = self.env.user
-            record.can_edit_technical_fields = (
-                user.has_group('crm_workflow_custom.group_crm_technical_reviewer') or
-                user.has_group('crm_workflow_custom.group_crm_workflow_manager')
-            )
+            record.can_edit_technical_fields = can_edit
+
+    def _compute_can_edit_proposal_fields(self):
+        user = self.env.user
+        can_edit = (
+            user.has_group('crm_workflow_custom.group_crm_workflow_user') or
+            user.has_group('crm_workflow_custom.group_crm_workflow_manager')
+        )
+        for record in self:
+            record.can_edit_proposal_fields = can_edit
 
     @api.constrains('partner_id', 'type')
     def _check_internal_contact_required(self):
