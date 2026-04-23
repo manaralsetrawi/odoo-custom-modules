@@ -49,6 +49,12 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
         domain="[('department_id.name', '=', 'AI Research and Development')]",
     )
 
+    assignment_line_ids = fields.One2many(
+        'project.team.assignment.wizard.line',
+        'wizard_id',
+        string='Assigned Resources',
+    )
+
     assignment_notes = fields.Text(string='Assignment Notes')
 
     @api.model
@@ -72,6 +78,13 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
             'suggested_team_id': suggested_team.id if suggested_team else False,
             'selected_team_id': suggested_team.id if suggested_team else False,
             'assigned_employee_ids': [(6, 0, suggested_team.member_ids.ids)] if suggested_team else False,
+            'assignment_line_ids': [
+                (0, 0, {
+                    'employee_id': emp.id,
+                    'workload_percentage': 0.0,
+                })
+                for emp in suggested_team.member_ids
+            ] if suggested_team else False,
         })
         return res
 
@@ -119,6 +132,23 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
         if self.selected_team_id:
             self.assigned_employee_ids = [
                 (6, 0, self.selected_team_id.member_ids.ids)]
+            self.assignment_line_ids = [
+                (0, 0, {
+                    'employee_id': emp.id,
+                    'workload_percentage': 0.0,
+                })
+                for emp in self.selected_team_id.member_ids
+            ]
+
+    def _get_employee_month_usage(self, employee, planned_start_date):
+        month_start, month_end = self._get_month_date_range(planned_start_date)
+
+        lines = self.env['project.team.assignment.line'].search([
+            ('employee_id', '=', employee.id),
+            ('assignment_id.planned_start_date', '>=', month_start),
+            ('assignment_id.planned_start_date', '<=', month_end),
+        ])
+        return sum(lines.mapped('workload_percentage'))
 
     def action_confirm_assignment(self):
         self.ensure_one()
@@ -129,7 +159,41 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
         if not self.planned_start_date:
             raise ValidationError(_("Please enter the planned start date."))
 
-        month_start, month_end = self._get_month_date_range(self.planned_start_date)
+        if not self.assignment_line_ids:
+            raise ValidationError(
+                _("Please add at least one assigned resource."))
+
+        total_workload = 0.0
+        employee_ids = []
+
+        for line in self.assignment_line_ids:
+            if not line.employee_id:
+                raise ValidationError(
+                    _("Each resource line must have an employee."))
+
+            if line.employee_id.id in employee_ids:
+                raise ValidationError(
+                    _("The same employee cannot be added more than once."))
+
+            employee_ids.append(line.employee_id.id)
+
+            if line.workload_percentage <= 0:
+                raise ValidationError(
+                    _("Each assigned employee must have a workload percentage greater than 0."))
+
+            used = self._get_employee_month_usage(
+                line.employee_id, self.planned_start_date)
+            remaining = line.employee_id.monthly_capacity - used
+
+            if remaining < line.workload_percentage:
+                raise ValidationError(_(
+                    "Employee %s does not have enough remaining capacity for this month."
+                ) % line.employee_id.name)
+
+            total_workload += line.workload_percentage
+
+        month_start, month_end = self._get_month_date_range(
+            self.planned_start_date)
 
         existing_assignments = self.env['project.team.assignment'].search([
             ('team_id', '=', self.selected_team_id.id),
@@ -140,7 +204,7 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
         used_capacity = sum(existing_assignments.mapped('workload_percentage'))
         remaining_capacity = self.selected_team_id.monthly_capacity - used_capacity
 
-        if remaining_capacity < self.required_workload_percentage:
+        if remaining_capacity < total_workload:
             raise ValidationError(
                 _("The selected team does not have enough remaining capacity for this month.")
             )
@@ -155,7 +219,8 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
                 raise_if_not_found=False
             )
             if not initial_discussion_stage:
-                raise ValidationError(_("Initial Discussion stage was not found."))
+                raise ValidationError(
+                    _("Initial Discussion stage was not found."))
 
             Partner = self.env['res.partner']
             partner = False
@@ -229,7 +294,7 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
                 # Planning / assignment
                 'planned_start_date': self.planned_start_date,
                 'assigned_team_id': self.selected_team_id.id,
-                'assigned_employee_ids': [(6, 0, self.assigned_employee_ids.ids)],
+                'assigned_employee_ids': [(6, 0, self.assignment_line_ids.mapped('employee_id').ids)],
             }
 
             opportunity = self.env['crm.lead'].create(opportunity_vals)
@@ -241,26 +306,33 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
             })
 
             lead.message_post(
-                body=_("Project request approved and converted into an opportunity: %s") % opportunity.name
+                body=_(
+                    "Project request approved and converted into an opportunity: %s") % opportunity.name
             )
 
         else:
             # Already an opportunity: just update assignment info
             opportunity.write({
                 'assigned_team_id': self.selected_team_id.id,
-                'assigned_employee_ids': [(6, 0, self.assigned_employee_ids.ids)],
+                'assigned_employee_ids': [(6, 0, self.assignment_line_ids.mapped('employee_id').ids)],
                 'planned_start_date': self.planned_start_date,
             })
 
-        self.env['project.team.assignment'].create({
+        assignment = self.env['project.team.assignment'].create({
             'lead_id': opportunity.id,
             'team_id': self.selected_team_id.id,
-            'assigned_employee_ids': [(6, 0, self.assigned_employee_ids.ids)],
             'planned_start_date': self.planned_start_date,
             'estimated_duration_months': self.estimated_duration_months,
-            'workload_percentage': self.required_workload_percentage,
             'notes': self.assignment_notes,
         })
+
+        for line in self.assignment_line_ids:
+            self.env['project.team.assignment.line'].create({
+                'assignment_id': assignment.id,
+                'employee_id': line.employee_id.id,
+                'workload_percentage': line.workload_percentage,
+                'notes': line.notes,
+            })
 
         opportunity.message_post(
             body=_("Project team assigned: %s") % self.selected_team_id.name
