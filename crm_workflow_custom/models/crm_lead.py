@@ -51,7 +51,7 @@ class CrmLead(models.Model):
     inactive_alert = fields.Boolean(string="Needs Follow-up", default=False, tracking=True)
 
     # Proposal PDF fields
-    proposal_pdf = fields.Binary(string="Proposal PDF", attachment=True, tracking=True)
+    proposal_pdf = fields.Binary(string="Proposal PDF", attachment=True)
     proposal_pdf_filename = fields.Char(string="Proposal PDF Filename")
     proposal_pdf_processed_by = fields.Many2one(
         'res.users',
