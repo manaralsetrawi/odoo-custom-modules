@@ -1,5 +1,4 @@
-from odoo import fields, models
-
+from odoo import api, fields, models
 
 class ProjectTeamAssignment(models.Model):
     _name = 'project.team.assignment'
