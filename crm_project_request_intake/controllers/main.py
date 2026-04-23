@@ -72,7 +72,7 @@ class CrmProjectRequestController(http.Controller):
         subject = "New General Inquiry from Website: %s" % (name or "No Name")
         company = request.env.company
         base_url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        logo_url = "%s/web/image/res.company/%s/logo" % (base_url, company.id)
+        logo_url = "https://ncst.edu.bh/wp-content/uploads/2025/05/ncst-logo.png"
 
         body_html = """
         <div style="margin:0; padding:0; background-color:#f4f6f8;">
