@@ -296,151 +296,75 @@ class CrmProjectRequestLead(models.Model):
         }
 
     def action_intake_approve_request(self):
-        initial_discussion_stage = self._get_stage_by_xmlid(
-            'crm_workflow_custom.stage_initial_discussion'
-        )
+        self.ensure_one()
 
-        Partner = self.env['res.partner']
+        if self.request_type != 'project_request' or self.type != 'lead':
+            raise ValidationError(_("Only project request leads can be approved."))
 
-        for record in self:
-            if record.request_type != 'project_request' or record.type != 'lead':
-                raise ValidationError(_("Only project request leads can be approved."))
+        if self.intake_state != 'under_review':
+            raise ValidationError(_("Only requests under review can be approved."))
 
-            if record.intake_state != 'under_review':
-                raise ValidationError(_("Only requests under review can be approved."))
+        missing_fields = []
 
-            missing_fields = []
+        if not self.review_project_type_id:
+            missing_fields.append(_("Project Type"))
 
-            if not record.review_project_type_id:
-                missing_fields.append(_("Project Type"))
+        if not self.review_complexity:
+            missing_fields.append(_("Project Complexity"))
 
-            if not record.review_complexity:
-                missing_fields.append(_("Project Complexity"))
+        if not self.review_client_segment_id:
+            missing_fields.append(_("Client Segment"))
 
-            if not record.review_client_segment_id:
-                missing_fields.append(_("Client Segment"))
+        if not self.intake_technical_feasibility or self.intake_technical_feasibility == 'pending':
+            missing_fields.append(_("Technical Feasibility"))
 
-            if record.intake_technical_feasibility == 'pending':
-                missing_fields.append(_("Technical Feasibility"))
+        if not self.intake_estimated_budget_final:
+            missing_fields.append(_("Final Estimated Budget"))
 
-            if not record.intake_estimated_budget_final:
-                missing_fields.append(_("Final Estimated Budget"))
+        if not self.intake_estimated_duration_final or not self.intake_estimated_duration_final.strip():
+            missing_fields.append(_("Final Estimated Duration"))
 
-            if not record.intake_estimated_duration_final:
-                missing_fields.append(_("Final Estimated Duration"))
+        if not self.intake_project_deadline:
+            missing_fields.append(_("Project Deadline"))
 
-            if not record.intake_project_deadline:
-                missing_fields.append(_("Project Deadline"))
+        if not self.review_project_feature_ids:
+            missing_fields.append(_("Development and Features"))
 
-            if not record.intake_project_requirements:
-                missing_fields.append(_("Project Requirements"))
+        if not self.review_project_features or not self.review_project_features.strip():
+            missing_fields.append(_("Project Features"))
 
-            if not record.intake_solution_summary:
-                missing_fields.append(_("Solution Summary"))
+        if not self.intake_meeting_notes or not self.intake_meeting_notes.strip():
+            missing_fields.append(_("Meeting Notes"))
 
-            if not record.review_recommendation:
-                missing_fields.append(_("Manager Recommendation"))
+        if not self.intake_project_requirements or not self.intake_project_requirements.strip():
+            missing_fields.append(_("Project Requirements"))
 
-            if not record.review_project_feature_ids:
-                missing_fields.append(_("Development and Features"))
+        if not self.intake_solution_summary or not self.intake_solution_summary.strip():
+            missing_fields.append(_("Solution Summary"))
 
-            if missing_fields:
-                raise ValidationError(_(
-                    "You cannot approve this request until the Project Review Details are completed.\n\n"
-                    "Please fill in:\n- %s"
-                ) % "\n- ".join(missing_fields))
+        if not self.review_recommendation or not self.review_recommendation.strip():
+            missing_fields.append(_("Manager Recommendation"))
 
-            # =========================================================
-            # Find or Create Contact in Contacts module
-            # =========================================================
-            partner = False
+        if not self.review_risk_notes or not self.review_risk_notes.strip():
+            missing_fields.append(_("Risk Notes"))
 
-            if record.intake_client_email:
-                partner = Partner.search([
-                    ('email', '=', record.intake_client_email)
-                ], limit=1)
+        if missing_fields:
+            raise ValidationError(_(
+                "You cannot approve this request until the Project Review Details are completed.\n\n"
+                "Please fill in:\n- %s"
+            ) % "\n- ".join(missing_fields))
 
-            if not partner and record.intake_company_name:
-                partner = Partner.search([
-                    ('name', '=', record.intake_company_name),
-                    ('is_company', '=', True)
-                ], limit=1)
-
-            if not partner:
-                partner_vals = {
-                    'name': record.intake_company_name or record.intake_client_name or record.contact_name or _("New Contact"),
-                    'email': record.intake_client_email or record.email_from,
-                    'phone': record.intake_client_phone or record.phone,
-                    'is_company': bool(record.intake_company_name),
-                    'company_type': 'company' if record.intake_company_name else 'person',
-                }
-                partner = Partner.create(partner_vals)
-           
-            contact_person = partner
-
-            if partner.is_company and record.intake_client_name:
-                existing_contact = Partner.search([
-                    ('parent_id', '=', partner.id),
-                    ('name', '=', record.intake_client_name)
-                ], limit=1)
-
-                if existing_contact:
-                    contact_person = existing_contact
-                else:
-                    contact_person = Partner.create({
-                        'name': record.intake_client_name,
-                        'parent_id': partner.id,
-                        'type': 'contact',
-                        'email': record.intake_client_email or record.email_from,
-                        'phone': record.intake_client_phone or record.phone,
-                        'company_type': 'person',
-                    })
-
-
-            # =========================================================
-            # Create Opportunity linked to Contact
-            # =========================================================
-            opportunity_vals = {
-                'name': record.intake_project_title or record.name,
-                'type': 'opportunity',
-                'partner_id': contact_person.id,
-                'partner_name': record.intake_company_name or partner.name,
-                'contact_name': record.intake_client_name or record.contact_name,
-                'email_from': record.intake_client_email or record.email_from,
-                'phone': record.intake_client_phone or record.phone,
-                'description': record.intake_project_description or record.description,
-                'user_id': record.user_id.id,
-                'team_id': record.team_id.id,
-                'stage_id': initial_discussion_stage.id,
-                'review_project_type_id': record.review_project_type_id.id,
-                'review_client_segment_id': record.review_client_segment_id.id,
-                'review_complexity': record.review_complexity,
-                'review_project_feature_ids': [(6, 0, record.review_project_feature_ids.ids)],
-                'planned_start_date': record.planned_start_date,
-            }
-
-            opportunity = self.env['crm.lead'].create(opportunity_vals)
-
-            record.write({
-                'intake_state': 'approved',
-                'intake_opportunity_id': opportunity.id,
-            })
-
-            record.message_post(
-                body=_("Project request approved, contact created/linked, and opportunity created in Initial Discussion stage.")
-            )
-
-            return {
-                'type': 'ir.actions.act_window',
-                'name': _('Assign Project Team'),
-                'res_model': 'project.team.assignment.wizard',
-                'view_mode': 'form',
-                'target': 'new',
-                'context': {
-                    'default_lead_id': opportunity.id,
-                },
-            }
-
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Assign Project Team'),
+            'res_model': 'project.team.assignment.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_lead_id': self.id,
+                'approval_flow': True,
+            },
+        }
 
     # =========================================================
     # Optional Helper When Website Creates Request
