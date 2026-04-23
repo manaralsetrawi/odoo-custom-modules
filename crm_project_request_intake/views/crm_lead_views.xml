@@ -21,7 +21,15 @@
                             invisible="type != 'opportunity'">
                         <field name="assignment_count" string="Assignments" widget="statinfo"/>
                     </button>
+                    <button name="action_view_email_logs"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-envelope">
+                        <field name="email_log_count" string="Email Logs" widget="statinfo"/>
+                    </button>
                 </div>
+
+                <field name="email_log_count" invisible="1"/>
             </xpath>
 
             <!-- Show request type after title -->
@@ -241,6 +249,20 @@
                             placeholder="Write any risks, dependencies, or technical concerns"/>
                     </group>
 
+                </page>
+
+
+                <page string="Email Logs">
+                    <field name="email_log_ids" readonly="1">
+                        <list>
+                            <field name="email_date"/>
+                            <field name="direction"/>
+                            <field name="email_type"/>
+                            <field name="subject"/>
+                            <field name="sender_email"/>
+                            <field name="recipient_email"/>
+                        </list>
+                    </field>
                 </page>
             </xpath>
 

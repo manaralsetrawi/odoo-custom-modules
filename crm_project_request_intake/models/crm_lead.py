@@ -226,10 +226,37 @@ class CrmProjectRequestLead(models.Model):
         string='Project Assignments',
     )
 
+    email_log_ids = fields.One2many(
+    'crm.email.log',
+    'lead_id',
+    string='Email Logs',
+    )
+
+    email_log_count = fields.Integer(
+        string='Email Log Count',
+        compute='_compute_email_log_count',
+    )
+
+    def _compute_email_log_count(self):
+        for rec in self:
+            rec.email_log_count = len(rec.email_log_ids)
+
     def _compute_assignment_count(self):
         for rec in self:
             rec.assignment_count = len(rec.assignment_ids)
 
+
+
+    def action_view_email_logs(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Email Logs'),
+            'res_model': 'crm.email.log',
+            'view_mode': 'list,form',
+            'domain': [('lead_id', '=', self.id)],
+            'context': {'default_lead_id': self.id},
+        }
 
     def action_view_project_assignments(self):
         self.ensure_one()
