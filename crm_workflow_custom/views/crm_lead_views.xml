@@ -145,13 +145,13 @@
                                    readonly="not can_edit_proposal_fields"/>
                         </group>
 
-                        <group string="Proposal Document"
+                        <group string="Proposal PDF (Text-based PDFs only)"
                                class="crmwf_card crmwf_card_proposal"
                                groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager">
-                            <div class="o_form_label text-muted">
-                                Upload a text-based PDF proposal document. Scanned image PDFs are not supported in this version.
-                            </div>
-                            <field name="proposal_pdf" filename="proposal_pdf_filename" widget="binary"/>
+                            <field name="proposal_pdf"
+                                   string="Proposal PDF"
+                                   filename="proposal_pdf_filename"
+                                   widget="binary"/>
                             <field name="proposal_pdf_filename" invisible="1"/>
                             <field name="proposal_pdf_processed_by" readonly="1"/>
                             <field name="proposal_pdf_processed_on" readonly="1"/>
@@ -163,13 +163,14 @@
                                     invisible="not proposal_pdf"/>
                         </group>
 
-                        <group string="Proposal Document"
+                        <group string="Proposal PDF (View Only)"
                                class="crmwf_card crmwf_card_proposal"
                                groups="crm_workflow_custom.group_crm_technical_reviewer">
-                            <div class="o_form_label text-muted">
-                                Only text-based PDFs are supported for summary generation.
-                            </div>
-                            <field name="proposal_pdf" filename="proposal_pdf_filename" widget="binary" readonly="1"/>
+                            <field name="proposal_pdf"
+                                   string="Proposal PDF"
+                                   filename="proposal_pdf_filename"
+                                   widget="binary"
+                                   readonly="1"/>
                             <field name="proposal_pdf_filename" invisible="1"/>
                             <field name="proposal_pdf_processed_by" readonly="1"/>
                             <field name="proposal_pdf_processed_on" readonly="1"/>
