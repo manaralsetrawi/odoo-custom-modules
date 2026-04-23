@@ -527,3 +527,190 @@ button[name="iap_enrich"] {
         }
     }
 }
+
+/* =========================================
+   CRM Workflow Form Final Polish
+   ========================================= */
+
+.o_form_view {
+    .crmwf_summary_wrap {
+        margin: 18px 0 10px;
+    }
+
+    .crmwf_summary_wrap .crmwf_row {
+        display: flex;
+        gap: 20px;
+        align-items: stretch;
+        flex-wrap: nowrap;
+    }
+
+    .crmwf_summary_wrap .crmwf_card {
+        flex: 1 1 0;
+        min-width: 0;
+        margin: 0 !important;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 22px;
+        padding: 18px 20px 14px;
+        box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04);
+    }
+
+    .crmwf_summary_wrap .crmwf_card .o_inner_group {
+        gap: 10px 20px;
+    }
+
+    .crmwf_summary_wrap .crmwf_card > .o_group_col_6,
+    .crmwf_summary_wrap .crmwf_card > .o_group_col_12,
+    .crmwf_summary_wrap .crmwf_card > .o_group {
+        width: 100%;
+    }
+
+    .crmwf_card_summary .o_horizontal_separator,
+    .crmwf_card_proposal .o_horizontal_separator,
+    .crmwf_card_approval .o_horizontal_separator,
+    .crmwf_card_followup .o_horizontal_separator {
+        border-bottom: 1px solid #e8edf3;
+        color: #243444;
+        font-size: 16px;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        padding-bottom: 10px;
+        margin-bottom: 16px;
+    }
+
+    .crmwf_summary_wrap .o_form_label,
+    .crmwf_workflow_page .o_form_label {
+        color: #334155;
+        font-weight: 700;
+    }
+
+    .crmwf_summary_wrap .o_field_widget:not(.o_readonly_modifier),
+    .crmwf_workflow_page .o_field_widget:not(.o_readonly_modifier) {
+        border-radius: 12px;
+    }
+
+    .crmwf_summary_wrap .o_readonly_modifier,
+    .crmwf_workflow_page .o_readonly_modifier {
+        color: #475569;
+    }
+
+    .crmwf_summary_wrap .o_input,
+    .crmwf_summary_wrap textarea,
+    .crmwf_workflow_page .o_input,
+    .crmwf_workflow_page textarea {
+        border-radius: 12px !important;
+        border: 1px solid #dbe3ea !important;
+        background: #fcfdff;
+        min-height: 42px;
+        box-shadow: none !important;
+    }
+
+    .crmwf_summary_wrap .o_input:focus,
+    .crmwf_summary_wrap textarea:focus,
+    .crmwf_workflow_page .o_input:focus,
+    .crmwf_workflow_page textarea:focus {
+        border-color: #0b2c3d !important;
+        background: #ffffff;
+    }
+
+    .crmwf_hint_box {
+        margin-bottom: 18px;
+        padding: 18px 22px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #f8fbff 0%, #f2f7fc 100%);
+        border: 1px solid #d9e5ef;
+    }
+
+    .crmwf_hint_title {
+        color: #0b2c3d;
+        font-size: 16px;
+        font-weight: 800;
+        margin-bottom: 6px;
+    }
+
+    .crmwf_hint_text {
+        color: #475569;
+        font-size: 15px;
+        line-height: 1.55;
+    }
+
+    .crmwf_workflow_page .crmwf_row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: stretch;
+    }
+
+    .crmwf_workflow_page .crmwf_card {
+        flex: 1 1 0;
+        min-width: 320px;
+        margin: 0 !important;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 22px;
+        padding: 18px 20px 14px;
+        box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04);
+    }
+
+    .crmwf_workflow_page .o_group_col_6,
+    .crmwf_workflow_page .o_group_col_12,
+    .crmwf_workflow_page .o_group {
+        width: 100%;
+    }
+
+    .o_notebook {
+        margin-top: 18px;
+    }
+
+    .o_notebook .nav-tabs {
+        gap: 8px;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 0 4px;
+    }
+
+    .o_notebook .nav-tabs .nav-link {
+        border: 1px solid transparent;
+        border-radius: 14px 14px 0 0;
+        padding: 10px 16px;
+        color: #475569;
+        font-weight: 700;
+        background: transparent;
+    }
+
+    .o_notebook .nav-tabs .nav-link.active {
+        color: #0b2c3d;
+        background: #ffffff;
+        border-color: #dbe3ea #dbe3ea #ffffff;
+    }
+
+    .o_notebook .tab-content {
+        padding-top: 18px;
+    }
+
+    /* nicer readonly summary values */
+    .crmwf_summary_wrap .o_field_widget.o_readonly_modifier,
+    .crmwf_workflow_page .o_field_widget.o_readonly_modifier {
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    /* tighten giant empty space under basic header area */
+    .o_form_sheet_bg > .o_form_sheet {
+        max-width: 100%;
+    }
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .o_form_view {
+        .crmwf_summary_wrap .crmwf_row {
+            flex-wrap: wrap;
+        }
+
+        .crmwf_summary_wrap .crmwf_card,
+        .crmwf_workflow_page .crmwf_card {
+            min-width: 100%;
+        }
+    }
+}
