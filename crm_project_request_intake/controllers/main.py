@@ -200,6 +200,95 @@ class CrmProjectRequestController(http.Controller):
 
 
 
+    def _send_project_request_acknowledgement_email(self, post):
+        name = (post.get('name') or '').strip()
+        email = (post.get('email') or '').strip()
+        project_title = (post.get('intake_project_title') or '').strip()
+        requested_duration = (post.get('intake_requested_duration') or '').strip()
+        requested_budget = (post.get('intake_requested_budget') or '').strip()
+
+        mail_server = request.env['ir.mail_server'].sudo().search([], limit=1)
+        company_email = mail_server.smtp_user if mail_server and mail_server.smtp_user else False
+
+        if not company_email or not email:
+            return
+
+        logo_url = "https://ncst.edu.bh/wp-content/uploads/2025/05/ncst-logo.png"
+        client_subject = "We received your project request"
+
+        client_body_html = """
+        <div style="margin:0; padding:0; background-color:#f4f6f8;">
+            <div style="max-width:700px; margin:0 auto; background-color:#ffffff; padding:30px; font-family:Arial, sans-serif; color:#333333; border:1px solid #dddddd; border-radius:8px;">
+
+                <div style="text-align:center; margin-bottom:20px;">
+                    <img src="%s" alt="Company Logo" style="max-height:80px; max-width:220px;"/>
+                </div>
+
+                <div style="border-bottom:2px solid #0b2c3d; padding-bottom:15px; margin-bottom:25px;">
+                    <h2 style="margin:0; color:#0b2c3d;">Project Request Received Successfully</h2>
+                </div>
+
+                <p>Dear %s,</p>
+
+                <p>
+                    Thank you for submitting your project request. Your request has been received successfully and recorded in our system.
+                </p>
+
+                <p>
+                    Our team will review the submitted details and contact you if any clarification or next steps are required.
+                </p>
+
+                <div style="margin-top:20px;">
+                    <p style="font-weight:bold; margin-bottom:10px;">Submitted Request Summary:</p>
+                    <table style="width:100%%; border-collapse:collapse; font-size:14px;">
+                        <tr>
+                            <td style="padding:8px 0; width:180px; font-weight:bold;">Project Title:</td>
+                            <td style="padding:8px 0;">%s</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:8px 0; font-weight:bold;">Expected Duration:</td>
+                            <td style="padding:8px 0;">%s</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:8px 0; font-weight:bold;">Expected Budget:</td>
+                            <td style="padding:8px 0;">%s</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <p style="margin-top:25px;">
+                    Best regards,<br/>
+                    NCST Team
+                </p>
+
+                <div style="margin-top:30px; border-top:1px solid #dddddd; padding-top:15px; font-size:12px; color:#777777;">
+                    This is an automated acknowledgement email. Please do not reply directly to this message unless instructed otherwise.
+                </div>
+            </div>
+        </div>
+        """ % (
+            logo_url,
+            name or 'Client',
+            project_title or '-',
+            requested_duration or '-',
+            requested_budget or '-',
+        )
+
+        client_mail_values = {
+            'subject': client_subject,
+            'email_from': company_email,
+            'email_to': email,
+            'reply_to': company_email,
+            'body_html': client_body_html,
+        }
+
+        client_mail = request.env['mail.mail'].sudo().create(client_mail_values)
+        client_mail.send()
+
+        _logger.warning("PROJECT REQUEST ACKNOWLEDGEMENT SENT TO CLIENT: %s", email)
+
+
+
 
 
     @http.route('/project_request/submit', type='http', auth='public', website=True, csrf=True)
@@ -241,6 +330,7 @@ class CrmProjectRequestController(http.Controller):
 
                 lead = request.env['crm.lead'].sudo().create_project_request_lead(lead_vals)
                 _logger.warning("PROJECT LEAD CREATED: %s", lead.id)
+                self._send_project_request_acknowledgement_email(post)
             else:
                 _logger.warning("GENERAL INQUIRY RECEIVED - SENDING EMAIL")
                 self._send_general_inquiry_email(post)
