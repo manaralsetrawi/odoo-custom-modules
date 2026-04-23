@@ -146,6 +146,7 @@
                     </div>
 
                     <group class="crmwf_row">
+
                         <group string="Proposal Details"
                                class="crmwf_card crmwf_card_proposal"
                                groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
@@ -157,6 +158,31 @@
                                    placeholder="Add any negotiation comments or client feedback..."
                                    readonly="not can_edit_proposal_fields"/>
                         </group>
+
+                        <group string="Proposal Document"
+                               class="crmwf_card crmwf_card_proposal"
+                               groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager">
+                            <field name="proposal_pdf" filename="proposal_pdf_filename" widget="binary"/>
+                            <field name="proposal_pdf_filename" invisible="1"/>
+                            <field name="proposal_pdf_processed_by" readonly="1"/>
+                            <field name="proposal_pdf_processed_on" readonly="1"/>
+
+                            <button name="action_generate_summary_from_pdf"
+                                    type="object"
+                                    string="Generate Summary from PDF"
+                                    class="btn-secondary crmwf_btn"
+                                    invisible="not proposal_pdf"/>
+                        </group>
+
+                        <group string="Proposal Document"
+                               class="crmwf_card crmwf_card_proposal"
+                               groups="crm_workflow_custom.group_crm_technical_reviewer">
+                            <field name="proposal_pdf" filename="proposal_pdf_filename" widget="binary" readonly="1"/>
+                            <field name="proposal_pdf_filename" invisible="1"/>
+                            <field name="proposal_pdf_processed_by" readonly="1"/>
+                            <field name="proposal_pdf_processed_on" readonly="1"/>
+                        </group>
+
                     </group>
                 </page>
 
