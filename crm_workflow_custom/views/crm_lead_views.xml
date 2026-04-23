@@ -32,6 +32,7 @@
                 <field name="show_send_to_approval_btn" invisible="1"/>
                 <field name="show_approve_btn" invisible="1"/>
                 <field name="show_reject_btn" invisible="1"/>
+                <field name="can_edit_technical_fields" invisible="1"/>
             </xpath>
 
             <!-- Contact required only for internal flow -->
@@ -95,41 +96,23 @@
             <!-- Important summary outside tabs: show only from analysis onward -->
             <xpath expr="//sheet/notebook" position="before">
                 <div class="crmwf_summary_wrap"
-                     invisible="type == 'lead' or is_stage_new_inquiry or is_stage_initial_discussion">
+                    invisible="type == 'lead' or is_stage_new_inquiry or is_stage_initial_discussion">
                     <group class="crmwf_row">
 
-                        <!-- Editable for Technical Reviewer + Manager -->
                         <group string="Workflow Summary"
-                               class="crmwf_card crmwf_card_summary"
-                               groups="crm_workflow_custom.group_crm_technical_reviewer,crm_workflow_custom.group_crm_workflow_manager">
-                            <field name="technical_feasibility"/>
-                            <field name="complexity_level"/>
+                            class="crmwf_card crmwf_card_summary"
+                            groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
+                            <field name="technical_feasibility" readonly="not can_edit_technical_fields"/>
+                            <field name="complexity_level" readonly="not can_edit_technical_fields"/>
                             <field name="approval_state" readonly="1"/>
                         </group>
 
                         <group string="Planning Summary"
-                               class="crmwf_card crmwf_card_summary"
-                               groups="crm_workflow_custom.group_crm_technical_reviewer,crm_workflow_custom.group_crm_workflow_manager">
-                            <field name="estimated_duration"/>
-                            <field name="project_deadline"/>
-                            <field name="proposal_amount"/>
-                        </group>
-
-                        <!-- Readonly for Workflow User -->
-                        <group string="Workflow Summary"
-                               class="crmwf_card crmwf_card_summary"
-                               groups="crm_workflow_custom.group_crm_workflow_user">
-                            <field name="technical_feasibility" readonly="1"/>
-                            <field name="complexity_level" readonly="1"/>
-                            <field name="approval_state" readonly="1"/>
-                        </group>
-
-                        <group string="Planning Summary"
-                               class="crmwf_card crmwf_card_summary"
-                               groups="crm_workflow_custom.group_crm_workflow_user">
-                            <field name="estimated_duration" readonly="1"/>
-                            <field name="project_deadline" readonly="1"/>
-                            <field name="proposal_amount" readonly="1"/>
+                            class="crmwf_card crmwf_card_summary"
+                            groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
+                            <field name="estimated_duration" readonly="not can_edit_technical_fields"/>
+                            <field name="project_deadline" readonly="not can_edit_technical_fields"/>
+                            <field name="proposal_amount" readonly="not can_edit_technical_fields"/>
                         </group>
 
                     </group>

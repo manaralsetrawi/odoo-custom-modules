@@ -62,6 +62,10 @@ class CrmLead(models.Model):
     show_approve_btn = fields.Boolean(compute="_compute_action_buttons", store=True)
     show_reject_btn = fields.Boolean(compute="_compute_action_buttons", store=True)
 
+    can_edit_technical_fields = fields.Boolean(
+    compute="_compute_can_edit_technical_fields"
+)
+
     @api.model_create_multi
     def create(self, vals_list):
         records = super().create(vals_list)
@@ -96,6 +100,14 @@ class CrmLead(models.Model):
             record.show_send_to_approval_btn = stage_name == 'Proposal Submitted'
             record.show_approve_btn = stage_name == 'Waiting Approval'
             record.show_reject_btn = stage_name == 'Waiting Approval'
+
+    def _compute_can_edit_technical_fields(self):
+        for record in self:
+            user = self.env.user
+            record.can_edit_technical_fields = (
+                user.has_group('crm_workflow_custom.group_crm_technical_reviewer') or
+                user.has_group('crm_workflow_custom.group_crm_workflow_manager')
+            )
 
     @api.constrains('partner_id', 'type')
     def _check_internal_contact_required(self):
