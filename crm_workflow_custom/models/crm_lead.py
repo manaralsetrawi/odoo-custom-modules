@@ -232,9 +232,12 @@ class CrmLead(models.Model):
         if not self.proposal_pdf:
             raise UserError(_("Please upload a proposal PDF first."))
 
-        filename = (self.proposal_pdf_filename or '').lower()
-        if filename and not filename.endswith('.pdf'):
-            raise UserError(_("Please upload a PDF file."))
+        filename = (self.proposal_pdf_filename or '').strip()
+        if not filename:
+            raise UserError(_("Please upload a valid PDF file."))
+
+        if not filename.lower().endswith('.pdf'):
+            raise UserError(_("Only PDF files are allowed."))
 
         try:
             from pypdf import PdfReader
@@ -254,15 +257,14 @@ class CrmLead(models.Model):
 
             extracted_text = "\n\n".join(extracted_parts).strip()
         except Exception as exc:
-            raise UserError(_("Could not read the PDF file: %s") % str(exc))
+            raise UserError(_("Could not read the uploaded PDF: %s") % str(exc))
 
         if not extracted_text:
             raise UserError(_(
-                "No readable text was found in the PDF. "
-                "This version supports text-based PDFs only."
+                "No readable text was found in the uploaded PDF. "
+                "Please upload a text-based PDF, not a scanned image PDF."
             ))
 
-        # keep the prompt size practical
         if len(extracted_text) > 20000:
             extracted_text = extracted_text[:20000]
 
@@ -300,13 +302,13 @@ class CrmLead(models.Model):
             raise UserError(_("Missing system parameter: openai_model"))
 
         prompt = (
-            "Summarize the following project proposal document into a clear, professional summary "
-            "for an ERP/CRM proposal field.\n\n"
+            "Summarize the following project proposal document into one concise professional paragraph "
+            "for the Proposal Summary field in an ERP/CRM system.\n\n"
             "Requirements:\n"
-            "- Keep it concise but useful.\n"
-            "- Focus on project objective, key scope, expected solution, major deliverables, "
-            "timeline hints, and important business context.\n"
+            "- Maximum 120 words.\n"
+            "- Focus on project objective, key scope, expected solution, main deliverables, and important business context.\n"
             "- Do not use bullet points.\n"
+            "- Do not copy long sentences directly from the document.\n"
             "- Return plain text only.\n\n"
             "Document text:\n"
             f"{source_text}"
@@ -322,7 +324,8 @@ class CrmLead(models.Model):
                             "type": "input_text",
                             "text": (
                                 "You summarize business project proposal documents for CRM proposal records. "
-                                "Write one concise, professional paragraph unless the content clearly needs two short paragraphs."
+                                "Write one concise professional paragraph only. "
+                                "Do not copy large sections of the source text."
                             ),
                         }
                     ],

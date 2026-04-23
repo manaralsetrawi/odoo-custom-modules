@@ -96,10 +96,12 @@
                         invisible="not show_reject_btn"/>
             </xpath>
 
-            <!-- Important summary outside tabs: show only from analysis onward -->
+            <!-- Main workflow cards outside tabs -->
             <xpath expr="//sheet/notebook" position="before">
                 <div class="crmwf_summary_wrap"
                      invisible="type == 'lead' or is_stage_new_inquiry or is_stage_initial_discussion">
+
+                    <!-- Top summary cards -->
                     <group class="crmwf_row">
 
                         <group string="Workflow Summary"
@@ -119,32 +121,16 @@
                         </group>
 
                     </group>
-                </div>
-            </xpath>
 
-            <!-- Make stage statusbar readonly so users cannot click stages manually -->
-            <xpath expr="//field[@name='stage_id']" position="attributes">
-                <attribute name="readonly">1</attribute>
-                <attribute name="options">{'clickable': False}</attribute>
-            </xpath>
-
-            <!-- Tabs -->
-            <xpath expr="//sheet/notebook" position="inside">
-
-                <!-- Show from Requirement Analysis onward -->
-                <page name="crmwf_workflow_overview"
-                      string="Workflow Overview"
-                      class="crmwf_workflow_page"
-                      groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer"
-                      invisible="is_stage_new_inquiry or is_stage_initial_discussion">
-
+                    <!-- Guidance -->
                     <div class="crmwf_hint_box">
                         <div class="crmwf_hint_title">Workflow Guidance</div>
                         <div class="crmwf_hint_text">
-                            Review the request, complete the technical evaluation, prepare the proposal, then send it for approval.
+                            Review the request, complete the technical evaluation, upload a text-based proposal PDF if available, generate or refine the proposal summary, then send the request for approval.
                         </div>
                     </div>
 
+                    <!-- Main workflow cards -->
                     <group class="crmwf_row">
 
                         <group string="Proposal Details"
@@ -162,6 +148,8 @@
                         <group string="Proposal Document"
                                class="crmwf_card crmwf_card_proposal"
                                groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager">
+                            <label string="Upload a text-based PDF proposal document. Scanned image PDFs are not supported in this version."
+                                   class="text-muted"/>
                             <field name="proposal_pdf" filename="proposal_pdf_filename" widget="binary"/>
                             <field name="proposal_pdf_filename" invisible="1"/>
                             <field name="proposal_pdf_processed_by" readonly="1"/>
@@ -177,6 +165,8 @@
                         <group string="Proposal Document"
                                class="crmwf_card crmwf_card_proposal"
                                groups="crm_workflow_custom.group_crm_technical_reviewer">
+                            <label string="Only text-based PDFs are supported for summary generation."
+                                   class="text-muted"/>
                             <field name="proposal_pdf" filename="proposal_pdf_filename" widget="binary" readonly="1"/>
                             <field name="proposal_pdf_filename" invisible="1"/>
                             <field name="proposal_pdf_processed_by" readonly="1"/>
@@ -184,7 +174,18 @@
                         </group>
 
                     </group>
-                </page>
+
+                </div>
+            </xpath>
+
+            <!-- Make stage statusbar readonly so users cannot click stages manually -->
+            <xpath expr="//field[@name='stage_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="options">{'clickable': False}</attribute>
+            </xpath>
+
+            <!-- Tabs -->
+            <xpath expr="//sheet/notebook" position="inside">
 
                 <!-- Show only from Waiting Approval onward -->
                 <page name="crmwf_approval_followup"

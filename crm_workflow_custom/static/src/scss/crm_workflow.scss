@@ -714,3 +714,17 @@ button[name="iap_enrich"] {
         }
     }
 }
+
+.o_form_view {
+    .crmwf_card .text-muted {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 13px;
+        line-height: 1.5;
+        color: #64748b !important;
+    }
+
+    .crmwf_card_proposal .o_field_binary {
+        margin-top: 6px;
+    }
+}
