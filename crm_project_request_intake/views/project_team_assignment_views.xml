@@ -36,6 +36,16 @@
                     <group string="Assigned Employees">
                         <field name="assigned_employee_ids" widget="many2many_tags"/>
                     </group>
+                    <group string="Assigned Resources">
+                        <field name="assignment_line_ids" readonly="1">
+                            <list>
+                                <field name="employee_id"/>
+                                <field name="employee_team_id"/>
+                                <field name="workload_percentage"/>
+                                <field name="notes"/>
+                            </list>
+                        </field>
+                    </group>
 
                     <group string="Notes">
                         <field name="notes"/>

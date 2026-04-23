@@ -22,8 +22,14 @@
                         </group>
                     </group>
 
-                    <group string="Assigned Employees">
-                        <field name="assigned_employee_ids" widget="many2many_tags"/>
+                    <group string="Assigned Resources">
+                        <field name="assignment_line_ids">
+                            <list editable="bottom">
+                                <field name="employee_id"/>
+                                <field name="workload_percentage"/>
+                                <field name="notes"/>
+                            </list>
+                        </field>
                     </group>
 
                     <group string="Notes">

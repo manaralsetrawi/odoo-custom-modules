@@ -1,4 +1,3 @@
-
 {
     'name': 'CRM Project Request Intake',
     'version': '1.0',
@@ -22,6 +21,7 @@ Main features:
         'crm',
         'website',
         'mail',
+        'hr',
         'crm_workflow_custom',
     ],
     'data': [

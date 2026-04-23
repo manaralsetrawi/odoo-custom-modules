@@ -6,3 +6,6 @@ from . import crm_project_feature
 from . import project_assignment_team
 from . import project_team_assignment
 from . import project_team_assignment_wizard
+from . import hr_employee
+from . import project_team_assignment_line
+from . import project_team_assignment_wizard_line
