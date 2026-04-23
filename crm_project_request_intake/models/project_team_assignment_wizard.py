@@ -162,6 +162,8 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
 
     @api.onchange('selected_team_id')
     def _onchange_selected_team_id(self):
+        self.assignment_line_ids = [(5, 0, 0)]
+
         if self.selected_team_id:
             self.assignment_line_ids = [
                 (0, 0, {
