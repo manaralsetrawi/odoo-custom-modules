@@ -1,6 +1,4 @@
-from datetime import date
 from calendar import monthrange
-
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
@@ -10,21 +8,30 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
     _description = 'Project Team Assignment Wizard'
 
     lead_id = fields.Many2one(
-        'crm.lead', string='Lead/Opportunity', required=True)
+        'crm.lead',
+        string='Lead/Opportunity',
+        required=True
+    )
+
     project_type_id = fields.Many2one(
-        'crm.project.type', string='Project Type', readonly=True)
+        'crm.project.type',
+        string='Project Type',
+        readonly=True
+    )
+
     planned_start_date = fields.Date(
-        string='Planned Start Date', required=True)
+        string='Planned Start Date',
+        required=True
+    )
+
+    planned_end_date = fields.Date(
+        string='Planned End Date',
+        required=True
+    )
 
     estimated_duration_months = fields.Integer(
         string='Estimated Duration (Months)',
         default=1,
-        required=True,
-    )
-
-    required_workload_percentage = fields.Float(
-        string='Required Workload (%)',
-        default=25.0,
         required=True,
     )
 
@@ -38,15 +45,6 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
         'project.assignment.team',
         string='Selected Team',
         required=True,
-    )
-
-    assigned_employee_ids = fields.Many2many(
-        'hr.employee',
-        'project_team_assignment_wizard_employee_rel',
-        'wizard_id',
-        'employee_id',
-        string='Assigned Employees',
-        domain="[('department_id.name', '=', 'AI Research and Development')]",
     )
 
     assignment_line_ids = fields.One2many(
@@ -69,22 +67,25 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
         suggested_team = self._get_suggested_team(
             lead.review_project_type_id,
             lead.planned_start_date or fields.Date.today(),
-            25.0,
+            0.0,
         )
+
+        start_date = lead.planned_start_date or fields.Date.today()
+        end_date = lead.planned_start_date or fields.Date.today()
 
         res.update({
             'project_type_id': lead.review_project_type_id.id,
-            'planned_start_date': lead.planned_start_date or fields.Date.today(),
+            'planned_start_date': start_date,
+            'planned_end_date': end_date,
             'suggested_team_id': suggested_team.id if suggested_team else False,
             'selected_team_id': suggested_team.id if suggested_team else False,
-            'assigned_employee_ids': [(6, 0, suggested_team.member_ids.ids)] if suggested_team else False,
             'assignment_line_ids': [
                 (0, 0, {
                     'employee_id': emp.id,
                     'workload_percentage': 0.0,
                 })
                 for emp in suggested_team.member_ids
-            ] if suggested_team else False,
+            ] if suggested_team else [],
         })
         return res
 
@@ -93,7 +94,40 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
         last_day = dt.replace(day=monthrange(dt.year, dt.month)[1])
         return first_day, last_day
 
-    def _get_suggested_team(self, project_type, planned_start_date, required_workload=25.0):
+    def _get_month_keys_between(self, start_date, end_date):
+        months = []
+        current_year = start_date.year
+        current_month = start_date.month
+
+        while (current_year, current_month) <= (end_date.year, end_date.month):
+            months.append((current_year, current_month))
+            if current_month == 12:
+                current_month = 1
+                current_year += 1
+            else:
+                current_month += 1
+
+        return months
+
+    def _get_month_count(self, start_date, end_date):
+        return len(self._get_month_keys_between(start_date, end_date))
+
+    def _get_employee_month_usage(self, employee, year, month):
+        month_start = fields.Date.from_string(f"{year}-{month:02d}-01")
+        month_end = month_start.replace(day=monthrange(year, month)[1])
+
+        lines = self.env['project.team.assignment.line'].search([
+            ('employee_id', '=', employee.id),
+            ('assignment_id.planned_start_date', '<=', month_end),
+            ('assignment_id.planned_end_date', '>=', month_start),
+        ])
+
+        total = 0.0
+        for line in lines:
+            total += line.monthly_reserved_percentage
+        return total
+
+    def _get_suggested_team(self, project_type, planned_start_date, required_workload=0.0):
         if not project_type or not planned_start_date:
             return False
 
@@ -113,12 +147,11 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
         for team in matching_teams:
             same_month_assignments = self.env['project.team.assignment'].search([
                 ('team_id', '=', team.id),
-                ('planned_start_date', '>=', month_start),
                 ('planned_start_date', '<=', month_end),
+                ('planned_end_date', '>=', month_start),
             ])
 
-            used_capacity = sum(
-                same_month_assignments.mapped('workload_percentage'))
+            used_capacity = sum(same_month_assignments.mapped('workload_percentage'))
             remaining_capacity = team.monthly_capacity - used_capacity
 
             if remaining_capacity >= required_workload and remaining_capacity > best_remaining:
@@ -130,8 +163,6 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
     @api.onchange('selected_team_id')
     def _onchange_selected_team_id(self):
         if self.selected_team_id:
-            self.assigned_employee_ids = [
-                (6, 0, self.selected_team_id.member_ids.ids)]
             self.assignment_line_ids = [
                 (0, 0, {
                     'employee_id': emp.id,
@@ -139,16 +170,6 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
                 })
                 for emp in self.selected_team_id.member_ids
             ]
-
-    def _get_employee_month_usage(self, employee, planned_start_date):
-        month_start, month_end = self._get_month_date_range(planned_start_date)
-
-        lines = self.env['project.team.assignment.line'].search([
-            ('employee_id', '=', employee.id),
-            ('assignment_id.planned_start_date', '>=', month_start),
-            ('assignment_id.planned_start_date', '<=', month_end),
-        ])
-        return sum(lines.mapped('workload_percentage'))
 
     def action_confirm_assignment(self):
         self.ensure_one()
@@ -159,79 +180,68 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
         if not self.planned_start_date:
             raise ValidationError(_("Please enter the planned start date."))
 
+        if not self.planned_end_date:
+            raise ValidationError(_("Please enter the planned end date."))
+
+        if self.planned_end_date < self.planned_start_date:
+            raise ValidationError(_("Planned end date cannot be before planned start date."))
+
         if not self.assignment_line_ids:
-            raise ValidationError(
-                _("Please add at least one assigned resource."))
+            raise ValidationError(_("Please add at least one assigned resource."))
+
+        employee_ids = []
+        month_keys = self._get_month_keys_between(self.planned_start_date, self.planned_end_date)
+        month_count = len(month_keys)
+
+        if month_count <= 0:
+            raise ValidationError(_("Invalid project duration."))
 
         total_workload = 0.0
-        employee_ids = []
 
         for line in self.assignment_line_ids:
             if not line.employee_id:
-                raise ValidationError(
-                    _("Each resource line must have an employee."))
+                raise ValidationError(_("Each resource line must have an employee."))
 
             if line.employee_id.id in employee_ids:
-                raise ValidationError(
-                    _("The same employee cannot be added more than once."))
+                raise ValidationError(_("The same employee cannot be added more than once."))
 
             employee_ids.append(line.employee_id.id)
 
             if line.workload_percentage <= 0:
-                raise ValidationError(
-                    _("Each assigned employee must have a workload percentage greater than 0."))
+                raise ValidationError(_("Each assigned employee must have a workload percentage greater than 0."))
 
-            used = self._get_employee_month_usage(
-                line.employee_id, self.planned_start_date)
-            remaining = line.employee_id.monthly_capacity - used
+            monthly_reserved = line.workload_percentage / month_count
 
-            if remaining < line.workload_percentage:
-                raise ValidationError(_(
-                    "Employee %s does not have enough remaining capacity for this month."
-                ) % line.employee_id.name)
+            for year, month in month_keys:
+                used = self._get_employee_month_usage(line.employee_id, year, month)
+                remaining = line.employee_id.monthly_capacity - used
+
+                if remaining < monthly_reserved:
+                    raise ValidationError(_(
+                        "Employee %s does not have enough remaining capacity for %s/%s."
+                    ) % (line.employee_id.name, month, year))
 
             total_workload += line.workload_percentage
-
-        month_start, month_end = self._get_month_date_range(
-            self.planned_start_date)
-
-        existing_assignments = self.env['project.team.assignment'].search([
-            ('team_id', '=', self.selected_team_id.id),
-            ('planned_start_date', '>=', month_start),
-            ('planned_start_date', '<=', month_end),
-        ])
-
-        used_capacity = sum(existing_assignments.mapped('workload_percentage'))
-        remaining_capacity = self.selected_team_id.monthly_capacity - used_capacity
-
-        if remaining_capacity < total_workload:
-            raise ValidationError(
-                _("The selected team does not have enough remaining capacity for this month.")
-            )
 
         lead = self.lead_id
         opportunity = lead
 
-        # If this is still a project request lead, create the opportunity now
         if lead.type == 'lead' and lead.request_type == 'project_request':
             initial_discussion_stage = self.env.ref(
                 'crm_workflow_custom.stage_initial_discussion',
                 raise_if_not_found=False
             )
             if not initial_discussion_stage:
-                raise ValidationError(
-                    _("Initial Discussion stage was not found."))
+                raise ValidationError(_("Initial Discussion stage was not found."))
 
             Partner = self.env['res.partner']
             partner = False
 
-            # Try to find existing individual contact by email
             if lead.intake_client_email:
                 partner = Partner.search([
                     ('email', '=', lead.intake_client_email)
                 ], limit=1)
 
-            # If not found, create only one person contact
             if not partner:
                 partner = Partner.create({
                     'name': lead.intake_client_name or lead.contact_name or _("New Contact"),
@@ -246,7 +256,6 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
                 'request_type': lead.request_type,
                 'intake_state': 'approved',
 
-                # Standard CRM / contact fields
                 'partner_id': partner.id,
                 'partner_name': False,
                 'contact_name': lead.intake_client_name or lead.contact_name,
@@ -257,7 +266,6 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
                 'team_id': lead.team_id.id,
                 'stage_id': initial_discussion_stage.id,
 
-                # Intake fields
                 'intake_client_name': lead.intake_client_name,
                 'intake_client_email': lead.intake_client_email,
                 'intake_client_phone': lead.intake_client_phone,
@@ -270,28 +278,17 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
                 'intake_reviewed_by': lead.intake_reviewed_by.id,
                 'intake_review_date': lead.intake_review_date,
 
-                # Review fields
                 'review_project_type_id': lead.review_project_type_id.id,
                 'review_client_segment_id': lead.review_client_segment_id.id,
-                'review_complexity': lead.review_complexity,
-                'review_priority_level': lead.review_priority_level,
                 'review_project_feature_ids': [(6, 0, lead.review_project_feature_ids.ids)],
                 'review_project_features': lead.review_project_features,
-                'review_estimated_team': lead.review_estimated_team,
                 'review_risk_notes': lead.review_risk_notes,
                 'review_recommendation': lead.review_recommendation,
 
-                # Project manager fields
                 'intake_meeting_notes': lead.intake_meeting_notes,
                 'intake_project_requirements': lead.intake_project_requirements,
-                'intake_technical_feasibility': lead.intake_technical_feasibility,
-                'intake_complexity_level': lead.intake_complexity_level,
-                'intake_estimated_budget_final': lead.intake_estimated_budget_final,
-                'intake_estimated_duration_final': lead.intake_estimated_duration_final,
-                'intake_project_deadline': lead.intake_project_deadline,
                 'intake_solution_summary': lead.intake_solution_summary,
 
-                # Planning / assignment
                 'planned_start_date': self.planned_start_date,
                 'assigned_team_id': self.selected_team_id.id,
                 'assigned_employee_ids': [(6, 0, self.assignment_line_ids.mapped('employee_id').ids)],
@@ -306,12 +303,10 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
             })
 
             lead.message_post(
-                body=_(
-                    "Project request approved and converted into an opportunity: %s") % opportunity.name
+                body=_("Project request approved and converted into an opportunity: %s") % opportunity.name
             )
 
         else:
-            # Already an opportunity: just update assignment info
             opportunity.write({
                 'assigned_team_id': self.selected_team_id.id,
                 'assigned_employee_ids': [(6, 0, self.assignment_line_ids.mapped('employee_id').ids)],
@@ -322,7 +317,8 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
             'lead_id': opportunity.id,
             'team_id': self.selected_team_id.id,
             'planned_start_date': self.planned_start_date,
-            'estimated_duration_months': self.estimated_duration_months,
+            'planned_end_date': self.planned_end_date,
+            'estimated_duration_months': month_count,
             'notes': self.assignment_notes,
         })
 

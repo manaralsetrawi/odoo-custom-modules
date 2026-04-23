@@ -205,10 +205,6 @@
                             <field name="review_project_type_id" placeholder="Select the main project type"/>
                             <field name="review_client_segment_id" options="{'no_create_edit': False}"/>
                         </group>
-                        <group>
-                            <field name="review_estimated_team"
-                                placeholder="Enter the team members or resources who will work on this project"/>
-                        </group>
                     </group>
 
                     <separator string="Technical Scope"/>
