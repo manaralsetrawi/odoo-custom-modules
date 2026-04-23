@@ -27,7 +27,6 @@ Main features:
     'data': [
         'security/crm_project_request_security.xml',
         'security/ir.model.access.csv',
-        'data/crm_stage_data.xml',
         'views/crm_lead_views.xml',
         'views/project_request_reject_wizard_views.xml',
         'views/website_contact_form.xml',
