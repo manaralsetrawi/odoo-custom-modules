@@ -377,13 +377,7 @@ class CrmLead(models.Model):
 
         return {
             "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Summary Generated"),
-                "message": _("Proposal Summary was filled from the uploaded PDF."),
-                "type": "success",
-                "sticky": False,
-            },
+            "tag": "reload",
         }
 
     def _get_proposal_validation_errors(self):
