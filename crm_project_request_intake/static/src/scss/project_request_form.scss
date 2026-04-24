@@ -911,9 +911,9 @@
     }
 
     .o_kanban_record:has(.o_cpri_email_log_card) {
-        width: calc(33.333% - 0.75rem) !important;
-        min-width: calc(33.333% - 0.75rem) !important;
-        max-width: calc(33.333% - 0.75rem) !important;
+        width: 31.5% !important;
+        min-width: 31.5% !important;
+        max-width: 31.5% !important;
         background: transparent !important;
         border: 0 !important;
         box-shadow: none !important;
@@ -1126,3 +1126,4 @@
         transform: translateY(-0.05rem);
     }
 }
+
