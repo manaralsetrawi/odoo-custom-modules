@@ -1,30 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <!-- Kanban Card View -->
+    <record id="view_project_assignment_team_kanban" model="ir.ui.view">
+        <field name="name">project.assignment.team.kanban</field>
+        <field name="model">project.assignment.team</field>
+        <field name="arch" type="xml">
+            <kanban class="o_cpri_project_team_kanban_page">
+                <field name="name"/>
+                <field name="active"/>
+                <field name="monthly_capacity"/>
+                <field name="remaining_capacity"/>
+                <field name="project_type_ids"/>
+                <field name="member_ids"/>
+
+                <templates>
+                    <t t-name="card">
+                        <div class="o_cpri_project_team_card oe_kanban_global_click">
+                            <div class="o_cpri_project_team_card_header">
+                                <div>
+                                    <div class="o_cpri_project_team_card_title">
+                                        <field name="name"/>
+                                    </div>
+                                    <div class="o_cpri_project_team_card_subtitle">
+                                        <field name="project_type_ids" widget="many2many_tags"/>
+                                    </div>
+                                </div>
+
+                                <span t-if="record.active.raw_value"
+                                      class="o_cpri_project_team_active_badge">
+                                    Active
+                                </span>
+                                <span t-if="!record.active.raw_value"
+                                      class="o_cpri_project_team_archived_badge">
+                                    Archived
+                                </span>
+                            </div>
+
+                            <div class="o_cpri_project_team_capacity_grid">
+                                <div>
+                                    <span>Monthly Capacity</span>
+                                    <strong><field name="monthly_capacity"/>%</strong>
+                                </div>
+                                <div>
+                                    <span>Remaining</span>
+                                    <strong><field name="remaining_capacity"/>%</strong>
+                                </div>
+                            </div>
+
+                            <div class="o_cpri_project_team_members">
+                                <span class="o_cpri_project_team_members_label">Members</span>
+                                <field name="member_ids" widget="many2many_tags"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List View -->
     <record id="view_project_assignment_team_list" model="ir.ui.view">
         <field name="name">project.assignment.team.list</field>
         <field name="model">project.assignment.team</field>
         <field name="arch" type="xml">
-            <list>
+            <list class="o_cpri_project_team_list_page">
                 <field name="name"/>
                 <field name="project_type_ids" widget="many2many_tags"/>
                 <field name="monthly_capacity"/>
                 <field name="remaining_capacity"/>
-                <field name="active"/>
+                <field name="active" widget="boolean_toggle"/>
             </list>
         </field>
     </record>
 
+    <!-- Form View -->
     <record id="view_project_assignment_team_form" model="ir.ui.view">
         <field name="name">project.assignment.team.form</field>
         <field name="model">project.assignment.team</field>
         <field name="arch" type="xml">
-            <form string="Project Assignment Team">
+            <form string="Project Assignment Team" class="o_cpri_project_team_form_page">
                 <sheet>
-                    <group>
+                    <div class="o_cpri_project_team_form_header">
+                        <h2>
+                            <field name="name" placeholder="e.g. AI Automation Team"/>
+                        </h2>
+                        <p>Manage project teams, supported project types, members, and monthly capacity.</p>
+                    </div>
+
+                    <group class="o_cpri_project_team_form_card" string="Team Overview">
                         <group>
-                            <field name="name"/>
-                            <field name="active"/>
+                            <field name="active" widget="boolean_toggle"/>
                             <field name="monthly_capacity"/>
                             <field name="remaining_capacity" readonly="1"/>
                         </group>
@@ -35,7 +101,9 @@
 
                     <notebook>
                         <page string="Team Members">
-                            <field name="member_ids" widget="many2many_tags"/>
+                            <group class="o_cpri_project_team_form_card">
+                                <field name="member_ids" widget="many2many_tags" nolabel="1"/>
+                            </group>
                         </page>
 
                         <page string="Assignments">
@@ -50,7 +118,9 @@
                         </page>
 
                         <page string="Notes">
-                            <field name="notes"/>
+                            <group class="o_cpri_project_team_form_card o_cpri_project_team_notes">
+                                <field name="notes" nolabel="1" placeholder="Write internal notes about this team..."/>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>
@@ -58,10 +128,32 @@
         </field>
     </record>
 
+    <!-- Search View -->
+    <record id="view_project_assignment_team_search" model="ir.ui.view">
+        <field name="name">project.assignment.team.search</field>
+        <field name="model">project.assignment.team</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="project_type_ids"/>
+                <filter string="Active" name="active_project_teams" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="archived_project_teams" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
     <record id="action_project_assignment_team" model="ir.actions.act_window">
         <field name="name">Project Teams</field>
         <field name="res_model">project.assignment.team</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_project_assignment_team_search"/>
+        <field name="context">{'search_default_active_project_teams': 1}</field>
+        <field name="views" eval="[
+            (ref('view_project_assignment_team_kanban'), 'kanban'),
+            (ref('view_project_assignment_team_list'), 'list'),
+            (ref('view_project_assignment_team_form'), 'form')
+        ]"/>
     </record>
 
 </odoo>

@@ -1,12 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <!-- Kanban Card View -->
+    <record id="view_project_team_assignment_kanban" model="ir.ui.view">
+        <field name="name">project.team.assignment.kanban</field>
+        <field name="model">project.team.assignment</field>
+        <field name="arch" type="xml">
+            <kanban class="o_cpri_team_assignment_kanban_page">
+                <field name="lead_id"/>
+                <field name="team_id"/>
+                <field name="planned_start_date"/>
+                <field name="planned_end_date"/>
+                <field name="estimated_duration_months"/>
+                <field name="workload_percentage"/>
+                <field name="assigned_employee_ids"/>
+
+                <templates>
+                    <t t-name="card">
+                        <div class="o_cpri_team_assignment_card oe_kanban_global_click">
+                            <div class="o_cpri_team_assignment_header">
+                                <div>
+                                    <div class="o_cpri_team_assignment_title">
+                                        <field name="lead_id"/>
+                                    </div>
+                                    <div class="o_cpri_team_assignment_team">
+                                        <i class="fa fa-users"/>
+                                        <field name="team_id"/>
+                                    </div>
+                                </div>
+
+                                <span class="o_cpri_team_assignment_badge">
+                                    <field name="workload_percentage"/>%
+                                </span>
+                            </div>
+
+                            <div class="o_cpri_team_assignment_dates">
+                                <div>
+                                    <span>Start</span>
+                                    <strong><field name="planned_start_date"/></strong>
+                                </div>
+                                <div>
+                                    <span>End</span>
+                                    <strong><field name="planned_end_date"/></strong>
+                                </div>
+                            </div>
+
+                            <div class="o_cpri_team_assignment_meta">
+                                <div>
+                                    <span>Duration</span>
+                                    <strong><field name="estimated_duration_months"/> months</strong>
+                                </div>
+                                <div>
+                                    <span>Workload</span>
+                                    <strong><field name="workload_percentage"/>%</strong>
+                                </div>
+                            </div>
+
+                            <div class="o_cpri_team_assignment_members">
+                                <span>Assigned Employees</span>
+                                <field name="assigned_employee_ids" widget="many2many_tags"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
     <!-- List View -->
     <record id="view_project_team_assignment_list" model="ir.ui.view">
         <field name="name">project.team.assignment.list</field>
         <field name="model">project.team.assignment</field>
         <field name="arch" type="xml">
-            <list string="Project Assignments">
+            <list string="Project Assignments" class="o_cpri_team_assignment_list_page">
                 <field name="lead_id"/>
                 <field name="team_id"/>
                 <field name="planned_start_date"/>
@@ -22,11 +88,17 @@
         <field name="name">project.team.assignment.form</field>
         <field name="model">project.team.assignment</field>
         <field name="arch" type="xml">
-            <form string="Team Assignment">
+            <form string="Team Assignment" class="o_cpri_team_assignment_form_page">
                 <sheet>
-                    <group>
-                        <group>
+                    <div class="o_cpri_team_assignment_form_header">
+                        <h2>
                             <field name="lead_id"/>
+                        </h2>
+                        <p>Review the assigned team, project duration, workload, and assigned resources.</p>
+                    </div>
+
+                    <group class="o_cpri_team_assignment_form_card" string="Assignment Overview">
+                        <group>
                             <field name="team_id"/>
                             <field name="planned_start_date"/>
                             <field name="planned_end_date"/>
@@ -38,7 +110,7 @@
                         </group>
                     </group>
 
-                    <group string="Assigned Resources">
+                    <group class="o_cpri_team_assignment_form_card" string="Assigned Resources">
                         <field name="assignment_line_ids" readonly="1">
                             <list>
                                 <field name="employee_id"/>
@@ -50,8 +122,8 @@
                         </field>
                     </group>
 
-                    <group>
-                        <field name="notes"/>
+                    <group class="o_cpri_team_assignment_form_card o_cpri_team_assignment_notes" string="Notes">
+                        <field name="notes" nolabel="1" placeholder="Write assignment notes..."/>
                     </group>
                 </sheet>
             </form>
@@ -79,8 +151,13 @@
     <record id="action_project_team_assignment" model="ir.actions.act_window">
         <field name="name">Project Assignments</field>
         <field name="res_model">project.team.assignment</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="view_project_team_assignment_search"/>
+        <field name="views" eval="[
+            (ref('view_project_team_assignment_kanban'), 'kanban'),
+            (ref('view_project_team_assignment_list'), 'list'),
+            (ref('view_project_team_assignment_form'), 'form')
+        ]"/>
     </record>
 
 </odoo>
