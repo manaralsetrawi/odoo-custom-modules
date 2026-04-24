@@ -194,3 +194,178 @@ button[name="action_open_lost_wizard"] {
         width: 100%;
     }
 }
+
+
+
+// lead kaban
+.oe_kanban_view.o_cpri_kanban_view {
+    .o_kanban_record:has(.o_cpri_card) {
+        background: transparent;
+        border: 0;
+        padding: 0;
+    }
+
+    .o_cpri_card {
+        background: #ffffff;
+        border: 1px solid #dfe5ea;
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 4px 14px rgba(11, 44, 61, 0.08);
+        transition: all 0.2s ease;
+        min-height: 260px;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(11, 44, 61, 0.14);
+        }
+    }
+
+    .o_cpri_card_header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+        margin-bottom: 14px;
+    }
+
+    .o_cpri_title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0b2c3d;
+        line-height: 1.35;
+    }
+
+    .o_cpri_subtitle {
+        margin-top: 4px;
+        font-size: 12px;
+        color: #6b7780;
+    }
+
+    .o_cpri_status {
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+        text-transform: capitalize;
+    }
+
+    .o_cpri_status_draft {
+        background: #eef1f4;
+        color: #5d6770;
+    }
+
+    .o_cpri_status_submitted {
+        background: #fff3cd;
+        color: #8a6500;
+    }
+
+    .o_cpri_status_under_review {
+        background: #dceeff;
+        color: #0b5cab;
+    }
+
+    .o_cpri_status_approved {
+        background: #dff5e7;
+        color: #207a3c;
+    }
+
+    .o_cpri_status_rejected {
+        background: #fde2e2;
+        color: #b42318;
+    }
+
+    .o_cpri_client_block {
+        background: #f7f9fb;
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 14px;
+    }
+
+    .o_cpri_client_name {
+        font-weight: 600;
+        color: #23313a;
+        margin-bottom: 8px;
+
+        i {
+            margin-right: 6px;
+            color: #0b2c3d;
+        }
+    }
+
+    .o_cpri_client_info {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        font-size: 12px;
+        color: #667680;
+
+        i {
+            width: 14px;
+            margin-right: 6px;
+            color: #83909a;
+        }
+    }
+
+    .o_cpri_details_grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .o_cpri_detail_item {
+        border: 1px solid #edf0f2;
+        border-radius: 12px;
+        padding: 10px;
+        background: #ffffff;
+    }
+
+    .o_cpri_detail_label {
+        display: block;
+        font-size: 11px;
+        color: #7b8790;
+        margin-bottom: 3px;
+    }
+
+    .o_cpri_detail_value {
+        font-size: 13px;
+        font-weight: 700;
+        color: #0b2c3d;
+    }
+
+    .o_cpri_review_block {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 14px;
+        min-height: 28px;
+    }
+
+    .o_cpri_tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 9px;
+        border-radius: 999px;
+        background: #eef6f8;
+        color: #0b2c3d;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .o_cpri_card_footer {
+        border-top: 1px solid #edf0f2;
+        padding-top: 10px;
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 12px;
+        color: #6b7780;
+
+        i {
+            margin-right: 4px;
+            color: #0b2c3d;
+        }
+    }
+}
