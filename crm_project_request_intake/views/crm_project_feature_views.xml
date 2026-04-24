@@ -1,41 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <!-- Kanban Card View -->
+    <record id="view_crm_project_feature_kanban" model="ir.ui.view">
+        <field name="name">crm.project.feature.kanban</field>
+        <field name="model">crm.project.feature</field>
+        <field name="arch" type="xml">
+            <kanban class="o_cpri_project_feature_kanban_page">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="description"/>
+                <field name="active"/>
+
+                <templates>
+                    <t t-name="card">
+                        <div class="o_cpri_project_feature_card oe_kanban_global_click">
+                            <div class="o_cpri_project_feature_card_header">
+                                <div>
+                                    <div class="o_cpri_project_feature_card_title">
+                                        <field name="name"/>
+                                    </div>
+                                    <div class="o_cpri_project_feature_card_code">
+                                        Code: <field name="code"/>
+                                    </div>
+                                </div>
+
+                                <span t-if="record.active.raw_value"
+                                      class="o_cpri_project_feature_active_badge">
+                                    Active
+                                </span>
+                                <span t-if="!record.active.raw_value"
+                                      class="o_cpri_project_feature_archived_badge">
+                                    Archived
+                                </span>
+                            </div>
+
+                            <div class="o_cpri_project_feature_card_description">
+                                <field name="description"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List View -->
     <record id="view_crm_project_feature_list" model="ir.ui.view">
         <field name="name">crm.project.feature.list</field>
         <field name="model">crm.project.feature</field>
         <field name="arch" type="xml">
-            <list>
+            <list class="o_cpri_project_feature_list_page">
                 <field name="name"/>
                 <field name="code"/>
-                <field name="active"/>
+                <field name="active" widget="boolean_toggle"/>
             </list>
         </field>
     </record>
 
+    <!-- Form View -->
     <record id="view_crm_project_feature_form" model="ir.ui.view">
         <field name="name">crm.project.feature.form</field>
         <field name="model">crm.project.feature</field>
         <field name="arch" type="xml">
-            <form string="Project Feature">
+            <form string="Project Feature" class="o_cpri_project_feature_form_page">
                 <sheet>
-                    <group>
-                        <field name="name"/>
-                        <field name="code"/>
-                        <field name="active"/>
+                    <div class="o_cpri_project_feature_form_header">
+                        <h2>
+                            <field name="name" placeholder="e.g. Dashboard, Chatbot, Automation"/>
+                        </h2>
+                        <p>Define reusable project features that can be selected during project request review.</p>
+                    </div>
+
+                    <group class="o_cpri_project_feature_form_card" string="Feature Details">
+                        <group>
+                            <field name="code" placeholder="e.g. DASH"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
                     </group>
-                    <group>
-                        <field name="description"/>
+
+                    <group class="o_cpri_project_feature_form_card o_cpri_project_feature_form_description"
+                           string="Description">
+                        <field name="description"
+                               placeholder="Write a short description for this project feature..."
+                               nolabel="1"/>
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
 
+    <!-- Search View -->
+    <record id="view_crm_project_feature_search" model="ir.ui.view">
+        <field name="name">crm.project.feature.search</field>
+        <field name="model">crm.project.feature</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <filter string="Active" name="active_project_features" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="archived_project_features" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
     <record id="action_crm_project_feature" model="ir.actions.act_window">
         <field name="name">Project Features</field>
         <field name="res_model">crm.project.feature</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_crm_project_feature_search"/>
+        <field name="context">{'search_default_active_project_features': 1}</field>
+        <field name="views" eval="[
+            (ref('view_crm_project_feature_kanban'), 'kanban'),
+            (ref('view_crm_project_feature_list'), 'list'),
+            (ref('view_crm_project_feature_form'), 'form')
+        ]"/>
     </record>
 
 </odoo>

@@ -185,8 +185,7 @@
 
 
 // ======================================================
-// Backend Project Request Kanban
-// Scoped only to: <kanban class="o_cpri_project_request_kanban">
+// Client Segmentation
 // ======================================================
 
 .o_kanban_view.o_cpri_client_segment_kanban_page {
@@ -261,5 +260,201 @@
         color: #4b5563;
         font-size: 13px;
         min-height: 58px;
+    }
+}
+
+.o_kanban_view.o_cpri_client_segment_kanban_page {
+    .o_kanban_record:has(.o_cpri_client_segment_card) {
+        display: flex !important;
+    }
+
+    .o_cpri_client_segment_card {
+        width: 100%;
+        min-height: 185px;
+        height: 185px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .o_cpri_client_segment_card_description {
+        flex: 1;
+        display: flex;
+        align-items: center;
+    }
+}
+
+
+
+// ======================================================
+// Project Type
+// ======================================================
+
+.o_kanban_view.o_cpri_project_type_kanban_page {
+    background: #f6f8fa;
+    padding: 18px;
+
+    .o_kanban_record:has(.o_cpri_project_type_card) {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 10px !important;
+        display: flex !important;
+    }
+
+    .o_cpri_project_type_card {
+        width: 100%;
+        height: 185px;
+        min-height: 185px;
+        display: flex;
+        flex-direction: column;
+        background: #ffffff;
+        border: 1px solid #dce4ea;
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 6px 18px rgba(11, 44, 61, 0.08);
+        transition: all 0.2s ease;
+    }
+
+    .o_cpri_project_type_card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(11, 44, 61, 0.14);
+    }
+
+    .o_cpri_project_type_card_header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .o_cpri_project_type_card_title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0b2c3d;
+    }
+
+    .o_cpri_project_type_card_code {
+        margin-top: 5px;
+        font-size: 12px;
+        color: #667680;
+    }
+
+    .o_cpri_project_type_active_badge,
+    .o_cpri_project_type_archived_badge {
+        height: fit-content;
+        padding: 5px 11px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .o_cpri_project_type_active_badge {
+        background: #dff5e7;
+        color: #207a3c;
+    }
+
+    .o_cpri_project_type_archived_badge {
+        background: #fde2e2;
+        color: #b42318;
+    }
+
+    .o_cpri_project_type_card_description {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        background: #f7f9fb;
+        border-radius: 12px;
+        padding: 12px;
+        color: #4b5563;
+        font-size: 13px;
+    }
+}
+
+
+
+// ======================================================
+// Project Features
+// ======================================================
+
+.o_kanban_view.o_cpri_project_feature_kanban_page {
+    background: #f6f8fa;
+    padding: 18px;
+
+    .o_kanban_record:has(.o_cpri_project_feature_card) {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 10px !important;
+        display: flex !important;
+    }
+
+    .o_cpri_project_feature_card {
+        width: 100%;
+        height: 185px;
+        min-height: 185px;
+        display: flex;
+        flex-direction: column;
+        background: #ffffff;
+        border: 1px solid #dce4ea;
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 6px 18px rgba(11, 44, 61, 0.08);
+        transition: all 0.2s ease;
+    }
+
+    .o_cpri_project_feature_card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(11, 44, 61, 0.14);
+    }
+
+    .o_cpri_project_feature_card_header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .o_cpri_project_feature_card_title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0b2c3d;
+    }
+
+    .o_cpri_project_feature_card_code {
+        margin-top: 5px;
+        font-size: 12px;
+        color: #667680;
+    }
+
+    .o_cpri_project_feature_active_badge,
+    .o_cpri_project_feature_archived_badge {
+        height: fit-content;
+        padding: 5px 11px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .o_cpri_project_feature_active_badge {
+        background: #dff5e7;
+        color: #207a3c;
+    }
+
+    .o_cpri_project_feature_archived_badge {
+        background: #fde2e2;
+        color: #b42318;
+    }
+
+    .o_cpri_project_feature_card_description {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        background: #f7f9fb;
+        border-radius: 12px;
+        padding: 12px;
+        color: #4b5563;
+        font-size: 13px;
     }
 }
