@@ -367,7 +367,7 @@
         </field>
     </record>
 
-    <record id="crm.crm_lead_all_leads" model="ir.actions.act_window">
+    <record id="crm.crm_lead_action_pipeline" model="ir.actions.act_window">
         <field name="views" eval="[
             (ref('crm_project_request_intake.view_crm_project_request_intake_kanban_custom'), 'kanban'),
             (False, 'list'),
