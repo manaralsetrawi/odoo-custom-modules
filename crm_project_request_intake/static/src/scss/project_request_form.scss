@@ -194,3 +194,143 @@ button[name="action_open_lost_wizard"] {
         width: 100%;
     }
 }
+
+
+// lead page (kaban)
+
+.ncst_pr_intake_kanban_root {
+    background: #f6f8fb;
+    padding: 1rem;
+
+    .o_kanban_record {
+        width: 31rem;
+        margin: 0.7rem;
+        border: none !important;
+        background: transparent !important;
+    }
+
+    .ncst_pr_intake_card {
+        background: #ffffff;
+        border: 1px solid #e3e8ef;
+        border-radius: 1rem;
+        padding: 1rem;
+        box-shadow: 0 6px 18px rgba(11, 44, 61, 0.08);
+        transition: all 0.2s ease;
+        min-height: 15rem;
+    }
+
+    .ncst_pr_intake_card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 24px rgba(11, 44, 61, 0.13);
+    }
+
+    .ncst_pr_intake_card_header {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .ncst_pr_intake_icon {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 1rem;
+        background: #e9ddff;
+        color: #5f35d5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.7rem;
+        flex-shrink: 0;
+    }
+
+    .ncst_pr_intake_title_area {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .ncst_pr_intake_title {
+        display: block;
+        font-size: 1.05rem;
+        color: #182b3a;
+        line-height: 1.35;
+        margin-bottom: 0.45rem;
+    }
+
+    .ncst_pr_intake_contact {
+        font-size: 0.85rem;
+        color: #53657a;
+        margin-top: 0.25rem;
+
+        i {
+            width: 1.1rem;
+            color: #60758c;
+        }
+    }
+
+    .ncst_pr_intake_badge {
+        background: #eee3ff;
+        color: #5f35d5;
+        border-radius: 0.5rem;
+        padding: 0.35rem 0.65rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .ncst_pr_intake_tag {
+        display: inline-block;
+        margin-top: 1rem;
+        background: #e8f2ff;
+        color: #1769c2;
+        border-radius: 0.45rem;
+        padding: 0.35rem 0.65rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+    .ncst_pr_intake_body {
+        border-top: 1px solid #edf1f5;
+        margin-top: 1rem;
+        padding-top: 0.9rem;
+        color: #42556b;
+        font-size: 0.88rem;
+    }
+
+    .ncst_pr_intake_body div {
+        margin-bottom: 0.45rem;
+    }
+
+    .ncst_pr_intake_body i {
+        width: 1.2rem;
+        color: #60758c;
+    }
+
+    .ncst_pr_intake_footer {
+        border-top: 1px solid #edf1f5;
+        margin-top: 0.9rem;
+        padding-top: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .ncst_pr_intake_icons {
+        color: #51687f;
+        display: flex;
+        gap: 0.9rem;
+        font-size: 1.1rem;
+    }
+
+    .ncst_pr_intake_view_btn {
+        background: #edf1f5;
+        color: #172b3a;
+        border-radius: 0.5rem;
+        padding: 0.35rem 1.4rem;
+        font-weight: 700;
+    }
+
+    .ncst_pr_intake_view_btn:hover {
+        background: #0b2c3d;
+        color: #ffffff;
+    }
+}
