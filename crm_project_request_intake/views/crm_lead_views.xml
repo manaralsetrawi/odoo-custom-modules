@@ -7,6 +7,17 @@
         <field name="inherit_id" ref="crm_workflow_custom.view_crm_lead_form_workflow_custom"/>
         <field name="arch" type="xml">
 
+        <xpath expr="//form" position="attributes">
+            <attribute name="class" add=" o_cpri_intake_form_page" separator=" "/>
+        </xpath>
+
+        <xpath expr="//group[@name='lead_info']" position="attributes">
+            <attribute name="class" add=" o_cpri_project_contact_right_box" separator=" "/>
+        </xpath>
+        <xpath expr="//form/sheet" position="attributes">
+            <attribute name="class" add=" o_cpri_intake_form_sheet" separator=" "/>
+        </xpath>
+
             <!-- Hidden helper fields + smart button -->
             <xpath expr="//form/sheet" position="inside">
                 <field name="intake_state" invisible="1"/>

@@ -8,6 +8,12 @@
               sequence="90"
               groups="crm_workflow_custom.group_crm_workflow_manager"/>
 
+      <menuitem id="menu_crm_email_log"
+            name="Email Logs"
+            parent="menu_crm_project_request_config_section"
+            action="action_crm_email_log"
+            sequence="60"
+            groups="crm_workflow_custom.group_crm_workflow_manager"/>
     <!-- Client Segments -->
     <menuitem id="menu_crm_client_segment"
               name="Client Segments"

@@ -1,12 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <!-- Kanban Card View -->
+    <record id="view_crm_email_log_kanban" model="ir.ui.view">
+        <field name="name">crm.email.log.kanban</field>
+        <field name="model">crm.email.log</field>
+        <field name="arch" type="xml">
+            <kanban class="o_cpri_email_log_kanban_page">
+                <field name="lead_id"/>
+                <field name="email_date"/>
+                <field name="direction"/>
+                <field name="email_type"/>
+                <field name="subject"/>
+                <field name="sender_email"/>
+                <field name="recipient_email"/>
+                <field name="body_preview"/>
+
+                <templates>
+                    <t t-name="card">
+                        <div class="o_cpri_email_log_card oe_kanban_global_click">
+
+                            <div class="o_cpri_email_log_header">
+                                <div>
+                                    <div class="o_cpri_email_log_subject">
+                                        <field name="subject"/>
+                                    </div>
+                                    <div class="o_cpri_email_log_lead">
+                                        <i class="fa fa-link"/>
+                                        <field name="lead_id"/>
+                                    </div>
+                                </div>
+
+                                <span t-attf-class="o_cpri_email_log_direction o_cpri_email_log_direction_#{record.direction.raw_value}">
+                                    <field name="direction"/>
+                                </span>
+                            </div>
+
+                            <div class="o_cpri_email_log_meta">
+                                <div>
+                                    <span>Date</span>
+                                    <strong><field name="email_date"/></strong>
+                                </div>
+                                <div>
+                                    <span>Type</span>
+                                    <strong><field name="email_type"/></strong>
+                                </div>
+                            </div>
+
+                            <div class="o_cpri_email_log_people">
+                                <div>
+                                    <span>From</span>
+                                    <strong><field name="sender_email"/></strong>
+                                </div>
+                                <div>
+                                    <span>To</span>
+                                    <strong><field name="recipient_email"/></strong>
+                                </div>
+                            </div>
+
+                            <div class="o_cpri_email_log_preview">
+                                <span>Preview</span>
+                                <p><field name="body_preview"/></p>
+                            </div>
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
     <!-- List View -->
     <record id="view_crm_email_log_list" model="ir.ui.view">
         <field name="name">crm.email.log.list</field>
         <field name="model">crm.email.log</field>
         <field name="arch" type="xml">
-            <list string="Email Logs">
+            <list string="Email Logs" class="o_cpri_email_log_list_page">
                 <field name="lead_id"/>
                 <field name="email_date"/>
                 <field name="direction"/>
@@ -23,9 +92,19 @@
         <field name="name">crm.email.log.form</field>
         <field name="model">crm.email.log</field>
         <field name="arch" type="xml">
-            <form string="Email Log">
+            <form string="Email Log" class="o_cpri_email_log_form_page">
                 <sheet>
-                    <group>
+
+                    <div class="o_cpri_email_log_form_header">
+                        <div>
+                            <h2>
+                                <field name="subject" placeholder="Email subject"/>
+                            </h2>
+                            <p>View communication details related to the project request workflow.</p>
+                        </div>
+                    </div>
+
+                    <group class="o_cpri_email_log_form_card" string="Email Information">
                         <group>
                             <field name="lead_id"/>
                             <field name="email_date"/>
@@ -33,16 +112,23 @@
                             <field name="email_type"/>
                         </group>
                         <group>
-                            <field name="subject"/>
                             <field name="sender_email"/>
                             <field name="recipient_email"/>
                         </group>
                     </group>
 
-                    <group>
-                        <field name="body_preview"/>
-                        <field name="notes"/>
+                    <group class="o_cpri_email_log_form_card" string="Email Content">
+                        <field name="body_preview"
+                               placeholder="Email preview..."
+                               nolabel="1"/>
                     </group>
+
+                    <group class="o_cpri_email_log_form_card o_cpri_email_log_notes" string="Notes">
+                        <field name="notes"
+                               placeholder="Write internal notes about this email log..."
+                               nolabel="1"/>
+                    </group>
+
                 </sheet>
             </form>
         </field>
@@ -61,6 +147,14 @@
                 <field name="email_type"/>
                 <field name="direction"/>
 
+                <filter string="Incoming"
+                        name="incoming_email_logs"
+                        domain="[('direction', '=', 'incoming')]"/>
+
+                <filter string="Outgoing"
+                        name="outgoing_email_logs"
+                        domain="[('direction', '=', 'outgoing')]"/>
+
                 <group expand="0" string="Group By">
                     <filter string="Lead / Opportunity" name="group_by_lead" context="{'group_by': 'lead_id'}"/>
                     <filter string="Type" name="group_by_type" context="{'group_by': 'email_type'}"/>
@@ -75,8 +169,13 @@
     <record id="action_crm_email_log" model="ir.actions.act_window">
         <field name="name">Email Logs</field>
         <field name="res_model">crm.email.log</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="view_crm_email_log_search"/>
+        <field name="views" eval="[
+            (ref('view_crm_email_log_kanban'), 'kanban'),
+            (ref('view_crm_email_log_list'), 'list'),
+            (ref('view_crm_email_log_form'), 'form')
+        ]"/>
     </record>
 
 </odoo>
