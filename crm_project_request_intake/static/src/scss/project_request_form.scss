@@ -1,466 +1,310 @@
 // ======================================================
+// CRM Project Request Intake - Clean SCSS
+// All backend styles are scoped to unique page classes.
+// ======================================================
+
+// ======================================================
 // Website Project Request Form
+// Scoped to website page: .crm_project_request_page
 // ======================================================
 
 .crm_project_request_page {
     background: #f7f9fc;
-}
 
-.crm_request_hero {
-    padding-top: 2rem;
-    padding-bottom: 3rem;
-}
-
-.crm_request_intro {
-    margin-bottom: 1.2rem;
-}
-
-.crm_request_title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 0.85rem;
-    line-height: 1.2;
-}
-
-.crm_request_text {
-    max-width: 760px;
-    margin: 0 auto;
-    font-size: 1.04rem;
-    line-height: 1.8;
-    color: #4b5563;
-}
-
-.crm_request_info_card {
-    background: #ffffff;
-    border: 1px solid #e8ebf0;
-    border-radius: 18px;
-    padding: 1.15rem 1.35rem;
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
-    max-width: 100%;
-    margin-bottom: 1.35rem;
-}
-
-.crm_request_info_card h5 {
-    color: #0b2c3d;
-    font-weight: 700;
-    margin-bottom: 0.75rem;
-    font-size: 1.08rem;
-}
-
-.crm_request_info_card ul {
-    padding-left: 1.2rem;
-    margin: 0;
-}
-
-.crm_request_info_card li {
-    margin-bottom: 0.4rem;
-    color: #374151;
-    line-height: 1.65;
-}
-
-.crm_request_form_card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 24px;
-    padding: 2rem 2rem 1.75rem;
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
-    max-width: 100%;
-    margin: 0;
-}
-
-.crm_request_form_title {
-    font-size: 1.45rem;
-    font-weight: 700;
-    color: #0b2c3d;
-    margin-bottom: 1.35rem;
-}
-
-.crm_request_section_title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #0b2c3d;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.crm_project_request_page .form-label {
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 0.45rem;
-    font-size: 0.96rem;
-}
-
-.crm_project_request_page .form-control,
-.crm_project_request_page .form-select {
-    min-height: 52px;
-    border-radius: 14px;
-    border: 1px solid #d6dbe3;
-    background: #ffffff;
-    color: #1f2937;
-    padding-left: 0.95rem;
-    padding-right: 0.95rem;
-    transition: all 0.2s ease;
-    box-shadow: none;
-}
-
-.crm_project_request_page textarea.form-control {
-    min-height: 140px;
-    padding-top: 0.85rem;
-    resize: vertical;
-}
-
-.crm_project_request_page .form-control:focus,
-.crm_project_request_page .form-select:focus {
-    border-color: #0b2c3d;
-    box-shadow: 0 0 0 0.18rem rgba(11, 44, 61, 0.10);
-}
-
-.crm_project_request_page .form-control.is-invalid,
-.crm_project_request_page .form-select.is-invalid,
-.crm_project_request_page textarea.is-invalid {
-    border-color: #dc3545 !important;
-    background-image: none;
-    box-shadow: 0 0 0 0.18rem rgba(220, 53, 69, 0.12);
-}
-
-.crm_project_request_page .form-control.is-invalid:focus,
-.crm_project_request_page .form-select.is-invalid:focus,
-.crm_project_request_page textarea.is-invalid:focus {
-    border-color: #dc3545 !important;
-    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.16);
-}
-
-#pr_submit_btn {
-    background: #0b2c3d;
-    border-color: #0b2c3d;
-    border-radius: 14px;
-    font-weight: 600;
-    min-width: 150px;
-    min-height: 48px;
-    padding: 0.75rem 1.5rem;
-}
-
-#pr_submit_btn:hover {
-    background: #12445f;
-    border-color: #12445f;
-}
-
-@media (max-width: 991.98px) {
-    .crm_request_title {
-        font-size: 2.1rem;
-    }
-
-    .crm_request_form_card,
-    .crm_request_info_card {
-        padding: 1.4rem;
-    }
-}
-
-@media (max-width: 575.98px) {
     .crm_request_hero {
-        padding-top: 1.5rem;
-        padding-bottom: 2.25rem;
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+    }
+
+    .crm_request_intro {
+        margin-bottom: 1.2rem;
     }
 
     .crm_request_title {
-        font-size: 1.8rem;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 0.85rem;
+        line-height: 1.2;
     }
 
     .crm_request_text {
-        font-size: 0.97rem;
+        max-width: 47.5rem;
+        margin: 0 auto;
+        font-size: 1.04rem;
+        line-height: 1.8;
+        color: #4b5563;
     }
 
-    .crm_request_form_card,
     .crm_request_info_card {
-        border-radius: 18px;
-        padding: 1.1rem;
-    }
-
-    #pr_submit_btn {
-        width: 100%;
-    }
-}
-
-
-// ======================================================
-// Client Segmentation
-// ======================================================
-
-.o_kanban_view.o_cpri_client_segment_kanban_page {
-    background: #f6f8fa;
-    padding: 18px;
-
-    .o_kanban_record:has(.o_cpri_client_segment_card) {
-        background: transparent !important;
-        border: 0 !important;
-        box-shadow: none !important;
-        padding: 10px !important;
-    }
-
-    .o_cpri_client_segment_card {
         background: #ffffff;
-        border: 1px solid #dce4ea;
-        border-radius: 18px;
-        padding: 18px;
-        min-height: 155px;
-        box-shadow: 0 6px 18px rgba(11, 44, 61, 0.08);
-        transition: all 0.2s ease;
+        border: 0.0625rem solid #e8ebf0;
+        border-radius: 1.125rem;
+        padding: 1.15rem 1.35rem;
+        box-shadow: 0 0.25rem 0.875rem rgba(15, 23, 42, 0.04);
+        max-width: 100%;
+        margin-bottom: 1.35rem;
+
+        h5 {
+            color: #0b2c3d;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            font-size: 1.08rem;
+        }
+
+        ul {
+            padding-left: 1.2rem;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+            color: #374151;
+            line-height: 1.65;
+        }
     }
 
-    .o_cpri_client_segment_card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 24px rgba(11, 44, 61, 0.14);
+    .crm_request_form_card {
+        background: #ffffff;
+        border: 0.0625rem solid #e5e7eb;
+        border-radius: 1.5rem;
+        padding: 2rem 2rem 1.75rem;
+        box-shadow: 0 0.875rem 2.125rem rgba(15, 23, 42, 0.08);
+        max-width: 100%;
+        margin: 0;
     }
 
-    .o_cpri_client_segment_card_header {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 14px;
-    }
-
-    .o_cpri_client_segment_card_title {
-        font-size: 16px;
+    .crm_request_form_title {
+        font-size: 1.45rem;
         font-weight: 700;
         color: #0b2c3d;
+        margin-bottom: 1.35rem;
     }
 
-    .o_cpri_client_segment_card_code {
-        margin-top: 5px;
-        font-size: 12px;
-        color: #667680;
-    }
-
-    .o_cpri_client_segment_active_badge,
-    .o_cpri_client_segment_archived_badge {
-        height: fit-content;
-        padding: 5px 11px;
-        border-radius: 999px;
-        font-size: 11px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .o_cpri_client_segment_active_badge {
-        background: #dff5e7;
-        color: #207a3c;
-    }
-
-    .o_cpri_client_segment_archived_badge {
-        background: #fde2e2;
-        color: #b42318;
-    }
-
-    .o_cpri_client_segment_card_description {
-        background: #f7f9fb;
-        border-radius: 12px;
-        padding: 12px;
-        color: #4b5563;
-        font-size: 13px;
-        min-height: 58px;
-    }
-}
-
-.o_kanban_view.o_cpri_client_segment_kanban_page {
-    .o_kanban_record:has(.o_cpri_client_segment_card) {
-        display: flex !important;
-    }
-
-    .o_cpri_client_segment_card {
-        width: 100%;
-        min-height: 185px;
-        height: 185px;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .o_cpri_client_segment_card_description {
-        flex: 1;
-        display: flex;
-        align-items: center;
-    }
-}
-
-
-
-// ======================================================
-// Project Type
-// ======================================================
-
-.o_kanban_view.o_cpri_project_type_kanban_page {
-    background: #f6f8fa;
-    padding: 18px;
-
-    .o_kanban_record:has(.o_cpri_project_type_card) {
-        background: transparent !important;
-        border: 0 !important;
-        box-shadow: none !important;
-        padding: 10px !important;
-        display: flex !important;
-    }
-
-    .o_cpri_project_type_card {
-        width: 100%;
-        height: 185px;
-        min-height: 185px;
-        display: flex;
-        flex-direction: column;
-        background: #ffffff;
-        border: 1px solid #dce4ea;
-        border-radius: 18px;
-        padding: 18px;
-        box-shadow: 0 6px 18px rgba(11, 44, 61, 0.08);
-        transition: all 0.2s ease;
-    }
-
-    .o_cpri_project_type_card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 24px rgba(11, 44, 61, 0.14);
-    }
-
-    .o_cpri_project_type_card_header {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 14px;
-    }
-
-    .o_cpri_project_type_card_title {
-        font-size: 16px;
+    .crm_request_section_title {
+        font-size: 1.05rem;
         font-weight: 700;
         color: #0b2c3d;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 0.0625rem solid #e5e7eb;
     }
 
-    .o_cpri_project_type_card_code {
-        margin-top: 5px;
-        font-size: 12px;
-        color: #667680;
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.45rem;
+        font-size: 0.96rem;
     }
 
-    .o_cpri_project_type_active_badge,
-    .o_cpri_project_type_archived_badge {
-        height: fit-content;
-        padding: 5px 11px;
-        border-radius: 999px;
-        font-size: 11px;
-        font-weight: 700;
-        white-space: nowrap;
+    .form-control,
+    .form-select {
+        min-height: 3.25rem;
+        border-radius: 0.875rem;
+        border: 0.0625rem solid #d6dbe3;
+        background: #ffffff;
+        color: #1f2937;
+        padding-left: 0.95rem;
+        padding-right: 0.95rem;
+        transition: all 0.2s ease;
+        box-shadow: none;
     }
 
-    .o_cpri_project_type_active_badge {
-        background: #dff5e7;
-        color: #207a3c;
+    textarea.form-control {
+        min-height: 8.75rem;
+        padding-top: 0.85rem;
+        resize: vertical;
     }
 
-    .o_cpri_project_type_archived_badge {
-        background: #fde2e2;
-        color: #b42318;
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #0b2c3d;
+        box-shadow: 0 0 0 0.18rem rgba(11, 44, 61, 0.1);
     }
 
-    .o_cpri_project_type_card_description {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        background: #f7f9fb;
-        border-radius: 12px;
-        padding: 12px;
-        color: #4b5563;
-        font-size: 13px;
+    .form-control.is-invalid,
+    .form-select.is-invalid,
+    textarea.is-invalid {
+        border-color: #dc3545 !important;
+        background-image: none;
+        box-shadow: 0 0 0 0.18rem rgba(220, 53, 69, 0.12);
+    }
+
+    .form-control.is-invalid:focus,
+    .form-select.is-invalid:focus,
+    textarea.is-invalid:focus {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.16);
+    }
+
+    // #pr_submit_btn {
+    //     background: #0b2c3d;
+    //     border-color: #0b2c3d;
+    //     border-radius: 0.875rem;
+    //     font-weight: 600;
+    //     min-width: 9.375rem;
+    //     min-height: 3rem;
+    //     padding: 0.75rem 1.5rem;
+
+    //     &:hover {
+    //         background: #12445f;
+    //         border-color: #12445f;
+    //     }
+    // }
+}
+
+@media (max-width: 61.99875rem) {
+    .crm_project_request_page {
+        .crm_request_title {
+            font-size: 2.1rem;
+        }
+
+        .crm_request_form_card,
+        .crm_request_info_card {
+            padding: 1.4rem;
+        }
     }
 }
 
+@media (max-width: 35.99875rem) {
+    .crm_project_request_page {
+        .crm_request_hero {
+            padding-top: 1.5rem;
+            padding-bottom: 2.25rem;
+        }
 
+        .crm_request_title {
+            font-size: 1.8rem;
+        }
+
+        .crm_request_text {
+            font-size: 0.97rem;
+        }
+
+        .crm_request_form_card,
+        .crm_request_info_card {
+            border-radius: 1.125rem;
+            padding: 1.1rem;
+        }
+
+        // #pr_submit_btn {
+        //     width: 100%;
+        // }
+    }
+}
 
 // ======================================================
-// Project Features
+// Shared Setup Cards: Client Segments, Project Types, Features
+// Each block remains scoped to its own unique kanban class.
 // ======================================================
 
+.o_kanban_view.o_cpri_client_segment_kanban_page,
+.o_kanban_view.o_cpri_project_type_kanban_page,
 .o_kanban_view.o_cpri_project_feature_kanban_page {
     background: #f6f8fa;
-    padding: 18px;
+    padding: 1.125rem;
 
+    .o_kanban_record:has(.o_cpri_client_segment_card),
+    .o_kanban_record:has(.o_cpri_project_type_card),
     .o_kanban_record:has(.o_cpri_project_feature_card) {
         background: transparent !important;
         border: 0 !important;
         box-shadow: none !important;
-        padding: 10px !important;
+        padding: 0.625rem !important;
         display: flex !important;
     }
 
+    .o_cpri_client_segment_card,
+    .o_cpri_project_type_card,
     .o_cpri_project_feature_card {
         width: 100%;
-        height: 185px;
-        min-height: 185px;
+        height: 11.5625rem;
+        min-height: 11.5625rem;
         display: flex;
         flex-direction: column;
         background: #ffffff;
-        border: 1px solid #dce4ea;
-        border-radius: 18px;
-        padding: 18px;
-        box-shadow: 0 6px 18px rgba(11, 44, 61, 0.08);
+        border: 0.0625rem solid #dce4ea;
+        border-radius: 1.125rem;
+        padding: 1.125rem;
+        box-shadow: 0 0.375rem 1.125rem rgba(11, 44, 61, 0.08);
         transition: all 0.2s ease;
+
+        &:hover {
+            transform: translateY(-0.125rem);
+            box-shadow: 0 0.625rem 1.5rem rgba(11, 44, 61, 0.14);
+        }
     }
 
-    .o_cpri_project_feature_card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 24px rgba(11, 44, 61, 0.14);
-    }
-
+    .o_cpri_client_segment_card_header,
+    .o_cpri_project_type_card_header,
     .o_cpri_project_feature_card_header {
         display: flex;
         justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 14px;
+        gap: 0.75rem;
+        margin-bottom: 0.875rem;
     }
 
+    .o_cpri_client_segment_card_title,
+    .o_cpri_project_type_card_title,
     .o_cpri_project_feature_card_title {
-        font-size: 16px;
+        font-size: 1rem;
         font-weight: 700;
         color: #0b2c3d;
     }
 
+    .o_cpri_client_segment_card_code,
+    .o_cpri_project_type_card_code,
     .o_cpri_project_feature_card_code {
-        margin-top: 5px;
-        font-size: 12px;
+        margin-top: 0.3125rem;
+        font-size: 0.75rem;
         color: #667680;
     }
 
+    .o_cpri_client_segment_active_badge,
+    .o_cpri_client_segment_archived_badge,
+    .o_cpri_project_type_active_badge,
+    .o_cpri_project_type_archived_badge,
     .o_cpri_project_feature_active_badge,
     .o_cpri_project_feature_archived_badge {
         height: fit-content;
-        padding: 5px 11px;
-        border-radius: 999px;
-        font-size: 11px;
+        padding: 0.3125rem 0.6875rem;
+        border-radius: 999rem;
+        font-size: 0.6875rem;
         font-weight: 700;
         white-space: nowrap;
     }
 
+    .o_cpri_client_segment_active_badge,
+    .o_cpri_project_type_active_badge,
     .o_cpri_project_feature_active_badge {
         background: #dff5e7;
         color: #207a3c;
     }
 
+    .o_cpri_client_segment_archived_badge,
+    .o_cpri_project_type_archived_badge,
     .o_cpri_project_feature_archived_badge {
         background: #fde2e2;
         color: #b42318;
     }
 
+    .o_cpri_client_segment_card_description,
+    .o_cpri_project_type_card_description,
     .o_cpri_project_feature_card_description {
         flex: 1;
         display: flex;
         align-items: center;
         background: #f7f9fb;
-        border-radius: 12px;
-        padding: 12px;
+        border-radius: 0.75rem;
+        padding: 0.75rem;
         color: #4b5563;
-        font-size: 13px;
+        font-size: 0.8125rem;
     }
 }
 
 // ======================================================
 // Project Teams Kanban
+// Scoped to .o_cpri_project_team_kanban_page
 // ======================================================
 
 .o_kanban_view.o_cpri_project_team_kanban_page {
@@ -498,11 +342,11 @@
         box-shadow: 0 0.5rem 1.4rem rgba(11, 44, 61, 0.08);
         transition: all 0.2s ease;
         overflow: hidden;
-    }
 
-    .o_cpri_project_team_card:hover {
-        transform: translateY(-0.15rem);
-        box-shadow: 0 0.85rem 1.8rem rgba(11, 44, 61, 0.13);
+        &:hover {
+            transform: translateY(-0.15rem);
+            box-shadow: 0 0.85rem 1.8rem rgba(11, 44, 61, 0.13);
+        }
     }
 
     .o_cpri_project_team_card_header {
@@ -611,9 +455,9 @@
     }
 }
 
-
 // ======================================================
 // Project Assignments Kanban
+// Scoped to .o_cpri_team_assignment_kanban_page
 // ======================================================
 
 .o_kanban_view.o_cpri_team_assignment_kanban_page {
@@ -652,11 +496,11 @@
         box-shadow: 0 0.5rem 1.4rem rgba(11, 44, 61, 0.08);
         transition: all 0.2s ease;
         overflow: hidden;
-    }
 
-    .o_cpri_team_assignment_card:hover {
-        transform: translateY(-0.15rem);
-        box-shadow: 0 0.85rem 1.8rem rgba(11, 44, 61, 0.13);
+        &:hover {
+            transform: translateY(-0.15rem);
+            box-shadow: 0 0.85rem 1.8rem rgba(11, 44, 61, 0.13);
+        }
     }
 
     .o_cpri_team_assignment_header {
@@ -746,48 +590,121 @@
     }
 }
 
-
-
 // ======================================================
 // CRM Project Request Intake Form
-// Scoped only to this form page
+// Scoped to .o_cpri_intake_form_page
 // ======================================================
 
 .o_form_view.o_cpri_intake_form_page {
-    background: #f6f8fa;
+    background: #f4f7fa;
 
     .o_cpri_intake_form_sheet {
         max-width: 92rem;
-        border-radius: 1.4rem;
-        border: 0.0625rem solid #dce4ea;
-        box-shadow: 0 0.75rem 2rem rgba(11, 44, 61, 0.08);
+        border-radius: 1.25rem;
+        border: 0.0625rem solid #d8e2ea;
+        box-shadow: 0 0.9rem 2rem rgba(11, 44, 61, 0.09);
         padding: 1.5rem;
+        background: #ffffff;
+    }
+
+
+
+
+    .btn-success {
+        background: #1f8a4c;
+        border-color: #1f8a4c;
+    }
+
+    .btn-danger {
+        background: #b42318;
+        border-color: #b42318;
     }
 
     .oe_button_box {
         margin-bottom: 1rem;
 
         .oe_stat_button {
-            border-radius: 1rem;
             border: 0.0625rem solid #dce4ea;
             background: #f7f9fb;
 
             &:hover {
                 background: #eef3f6;
+                border-color: #c9d6df;
             }
         }
     }
 
+    .oe_title {
+        padding: 1.25rem 1.5rem;
+        border-radius: 1rem;
+        background: linear-gradient(135deg, #f8fbfd, #eef5f8);
+        border: 0.0625rem solid #dce4ea;
+        margin-bottom: 1rem;
+
+        h1 {
+            color: #0b2c3d;
+            font-weight: 800;
+        }
+
+        h2 {
+            color: #344955;
+            font-weight: 800;
+        }
+    }
+
+    .o_group {
+        background: #ffffff;
+        border: 0.0625rem solid #e1e8ee;
+        border-radius: 1rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 0.35rem 1rem rgba(11, 44, 61, 0.04);
+    }
+
+    .o_group:has(.o_cpri_project_contact_right_box) {
+        display: grid !important;
+        grid-template-columns: 42% 1fr !important;
+        gap: 1.5rem !important;
+        align-items: start !important;
+    }
+
+    .o_cpri_project_contact_right_box {
+        grid-column: 1 !important;
+        width: 100% !important;
+        background: #f8fbfd;
+        border: 0.0625rem solid #d8e2ea;
+        border-radius: 1rem;
+        padding: 1rem;
+        box-shadow: 0 0.35rem 1rem rgba(11, 44, 61, 0.05);
+    }
+
+    .o_cpri_project_contact_right_box .o_td_label {
+        width: 35%;
+        color: #687985;
+        font-weight: 800;
+    }
+
+    .o_cpri_project_contact_right_box .o_field_widget {
+        color: #0b2c3d;
+        font-weight: 800;
+    }
+
     .o_notebook {
-        margin-top: 1rem;
+        margin-top: 1.25rem;
+        background: #ffffff;
+        border: 0.0625rem solid #dce4ea;
+        border-radius: 1rem;
+        overflow: hidden;
 
         .nav-tabs {
+            background: #f7f9fb;
             border-bottom: 0.0625rem solid #dce4ea;
+            padding: 0.5rem 0.75rem 0;
         }
 
         .nav-link {
-            border-radius: 0.9rem 0.9rem 0 0;
-            font-weight: 700;
+            border-radius: 0.7rem 0.7rem 0 0;
+            font-weight: 800;
             color: #667680;
             padding: 0.75rem 1rem;
 
@@ -796,15 +713,15 @@
                 background: #ffffff;
                 border-color: #dce4ea #dce4ea #ffffff;
             }
-        }
-    }
 
-    .o_group {
-        background: #ffffff;
-        border: 0.0625rem solid #e3e9ee;
-        border-radius: 1.1rem;
-        padding: 1rem;
-        margin-bottom: 1rem;
+            &:hover {
+                color: #0b2c3d;
+            }
+        }
+
+        .tab-content {
+            padding: 1.25rem;
+        }
     }
 
     .o_horizontal_separator {
@@ -812,313 +729,168 @@
         font-size: 1rem;
         font-weight: 800;
         margin-top: 1.25rem;
-        margin-bottom: 0.8rem;
+        margin-bottom: 0.85rem;
         border-bottom: 0.0625rem solid #dce4ea;
     }
 
     label.o_form_label {
-        color: #5f6f7a;
-        font-weight: 700;
+        color: #637583;
+        font-weight: 800;
     }
 
     .o_field_widget {
         color: #0b2c3d;
-        font-weight: 600;
+        font-weight: 650;
     }
 
     textarea,
     .o_field_text textarea {
         min-height: 7rem;
-        border-radius: 1rem;
-        padding: 0.8rem;
+        border-radius: 0.85rem;
+        padding: 0.85rem;
+        border-color: #d8e2ea;
+
+        &:focus {
+            border-color: #0b2c3d;
+            box-shadow: 0 0 0 0.15rem rgba(11, 44, 61, 0.12);
+        }
     }
 
     .o_readonly_modifier {
         color: #344955;
     }
-
-
 }
-
-.o_form_view.o_cpri_intake_form_page {
-    .btn,
-    .btn-primary,
-    .btn-success,
-    .btn-danger,
-    .btn-secondary,
-    .oe_stat_button {
-        border-radius: 0.45rem !important;
-    }
-
-    .o_cpri_intake_form_sheet > .o_group:first-of-type {
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    .o_cpri_intake_form_sheet > .o_group:first-of-type > tbody {
-        width: 48%;
-        margin-left: auto;
-    }
-}
-
-.o_form_view.o_cpri_intake_form_page {
-    .o_cpri_intake_right_contact_box {
-        margin-left: auto !important;
-        width: 42% !important;
-        min-width: 26rem;
-    }
-
-    .o_cpri_intake_right_contact_box table {
-        width: 100%;
-    }
-
-    .o_cpri_intake_right_contact_box .o_td_label {
-        width: 35%;
-        text-align: left;
-        padding-right: 1rem;
-    }
-
-    .o_cpri_intake_right_contact_box .o_field_widget {
-        font-weight: 700;
-        color: #0b2c3d;
-    }
-}
-
-.o_form_view.o_cpri_intake_form_page {
-    .o_group:has(.o_cpri_project_contact_right_box) {
-        display: grid !important;
-        grid-template-columns: 42% 1fr !important;
-        gap: 2rem !important;
-        align-items: start !important;
-    }
-
-    .o_cpri_project_contact_right_box {
-        grid-column: 1 !important;
-        width: 100% !important;
-        background: #ffffff;
-        border: 0.0625rem solid #dce4ea;
-        border-radius: 0.75rem;
-        padding: 1rem;
-    }
-
-    .o_cpri_project_contact_right_box .o_td_label {
-        width: 35%;
-        color: #6b7780;
-        font-weight: 700;
-    }
-
-    .o_cpri_project_contact_right_box .o_field_widget {
-        color: #0b2c3d;
-        font-weight: 700;
-    }
-}
-
-
-.o_form_view.o_cpri_intake_form_page {
-    .o_cpri_review_details_page {
-        .o_cpri_review_intro {
-            background: linear-gradient(135deg, #0b2c3d, #12445f);
-            color: #ffffff;
-            border-radius: 1rem;
-            padding: 1.25rem 1.5rem;
-            margin-bottom: 1.25rem;
-
-            h3 {
-                margin: 0;
-                color: #ffffff;
-                font-weight: 800;
-            }
-
-            p {
-                margin: 0.45rem 0 0;
-                color: rgba(255, 255, 255, 0.86);
-                line-height: 1.6;
-            }
-        }
-
-        .o_cpri_review_card {
-            background: #ffffff;
-            border: 0.0625rem solid #dce4ea;
-            border-radius: 1rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 0.35rem 1rem rgba(11, 44, 61, 0.05);
-        }
-
-        .o_cpri_review_card > .o_horizontal_separator {
-            color: #0b2c3d;
-            font-weight: 800;
-        }
-
-        textarea,
-        .o_field_text textarea {
-            min-height: 6.5rem;
-            border-radius: 0.85rem;
-            padding: 0.85rem;
-        }
-
-        .o_field_many2many_tags {
-            min-height: 2.75rem;
-            align-items: center;
-        }
-    }
-}
-
-
 
 // ======================================================
 // Project Review Details Tab
+// Scoped to .o_cpri_review_details_page
 // ======================================================
 
-.o_form_view.o_cpri_intake_form_page {
-    .o_cpri_review_details_page {
-        background: #f4f7fa;
-        padding: 1rem;
+.o_form_view.o_cpri_intake_form_page .o_cpri_review_details_page {
+    padding: 1rem !important;
 
-        .o_cpri_review_intro {
-            background: linear-gradient(135deg, #0b2c3d, #15506f);
-            color: #ffffff;
-            border-radius: 1rem;
-            padding: 1.25rem 1.5rem;
-            margin-bottom: 1.25rem;
-            box-shadow: 0 0.6rem 1.4rem rgba(11, 44, 61, 0.18);
+    .o_cpri_review_intro {
+        background: linear-gradient(135deg, #0b2c3d, #15506f) !important;
+        color: #ffffff !important;
+        border-radius: 1rem !important;
+        padding: 1.25rem 1.5rem !important;
+        margin-bottom: 1.25rem !important;
+        box-shadow: 0 0.6rem 1.4rem rgba(11, 44, 61, 0.18) !important;
+        border-left: 0.35rem solid #2aa8d8 !important;
 
-            h3 {
-                color: #ffffff;
-                font-weight: 800;
-                margin: 0;
-            }
-
-            p {
-                color: rgba(255, 255, 255, 0.88);
-                margin: 0.45rem 0 0;
-                line-height: 1.6;
-            }
+        h3 {
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            margin: 0 !important;
         }
 
-        .o_cpri_review_card {
-            border-radius: 1rem;
-            padding: 1.15rem 1.25rem !important;
-            margin-bottom: 1.25rem !important;
-            border: 0.0625rem solid #dce4ea;
-            box-shadow: 0 0.45rem 1.2rem rgba(11, 44, 61, 0.08);
+        p {
+            color: rgba(255, 255, 255, 0.9) !important;
+            margin: 0.45rem 0 0 !important;
+            line-height: 1.6 !important;
+        }
+    }
+
+    .o_cpri_review_card {
+        background: #f7fbff !important;
+        border: 0.0625rem solid #d6e4ee !important;
+        border-left: 0.4rem solid #2f80ed !important;
+        border-radius: 1rem !important;
+        padding: 1.15rem 1.25rem !important;
+        margin-bottom: 1.25rem !important;
+        box-shadow: 0 0.45rem 1.2rem rgba(11, 44, 61, 0.09) !important;
+    }
+
+    .o_cpri_review_card .o_group {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    .o_horizontal_separator {
+        color: #0b2c3d !important;
+        font-size: 1rem !important;
+        font-weight: 900 !important;
+        text-transform: uppercase !important;
+        background: rgba(255, 255, 255, 0.85) !important;
+        border-radius: 0.6rem !important;
+        padding: 0.55rem 0.75rem !important;
+        margin-bottom: 1rem !important;
+        border-bottom: 0.0625rem solid rgba(11, 44, 61, 0.14) !important;
+    }
+
+    label.o_form_label {
+        color: #5f6f7a !important;
+        font-weight: 800 !important;
+    }
+
+    .o_field_widget {
+        color: #0b2c3d !important;
+        font-weight: 650 !important;
+    }
+
+    .o_field_many2many_tags {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.4rem;
+        background: #ffffff !important;
+        border: 0.0625rem solid #d8e2ea !important;
+        border-radius: 0.85rem !important;
+        padding: 0.6rem 0.75rem !important;
+        box-shadow: 0 0.25rem 0.8rem rgba(11, 44, 61, 0.06) !important;
+        min-height: 3rem !important;
+    }
+
+    .badge,
+    .o_tag {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 0.35rem;
+        background: linear-gradient(135deg, #e8f4ff, #dceeff) !important;
+        color: #0b4a7a !important;
+        border: 0.0625rem solid #b8d8f5 !important;
+        border-radius: 999rem !important;
+        padding: 0.35rem 0.8rem !important;
+        font-size: 0.8rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.01em;
+        box-shadow: 0 0.15rem 0.5rem rgba(11, 44, 61, 0.1);
+        white-space: nowrap;
+    }
+
+    textarea,
+    textarea.o_input,
+    .o_field_text textarea {
+        min-height: 5.5rem !important;
+        max-height: 8rem !important;
+        height: auto !important;
+        border-radius: 0.85rem !important;
+        padding: 0.85rem !important;
+        background: #ffffff !important;
+        border: 0.0625rem solid #d8e2ea !important;
+        color: #0b2c3d !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        line-height: 1.6 !important;
+        box-shadow: 0 0.25rem 0.8rem rgba(11, 44, 61, 0.05) !important;
+        resize: vertical !important;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+
+        &:focus {
+            border-color: #0b2c3d !important;
+            box-shadow: 0 0 0 0.18rem rgba(11, 44, 61, 0.13) !important;
+            outline: none !important;
         }
 
-        .o_cpri_review_card:nth-of-type(1) {
-            background: #f5faff;
-            border-left: 0.35rem solid #2f80ed;
-        }
-
-        .o_cpri_review_card:nth-of-type(2) {
-            background: #f5fff8;
-            border-left: 0.35rem solid #27ae60;
-        }
-
-        .o_cpri_review_card:nth-of-type(3) {
-            background: #fffaf0;
-            border-left: 0.35rem solid #f2a900;
-        }
-
-        .o_cpri_review_card:nth-of-type(4) {
-            background: #faf5ff;
-            border-left: 0.35rem solid #9b51e0;
-        }
-
-        .o_cpri_review_card:nth-of-type(5) {
-            background: #fff5f5;
-            border-left: 0.35rem solid #eb5757;
-        }
-
-        .o_horizontal_separator {
-            color: #0b2c3d;
-            font-size: 1rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            background: rgba(255, 255, 255, 0.72);
-            border-radius: 0.6rem;
-            padding: 0.55rem 0.75rem;
-            margin-bottom: 1rem;
-            border-bottom: 0.0625rem solid rgba(11, 44, 61, 0.14);
-        }
-
-        label.o_form_label {
-            color: #5f6f7a;
-            font-weight: 800;
-        }
-
-        .o_field_widget {
-            color: #0b2c3d;
-            font-weight: 650;
-        }
-
-        .o_field_many2many_tags {
-            background: #ffffff;
-            border: 0.0625rem solid #dce4ea;
-            border-radius: 0.8rem;
-            padding: 0.55rem;
-            box-shadow: 0 0.25rem 0.8rem rgba(11, 44, 61, 0.05);
-            min-height: 2.8rem;
-        }
-
-        .badge,
-        .o_tag {
-            background: #eaf3f8 !important;
-            color: #0b2c3d !important;
-            border: 0.0625rem solid #d3e2ea;
-            border-radius: 999rem;
-            padding: 0.28rem 0.65rem;
-            font-weight: 700;
-        }
-
-        textarea,
-        .o_field_text textarea {
-            min-height: 5rem !important;
-            max-height: 7rem;
-            border-radius: 0.85rem;
-            padding: 0.85rem;
-            background: #ffffff !important;
-            border: 0.0625rem solid #d8e2ea;
-            box-shadow: 0 0.25rem 0.8rem rgba(11, 44, 61, 0.05);
-            resize: vertical;
-
-            &:focus {
-                border-color: #0b2c3d;
-                box-shadow: 0 0 0 0.15rem rgba(11, 44, 61, 0.12);
-            }
-        }
-
-        .o_cpri_review_card .o_group {
-            background: transparent !important;
-            border: 0 !important;
-            box-shadow: none !important;
-            padding: 0 !important;
-            margin-bottom: 0 !important;
+        &::placeholder {
+            color: #a0adb6 !important;
+            font-weight: 400 !important;
         }
     }
 }
-
-.o_form_view.o_cpri_intake_form_page .o_cpri_review_details_page textarea.o_input {
-    min-height: 5rem !important;
-    height: 5.5rem !important;
-    max-height: 7rem !important;
-
-    background: #791b1b !important;
-    border: 0.0625rem solid #d8e2ea !important;
-    border-radius: 0.85rem !important;
-    padding: 0.85rem !important;
-
-    color: #0b2c3d !important;
-    font-weight: 600 !important;
-
-    box-shadow: 0 0.25rem 0.8rem rgba(11, 44, 61, 0.08) !important;
-    resize: vertical !important;
-}
-
-.o_form_view.o_cpri_intake_form_page .o_cpri_review_details_page textarea.o_input:focus {
-    border-color: #0b2c3d !important;
-    box-shadow: 0 0 0 0.15rem rgba(11, 44, 61, 0.14) !important;
-}
-
 
 
 
@@ -1161,11 +933,11 @@
         box-shadow: 0 0.5rem 1.4rem rgba(11, 44, 61, 0.08);
         transition: all 0.2s ease;
         overflow: hidden;
-    }
 
-    .o_cpri_email_log_card:hover {
-        transform: translateY(-0.15rem);
-        box-shadow: 0 0.85rem 1.8rem rgba(11, 44, 61, 0.13);
+        &:hover {
+            transform: translateY(-0.15rem);
+            box-shadow: 0 0.85rem 1.8rem rgba(11, 44, 61, 0.13);
+        }
     }
 
     .o_cpri_email_log_header {
@@ -1333,3 +1105,24 @@
     }
 }
 
+
+.o_form_view.o_cpri_intake_form_page .o_cpri_review_details_page {
+    .o_field_many2many_tags .o_tag,
+    .o_field_many2many_tags .badge {
+        background: linear-gradient(135deg, #e8f4ff, #d8ecfb) !important;
+        color: #0b2c3d !important;
+        border: 0.0625rem solid #b9d7e8 !important;
+        border-radius: 0.6rem !important;
+        padding: 0.35rem 0.75rem !important;
+        font-size: 0.82rem !important;
+        font-weight: 800 !important;
+        box-shadow: 0 0.15rem 0.45rem rgba(11, 44, 61, 0.10);
+    }
+
+    .o_field_many2many_tags .o_tag:hover,
+    .o_field_many2many_tags .badge:hover {
+        background: linear-gradient(135deg, #d8ecfb, #cce5f6) !important;
+        border-color: #8fc1df !important;
+        transform: translateY(-0.05rem);
+    }
+}

@@ -48,6 +48,17 @@ class ProjectRequestRejectWizard(models.TransientModel):
             'stage_id': rejected_stage.id,
         })
         lead._send_project_request_rejection_email()
+        
+        self.env['crm.email.log'].create({
+            'lead_id': lead.id,
+            'subject': 'Project Request Rejection - %s' % (lead.name or ''),
+            'sender_email': self.env.user.email or '',
+            'recipient_email': lead.email_from or lead.intake_client_email or '',
+            'email_type': 'rejection',
+            'direction': 'outgoing',
+            'body_preview': full_reason,
+            'notes': 'Automatic rejection email sent after the project request was rejected.',
+        })
 
         return {
             'type': 'ir.actions.client',

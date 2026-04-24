@@ -29,6 +29,7 @@ class CrmEmailLog(models.Model):
         ('meeting', 'Meeting Coordination'),
         ('proposal', 'Proposal / Quotation'),
         ('approval', 'Approval Discussion'),
+        ('rejection', 'Rejection Email'),
         ('general', 'General Communication'),
     ], string='Email Type', default='general', required=True)
 

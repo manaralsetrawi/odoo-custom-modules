@@ -304,7 +304,29 @@ class ProjectTeamAssignmentWizard(models.TransientModel):
                 'active': False,
             })
             lead._send_project_request_approval_email()
-
+            
+            self.env['crm.email.log'].create({
+                'lead_id': opportunity.id,
+                'subject': 'Project Request Approved - %s' % (opportunity.name or lead.name or ''),
+                'sender_email': self.env.user.email or '',
+                'recipient_email': lead.email_from or lead.intake_client_email or '',
+                'email_type': 'approval',
+                'direction': 'outgoing',
+                'body_preview': (
+                    "Your project request has been approved and converted into an opportunity.\n\n"
+                    "Project: %s\n"
+                    "Assigned Team: %s\n"
+                    "Planned Start Date: %s\n"
+                    "Planned End Date: %s"
+                ) % (
+                    opportunity.name or '',
+                    self.selected_team_id.name or '',
+                    self.planned_start_date or '',
+                    self.planned_end_date or '',
+                ),
+                'notes': 'Automatic approval email sent after the project request was approved.',
+            })
+            
             lead.message_post(
                 body=_("Project request approved and converted into an opportunity: %s") % opportunity.name
             )
