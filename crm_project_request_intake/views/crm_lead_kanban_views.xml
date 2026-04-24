@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_crm_lead_project_request_kanban_cards" model="ir.ui.view">
+        <field name="name">crm.lead.project.request.kanban.cards</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+
+            <!-- Fields needed inside the kanban card -->
+            <xpath expr="//kanban" position="inside">
+                <field name="request_type"/>
+                <field name="intake_state"/>
+                <field name="intake_company_name"/>
+                <field name="intake_requested_budget"/>
+                <field name="intake_requested_duration"/>
+                <field name="email_from"/>
+                <field name="phone"/>
+                <field name="user_id"/>
+            </xpath>
+
+            <!-- Add unique class only to your lead card -->
+            <xpath expr="//templates/t/div" position="attributes">
+                <attribute name="class" add=" ncst_lead_intake_card" separator=" "/>
+            </xpath>
+
+            <!-- Style the lead title -->
+            <xpath expr="//templates//field[@name='name']" position="replace">
+                <div class="ncst_lead_intake_title">
+                    <field name="name"/>
+                </div>
+            </xpath>
+
+            <!-- Add project request details into the existing card -->
+            <xpath expr="//templates/t/div" position="inside">
+
+                <div class="ncst_lead_intake_details">
+
+                    <div class="ncst_lead_intake_badges">
+                        <span class="ncst_lead_intake_badge ncst_lead_intake_badge_type">
+                            <i class="fa fa-tag"/>
+                            <field name="request_type"/>
+                        </span>
+
+                        <span class="ncst_lead_intake_badge ncst_lead_intake_badge_state">
+                            <i class="fa fa-check-circle"/>
+                            <field name="intake_state"/>
+                        </span>
+                    </div>
+
+                    <div class="ncst_lead_intake_line">
+                        <i class="fa fa-envelope"/>
+                        <span class="ncst_lead_intake_label">Email:</span>
+                        <span class="ncst_lead_intake_value">
+                            <field name="email_from"/>
+                        </span>
+                    </div>
+
+                    <div class="ncst_lead_intake_line">
+                        <i class="fa fa-phone"/>
+                        <span class="ncst_lead_intake_label">Phone:</span>
+                        <span class="ncst_lead_intake_value">
+                            <field name="phone"/>
+                        </span>
+                    </div>
+
+                    <div class="ncst_lead_intake_line">
+                        <i class="fa fa-building"/>
+                        <span class="ncst_lead_intake_label">Company:</span>
+                        <span class="ncst_lead_intake_value">
+                            <field name="intake_company_name"/>
+                        </span>
+                    </div>
+
+                    <div class="ncst_lead_intake_line">
+                        <i class="fa fa-money"/>
+                        <span class="ncst_lead_intake_label">Budget:</span>
+                        <span class="ncst_lead_intake_value">
+                            <field name="intake_requested_budget"/>
+                        </span>
+                    </div>
+
+                    <div class="ncst_lead_intake_line">
+                        <i class="fa fa-hourglass-half"/>
+                        <span class="ncst_lead_intake_label">Duration:</span>
+                        <span class="ncst_lead_intake_value">
+                            <field name="intake_requested_duration"/>
+                        </span>
+                    </div>
+
+                    <div class="ncst_lead_intake_line">
+                        <i class="fa fa-user-circle"/>
+                        <span class="ncst_lead_intake_label">Owner:</span>
+                        <span class="ncst_lead_intake_value">
+                            <field name="user_id"/>
+                        </span>
+                    </div>
+
+                </div>
+
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
