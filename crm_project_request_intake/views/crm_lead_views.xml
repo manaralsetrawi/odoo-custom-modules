@@ -291,7 +291,7 @@
                     <field name="review_project_type_id"/>
                 </xpath>
 
-                <xpath expr="//templates/t[@t-name='kanban-box']" position="replace">
+                <xpath expr="/t[@t-name='kanban-box']" position="replace">
                     <t t-name="kanban-box">
                         <div class="o_cpri_lead_card oe_kanban_global_click">
 
