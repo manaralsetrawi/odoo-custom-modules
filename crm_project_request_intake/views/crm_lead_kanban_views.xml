@@ -89,7 +89,9 @@
                                 <i class="fa fa-comments-o"/>
                             </div>
 
-                            <button type="open" class="btn ncst_pr_intake_view_btn">
+                            <button type="open"
+                                    name="open_record"
+                                    class="btn ncst_pr_intake_view_btn">
                                 View
                             </button>
                         </div>
