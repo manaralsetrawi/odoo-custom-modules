@@ -1,19 +1,7 @@
-.o_form_view button[name="661"] {
-    display: none !important;
-}
+// ======================================================
+// Website Project Request Form
+// ======================================================
 
-/* Hide default CRM buttons that confuse this workflow */
-button[name="action_open_lost_wizard"] {
-    display: none !important;
-}
-
-.o_form_view button[name="661"]{
-    display: none !important;
-    visibility: hidden !important;
-}
-
-
-// Website design 
 .crm_project_request_page {
     background: #f7f9fc;
 }
@@ -50,7 +38,7 @@ button[name="action_open_lost_wizard"] {
     padding: 1.15rem 1.35rem;
     box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
     max-width: 100%;
-    margin-bottom:1.35rem ;
+    margin-bottom: 1.35rem;
 }
 
 .crm_request_info_card h5 {
@@ -196,83 +184,116 @@ button[name="action_open_lost_wizard"] {
 }
 
 
-// lead kaban 
-.o_kanban_view.o_cpri_leads_kanban {
+// ======================================================
+// Backend Project Request Kanban
+// Scoped only to: <kanban class="o_cpri_project_request_kanban">
+// ======================================================
+
+.o_kanban_view.o_cpri_project_request_kanban {
     background: #f6f8fa;
 
-    .o_kanban_record:has(.o_cpri_lead_card) {
+    .o_kanban_renderer {
+        background: #f6f8fa;
+    }
+
+    .o_kanban_group {
+        background: #eef2f5;
+        border-radius: 18px;
+        border: 1px solid #dde5eb;
+        padding: 10px;
+    }
+
+    .o_kanban_group_header {
+        padding: 8px 10px 12px;
+        border-bottom: 1px solid #dce4ea;
+        margin-bottom: 10px;
+    }
+
+    .o_kanban_group_title {
+        color: #0b2c3d;
+        font-weight: 700;
+    }
+
+    .o_kanban_record:has(.o_cpri_pr_card) {
         background: transparent !important;
         border: 0 !important;
         box-shadow: none !important;
         padding: 8px !important;
     }
 
-    .o_cpri_lead_card {
+    .o_cpri_pr_card {
         background: #ffffff;
         border: 1px solid #dce4ea;
         border-radius: 18px;
         padding: 18px;
         min-height: 190px;
         box-shadow: 0 6px 18px rgba(11, 44, 61, 0.08);
-        transition: 0.2s ease;
+        transition: all 0.2s ease;
     }
 
-    .o_cpri_lead_card:hover {
+    .o_cpri_pr_card:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 24px rgba(11, 44, 61, 0.14);
     }
 
-    .o_cpri_lead_top {
+    .o_cpri_pr_header {
         display: flex;
         justify-content: space-between;
         gap: 12px;
+        align-items: flex-start;
         margin-bottom: 14px;
     }
 
-    .o_cpri_lead_title {
-        font-size: 17px;
+    .o_cpri_pr_title {
+        font-size: 16px;
         font-weight: 700;
         color: #0b2c3d;
         line-height: 1.35;
     }
 
-    .o_cpri_lead_client {
+    .o_cpri_pr_client {
         margin-top: 5px;
-        font-size: 14px;
+        font-size: 13px;
         color: #4b5563;
         font-weight: 500;
     }
 
-    .o_cpri_lead_badge {
+    .o_cpri_pr_status {
         height: fit-content;
         padding: 5px 11px;
         border-radius: 999px;
         font-size: 11px;
         font-weight: 700;
         white-space: nowrap;
+        text-transform: capitalize;
     }
 
-    .o_cpri_lead_badge_submitted {
+    .o_cpri_pr_status_draft {
+        background: #eef1f4;
+        color: #5d6770;
+    }
+
+    .o_cpri_pr_status_submitted {
         background: #fff3cd;
         color: #8a6500;
     }
 
-    .o_cpri_lead_badge_under_review {
+    .o_cpri_pr_status_under_review {
         background: #dceeff;
         color: #0b5cab;
     }
 
-    .o_cpri_lead_badge_approved {
+    .o_cpri_pr_status_approved {
         background: #dff5e7;
         color: #207a3c;
     }
 
-    .o_cpri_lead_badge_rejected {
+    .o_cpri_pr_status_rejected {
         background: #fde2e2;
         color: #b42318;
     }
 
-    .o_cpri_lead_company {
+    .o_cpri_pr_company {
         background: #f7f9fb;
         border-radius: 12px;
         padding: 10px 12px;
@@ -281,44 +302,47 @@ button[name="action_open_lost_wizard"] {
         margin-bottom: 14px;
     }
 
-    .o_cpri_lead_company i {
+    .o_cpri_pr_company i {
         color: #0b2c3d;
         margin-right: 6px;
     }
 
-    .o_cpri_lead_meta {
+    .o_cpri_pr_info {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px;
         margin-bottom: 14px;
     }
 
-    .o_cpri_lead_meta div {
+    .o_cpri_pr_info div {
         border: 1px solid #edf0f2;
         border-radius: 12px;
         padding: 10px;
+        background: #ffffff;
     }
 
-    .o_cpri_lead_meta span {
+    .o_cpri_pr_info span {
         display: block;
         font-size: 11px;
         color: #7b8790;
         margin-bottom: 4px;
     }
 
-    .o_cpri_lead_meta strong {
+    .o_cpri_pr_info strong {
         font-size: 13px;
         color: #0b2c3d;
+        font-weight: 700;
     }
 
-    .o_cpri_lead_footer {
+    .o_cpri_pr_footer {
         border-top: 1px solid #edf0f2;
         padding-top: 10px;
         color: #667680;
         font-size: 12px;
+        min-height: 28px;
     }
 
-    .o_cpri_lead_footer i {
+    .o_cpri_pr_footer i {
         color: #0b2c3d;
         margin-right: 5px;
     }

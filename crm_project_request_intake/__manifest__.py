@@ -46,6 +46,9 @@ Main features:
             'crm_project_request_intake/static/src/js/project_request_form.js',
             'crm_project_request_intake/static/src/scss/project_request_form.scss',
         ],
+        'web.assets_backend': [
+            'crm_project_request_intake/static/src/scss/project_request_form.scss',
+        ],
     },
     'installable': True,
     'application': False,
