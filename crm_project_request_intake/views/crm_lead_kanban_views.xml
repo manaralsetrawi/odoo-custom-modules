@@ -26,8 +26,8 @@
                 <attribute name="class">ncst_pr_intake_kanban_root</attribute>
             </xpath>
 
-            <xpath expr="//templates/t[@t-name='card']" position="replace">
-                <t t-name="card">
+                <xpath expr="//templates/t[@t-name='kanban-box']" position="replace">                
+                <t t-name="kanban-box">
                     <div class="ncst_pr_intake_card">
 
                         <div class="ncst_pr_intake_top">
