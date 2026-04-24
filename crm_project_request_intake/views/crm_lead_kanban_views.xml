@@ -7,106 +7,100 @@
         <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
         <field name="arch" type="xml">
 
+            <!-- Add needed fields -->
             <xpath expr="//kanban" position="inside">
-                <field name="name"/>
-                <field name="contact_name"/>
-                <field name="email_from"/>
-                <field name="phone"/>
-                <field name="priority"/>
                 <field name="request_type"/>
                 <field name="intake_state"/>
                 <field name="intake_company_name"/>
                 <field name="intake_requested_budget"/>
                 <field name="intake_requested_duration"/>
-                <field name="create_date"/>
+                <field name="email_from"/>
+                <field name="phone"/>
                 <field name="user_id"/>
             </xpath>
 
-            <xpath expr="//kanban" position="attributes">
-                <attribute name="class">ncst_pr_intake_kanban_root</attribute>
+            <!-- Add unique class to existing Odoo card -->
+            <xpath expr="//templates/t/div" position="attributes">
+                <attribute name="class" add=" ncst_pr_intake_kanban_card" separator=" "/>
             </xpath>
 
-                <xpath expr="//templates/t[@t-name='kanban-box']" position="replace">                
-                <t t-name="kanban-box">
-                    <div class="ncst_pr_intake_card">
+            <!-- Improve title style only -->
+            <xpath expr="//templates//field[@name='name']" position="replace">
+                <div class="ncst_pr_intake_kanban_title">
+                    <field name="name"/>
+                </div>
+            </xpath>
 
-                        <div class="ncst_pr_intake_top">
-                            <div class="ncst_pr_intake_icon">
-                                <i class="fa fa-folder-open-o"/>
-                            </div>
+            <!-- Remove default partner line to avoid duplicate client/company -->
+            <xpath expr="//templates//field[@name='partner_id']" position="replace"/>
 
-                            <div class="ncst_pr_intake_title_wrap">
-                                <strong class="ncst_pr_intake_title">
-                                    <field name="name"/>
-                                </strong>
-                                <div class="ncst_pr_intake_client">
-                                    <field name="contact_name"/>
-                                </div>
-                            </div>
+            <!-- Add custom lead intake info inside the existing card -->
+            <xpath expr="//templates/t/div" position="inside">
 
-                            <span class="ncst_pr_intake_status">
-                                <field name="intake_state"/>
-                            </span>
-                        </div>
+                <div class="ncst_pr_intake_kanban_extra">
 
-                        <div class="ncst_pr_intake_chips">
-                            <span class="ncst_pr_intake_chip ncst_pr_intake_chip_type">
-                                <i class="fa fa-tag"/>
-                                <field name="request_type"/>
-                            </span>
+                    <div class="ncst_pr_intake_kanban_badge_row">
+                        <span class="ncst_pr_intake_badge_type">
+                            <i class="fa fa-tag"/>
+                            <field name="request_type"/>
+                        </span>
 
-                            <span class="ncst_pr_intake_chip">
-                                <i class="fa fa-star"/>
-                                <field name="priority" widget="priority"/>
-                            </span>
-                        </div>
-
-                        <div class="ncst_pr_intake_details">
-
-                            <div class="ncst_pr_intake_line">
-                                <i class="fa fa-envelope-o"/>
-                                <span><field name="email_from"/></span>
-                            </div>
-
-                            <div class="ncst_pr_intake_line">
-                                <i class="fa fa-phone"/>
-                                <span><field name="phone"/></span>
-                            </div>
-
-                            <div class="ncst_pr_intake_line">
-                                <i class="fa fa-building-o"/>
-                                <span><field name="intake_company_name"/></span>
-                            </div>
-
-                            <div class="ncst_pr_intake_line">
-                                <i class="fa fa-money"/>
-                                <span>Budget:</span>
-                                <strong><field name="intake_requested_budget"/></strong>
-                            </div>
-
-                            <div class="ncst_pr_intake_line">
-                                <i class="fa fa-hourglass-half"/>
-                                <span>Duration:</span>
-                                <strong><field name="intake_requested_duration"/></strong>
-                            </div>
-
-                        </div>
-
-                        <div class="ncst_pr_intake_bottom">
-                            <div class="ncst_pr_intake_meta">
-                                <i class="fa fa-user-circle-o"/>
-                                <field name="user_id"/>
-                            </div>
-
-                            <button type="open"
-                                    name="open_record"
-                                    class="btn ncst_pr_intake_view_btn">
-                                View
-                            </button>
-                        </div>
-
+                        <span class="ncst_pr_intake_badge_state">
+                            <i class="fa fa-check-circle"/>
+                            <field name="intake_state"/>
+                        </span>
                     </div>
-                </t>
+
+                    <div class="ncst_pr_intake_kanban_line">
+                        <i class="fa fa-envelope"/>
+                        <span class="ncst_pr_intake_label">Email:</span>
+                        <span class="ncst_pr_intake_value">
+                            <field name="email_from"/>
+                        </span>
+                    </div>
+
+                    <div class="ncst_pr_intake_kanban_line">
+                        <i class="fa fa-phone"/>
+                        <span class="ncst_pr_intake_label">Phone:</span>
+                        <span class="ncst_pr_intake_value">
+                            <field name="phone"/>
+                        </span>
+                    </div>
+
+                    <div class="ncst_pr_intake_kanban_line">
+                        <i class="fa fa-building"/>
+                        <span class="ncst_pr_intake_label">Company:</span>
+                        <span class="ncst_pr_intake_value">
+                            <field name="intake_company_name"/>
+                        </span>
+                    </div>
+
+                    <div class="ncst_pr_intake_kanban_line">
+                        <i class="fa fa-money"/>
+                        <span class="ncst_pr_intake_label">Budget:</span>
+                        <span class="ncst_pr_intake_value">
+                            <field name="intake_requested_budget"/>
+                        </span>
+                    </div>
+
+                    <div class="ncst_pr_intake_kanban_line">
+                        <i class="fa fa-hourglass-half"/>
+                        <span class="ncst_pr_intake_label">Duration:</span>
+                        <span class="ncst_pr_intake_value">
+                            <field name="intake_requested_duration"/>
+                        </span>
+                    </div>
+
+                    <div class="ncst_pr_intake_kanban_line">
+                        <i class="fa fa-user-circle"/>
+                        <span class="ncst_pr_intake_label">Owner:</span>
+                        <span class="ncst_pr_intake_value">
+                            <field name="user_id"/>
+                        </span>
+                    </div>
+
+                </div>
+
             </xpath>
 
         </field>
