@@ -39,7 +39,6 @@ Main features:
         'views/hr_employee_views.xml',
         'views/project_team_assignment_wizard_views.xml',
         'views/crm_email_log_views.xml',
-        'views/crm_lead_kanban_views.xml',
         'views/crm_project_request_menu.xml',
     ],
     'assets': {
