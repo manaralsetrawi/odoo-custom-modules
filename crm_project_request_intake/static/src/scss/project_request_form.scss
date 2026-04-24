@@ -194,3 +194,132 @@ button[name="action_open_lost_wizard"] {
         width: 100%;
     }
 }
+
+
+// lead kaban 
+.o_kanban_view.o_cpri_leads_kanban {
+    background: #f6f8fa;
+
+    .o_kanban_record:has(.o_cpri_lead_card) {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 8px !important;
+    }
+
+    .o_cpri_lead_card {
+        background: #ffffff;
+        border: 1px solid #dce4ea;
+        border-radius: 18px;
+        padding: 18px;
+        min-height: 190px;
+        box-shadow: 0 6px 18px rgba(11, 44, 61, 0.08);
+        transition: 0.2s ease;
+    }
+
+    .o_cpri_lead_card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(11, 44, 61, 0.14);
+    }
+
+    .o_cpri_lead_top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .o_cpri_lead_title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #0b2c3d;
+        line-height: 1.35;
+    }
+
+    .o_cpri_lead_client {
+        margin-top: 5px;
+        font-size: 14px;
+        color: #4b5563;
+        font-weight: 500;
+    }
+
+    .o_cpri_lead_badge {
+        height: fit-content;
+        padding: 5px 11px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .o_cpri_lead_badge_submitted {
+        background: #fff3cd;
+        color: #8a6500;
+    }
+
+    .o_cpri_lead_badge_under_review {
+        background: #dceeff;
+        color: #0b5cab;
+    }
+
+    .o_cpri_lead_badge_approved {
+        background: #dff5e7;
+        color: #207a3c;
+    }
+
+    .o_cpri_lead_badge_rejected {
+        background: #fde2e2;
+        color: #b42318;
+    }
+
+    .o_cpri_lead_company {
+        background: #f7f9fb;
+        border-radius: 12px;
+        padding: 10px 12px;
+        color: #4b5563;
+        font-size: 13px;
+        margin-bottom: 14px;
+    }
+
+    .o_cpri_lead_company i {
+        color: #0b2c3d;
+        margin-right: 6px;
+    }
+
+    .o_cpri_lead_meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .o_cpri_lead_meta div {
+        border: 1px solid #edf0f2;
+        border-radius: 12px;
+        padding: 10px;
+    }
+
+    .o_cpri_lead_meta span {
+        display: block;
+        font-size: 11px;
+        color: #7b8790;
+        margin-bottom: 4px;
+    }
+
+    .o_cpri_lead_meta strong {
+        font-size: 13px;
+        color: #0b2c3d;
+    }
+
+    .o_cpri_lead_footer {
+        border-top: 1px solid #edf0f2;
+        padding-top: 10px;
+        color: #667680;
+        font-size: 12px;
+    }
+
+    .o_cpri_lead_footer i {
+        color: #0b2c3d;
+        margin-right: 5px;
+    }
+}
