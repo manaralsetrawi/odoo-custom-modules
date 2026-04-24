@@ -367,16 +367,11 @@
         </field>
     </record>
 
-    <record id="action_crm_project_request_intake_kanban_custom" model="ir.actions.act_window">
-        <field name="name">Project Requests</field>
-        <field name="res_model">crm.lead</field>
-        <field name="view_mode">kanban,form,list</field>
-        <field name="domain">[('request_type', '=', 'project_request'), ('type', '=', 'lead')]</field>
-        <field name="context">{'default_request_type': 'project_request', 'default_type': 'lead'}</field>
+    <record id="crm.crm_lead_all_leads" model="ir.actions.act_window">
         <field name="views" eval="[
-            (ref('view_crm_project_request_intake_kanban_custom'), 'kanban'),
-            (False, 'form'),
-            (False, 'list')
+            (ref('crm_project_request_intake.view_crm_project_request_intake_kanban_custom'), 'kanban'),
+            (False, 'list'),
+            (False, 'form')
         ]"/>
     </record>
 
