@@ -72,14 +72,18 @@
         <field name="arch" type="xml">
             <form string="Project Assignment" class="o_cpri_team_assignment_form_page">
                 <sheet>
+
                     <div class="o_cpri_team_assignment_form_header">
+                        <span class="o_cpri_team_assignment_label">Project Resource Assignment</span>
+
                         <h2>
                             <field name="lead_id"/>
                         </h2>
+
                         <p>Review the assigned team, project duration, and employees reserved for this project.</p>
                     </div>
 
-                    <group class="o_cpri_team_assignment_form_card" string="Assignment Overview">
+                    <group class="o_cpri_team_assignment_section" string="Assignment Overview">
                         <group>
                             <field name="lead_id"/>
                             <field name="team_id"/>
@@ -91,17 +95,18 @@
                         </group>
                     </group>
 
-                    <group class="o_cpri_team_assignment_form_card" string="Assigned Employees">
+                    <group class="o_cpri_team_assignment_section" string="Assigned Employees">
                         <field name="employee_ids"
-                               widget="many2many_tags"
-                               nolabel="1"/>
+                            widget="many2many_tags"
+                            nolabel="1"/>
                     </group>
 
-                    <group class="o_cpri_team_assignment_form_card o_cpri_team_assignment_notes" string="Notes">
+                    <group class="o_cpri_team_assignment_section o_cpri_team_assignment_notes" string="Notes">
                         <field name="notes"
-                               nolabel="1"
-                               placeholder="Write assignment notes..."/>
+                            nolabel="1"
+                            placeholder="Write assignment notes..."/>
                     </group>
+
                 </sheet>
             </form>
         </field>

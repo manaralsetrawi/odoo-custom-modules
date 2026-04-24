@@ -65,26 +65,31 @@
         <field name="arch" type="xml">
             <form string="Project Feature" class="o_cpri_project_feature_form_page">
                 <sheet>
+
                     <div class="o_cpri_project_feature_form_header">
+                        <span class="o_cpri_project_feature_label">Feature Classification</span>
+
                         <h2>
                             <field name="name" placeholder="e.g. Dashboard, Chatbot, Automation"/>
                         </h2>
+
                         <p>Define reusable project features that can be selected during project request review.</p>
                     </div>
 
-                    <group class="o_cpri_project_feature_form_card" string="Feature Details">
+                    <group class="o_cpri_project_feature_section" string="Feature Details">
                         <group>
                             <field name="code" placeholder="e.g. DASH"/>
-                            <field name="active" widget="boolean_toggle"/>
+                            <field name="active" string="Status" widget="boolean_toggle"/>
                         </group>
                     </group>
 
-                    <group class="o_cpri_project_feature_form_card o_cpri_project_feature_form_description"
-                           string="Description">
+                    <group class="o_cpri_project_feature_section o_cpri_project_feature_description"
+                        string="Description">
                         <field name="description"
-                               placeholder="Write a short description for this project feature..."
-                               nolabel="1"/>
+                            placeholder="Write a short description for this project feature..."
+                            nolabel="1"/>
                     </group>
+
                 </sheet>
             </form>
         </field>

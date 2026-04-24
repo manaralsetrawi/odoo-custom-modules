@@ -218,20 +218,19 @@
     .o_cpri_project_type_card,
     .o_cpri_project_feature_card {
         width: 100%;
-        height: 11.5625rem;
-        min-height: 11.5625rem;
+        min-height: 12.5rem;
         display: flex;
         flex-direction: column;
         background: #ffffff;
         border: 0.0625rem solid #dce4ea;
         border-radius: 1.125rem;
         padding: 1.125rem;
-        box-shadow: 0 0.375rem 1.125rem rgba(11, 44, 61, 0.08);
+        box-shadow: 0 0.375rem 1.125rem rgba(11, 44, 61, 0.06);
         transition: all 0.2s ease;
 
         &:hover {
             transform: translateY(-0.125rem);
-            box-shadow: 0 0.625rem 1.5rem rgba(11, 44, 61, 0.14);
+            box-shadow: 0 0.625rem 1.5rem rgba(11, 44, 61, 0.11);
         }
     }
 
@@ -240,6 +239,7 @@
     .o_cpri_project_feature_card_header {
         display: flex;
         justify-content: space-between;
+        align-items: flex-start;
         gap: 0.75rem;
         margin-bottom: 0.875rem;
     }
@@ -247,17 +247,20 @@
     .o_cpri_client_segment_card_title,
     .o_cpri_project_type_card_title,
     .o_cpri_project_feature_card_title {
+        color: #0b2c3d;
         font-size: 1rem;
         font-weight: 700;
-        color: #0b2c3d;
+        line-height: 1.35;
+        word-break: normal;
     }
 
     .o_cpri_client_segment_card_code,
     .o_cpri_project_type_card_code,
     .o_cpri_project_feature_card_code {
-        margin-top: 0.3125rem;
-        font-size: 0.75rem;
+        margin-top: 0.35rem;
         color: #667680;
+        font-size: 0.8125rem;
+        line-height: 1.4;
     }
 
     .o_cpri_client_segment_active_badge,
@@ -266,10 +269,11 @@
     .o_cpri_project_type_archived_badge,
     .o_cpri_project_feature_active_badge,
     .o_cpri_project_feature_archived_badge {
+        flex-shrink: 0;
         height: fit-content;
-        padding: 0.3125rem 0.6875rem;
+        padding: 0.35rem 0.75rem;
         border-radius: 999rem;
-        font-size: 0.6875rem;
+        font-size: 0.75rem;
         font-weight: 700;
         white-space: nowrap;
     }
@@ -292,15 +296,354 @@
     .o_cpri_project_type_card_description,
     .o_cpri_project_feature_card_description {
         flex: 1;
+        margin-top: auto;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         background: #f7f9fb;
         border-radius: 0.75rem;
-        padding: 0.75rem;
+        padding: 0.875rem;
         color: #4b5563;
-        font-size: 0.8125rem;
+        font-size: 0.875rem;
+        line-height: 1.45;
+        overflow: hidden;
     }
 }
+
+
+//Client Segment (form view)
+.o_cpri_client_segment_form_page {
+    .o_form_sheet_bg {
+        background: #f6f8fa;
+    }
+
+    .o_form_sheet {
+        max-width: none;
+        margin: 0;
+        padding: 2.5rem 3rem 3.5rem !important;
+        background: #ffffff;
+        border: 0.0625rem solid #dfe6ec;
+        border-radius: 1.25rem;
+        box-shadow: 0 0.75rem 2rem rgba(15, 23, 42, 0.05);
+    }
+
+    .o_cpri_client_segment_form_header {
+        margin-bottom: 1.5rem;
+
+        .o_cpri_client_segment_label {
+            display: block;
+            margin-bottom: 0.35rem;
+            color: #4b5563;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        h2 {
+            margin: 0 0 1rem;
+            color: #111827;
+            font-size: 1.55rem;
+            font-weight: 500;
+
+            input {
+                color: #111827;
+                font-size: 1.55rem;
+                font-weight: 500;
+            }
+        }
+
+        p {
+            margin: 0;
+            color: #4b5563;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+    }
+
+    .o_cpri_client_segment_status_row {
+        margin-bottom: 2rem;
+
+        .o_wrap_field {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        label,
+        .o_form_label {
+            color: #374151;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+    }
+
+    .o_cpri_client_segment_section {
+        margin-bottom: 2.25rem;
+        padding: 0 !important;
+        background: transparent;
+        border: none;
+
+        .o_horizontal_separator {
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.35rem;
+            border-bottom: 0.0625rem solid #e5e7eb;
+            color: #4b5563;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        label,
+        .o_form_label {
+            color: #111827;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .o_field_widget {
+            color: #374151;
+            font-size: 1rem;
+        }
+
+        input,
+        textarea {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            color: #374151;
+            font-size: 1rem;
+        }
+    }
+
+    .o_cpri_client_segment_description {
+        textarea {
+            min-height: 4rem;
+            line-height: 1.6;
+            resize: vertical;
+        }
+    }
+}
+
+//Project Types (form view)
+.o_cpri_project_type_form_page {
+    .o_form_sheet_bg {
+        background: #f6f8fa;
+    }
+
+    .o_form_sheet {
+        max-width: 58rem;
+        margin: 1.25rem auto;
+        padding: 1.75rem 2rem 2.25rem !important;
+        background: #ffffff;
+        border: 0.0625rem solid #dfe6ec;
+        border-radius: 1rem;
+        box-shadow: 0 0.5rem 1.25rem rgba(15, 23, 42, 0.04);
+    }
+
+    .o_cpri_project_type_form_header {
+        margin-bottom: 1.15rem;
+
+        .o_cpri_project_type_label {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #4b5563;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        h2 {
+            margin: 0 0 0.7rem;
+            color: #111827;
+            font-size: 1.35rem;
+            font-weight: 500;
+
+            input {
+                color: #111827;
+                font-size: 1.35rem;
+                font-weight: 500;
+            }
+        }
+
+        p {
+            margin: 0;
+            color: #4b5563;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+    }
+
+
+    .o_cpri_project_type_section {
+        margin-bottom: 1.5rem;
+        padding: 0 !important;
+        background: transparent;
+        border: none;
+
+        .o_horizontal_separator {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 0.0625rem solid #e5e7eb;
+            color: #4b5563;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        label,
+        .o_form_label {
+            color: #111827;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .o_field_widget {
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .o_field_widget:not(.o_field_boolean_toggle) input,
+        .o_field_widget:not(.o_field_boolean_toggle) textarea {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .o_field_boolean_toggle {
+            display: inline-flex !important;
+            align-items: center;
+        }
+    }
+
+    .o_cpri_project_type_description {
+        textarea {
+            min-height: 3.5rem;
+            line-height: 1.5;
+            resize: vertical;
+        }
+    }
+
+    h2 {
+        max-width: 42rem;
+
+        .o_field_widget,
+        input {
+            width: 100% !important;
+            max-width: 42rem;
+        }
+    }
+}
+
+
+//Project Features (form view)
+.o_cpri_project_feature_form_page {
+    .o_form_sheet_bg {
+        background: #f6f8fa;
+    }
+
+    .o_form_sheet {
+        max-width: 58rem;
+        margin: 1.25rem auto;
+        padding: 1.75rem 2rem 2.25rem !important;
+        background: #ffffff;
+        border: 0.0625rem solid #dfe6ec;
+        border-radius: 1rem;
+        box-shadow: 0 0.5rem 1.25rem rgba(15, 23, 42, 0.04);
+    }
+
+    .o_cpri_project_feature_form_header {
+        margin-bottom: 1.15rem;
+
+        .o_cpri_project_feature_label {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #4b5563;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        h2 {
+            margin: 0 0 0.7rem;
+            color: #111827;
+            font-size: 1.35rem;
+            font-weight: 500;
+
+            input {
+                color: #111827;
+                font-size: 1.35rem;
+                font-weight: 500;
+            }
+        }
+
+        p {
+            margin: 0;
+            color: #4b5563;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+    }
+
+    .o_cpri_project_feature_section {
+        margin-bottom: 1.5rem;
+        padding: 0 !important;
+        background: transparent;
+        border: none;
+
+        .o_horizontal_separator {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 0.0625rem solid #e5e7eb;
+            color: #4b5563;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        label,
+        .o_form_label {
+            color: #111827;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .o_field_widget {
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .o_field_widget:not(.o_field_boolean_toggle) input,
+        .o_field_widget:not(.o_field_boolean_toggle) textarea {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .o_field_boolean_toggle {
+            display: inline-flex !important;
+            align-items: center;
+        }
+    }
+
+    .o_cpri_project_feature_description {
+        textarea {
+            min-height: 3.5rem;
+            line-height: 1.5;
+            resize: vertical;
+        }
+    }
+
+    h2 {
+        max-width: 42rem;
+
+        .o_field_widget,
+        input {
+            width: 100% !important;
+            max-width: 42rem;
+        }
+    }
+}
+
 
 // ======================================================
 // Project Teams Kanban
@@ -309,43 +652,31 @@
 
 .o_kanban_view.o_cpri_project_team_kanban_page {
     background: #f6f8fa;
-    padding: 0.75rem;
-
-    .o_kanban_renderer {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        align-items: stretch;
-    }
+    padding: 1rem;
 
     .o_kanban_record:has(.o_cpri_project_team_card) {
-        width: 31.5% !important;
-        min-width: 31.5% !important;
-        max-width: 31.5% !important;
         background: transparent !important;
         border: 0 !important;
         box-shadow: none !important;
-        padding: 0 !important;
+        padding: 0.625rem !important;
         display: flex !important;
     }
 
     .o_cpri_project_team_card {
         width: 100%;
-        height: 25rem;
-        min-height: 25rem;
+        min-height: 13rem;
         display: flex;
         flex-direction: column;
         background: #ffffff;
         border: 0.0625rem solid #dce4ea;
-        border-radius: 1.25rem;
-        padding: 1.25rem;
-        box-shadow: 0 0.5rem 1.4rem rgba(11, 44, 61, 0.08);
+        border-radius: 1.125rem;
+        padding: 1.125rem;
+        box-shadow: 0 0.375rem 1.125rem rgba(11, 44, 61, 0.06);
         transition: all 0.2s ease;
-        overflow: hidden;
 
         &:hover {
-            transform: translateY(-0.15rem);
-            box-shadow: 0 0.85rem 1.8rem rgba(11, 44, 61, 0.13);
+            transform: translateY(-0.125rem);
+            box-shadow: 0 0.625rem 1.5rem rgba(11, 44, 61, 0.11);
         }
     }
 
@@ -353,18 +684,18 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        gap: 1rem;
-        padding-bottom: 1rem;
+        gap: 0.9rem;
+        padding-bottom: 0.9rem;
+        margin-bottom: 0.9rem;
         border-bottom: 0.0625rem solid #edf0f2;
-        margin-bottom: 1rem;
     }
 
     .o_cpri_project_team_card_title {
-        font-size: 1.15rem;
-        font-weight: 800;
         color: #0b2c3d;
+        font-size: 1.05rem;
+        font-weight: 800;
         line-height: 1.35;
-        margin-bottom: 0.6rem;
+        margin-bottom: 0.55rem;
     }
 
     .o_cpri_project_team_card_subtitle {
@@ -373,26 +704,14 @@
         gap: 0.4rem;
     }
 
-    .o_cpri_project_team_card_subtitle .badge,
-    .o_cpri_project_team_members .badge {
-        background: #eef3f6 !important;
-        color: #344955 !important;
-        border: 0.0625rem solid #dce4ea;
-        border-radius: 999rem;
-        padding: 0.28rem 0.7rem;
-        font-size: 0.78rem;
-        font-weight: 700;
-        line-height: 1.2;
-    }
-
     .o_cpri_project_team_active_badge,
     .o_cpri_project_team_archived_badge {
-        padding: 0.45rem 0.9rem;
+        flex-shrink: 0;
+        padding: 0.35rem 0.75rem;
         border-radius: 999rem;
-        font-size: 0.78rem;
+        font-size: 0.75rem;
         font-weight: 800;
         white-space: nowrap;
-        flex-shrink: 0;
     }
 
     .o_cpri_project_team_active_badge {
@@ -405,55 +724,229 @@
         color: #b42318;
     }
 
-    .o_cpri_project_team_capacity_grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.85rem;
-        margin-bottom: 1rem;
-    }
-
-    .o_cpri_project_team_capacity_grid div {
-        border: 0.0625rem solid #edf0f2;
-        border-radius: 1rem;
-        padding: 0.9rem;
-        background: #fbfcfd;
-        min-height: 7rem;
-    }
-
-    .o_cpri_project_team_capacity_grid span {
-        display: block;
-        font-size: 0.82rem;
-        color: #74828e;
-        margin-bottom: 0.5rem;
-        font-weight: 700;
-        line-height: 1.35;
-    }
-
-    .o_cpri_project_team_capacity_grid strong {
-        display: block;
-        font-size: 1.1rem;
-        color: #0b2c3d;
-        font-weight: 800;
-        line-height: 1.3;
+    .o_cpri_project_team_card_subtitle,
+    .o_cpri_project_team_members {
+        .badge,
+        .o_tag {
+            display: inline-flex;
+            align-items: center;
+            min-height: 1.55rem;
+            padding: 0.22rem 0.6rem;
+            border: 0.0625rem solid #d8e3e8;
+            border-radius: 999rem;
+            background-color: #f4f8fa !important;
+            color: #0b2c3d !important;
+            font-size: 0.78rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
     }
 
     .o_cpri_project_team_members {
         margin-top: auto;
-        background: #f7f9fb;
-        border-radius: 1rem;
-        padding: 0.95rem;
+        padding: 0.9rem;
         border: 0.0625rem solid #edf0f2;
-        overflow: hidden;
+        border-radius: 0.9rem;
+        background: #f7f9fb;
     }
 
     .o_cpri_project_team_members_label {
         display: block;
-        font-size: 0.82rem;
+        margin-bottom: 0.5rem;
         color: #74828e;
-        margin-bottom: 0.55rem;
+        font-size: 0.8rem;
         font-weight: 800;
     }
 }
+.o_kanban_view.o_cpri_project_team_kanban_page {
+    padding: 1.5rem 2rem;
+
+    .o_kanban_record:has(.o_cpri_project_team_card) {
+        width: 31.7% !important;
+        min-width: 31.7% !important;
+        max-width: 31.7% !important;
+        padding: 0.75rem !important;
+    }
+
+    .o_cpri_project_team_card {
+        min-height: 16rem;
+        padding: 1.5rem;
+        border-radius: 1.25rem;
+    }
+
+    .o_cpri_project_team_card_title {
+        font-size: 1.25rem;
+        line-height: 1.35;
+    }
+
+    .o_cpri_project_team_members {
+        padding: 1.15rem;
+        min-height: 5.5rem;
+    }
+}
+
+//Project Team (form view)
+.o_cpri_project_team_form_page {
+    .o_form_sheet_bg {
+        background: #f6f8fa;
+    }
+
+    .o_form_sheet {
+        max-width: 58rem;
+        margin: 1.25rem auto;
+        padding: 1.75rem 2rem 2.25rem !important;
+        background: #ffffff;
+        border: 0.0625rem solid #dfe6ec;
+        border-radius: 1rem;
+        box-shadow: 0 0.5rem 1.25rem rgba(15, 23, 42, 0.04);
+    }
+
+    .o_cpri_project_team_form_header {
+        margin-bottom: 1.15rem;
+
+        .o_cpri_project_team_label {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #4b5563;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        h2 {
+            max-width: 42rem;
+            margin: 0 0 0.7rem;
+            color: #111827;
+            font-size: 1.35rem;
+            font-weight: 500;
+
+            .o_field_widget,
+            input {
+                width: 100% !important;
+                max-width: 42rem;
+                color: #111827;
+                font-size: 1.35rem;
+                font-weight: 500;
+            }
+        }
+
+        p {
+            margin: 0;
+            color: #4b5563;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+    }
+
+    .o_cpri_project_team_section {
+        margin-bottom: 1.5rem;
+        padding: 0 !important;
+        background: transparent;
+        border: none;
+
+        .o_horizontal_separator {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 0.0625rem solid #e5e7eb;
+            color: #4b5563;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        label,
+        .o_form_label {
+            color: #111827;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .o_field_widget {
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .o_field_widget:not(.o_field_boolean_toggle):not(.o_field_many2many_tags) input,
+        .o_field_widget:not(.o_field_boolean_toggle):not(.o_field_many2many_tags) textarea {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .o_field_boolean_toggle {
+            display: inline-flex !important;
+            align-items: center;
+        }
+
+        .o_field_many2many_tags {
+            gap: 0.35rem;
+            
+            .badge,
+            .o_tag {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.25rem;
+                min-height: 1.65rem;
+                padding: 0.25rem 0.65rem;
+                border: 0.0625rem solid #d8e3e8;
+                border-radius: 999rem;
+                background: #f4f8fa;
+                background-color: #f4f8fa !important;
+                color: #0b2c3d !important;
+                font-size: 0.8125rem;
+                font-weight: 600;
+                box-shadow: 0 0.15rem 0.5rem rgba(11, 44, 61, 0.05);
+            }
+            
+            .o_delete,
+            .o_tag_badge_text {
+                color: inherit;
+            }
+
+            .o_delete {
+                opacity: 0.65;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    .o_notebook {
+        margin-top: 0.75rem;
+
+        .nav-tabs {
+            border-bottom: 0.0625rem solid #e5e7eb;
+        }
+
+        .nav-link {
+            color: #4b5563;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .nav-link.active {
+            color: #111827;
+            border-bottom: 0.125rem solid #0b2c3d;
+        }
+
+        .tab-content {
+            padding-top: 1.25rem;
+        }
+    }
+
+    .o_cpri_project_team_notes {
+        textarea {
+            min-height: 4rem;
+            line-height: 1.5;
+            resize: vertical;
+        }
+    }
+}
+
+
 
 // ======================================================
 // Project Assignments Kanban
@@ -462,44 +955,34 @@
 
 .o_kanban_view.o_cpri_team_assignment_kanban_page {
     background: #f6f8fa;
-    padding: 0.75rem;
-
-    .o_kanban_renderer {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        align-items: stretch;
-    }
+    padding: 1.5rem 2rem;
 
     .o_kanban_record:has(.o_cpri_team_assignment_card) {
-        width: calc(33.333% - 0.75rem) !important;
-        min-width: calc(33.333% - 0.75rem) !important;
-        max-width: calc(33.333% - 0.75rem) !important;
+        width: 31.7% !important;
+        min-width: 31.7% !important;
+        max-width: 31.7% !important;
         background: transparent !important;
         border: 0 !important;
         box-shadow: none !important;
-        padding: 0 !important;
+        padding: 0.75rem !important;
         display: flex !important;
     }
 
     .o_cpri_team_assignment_card {
         width: 100%;
-        height: 26rem;
-        min-height: 26rem;
-        max-height: 26rem;
+        min-height: 16rem;
         display: flex;
         flex-direction: column;
         background: #ffffff;
         border: 0.0625rem solid #dce4ea;
         border-radius: 1.25rem;
-        padding: 1.25rem;
-        box-shadow: 0 0.5rem 1.4rem rgba(11, 44, 61, 0.08);
+        padding: 1.5rem;
+        box-shadow: 0 0.375rem 1.125rem rgba(11, 44, 61, 0.06);
         transition: all 0.2s ease;
-        overflow: hidden;
 
         &:hover {
-            transform: translateY(-0.15rem);
-            box-shadow: 0 0.85rem 1.8rem rgba(11, 44, 61, 0.13);
+            transform: translateY(-0.125rem);
+            box-shadow: 0 0.625rem 1.5rem rgba(11, 44, 61, 0.11);
         }
     }
 
@@ -507,85 +990,243 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        gap: 0.875rem;
-        padding-bottom: 0.875rem;
+        gap: 0.9rem;
+        padding-bottom: 0.9rem;
+        margin-bottom: 0.9rem;
         border-bottom: 0.0625rem solid #edf0f2;
-        margin-bottom: 0.875rem;
     }
 
     .o_cpri_team_assignment_title {
-        font-size: 1.125rem;
-        font-weight: 800;
         color: #0b2c3d;
+        font-size: 1.25rem;
+        font-weight: 800;
         line-height: 1.35;
+        margin-bottom: 0.45rem;
     }
 
     .o_cpri_team_assignment_team {
-        margin-top: 0.45rem;
-        font-size: 0.8125rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
         color: #667680;
+        font-size: 0.875rem;
         font-weight: 700;
-
-        i {
-            color: #0b2c3d;
-            margin-right: 0.375rem;
-        }
     }
 
-    .o_cpri_team_assignment_badge {
-        padding: 0.45rem 0.95rem;
-        border-radius: 999rem;
-        font-size: 0.8125rem;
-        font-weight: 800;
-        white-space: nowrap;
-        background: #dceeff;
-        color: #0b5cab;
-        flex-shrink: 0;
-    }
-
-    .o_cpri_team_assignment_dates,
-    .o_cpri_team_assignment_meta {
+    .o_cpri_team_assignment_dates {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 0.75rem;
-        margin-bottom: 0.75rem;
+        margin-bottom: 1rem;
 
         div {
+            padding: 0.8rem;
             border: 0.0625rem solid #edf0f2;
-            border-radius: 1rem;
-            padding: 0.875rem;
-            background: #ffffff;
+            border-radius: 0.9rem;
+            background: #fbfcfd;
         }
 
         span {
             display: block;
-            font-size: 0.75rem;
+            margin-bottom: 0.35rem;
             color: #74828e;
-            margin-bottom: 0.375rem;
-            font-weight: 700;
+            font-size: 0.78rem;
+            font-weight: 800;
         }
 
         strong {
-            font-size: 1rem;
             color: #0b2c3d;
+            font-size: 0.9rem;
             font-weight: 800;
         }
     }
 
     .o_cpri_team_assignment_members {
-        flex: 1;
-        background: #f7f9fb;
-        border-radius: 1rem;
-        padding: 0.875rem;
-        overflow: hidden;
+        margin-top: auto;
+        padding: 1.15rem;
+        min-height: 5.5rem;
         border: 0.0625rem solid #edf0f2;
+        border-radius: 0.9rem;
+        background: #f7f9fb;
 
-        > span {
+        span {
             display: block;
-            font-size: 0.75rem;
-            color: #74828e;
             margin-bottom: 0.5rem;
+            color: #74828e;
+            font-size: 0.8rem;
             font-weight: 800;
+        }
+
+        .badge,
+        .o_tag {
+            display: inline-flex;
+            align-items: center;
+            min-height: 1.55rem;
+            padding: 0.22rem 0.6rem;
+            border: 0.0625rem solid #a7dbf3;
+            border-radius: 999rem;
+            background-color: #dcf0fc !important;
+            color: #164465 !important;
+            font-size: 0.78rem;
+            font-weight: 700;
+            line-height: 1.2;
+            
+        }
+    }
+    
+}
+
+
+
+
+
+//Project Assignments (form view)
+.o_cpri_team_assignment_form_page {
+    .o_form_sheet_bg {
+        background: #f6f8fa;
+    }
+
+    .o_form_sheet {
+        max-width: 58rem;
+        margin: 1.25rem auto;
+        padding: 1.75rem 2rem 2.25rem !important;
+        background: #ffffff;
+        border: 0.0625rem solid #dfe6ec;
+        border-radius: 1rem;
+        box-shadow: 0 0.5rem 1.25rem rgba(15, 23, 42, 0.04);
+    }
+
+    .o_cpri_team_assignment_form_header {
+        margin-bottom: 1.15rem;
+
+        .o_cpri_team_assignment_label {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #4b5563;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        h2 {
+            max-width: 42rem;
+            margin: 0 0 0.7rem;
+            color: #111827;
+            font-size: 1.35rem;
+            font-weight: 500;
+
+            .o_field_widget,
+            input {
+                width: 100% !important;
+                max-width: 42rem;
+                color: #111827;
+                font-size: 1.35rem;
+                font-weight: 500;
+            }
+        }
+
+        p {
+            margin: 0;
+            color: #4b5563;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+    }
+
+    .o_cpri_team_assignment_section {
+        margin-bottom: 1.5rem;
+        padding: 0 !important;
+        background: transparent;
+        border: none;
+
+        .o_horizontal_separator {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 0.0625rem solid #e5e7eb;
+            color: #4b5563;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        label,
+        .o_form_label {
+            color: #111827;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .o_field_widget {
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .o_field_widget:not(.o_field_boolean_toggle):not(.o_field_many2many_tags) input,
+        .o_field_widget:not(.o_field_boolean_toggle):not(.o_field_many2many_tags) textarea {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .o_field_many2many_tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+
+            .badge,
+            .o_tag {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.3rem;
+                min-height: 1.75rem;
+                padding: 0.28rem 0.7rem;
+                border: 0.0625rem solid #d7e3ea;
+                border-radius: 999rem;
+                background-color: #f7fafb !important;
+                color: #0b2c3d !important;
+                font-size: 0.8125rem;
+                font-weight: 600;
+                line-height: 1.2;
+                box-shadow: 0 0.125rem 0.45rem rgba(11, 44, 61, 0.04);
+            }
+
+            .badge:hover,
+            .o_tag:hover {
+                background-color: #eef5f7 !important;
+                border-color: #c8d8e0;
+            }
+
+            .o_tag_badge_text,
+            .o_badge_text {
+                color: inherit !important;
+                max-width: 14rem;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .o_delete {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: #60737c !important;
+                opacity: 0.7;
+                margin-left: 0.15rem;
+
+                &:hover {
+                    opacity: 1;
+                    color: #0b2c3d !important;
+                }
+            }
+        }
+    }
+
+    .o_cpri_team_assignment_notes {
+        textarea {
+            min-height: 4rem;
+            line-height: 1.5;
+            resize: vertical;
         }
     }
 }
@@ -1045,63 +1686,108 @@
     }
 }
 
-.o_form_view.o_cpri_email_log_form_page {
-    background: #f4f7fa;
+.o_cpri_email_log_form_page {
+    .o_form_sheet_bg {
+        background: #f6f8fa;
+    }
 
     .o_form_sheet {
-        max-width: 88rem;
-        border-radius: 1.25rem;
-        border: 0.0625rem solid #d8e2ea;
-        box-shadow: 0 0.9rem 2rem rgba(11, 44, 61, 0.09);
-        padding: 1.5rem;
+        max-width: 58rem;
+        margin: 1.25rem auto;
+        padding: 1.75rem 2rem 2.25rem !important;
         background: #ffffff;
+        border: 0.0625rem solid #dfe6ec;
+        border-radius: 1rem;
+        box-shadow: 0 0.5rem 1.25rem rgba(15, 23, 42, 0.04);
     }
 
     .o_cpri_email_log_form_header {
-        padding: 1.25rem 1.5rem;
-        border-radius: 1rem;
-        background: linear-gradient(135deg, #f8fbfd, #eef5f8);
-        border: 0.0625rem solid #dce4ea;
-        margin-bottom: 1rem;
+        margin-bottom: 1.15rem;
+
+        .o_cpri_email_log_label {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #4b5563;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
 
         h2 {
-            margin: 0;
-            color: #0b2c3d;
-            font-weight: 800;
+            max-width: 42rem;
+            margin: 0 0 0.7rem;
+            color: #111827;
+            font-size: 1.35rem;
+            font-weight: 500;
+
+            .o_field_widget,
+            input {
+                width: 100% !important;
+                max-width: 42rem;
+                color: #111827;
+                font-size: 1.35rem;
+                font-weight: 500;
+            }
         }
 
         p {
-            margin: 0.45rem 0 0;
-            color: #667680;
-            font-weight: 600;
+            margin: 0;
+            color: #4b5563;
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
     }
 
-    .o_cpri_email_log_form_card {
-        background: #ffffff;
-        border: 0.0625rem solid #e1e8ee;
-        border-radius: 1rem;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 0.35rem 1rem rgba(11, 44, 61, 0.04);
+    .o_cpri_email_log_section {
+        margin-bottom: 1.5rem;
+        padding: 0 !important;
+        background: transparent;
+        border: none;
+
+        .o_horizontal_separator {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 0.0625rem solid #e5e7eb;
+            color: #4b5563;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        label,
+        .o_form_label {
+            color: #111827;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .o_field_widget {
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .o_field_widget:not(.o_field_selection):not(.o_field_many2one) input,
+        .o_field_widget:not(.o_field_selection):not(.o_field_many2one) textarea {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            color: #374151;
+            font-size: 0.9rem;
+        }
     }
 
-    label.o_form_label {
-        color: #637583;
-        font-weight: 800;
+    .o_cpri_email_log_content,
+    .o_cpri_email_log_notes {
+        textarea {
+            min-height: 4rem;
+            line-height: 1.5;
+            resize: vertical;
+        }
     }
 
-    .o_field_widget {
-        color: #0b2c3d;
-        font-weight: 650;
-    }
-
-    textarea,
-    .o_field_text textarea {
-        min-height: 7rem;
-        border-radius: 0.85rem;
-        padding: 0.85rem;
-        border-color: #d8e2ea;
+    .o_cpri_email_log_content {
+        textarea {
+            min-height: 6rem;
+        }
     }
 }
 

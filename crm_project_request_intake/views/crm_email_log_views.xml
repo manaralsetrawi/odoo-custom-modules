@@ -96,37 +96,39 @@
                 <sheet>
 
                     <div class="o_cpri_email_log_form_header">
-                        <div>
-                            <h2>
-                                <field name="subject" placeholder="Email subject"/>
-                            </h2>
-                            <p>View communication details related to the project request workflow.</p>
-                        </div>
+                        <span class="o_cpri_email_log_label">Communication Log</span>
+
+                        <h2>
+                            <field name="subject" placeholder="Email subject"/>
+                        </h2>
+
+                        <p>View communication details related to the project request workflow.</p>
                     </div>
 
-                    <group class="o_cpri_email_log_form_card" string="Email Information">
+                    <group class="o_cpri_email_log_section" string="Email Information">
                         <group>
                             <field name="lead_id"/>
                             <field name="email_date"/>
                             <field name="direction"/>
                             <field name="email_type"/>
                         </group>
+
                         <group>
                             <field name="sender_email"/>
                             <field name="recipient_email"/>
                         </group>
                     </group>
 
-                    <group class="o_cpri_email_log_form_card" string="Email Content">
+                    <group class="o_cpri_email_log_section o_cpri_email_log_content" string="Email Content">
                         <field name="body_preview"
-                               placeholder="Email preview..."
-                               nolabel="1"/>
+                            placeholder="Email preview..."
+                            nolabel="1"/>
                     </group>
 
-                    <group class="o_cpri_email_log_form_card o_cpri_email_log_notes" string="Notes">
+                    <group class="o_cpri_email_log_section o_cpri_email_log_notes" string="Notes">
                         <field name="notes"
-                               placeholder="Write internal notes about this email log..."
-                               nolabel="1"/>
+                            placeholder="Write internal notes about this email log..."
+                            nolabel="1"/>
                     </group>
 
                 </sheet>

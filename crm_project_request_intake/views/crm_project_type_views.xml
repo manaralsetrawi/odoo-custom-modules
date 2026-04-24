@@ -65,26 +65,31 @@
         <field name="arch" type="xml">
             <form string="Project Type" class="o_cpri_project_type_form_page">
                 <sheet>
+
                     <div class="o_cpri_project_type_form_header">
+                        <span class="o_cpri_project_type_label">Project Classification</span>
+
                         <h2>
                             <field name="name" placeholder="e.g. AI Automation"/>
                         </h2>
-                        <p>Define the types of projects that can be requested and reviewed.</p>
+
+                        <p>Define project categories used during project request review and team assignment.</p>
                     </div>
 
-                    <group class="o_cpri_project_type_form_card" string="Project Type Details">
+                    <group class="o_cpri_project_type_section" string="Project Type Details">
                         <group>
                             <field name="code" placeholder="e.g. AI"/>
-                            <field name="active" widget="boolean_toggle"/>
+                            <field name="active" string="Status" widget="boolean_toggle" class="o_cpri_project_type_status_toggle"/>
                         </group>
                     </group>
 
-                    <group class="o_cpri_project_type_form_card o_cpri_project_type_form_description"
-                           string="Description">
+                    <group class="o_cpri_project_type_section o_cpri_project_type_description"
+                        string="Description">
                         <field name="description"
-                               placeholder="Write a short description for this project type..."
-                               nolabel="1"/>
+                            placeholder="Write a short description for this project type..."
+                            nolabel="1"/>
                     </group>
+
                 </sheet>
             </form>
         </field>

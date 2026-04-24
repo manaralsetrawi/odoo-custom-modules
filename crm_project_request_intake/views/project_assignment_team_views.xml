@@ -67,23 +67,27 @@
         <field name="arch" type="xml">
             <form string="Project Assignment Team" class="o_cpri_project_team_form_page">
                 <sheet>
+
                     <div class="o_cpri_project_team_form_header">
+                        <span class="o_cpri_project_team_label">Team Classification</span>
+
                         <h2>
                             <field name="name" placeholder="e.g. AI Automation Team"/>
                         </h2>
+
                         <p>Manage project teams, specialized project types, employees, and project assignments.</p>
                     </div>
 
-                    <group class="o_cpri_project_team_form_card" string="Team Overview">
+                    <group class="o_cpri_project_team_section" string="Team Overview">
                         <group>
-                            <field name="active" widget="boolean_toggle"/>
+                            <field name="active" string="Status" widget="boolean_toggle"/>
                             <field name="project_type_ids" widget="many2many_tags"/>
                         </group>
                     </group>
 
                     <notebook>
                         <page string="Team Employees">
-                            <group class="o_cpri_project_team_form_card">
+                            <group class="o_cpri_project_team_section">
                                 <field name="employee_ids" widget="many2many_tags" nolabel="1"/>
                             </group>
                         </page>
@@ -100,11 +104,12 @@
                         </page>
 
                         <page string="Notes">
-                            <group class="o_cpri_project_team_form_card o_cpri_project_team_notes">
+                            <group class="o_cpri_project_team_section o_cpri_project_team_notes">
                                 <field name="notes" nolabel="1" placeholder="Write internal notes about this team..."/>
                             </group>
                         </page>
                     </notebook>
+
                 </sheet>
             </form>
         </field>

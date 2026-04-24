@@ -65,26 +65,31 @@
         <field name="arch" type="xml">
             <form string="Client Segment" class="o_cpri_client_segment_form_page">
                 <sheet>
+
                     <div class="o_cpri_client_segment_form_header">
+                        <span class="o_cpri_client_segment_label">Client Classification</span>
                         <h2>
                             <field name="name" placeholder="e.g. Education Institution"/>
                         </h2>
-                        <p>Classify clients by organization type for project request review.</p>
+                        <p>Define client categories used during project request review and approval.</p>
                     </div>
 
                     <group class="o_cpri_client_segment_form_card" string="Segment Details">
                         <group>
                             <field name="code" placeholder="e.g. EDU"/>
-                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="active" string="Status" widget="boolean_toggle"/>
                         </group>
                     </group>
 
                     <group class="o_cpri_client_segment_form_card o_cpri_client_segment_form_description"
-                           string="Description">
+                        string="Description">
                         <field name="description"
-                               placeholder="Write a short description for this client segment..."
-                               nolabel="1"/>
+                            placeholder="Write a short description for this client segment..."
+                            nolabel="1"/>
                     </group>
+
                 </sheet>
             </form>
         </field>
