@@ -375,4 +375,28 @@
         ]"/>
     </record>
 
+    <record id="view_crm_lead_kanban_add_intake_status" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.add.intake.status</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+
+            <!-- Make intake_state available in kanban -->
+            <xpath expr="//kanban" position="inside">
+                <field name="intake_state"/>
+                <field name="request_type"/>
+            </xpath>
+
+            <!-- Add status badge inside the existing kanban card -->
+            <xpath expr="//field[@name='name']" position="after">
+                <t t-if="record.request_type.raw_value == 'project_request'">
+                    <div t-attf-class="o_cpri_default_status o_cpri_default_status_#{record.intake_state.raw_value}">
+                        <field name="intake_state"/>
+                    </div>
+                </t>
+            </xpath>
+
+        </field>
+    </record>
+
 </odoo>
