@@ -573,3 +573,34 @@ class CrmProjectRequestLead(models.Model):
             'intake_state': 'submitted',
         })
         return self.create(vals)
+    
+
+    def message_post(self, **kwargs):
+        messages = super().message_post(**kwargs)
+
+        for lead in self:
+            body = kwargs.get('body') or ''
+            subject = kwargs.get('subject') or _('Message')
+
+            # Only log manual messages, not internal notes
+            message_type = kwargs.get('message_type')
+            subtype_xmlid = kwargs.get('subtype_xmlid')
+
+            if message_type == 'comment' and subtype_xmlid != 'mail.mt_note':
+                recipient_emails = ', '.join(
+                    partner.email for partner in lead.message_partner_ids
+                    if partner.email
+                )
+
+                self.env['crm.email.log'].sudo().create({
+                    'lead_id': lead.id,
+                    'subject': subject or 'Manual Message',
+                    'sender_email': self.env.user.email or '',
+                    'recipient_email': recipient_emails or lead.email_from or lead.intake_client_email or '',
+                    'email_type': 'general',
+                    'direction': 'outgoing',
+                    'body_preview': body,
+                    'notes': 'Manual message sent from the CRM chatter.',
+                })
+
+        return messages
