@@ -270,77 +270,7 @@
 
         </record>
 
-        <record id="view_crm_lead_kanban_project_request_design" model="ir.ui.view">
-            <field name="name">crm.lead.kanban.project.request.design</field>
-            <field name="model">crm.lead</field>
-            <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
-            <field name="arch" type="xml">
-
-                <xpath expr="//kanban" position="attributes">
-                    <attribute name="class" add=" o_cpri_leads_kanban" separator=" "/>
-                </xpath>
-
-                <xpath expr="//kanban" position="inside">
-                    <field name="request_type"/>
-                    <field name="intake_state"/>
-                    <field name="intake_project_title"/>
-                    <field name="intake_client_name"/>
-                    <field name="intake_company_name"/>
-                    <field name="intake_requested_budget"/>
-                    <field name="intake_requested_duration"/>
-                    <field name="review_project_type_id"/>
-                </xpath>
-
-                <xpath expr="/t[@t-name='kanban-box']" position="replace">
-                    <t t-name="kanban-box">
-                        <div class="o_cpri_lead_card oe_kanban_global_click">
-
-                            <div class="o_cpri_lead_top">
-                                <div>
-                                    <div class="o_cpri_lead_title">
-                                        <field name="intake_project_title"/>
-                                    </div>
-                                    <div class="o_cpri_lead_client">
-                                        <field name="intake_client_name"/>
-                                    </div>
-                                </div>
-
-                                <span t-attf-class="o_cpri_lead_badge o_cpri_lead_badge_#{record.intake_state.raw_value}">
-                                    <field name="intake_state"/>
-                                </span>
-                            </div>
-
-                            <div class="o_cpri_lead_company">
-                                <i class="fa fa-building-o"/>
-                                <field name="intake_company_name"/>
-                            </div>
-
-                            <div class="o_cpri_lead_meta">
-                                <div>
-                                    <span>Budget</span>
-                                    <strong><field name="intake_requested_budget"/></strong>
-                                </div>
-                                <div>
-                                    <span>Duration</span>
-                                    <strong><field name="intake_requested_duration"/></strong>
-                                </div>
-                            </div>
-
-                            <div class="o_cpri_lead_footer">
-                                <span>
-                                    <i class="fa fa-cube"/>
-                                    <field name="review_project_type_id"/>
-                                </span>
-                            </div>
-
-                        </div>
-                    </t>
-                </xpath>
-
-            </field>
-        </record>
-
-    
+        
 
     <record id="view_crm_lead_form_hide_workflow_tabs_for_project_request" model="ir.ui.view">
         <field name="name">crm.lead.form.hide.workflow.tabs.for.project.request</field>
@@ -372,6 +302,82 @@
             <xpath expr="//button[@name='%(crm.crm_lead_lost_action)d']" position="replace"/>
 
         </field>
+    </record>
+
+
+    <record id="view_crm_project_request_intake_kanban_custom" model="ir.ui.view">
+        <field name="name">crm.project.request.intake.kanban.custom</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <kanban class="o_cpri_project_request_kanban"
+                    default_group_by="intake_state"
+                    create="false"
+                    quick_create="false">
+                <field name="name"/>
+                <field name="intake_state"/>
+                <field name="intake_project_title"/>
+                <field name="intake_client_name"/>
+                <field name="intake_company_name"/>
+                <field name="intake_requested_budget"/>
+                <field name="intake_requested_duration"/>
+                <field name="review_project_type_id"/>
+
+                <templates>
+                    <t t-name="card">
+                        <div class="o_cpri_pr_card oe_kanban_global_click">
+                            <div class="o_cpri_pr_header">
+                                <div>
+                                    <div class="o_cpri_pr_title">
+                                        <field name="intake_project_title"/>
+                                    </div>
+                                    <div class="o_cpri_pr_client">
+                                        <field name="intake_client_name"/>
+                                    </div>
+                                </div>
+
+                                <span t-attf-class="o_cpri_pr_status o_cpri_pr_status_#{record.intake_state.raw_value}">
+                                    <field name="intake_state"/>
+                                </span>
+                            </div>
+
+                            <div class="o_cpri_pr_company">
+                                <i class="fa fa-building-o"/>
+                                <field name="intake_company_name"/>
+                            </div>
+
+                            <div class="o_cpri_pr_info">
+                                <div>
+                                    <span>Budget</span>
+                                    <strong><field name="intake_requested_budget"/></strong>
+                                </div>
+                                <div>
+                                    <span>Duration</span>
+                                    <strong><field name="intake_requested_duration"/></strong>
+                                </div>
+                            </div>
+
+                            <div class="o_cpri_pr_footer">
+                                <i class="fa fa-cube"/>
+                                <field name="review_project_type_id"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_crm_project_request_intake_kanban_custom" model="ir.actions.act_window">
+        <field name="name">Project Requests</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,form,list</field>
+        <field name="domain">[('request_type', '=', 'project_request'), ('type', '=', 'lead')]</field>
+        <field name="context">{'default_request_type': 'project_request', 'default_type': 'lead'}</field>
+        <field name="views" eval="[
+            (ref('view_crm_project_request_intake_kanban_custom'), 'kanban'),
+            (False, 'form'),
+            (False, 'list')
+        ]"/>
     </record>
 
 </odoo>

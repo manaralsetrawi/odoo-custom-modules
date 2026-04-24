@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+
+      <menuitem id="menu_crm_project_requests"
+            name="Project Requests"
+            parent="crm.crm_menu_root"
+            action="action_crm_project_request_intake_kanban_custom"
+            sequence="25"
+
+          groups="crm_workflow_custom.group_crm_workflow_manager"/>
     <!-- Section inside CRM Configuration -->
     <menuitem id="menu_crm_project_request_config_section"
               name="Project Setup"
