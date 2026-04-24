@@ -1,120 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-
-    <record id="view_crm_project_request_intake_kanban" model="ir.ui.view">
-            <field name="name">crm.project.request.intake.kanban</field>
-            <field name="model">crm.lead</field>
-            <field name="arch" type="xml">
-                <kanban class="o_cpri_kanban_view"
-                        default_group_by="intake_state"
-                        create="false"
-                        quick_create="false"
-                        sample="1">
-                    <field name="name"/>
-                    <field name="type"/>
-                    <field name="request_type"/>
-                    <field name="intake_state"/>
-                    <field name="intake_client_name"/>
-                    <field name="intake_client_email"/>
-                    <field name="intake_client_phone"/>
-                    <field name="intake_company_name"/>
-                    <field name="intake_project_title"/>
-                    <field name="intake_requested_budget"/>
-                    <field name="intake_requested_duration"/>
-                    <field name="review_project_type_id"/>
-                    <field name="review_client_segment_id"/>
-                    <field name="assignment_count"/>
-                    <field name="email_log_count"/>
-
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div class="o_cpri_card oe_kanban_global_click">
-
-                                <div class="o_cpri_card_header">
-                                    <div>
-                                        <div class="o_cpri_title">
-                                            <field name="intake_project_title"/>
-                                        </div>
-                                        <div class="o_cpri_subtitle">
-                                            <field name="intake_company_name"/>
-                                        </div>
-                                    </div>
-
-                                    <span t-attf-class="o_cpri_status o_cpri_status_#{record.intake_state.raw_value}">
-                                        <field name="intake_state"/>
-                                    </span>
-                                </div>
-
-                                <div class="o_cpri_client_block">
-                                    <div class="o_cpri_client_name">
-                                        <i class="fa fa-user"/>
-                                        <field name="intake_client_name"/>
-                                    </div>
-
-                                    <div class="o_cpri_client_info">
-                                        <span>
-                                            <i class="fa fa-envelope"/>
-                                            <field name="intake_client_email"/>
-                                        </span>
-                                        <span>
-                                            <i class="fa fa-phone"/>
-                                            <field name="intake_client_phone"/>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div class="o_cpri_details_grid">
-                                    <div class="o_cpri_detail_item">
-                                        <span class="o_cpri_detail_label">Budget</span>
-                                        <span class="o_cpri_detail_value">
-                                            <field name="intake_requested_budget"/>
-                                        </span>
-                                    </div>
-
-                                    <div class="o_cpri_detail_item">
-                                        <span class="o_cpri_detail_label">Duration</span>
-                                        <span class="o_cpri_detail_value">
-                                            <field name="intake_requested_duration"/>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div class="o_cpri_review_block">
-                                    <t t-if="record.review_project_type_id.raw_value">
-                                        <span class="o_cpri_tag">
-                                            <i class="fa fa-cube"/>
-                                            <field name="review_project_type_id"/>
-                                        </span>
-                                    </t>
-
-                                    <t t-if="record.review_client_segment_id.raw_value">
-                                        <span class="o_cpri_tag">
-                                            <i class="fa fa-building"/>
-                                            <field name="review_client_segment_id"/>
-                                        </span>
-                                    </t>
-                                </div>
-
-                                <div class="o_cpri_card_footer">
-                                    <span>
-                                        <i class="fa fa-users"/>
-                                        <field name="assignment_count"/> Assignments
-                                    </span>
-
-                                    <span>
-                                        <i class="fa fa-envelope-o"/>
-                                        <field name="email_log_count"/> Emails
-                                    </span>
-                                </div>
-
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>
-            </field>
-    </record>
-    
     <record id="view_crm_lead_form_project_request_intake" model="ir.ui.view">
         <field name="name">crm.lead.form.project.request.intake</field>
         <field name="model">crm.lead</field>
@@ -384,11 +270,119 @@
 
         </record>
 
+        <record id="view_crm_project_request_intake_kanban" model="ir.ui.view">
+            <field name="name">crm.project.request.intake.kanban</field>
+            <field name="model">crm.lead</field>
+            <field name="arch" type="xml">
+                <kanban class="o_cpri_kanban_view"
+                        default_group_by="intake_state"
+                        create="false"
+                        quick_create="false"
+                        sample="1">
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="request_type"/>
+                    <field name="intake_state"/>
+                    <field name="intake_client_name"/>
+                    <field name="intake_client_email"/>
+                    <field name="intake_client_phone"/>
+                    <field name="intake_company_name"/>
+                    <field name="intake_project_title"/>
+                    <field name="intake_requested_budget"/>
+                    <field name="intake_requested_duration"/>
+                    <field name="review_project_type_id"/>
+                    <field name="review_client_segment_id"/>
+                    <field name="assignment_count"/>
+                    <field name="email_log_count"/>
 
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="o_cpri_card oe_kanban_global_click">
 
-    
-    
-    
+                                <div class="o_cpri_card_header">
+                                    <div>
+                                        <div class="o_cpri_title">
+                                            <field name="intake_project_title"/>
+                                        </div>
+                                        <div class="o_cpri_subtitle">
+                                            <field name="intake_company_name"/>
+                                        </div>
+                                    </div>
+
+                                    <span t-attf-class="o_cpri_status o_cpri_status_#{record.intake_state.raw_value}">
+                                        <field name="intake_state"/>
+                                    </span>
+                                </div>
+
+                                <div class="o_cpri_client_block">
+                                    <div class="o_cpri_client_name">
+                                        <i class="fa fa-user"/>
+                                        <field name="intake_client_name"/>
+                                    </div>
+
+                                    <div class="o_cpri_client_info">
+                                        <span>
+                                            <i class="fa fa-envelope"/>
+                                            <field name="intake_client_email"/>
+                                        </span>
+                                        <span>
+                                            <i class="fa fa-phone"/>
+                                            <field name="intake_client_phone"/>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="o_cpri_details_grid">
+                                    <div class="o_cpri_detail_item">
+                                        <span class="o_cpri_detail_label">Budget</span>
+                                        <span class="o_cpri_detail_value">
+                                            <field name="intake_requested_budget"/>
+                                        </span>
+                                    </div>
+
+                                    <div class="o_cpri_detail_item">
+                                        <span class="o_cpri_detail_label">Duration</span>
+                                        <span class="o_cpri_detail_value">
+                                            <field name="intake_requested_duration"/>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="o_cpri_review_block">
+                                    <t t-if="record.review_project_type_id.raw_value">
+                                        <span class="o_cpri_tag">
+                                            <i class="fa fa-cube"/>
+                                            <field name="review_project_type_id"/>
+                                        </span>
+                                    </t>
+
+                                    <t t-if="record.review_client_segment_id.raw_value">
+                                        <span class="o_cpri_tag">
+                                            <i class="fa fa-building"/>
+                                            <field name="review_client_segment_id"/>
+                                        </span>
+                                    </t>
+                                </div>
+
+                                <div class="o_cpri_card_footer">
+                                    <span>
+                                        <i class="fa fa-users"/>
+                                        <field name="assignment_count"/> Assignments
+                                    </span>
+
+                                    <span>
+                                        <i class="fa fa-envelope-o"/>
+                                        <field name="email_log_count"/> Emails
+                                    </span>
+                                </div>
+
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
     <record id="view_crm_lead_form_hide_workflow_tabs_for_project_request" model="ir.ui.view">
         <field name="name">crm.lead.form.hide.workflow.tabs.for.project.request</field>
         <field name="model">crm.lead</field>
