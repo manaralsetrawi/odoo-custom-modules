@@ -1,32 +1,20 @@
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
-    monthly_capacity = fields.Float(
-        string='Monthly Capacity (%)',
-        default=100.0,
-        required=True,
+    project_assignment_ids = fields.Many2many(
+        'project.team.assignment',
+        string='Project Assignments',
+        compute='_compute_project_assignment_ids',
+        readonly=True,
     )
 
-    remaining_capacity = fields.Float(
-        string='Monthly Remaining Capacity (%)',
-        compute='_compute_remaining_capacity',
-        store=False,
-    )
+    def _compute_project_assignment_ids(self):
+        Assignment = self.env['project.team.assignment']
 
-    assignment_line_ids = fields.One2many(
-        'project.team.assignment.line',
-        'employee_id',
-        string='Project Assignment Lines',
-    )
-
-    @api.depends(
-        'monthly_capacity',
-        'assignment_line_ids.monthly_reserved_percentage',
-    )
-    def _compute_remaining_capacity(self):
         for employee in self:
-            used_capacity = sum(employee.assignment_line_ids.mapped('monthly_reserved_percentage'))
-            employee.remaining_capacity = employee.monthly_capacity - used_capacity
+            employee.project_assignment_ids = Assignment.search([
+                ('employee_ids', 'in', employee.id)
+            ])

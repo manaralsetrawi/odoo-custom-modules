@@ -9,20 +9,12 @@
 
             <xpath expr="//form/sheet/notebook" position="inside">
                 <page string="Project Assignments">
-                    <group>
-                        <group>
-                            <field name="monthly_capacity"/>
-                            <field name="remaining_capacity" readonly="1"/>
-                        </group>
-                    </group>
-
-                    <field name="assignment_line_ids" readonly="1">
+                    <field name="project_assignment_ids" readonly="1">
                         <list>
-                            <field name="assignment_id"/>
-                            <field name="employee_team_id"/>
-                            <field name="workload_percentage"/>
-                            <field name="monthly_reserved_percentage"/>
-                            <field name="notes"/>
+                            <field name="lead_id"/>
+                            <field name="team_id"/>
+                            <field name="planned_start_date"/>
+                            <field name="planned_end_date"/>
                         </list>
                     </field>
                 </page>

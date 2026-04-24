@@ -9,11 +9,9 @@
             <kanban class="o_cpri_team_assignment_kanban_page">
                 <field name="lead_id"/>
                 <field name="team_id"/>
+                <field name="employee_ids"/>
                 <field name="planned_start_date"/>
                 <field name="planned_end_date"/>
-                <field name="estimated_duration_months"/>
-                <field name="workload_percentage"/>
-                <field name="assigned_employee_ids"/>
 
                 <templates>
                     <t t-name="card">
@@ -28,10 +26,6 @@
                                         <field name="team_id"/>
                                     </div>
                                 </div>
-
-                                <span class="o_cpri_team_assignment_badge">
-                                    <field name="workload_percentage"/>%
-                                </span>
                             </div>
 
                             <div class="o_cpri_team_assignment_dates">
@@ -45,20 +39,9 @@
                                 </div>
                             </div>
 
-                            <div class="o_cpri_team_assignment_meta">
-                                <div>
-                                    <span>Duration</span>
-                                    <strong><field name="estimated_duration_months"/> months</strong>
-                                </div>
-                                <div>
-                                    <span>Workload</span>
-                                    <strong><field name="workload_percentage"/>%</strong>
-                                </div>
-                            </div>
-
                             <div class="o_cpri_team_assignment_members">
                                 <span>Assigned Employees</span>
-                                <field name="assigned_employee_ids" widget="many2many_tags"/>
+                                <field name="employee_ids" widget="many2many_tags"/>
                             </div>
                         </div>
                     </t>
@@ -75,10 +58,9 @@
             <list string="Project Assignments" class="o_cpri_team_assignment_list_page">
                 <field name="lead_id"/>
                 <field name="team_id"/>
+                <field name="employee_ids" widget="many2many_tags"/>
                 <field name="planned_start_date"/>
                 <field name="planned_end_date"/>
-                <field name="estimated_duration_months"/>
-                <field name="workload_percentage"/>
             </list>
         </field>
     </record>
@@ -88,42 +70,37 @@
         <field name="name">project.team.assignment.form</field>
         <field name="model">project.team.assignment</field>
         <field name="arch" type="xml">
-            <form string="Team Assignment" class="o_cpri_team_assignment_form_page">
+            <form string="Project Assignment" class="o_cpri_team_assignment_form_page">
                 <sheet>
                     <div class="o_cpri_team_assignment_form_header">
                         <h2>
                             <field name="lead_id"/>
                         </h2>
-                        <p>Review the assigned team, project duration, workload, and assigned resources.</p>
+                        <p>Review the assigned team, project duration, and employees reserved for this project.</p>
                     </div>
 
                     <group class="o_cpri_team_assignment_form_card" string="Assignment Overview">
                         <group>
+                            <field name="lead_id"/>
                             <field name="team_id"/>
+                        </group>
+
+                        <group>
                             <field name="planned_start_date"/>
                             <field name="planned_end_date"/>
                         </group>
-                        <group>
-                            <field name="estimated_duration_months"/>
-                            <field name="workload_percentage" readonly="1"/>
-                            <field name="assigned_employee_ids" widget="many2many_tags" readonly="1"/>
-                        </group>
                     </group>
 
-                    <group class="o_cpri_team_assignment_form_card" string="Assigned Resources">
-                        <field name="assignment_line_ids" readonly="1">
-                            <list>
-                                <field name="employee_id"/>
-                                <field name="employee_team_id"/>
-                                <field name="workload_percentage"/>
-                                <field name="monthly_reserved_percentage"/>
-                                <field name="notes"/>
-                            </list>
-                        </field>
+                    <group class="o_cpri_team_assignment_form_card" string="Assigned Employees">
+                        <field name="employee_ids"
+                               widget="many2many_tags"
+                               nolabel="1"/>
                     </group>
 
                     <group class="o_cpri_team_assignment_form_card o_cpri_team_assignment_notes" string="Notes">
-                        <field name="notes" nolabel="1" placeholder="Write assignment notes..."/>
+                        <field name="notes"
+                               nolabel="1"
+                               placeholder="Write assignment notes..."/>
                     </group>
                 </sheet>
             </form>
@@ -138,10 +115,12 @@
             <search string="Search Project Assignments">
                 <field name="lead_id"/>
                 <field name="team_id"/>
+                <field name="employee_ids"/>
 
                 <group expand="0" string="Group By">
                     <filter string="Team" name="group_by_team" context="{'group_by': 'team_id'}"/>
                     <filter string="Project" name="group_by_lead" context="{'group_by': 'lead_id'}"/>
+                    <filter string="Employee" name="group_by_employee" context="{'group_by': 'employee_ids'}"/>
                 </group>
             </search>
         </field>

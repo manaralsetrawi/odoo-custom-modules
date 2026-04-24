@@ -1,4 +1,5 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 
 
 class ProjectTeamAssignment(models.Model):
@@ -8,7 +9,7 @@ class ProjectTeamAssignment(models.Model):
 
     lead_id = fields.Many2one(
         'crm.lead',
-        string='Opportunity',
+        string='Project / Opportunity',
         required=True,
         ondelete='cascade',
     )
@@ -17,55 +18,74 @@ class ProjectTeamAssignment(models.Model):
         'project.assignment.team',
         string='Assigned Team',
         required=True,
-        ondelete='cascade',
+        ondelete='restrict',
     )
 
-    assigned_employee_ids = fields.Many2many(
+    employee_ids = fields.Many2many(
         'hr.employee',
         'project_team_assignment_employee_rel',
         'assignment_id',
         'employee_id',
         string='Assigned Employees',
-        compute='_compute_assigned_employee_ids',
-        store=True,
-    )
-
-    assignment_line_ids = fields.One2many(
-        'project.team.assignment.line',
-        'assignment_id',
-        string='Assigned Resources',
-    )
-
-    planned_start_date = fields.Date(
-        string='Planned Start Date',
-        required=True
-    )
-
-    planned_end_date = fields.Date(
-        string='Planned End Date',
-        required=True
-    )
-
-    estimated_duration_months = fields.Integer(
-        string='Estimated Duration (Months)',
-        default=1,
         required=True,
     )
 
-    workload_percentage = fields.Float(
-        string='Total Project Allocation (%)',
-        compute='_compute_workload_percentage',
-        store=True,
+    planned_start_date = fields.Date(
+        string='Project Start Date',
+        required=True,
     )
 
-    notes = fields.Text(string='Notes')
+    planned_end_date = fields.Date(
+        string='Project End Date',
+        required=True,
+    )
 
-    @api.depends('assignment_line_ids.workload_percentage')
-    def _compute_workload_percentage(self):
-        for rec in self:
-            rec.workload_percentage = sum(rec.assignment_line_ids.mapped('workload_percentage'))
+    notes = fields.Text(
+        string='Notes'
+    )
 
-    @api.depends('assignment_line_ids.employee_id')
-    def _compute_assigned_employee_ids(self):
+    @api.constrains('planned_start_date', 'planned_end_date')
+    def _check_project_dates(self):
         for rec in self:
-            rec.assigned_employee_ids = [(6, 0, rec.assignment_line_ids.mapped('employee_id').ids)]
+            if rec.planned_start_date and rec.planned_end_date:
+                if rec.planned_end_date < rec.planned_start_date:
+                    raise ValidationError(
+                        _("Project end date cannot be before the project start date.")
+                    )
+
+    @api.constrains('employee_ids', 'planned_start_date', 'planned_end_date')
+    def _check_employee_overbooking(self):
+        for rec in self:
+            if not rec.employee_ids or not rec.planned_start_date or not rec.planned_end_date:
+                continue
+
+            overlapping_assignments = self.search([
+                ('id', '!=', rec.id),
+                ('employee_ids', 'in', rec.employee_ids.ids),
+                ('planned_start_date', '<=', rec.planned_end_date),
+                ('planned_end_date', '>=', rec.planned_start_date),
+            ])
+
+            if overlapping_assignments:
+                conflict_messages = []
+
+                for employee in rec.employee_ids:
+                    employee_conflicts = overlapping_assignments.filtered(
+                        lambda assignment: employee in assignment.employee_ids
+                    )
+
+                    for conflict in employee_conflicts:
+                        conflict_messages.append(
+                            _("%s is already assigned to %s from %s to %s.") % (
+                                employee.name,
+                                conflict.lead_id.name,
+                                conflict.planned_start_date,
+                                conflict.planned_end_date,
+                            )
+                        )
+
+                if conflict_messages:
+                    raise ValidationError(
+                        _("Employee overbooking detected:\n\n%s") %
+                        "\n".join(conflict_messages)
+                    )

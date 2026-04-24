@@ -195,9 +195,10 @@ class CrmProjectRequestLead(models.Model):
 
 
     assigned_team_id = fields.Many2one(
-    'project.assignment.team',
-    string='Assigned Team',
-    tracking=True,
+        'project.assignment.team',
+        string='Assigned Project Team',
+        readonly=True,
+        copy=False,
     )
 
     assigned_employee_ids = fields.Many2many(
@@ -206,14 +207,20 @@ class CrmProjectRequestLead(models.Model):
         'lead_id',
         'employee_id',
         string='Assigned Employees',
-        tracking=True,
-        domain="[('department_id.name', '=', 'AI Research and Development')]",
+        readonly=True,
+        copy=False,
     )
 
     planned_start_date = fields.Date(
-        string='Planned Project Start Date',
-        tracking=True,
+        string='Project Start Date',
+        copy=False,
     )
+
+    planned_end_date = fields.Date(
+        string='Project End Date',
+        copy=False,
+    )
+
 
     assignment_count = fields.Integer(
     string='Assignment Count',

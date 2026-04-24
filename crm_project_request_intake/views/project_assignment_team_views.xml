@@ -9,10 +9,8 @@
             <kanban class="o_cpri_project_team_kanban_page">
                 <field name="name"/>
                 <field name="active"/>
-                <field name="monthly_capacity"/>
-                <field name="remaining_capacity"/>
                 <field name="project_type_ids"/>
-                <field name="member_ids"/>
+                <field name="employee_ids"/>
 
                 <templates>
                     <t t-name="card">
@@ -37,20 +35,9 @@
                                 </span>
                             </div>
 
-                            <div class="o_cpri_project_team_capacity_grid">
-                                <div>
-                                    <span>Monthly Capacity</span>
-                                    <strong><field name="monthly_capacity"/>%</strong>
-                                </div>
-                                <div>
-                                    <span>Remaining</span>
-                                    <strong><field name="remaining_capacity"/>%</strong>
-                                </div>
-                            </div>
-
                             <div class="o_cpri_project_team_members">
-                                <span class="o_cpri_project_team_members_label">Members</span>
-                                <field name="member_ids" widget="many2many_tags"/>
+                                <span class="o_cpri_project_team_members_label">Team Employees</span>
+                                <field name="employee_ids" widget="many2many_tags"/>
                             </div>
                         </div>
                     </t>
@@ -67,8 +54,7 @@
             <list class="o_cpri_project_team_list_page">
                 <field name="name"/>
                 <field name="project_type_ids" widget="many2many_tags"/>
-                <field name="monthly_capacity"/>
-                <field name="remaining_capacity"/>
+                <field name="employee_ids" widget="many2many_tags"/>
                 <field name="active" widget="boolean_toggle"/>
             </list>
         </field>
@@ -85,34 +71,30 @@
                         <h2>
                             <field name="name" placeholder="e.g. AI Automation Team"/>
                         </h2>
-                        <p>Manage project teams, supported project types, members, and monthly capacity.</p>
+                        <p>Manage project teams, specialized project types, employees, and project assignments.</p>
                     </div>
 
                     <group class="o_cpri_project_team_form_card" string="Team Overview">
                         <group>
                             <field name="active" widget="boolean_toggle"/>
-                            <field name="monthly_capacity"/>
-                            <field name="remaining_capacity" readonly="1"/>
-                        </group>
-                        <group>
                             <field name="project_type_ids" widget="many2many_tags"/>
                         </group>
                     </group>
 
                     <notebook>
-                        <page string="Team Members">
+                        <page string="Team Employees">
                             <group class="o_cpri_project_team_form_card">
-                                <field name="member_ids" widget="many2many_tags" nolabel="1"/>
+                                <field name="employee_ids" widget="many2many_tags" nolabel="1"/>
                             </group>
                         </page>
 
-                        <page string="Assignments">
+                        <page string="Project Assignments">
                             <field name="assignment_ids" readonly="1">
                                 <list>
                                     <field name="lead_id"/>
                                     <field name="planned_start_date"/>
-                                    <field name="estimated_duration_months"/>
-                                    <field name="workload_percentage"/>
+                                    <field name="planned_end_date"/>
+                                    <field name="employee_ids" widget="many2many_tags"/>
                                 </list>
                             </field>
                         </page>
@@ -136,6 +118,8 @@
             <search>
                 <field name="name"/>
                 <field name="project_type_ids"/>
+                <field name="employee_ids"/>
+
                 <filter string="Active" name="active_project_teams" domain="[('active', '=', True)]"/>
                 <filter string="Archived" name="archived_project_teams" domain="[('active', '=', False)]"/>
             </search>

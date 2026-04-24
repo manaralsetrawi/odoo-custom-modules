@@ -5,9 +5,10 @@
         <field name="name">project.team.assignment.wizard.form</field>
         <field name="model">project.team.assignment.wizard</field>
         <field name="arch" type="xml">
-            <form string="Assign Project Team">
+            <form string="Assign Project Employees">
                 <sheet>
-                    <group>
+
+                    <group string="Project Assignment Details">
                         <group>
                             <field name="lead_id" readonly="1"/>
                             <field name="project_type_id" readonly="1"/>
@@ -18,20 +19,21 @@
                         <group>
                             <field name="suggested_team_id" readonly="1"/>
                             <field name="selected_team_id"/>
-                            <field name="assignment_notes"/>
                         </group>
                     </group>
 
-                    <group string="Assigned Resources">
-                        <field name="assignment_line_ids">
-                            <list editable="bottom">
-                                <field name="employee_id"/>
-                                <field name="employee_team_id" readonly="1"/>
-                                <field name="workload_percentage"/>
-                                <field name="notes"/>
-                            </list>
-                        </field>
+                    <group string="Assigned Employees">
+                        <field name="employee_ids"
+                               widget="many2many_tags"
+                               nolabel="1"/>
                     </group>
+
+                    <group string="Assignment Notes">
+                        <field name="assignment_notes"
+                               nolabel="1"
+                               placeholder="Write any notes about the selected employees or assignment..."/>
+                    </group>
+
                 </sheet>
 
                 <footer>
@@ -39,6 +41,7 @@
                             string="Confirm Assignment"
                             type="object"
                             class="btn-primary"/>
+
                     <button string="Cancel"
                             special="cancel"
                             class="btn-secondary"/>
