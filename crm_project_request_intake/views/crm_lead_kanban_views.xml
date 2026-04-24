@@ -16,7 +16,6 @@
                     <div class="ncst_pr_intake_card">
 
                         <div class="ncst_pr_intake_card_header">
-
                             <div class="ncst_pr_intake_icon">
                                 <i class="fa fa-lightbulb-o"/>
                             </div>
@@ -26,21 +25,10 @@
                                     <field name="name"/>
                                 </strong>
 
-                                <div class="ncst_pr_intake_contact">
-                                    <i class="fa fa-envelope-o"/>
-                                    <field name="email_from"/>
-                                </div>
-
-                                <div class="ncst_pr_intake_contact">
-                                    <i class="fa fa-phone"/>
-                                    <field name="phone"/>
-                                </div>
+                                <span class="ncst_pr_intake_badge">
+                                    <field name="intake_state"/>
+                                </span>
                             </div>
-
-                            <span class="ncst_pr_intake_badge">
-                                <field name="intake_state"/>
-                            </span>
-
                         </div>
 
                         <div class="ncst_pr_intake_tag">
@@ -51,24 +39,46 @@
                         <div class="ncst_pr_intake_body">
 
                             <div class="ncst_pr_intake_info_line">
+                                <i class="fa fa-envelope-o"/>
+                                <span><field name="email_from"/></span>
+                            </div>
+
+                            <div class="ncst_pr_intake_info_line">
+                                <i class="fa fa-phone"/>
+                                <span><field name="phone"/></span>
+                            </div>
+
+                            <div class="ncst_pr_intake_info_line">
                                 <i class="fa fa-building-o"/>
-                                <span>
-                                    <field name="intake_company_name"/>
-                                </span>
+                                <span><field name="intake_company_name"/></span>
+                            </div>
+
+                            <div class="ncst_pr_intake_info_line">
+                                <i class="fa fa-star"/>
+                                <span>Priority:</span>
+                                <field name="priority" widget="priority"/>
+                            </div>
+
+                            <div class="ncst_pr_intake_info_line">
+                                <i class="fa fa-money"/>
+                                <span>Budget:</span>
+                                <span><field name="intake_requested_budget"/></span>
+                            </div>
+
+                            <div class="ncst_pr_intake_info_line">
+                                <i class="fa fa-hourglass-half"/>
+                                <span>Duration:</span>
+                                <span><field name="intake_requested_duration"/></span>
                             </div>
 
                             <div class="ncst_pr_intake_info_line">
                                 <i class="fa fa-calendar"/>
-                                <span>
-                                    <field name="create_date"/>
-                                </span>
+                                <span><field name="create_date"/></span>
                             </div>
 
                             <div class="ncst_pr_intake_info_line">
                                 <i class="fa fa-user-circle-o"/>
-                                <span>
-                                    <field name="user_id"/>
-                                </span>
+                                <span><field name="user_id"/></span>
                             </div>
 
                         </div>

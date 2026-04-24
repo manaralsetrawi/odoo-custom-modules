@@ -333,4 +333,15 @@ button[name="action_open_lost_wizard"] {
         background: #0b2c3d;
         color: #ffffff;
     }
+
+    .o_kanban_renderer {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    }
+
+    .o_kanban_record {
+        width: 100% !important;
+        margin: 0 !important;
+    }
 }
