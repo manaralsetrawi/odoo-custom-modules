@@ -13,335 +13,199 @@ button[name="action_open_lost_wizard"] {
 }
 
 
-// Website design 
-.crm_project_request_page {
-    background: #f7f9fc;
-}
-
-.crm_request_hero {
-    padding-top: 2rem;
-    padding-bottom: 3rem;
-}
-
-.crm_request_intro {
-    margin-bottom: 1.2rem;
-}
-
-.crm_request_title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 0.85rem;
-    line-height: 1.2;
-}
-
-.crm_request_text {
-    max-width: 760px;
-    margin: 0 auto;
-    font-size: 1.04rem;
-    line-height: 1.8;
-    color: #4b5563;
-}
-
-.crm_request_info_card {
-    background: #ffffff;
-    border: 1px solid #e8ebf0;
-    border-radius: 18px;
-    padding: 1.15rem 1.35rem;
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
-    max-width: 100%;
-    margin-bottom:1.35rem ;
-}
-
-.crm_request_info_card h5 {
-    color: #0b2c3d;
-    font-weight: 700;
-    margin-bottom: 0.75rem;
-    font-size: 1.08rem;
-}
-
-.crm_request_info_card ul {
-    padding-left: 1.2rem;
-    margin: 0;
-}
-
-.crm_request_info_card li {
-    margin-bottom: 0.4rem;
-    color: #374151;
-    line-height: 1.65;
-}
-
-.crm_request_form_card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 24px;
-    padding: 2rem 2rem 1.75rem;
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
-    max-width: 100%;
-    margin: 0;
-}
-
-.crm_request_form_title {
-    font-size: 1.45rem;
-    font-weight: 700;
-    color: #0b2c3d;
-    margin-bottom: 1.35rem;
-}
-
-.crm_request_section_title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #0b2c3d;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.crm_project_request_page .form-label {
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 0.45rem;
-    font-size: 0.96rem;
-}
-
-.crm_project_request_page .form-control,
-.crm_project_request_page .form-select {
-    min-height: 52px;
-    border-radius: 14px;
-    border: 1px solid #d6dbe3;
-    background: #ffffff;
-    color: #1f2937;
-    padding-left: 0.95rem;
-    padding-right: 0.95rem;
-    transition: all 0.2s ease;
-    box-shadow: none;
-}
-
-.crm_project_request_page textarea.form-control {
-    min-height: 140px;
-    padding-top: 0.85rem;
-    resize: vertical;
-}
-
-.crm_project_request_page .form-control:focus,
-.crm_project_request_page .form-select:focus {
-    border-color: #0b2c3d;
-    box-shadow: 0 0 0 0.18rem rgba(11, 44, 61, 0.10);
-}
-
-.crm_project_request_page .form-control.is-invalid,
-.crm_project_request_page .form-select.is-invalid,
-.crm_project_request_page textarea.is-invalid {
-    border-color: #dc3545 !important;
-    background-image: none;
-    box-shadow: 0 0 0 0.18rem rgba(220, 53, 69, 0.12);
-}
-
-.crm_project_request_page .form-control.is-invalid:focus,
-.crm_project_request_page .form-select.is-invalid:focus,
-.crm_project_request_page textarea.is-invalid:focus {
-    border-color: #dc3545 !important;
-    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.16);
-}
-
-#pr_submit_btn {
-    background: #0b2c3d;
-    border-color: #0b2c3d;
-    border-radius: 14px;
-    font-weight: 600;
-    min-width: 150px;
-    min-height: 48px;
-    padding: 0.75rem 1.5rem;
-}
-
-#pr_submit_btn:hover {
-    background: #12445f;
-    border-color: #12445f;
-}
-
-@media (max-width: 991.98px) {
-    .crm_request_title {
-        font-size: 2.1rem;
-    }
-
-    .crm_request_form_card,
-    .crm_request_info_card {
-        padding: 1.4rem;
-    }
-}
-
-@media (max-width: 575.98px) {
-    .crm_request_hero {
-        padding-top: 1.5rem;
-        padding-bottom: 2.25rem;
-    }
-
-    .crm_request_title {
-        font-size: 1.8rem;
-    }
-
-    .crm_request_text {
-        font-size: 0.97rem;
-    }
-
-    .crm_request_form_card,
-    .crm_request_info_card {
-        border-radius: 18px;
-        padding: 1.1rem;
-    }
-
-    #pr_submit_btn {
-        width: 100%;
-    }
-}
-
-
-// lead page (kaban)
-
+// Lead page kanban - NCST Project Request Intake only
 .ncst_pr_intake_kanban_root {
-    background: #f6f8fb;
-    padding: 1rem;
+    background: #f6f8fb !important;
+    padding: 1rem !important;
+
+    .o_kanban_renderer {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 1rem !important;
+        align-items: stretch !important;
+    }
 
     .o_kanban_record {
-        width: 31rem;
-        margin: 0.7rem;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
         border: none !important;
         background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    .o_kanban_record > div {
+        height: 100%;
     }
 
     .ncst_pr_intake_card {
+        height: 100%;
+        min-height: 20rem;
         background: #ffffff;
-        border: 1px solid #e3e8ef;
-        border-radius: 1rem;
+        border: 1px solid #dfe7ef;
+        border-radius: 1.1rem;
         padding: 1rem;
-        box-shadow: 0 6px 18px rgba(11, 44, 61, 0.08);
-        transition: all 0.2s ease;
-        min-height: 15rem;
+        box-shadow: 0 10px 24px rgba(11, 44, 61, 0.08);
+        transition: 0.2s ease;
+        display: flex;
+        flex-direction: column;
     }
 
     .ncst_pr_intake_card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 10px 24px rgba(11, 44, 61, 0.13);
+        box-shadow: 0 14px 30px rgba(11, 44, 61, 0.14);
     }
 
-    .ncst_pr_intake_card_header {
+    .ncst_pr_intake_top {
         display: flex;
-        gap: 1rem;
+        gap: 0.85rem;
         align-items: flex-start;
     }
 
     .ncst_pr_intake_icon {
-        width: 4rem;
-        height: 4rem;
+        width: 3.4rem;
+        height: 3.4rem;
         border-radius: 1rem;
-        background: #e9ddff;
-        color: #5f35d5;
+        background: #e8f2ff;
+        color: #1769c2;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.7rem;
+        font-size: 1.45rem;
         flex-shrink: 0;
     }
 
-    .ncst_pr_intake_title_area {
+    .ncst_pr_intake_title_wrap {
         flex: 1;
         min-width: 0;
     }
 
     .ncst_pr_intake_title {
         display: block;
+        color: #14293a;
         font-size: 1.05rem;
-        color: #182b3a;
-        line-height: 1.35;
-        margin-bottom: 0.45rem;
+        font-weight: 800;
+        line-height: 1.25;
+        margin-bottom: 0.25rem;
     }
 
-    .ncst_pr_intake_contact {
+    .ncst_pr_intake_client {
+        color: #64748b;
         font-size: 0.85rem;
-        color: #53657a;
-        margin-top: 0.25rem;
-
-        i {
-            width: 1.1rem;
-            color: #60758c;
-        }
+        font-weight: 600;
     }
 
-    .ncst_pr_intake_badge {
+    .ncst_pr_intake_status {
         background: #eee3ff;
         color: #5f35d5;
-        border-radius: 0.5rem;
-        padding: 0.35rem 0.65rem;
-        font-size: 0.78rem;
-        font-weight: 700;
+        border-radius: 999px;
+        padding: 0.32rem 0.65rem;
+        font-size: 0.74rem;
+        font-weight: 800;
         white-space: nowrap;
     }
 
-    .ncst_pr_intake_tag {
-        display: inline-block;
-        margin-top: 1rem;
-        background: #e8f2ff;
-        color: #1769c2;
-        border-radius: 0.45rem;
-        padding: 0.35rem 0.65rem;
-        font-size: 0.8rem;
-        font-weight: 700;
-    }
-
-    .ncst_pr_intake_body {
-        border-top: 1px solid #edf1f5;
-        margin-top: 1rem;
-        padding-top: 0.9rem;
-        color: #42556b;
-        font-size: 0.88rem;
-    }
-
-    .ncst_pr_intake_body div {
-        margin-bottom: 0.45rem;
-    }
-
-    .ncst_pr_intake_body i {
-        width: 1.2rem;
-        color: #60758c;
-    }
-
-    .ncst_pr_intake_footer {
-        border-top: 1px solid #edf1f5;
+    .ncst_pr_intake_chips {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
         margin-top: 0.9rem;
-        padding-top: 0.8rem;
+    }
+
+    .ncst_pr_intake_chip {
+        background: #f4f7fb;
+        border: 1px solid #e2e8f0;
+        color: #334155;
+        border-radius: 999px;
+        padding: 0.35rem 0.65rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .ncst_pr_intake_chip_type {
+        background: #ecfdf5;
+        color: #047857;
+        border-color: #d1fae5;
+    }
+
+    .ncst_pr_intake_details {
+        margin-top: 0.9rem;
+        padding-top: 0.9rem;
+        border-top: 1px solid #edf1f5;
+        flex: 1;
+    }
+
+    .ncst_pr_intake_line {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        gap: 0.55rem;
+        color: #475569;
+        font-size: 0.87rem;
+        margin-bottom: 0.55rem;
+        min-width: 0;
     }
 
-    .ncst_pr_intake_icons {
-        color: #51687f;
+    .ncst_pr_intake_line i {
+        width: 1rem;
+        color: #0b2c3d;
+        opacity: 0.8;
+        flex-shrink: 0;
+    }
+
+    .ncst_pr_intake_line span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .ncst_pr_intake_line strong {
+        color: #1e293b;
+        font-weight: 800;
+    }
+
+    .ncst_pr_intake_bottom {
+        border-top: 1px solid #edf1f5;
+        margin-top: 0.8rem;
+        padding-top: 0.8rem;
         display: flex;
-        gap: 0.9rem;
-        font-size: 1.1rem;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .ncst_pr_intake_meta {
+        color: #64748b;
+        font-size: 0.82rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
     }
 
     .ncst_pr_intake_view_btn {
-        background: #edf1f5;
-        color: #172b3a;
-        border-radius: 0.5rem;
-        padding: 0.35rem 1.4rem;
-        font-weight: 700;
+        background: #0b2c3d !important;
+        color: #ffffff !important;
+        border-radius: 0.6rem;
+        padding: 0.4rem 1.25rem;
+        font-weight: 800;
+        border: none !important;
     }
 
     .ncst_pr_intake_view_btn:hover {
-        background: #0b2c3d;
-        color: #ffffff;
+        background: #12445f !important;
     }
 
-    .o_kanban_renderer {
-    display: grid !important;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1rem;
+    @media (max-width: 1200px) {
+        .o_kanban_renderer {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
     }
 
-    .o_kanban_record {
-        width: 100% !important;
-        margin: 0 !important;
+    @media (max-width: 768px) {
+        .o_kanban_renderer {
+            grid-template-columns: 1fr !important;
+        }
     }
 }
