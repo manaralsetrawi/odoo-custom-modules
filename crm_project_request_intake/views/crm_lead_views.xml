@@ -351,13 +351,49 @@
         </field>
     </record>
 
-    <record id="view_crm_lead_form_remove_default_lost_button" model="ir.ui.view">
-        <field name="name">crm.lead.form.remove.default.lost.button</field>
+    <record id="view_crm_lead_kanban_project_request_intake" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.project.request.intake</field>
         <field name="model">crm.lead</field>
-        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
         <field name="arch" type="xml">
 
-            <xpath expr="//button[@name='%(crm.crm_lead_lost_action)d']" position="replace"/>
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="class" add=" o_cpri_leads_only_kanban_page" separator=" "/>
+            </xpath>
+
+            <xpath expr="//templates/t[@t-name='card']" position="replace">
+                <t t-name="card">
+                    <div class="o_cpri_leads_only_card oe_kanban_global_click">
+                        <div class="o_cpri_leads_card_header">
+                            <div>
+                                <div class="o_cpri_leads_card_title">
+                                    <field name="name"/>
+                                </div>
+                                <div class="o_cpri_leads_card_contact">
+                                    <field name="contact_name"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="o_cpri_leads_card_tags">
+                            <field name="tag_ids"
+                                widget="many2many_tags"
+                                options="{'color_field': 'color'}"/>
+                        </div>
+
+                        <footer class="o_cpri_leads_card_footer">
+                            <div class="o_cpri_leads_card_priority">
+                                <field name="priority" widget="priority"/>
+                                <field name="activity_ids" widget="kanban_activity"/>
+                            </div>
+
+                            <field name="user_id"
+                                widget="many2one_avatar_user"
+                                domain="[('share', '=', False)]"/>
+                        </footer>
+                    </div>
+                </t>
+            </xpath>
 
         </field>
     </record>

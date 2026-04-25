@@ -2056,30 +2056,78 @@
 
 
 //Kanab View (Lead)
-.o_kanban_view.o_cpri_lead_kanban_page {
+.o_kanban_view.o_cpri_leads_only_kanban_page {
     background: #f6f8fa;
     padding: 1.5rem 2rem;
 
-    .o_kanban_record:has(.o_cpri_lead_kanban_card) {
+    .o_kanban_record:has(.o_cpri_leads_only_card) {
         background: transparent !important;
         border: 0 !important;
         box-shadow: none !important;
         padding: 0.75rem !important;
+        display: flex !important;
     }
 
-    .o_cpri_lead_kanban_card {
-        background: linear-gradient(180deg, #ffffff 0%, #f8fcff 100%) !important;
-        border: 0.0625rem solid #cfe4ef !important;
-        border-top: 0.3rem solid #164465 !important;
-        border-radius: 1.25rem !important;
-        padding: 1.25rem !important;
-        box-shadow: 0 0.45rem 1.25rem rgba(22, 68, 101, 0.08) !important;
+    .o_cpri_leads_only_card {
+        width: 100%;
+        min-height: 8.5rem;
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fcff 100%);
+        border: 0.0625rem solid #cfe4ef;
+        border-top: 0.3rem solid #164465;
+        border-radius: 1.1rem;
+        padding: 1rem;
+        box-shadow: 0 0.35rem 1rem rgba(22, 68, 101, 0.08);
         transition: all 0.2s ease;
 
         &:hover {
             transform: translateY(-0.125rem);
-            border-color: #a7dbf3 !important;
-            box-shadow: 0 0.75rem 1.7rem rgba(22, 68, 101, 0.14) !important;
+            border-color: #a7dbf3;
+            box-shadow: 0 0.65rem 1.4rem rgba(22, 68, 101, 0.13);
         }
+    }
+
+    .o_cpri_leads_card_title {
+        color: #0b2c3d;
+        font-size: 1rem;
+        font-weight: 800;
+        line-height: 1.35;
+        margin-bottom: 0.25rem;
+    }
+
+    .o_cpri_leads_card_contact {
+        color: #667680;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .o_cpri_leads_card_tags {
+        margin-top: 0.65rem;
+
+        .badge,
+        .o_tag {
+            border: 0.0625rem solid #a7dbf3;
+            border-radius: 999rem;
+            background-color: #dcf0fc !important;
+            color: #164465 !important;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+    }
+
+    .o_cpri_leads_card_footer {
+        margin-top: auto;
+        padding-top: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 0.0625rem solid #d9ecf5;
+    }
+
+    .o_cpri_leads_card_priority {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
     }
 }
