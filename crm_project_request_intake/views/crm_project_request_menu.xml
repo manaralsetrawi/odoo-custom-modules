@@ -69,13 +69,13 @@
             <field name="name">Project Request Dashboard</field>
             <field name="tag">project_request_dashboard_action</field>
       </record>
-      
+
     <menuitem id="menu_project_request_dashboard"
               name="Project Request Dashboard"
-              parent="menu_project_resource_management_root"
+              parent="crm_workflow_custom.menu_crm_dashboard"
               action="action_project_request_dashboard"
-              sequence="5"
-              groups="crm_workflow_custom.group_crm_workflow_manager"/>
+              sequence="10"
+              groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"/>
 
     <menuitem id="menu_project_assignments"
               name="Project Assignments"
