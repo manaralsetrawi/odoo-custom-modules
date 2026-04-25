@@ -359,7 +359,9 @@
                 <t t-name="card">
                     <div class="o_cpri_lead_card_top">
                         <field name="name" class="o_cpri_leads_card_title"/>
-                        <field name="intake_state" class="o_cpri_lead_state_badge"/>
+                        <span t-attf-class="o_cpri_lead_state_badge o_cpri_state_#{record.intake_state.raw_value}">
+                            <field name="intake_state"/>
+                        </span>                    
                     </div>
 
                     <div class="o_cpri_lead_client">

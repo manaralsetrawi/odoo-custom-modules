@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="crm_project_request_intake.ProjectRequestDashboard">
+        <div class="o_cpri_dashboard_page">
+
+            <div class="o_cpri_dashboard_header">
+                <h1>Project Request Dashboard</h1>
+                <p>Overview of project request intake, review, approval, and priority status.</p>
+            </div>
+
+            <div class="o_cpri_dashboard_grid">
+
+                <div class="o_cpri_dashboard_card total" t-on-click="() => this.openLeads(false)">
+                    <span>Total Requests</span>
+                    <strong t-esc="state.data.total_requests"/>
+                </div>
+
+                <div class="o_cpri_dashboard_card pending" t-on-click="() => this.openLeads('submitted')">
+                    <span>Pending Requests</span>
+                    <strong t-esc="state.data.pending_requests"/>
+                </div>
+
+                <div class="o_cpri_dashboard_card review" t-on-click="() => this.openLeads('under_review')">
+                    <span>Under Review</span>
+                    <strong t-esc="state.data.under_review_requests"/>
+                </div>
+
+                <div class="o_cpri_dashboard_card approved" t-on-click="() => this.openLeads('approved')">
+                    <span>Approved</span>
+                    <strong t-esc="state.data.approved_requests"/>
+                </div>
+
+                <div class="o_cpri_dashboard_card rejected" t-on-click="() => this.openLeads('rejected')">
+                    <span>Rejected</span>
+                    <strong t-esc="state.data.rejected_requests"/>
+                </div>
+
+                <div class="o_cpri_dashboard_card high">
+                    <span>High Priority Pending/Review</span>
+                    <strong t-esc="state.data.high_priority_requests"/>
+                </div>
+
+                <div class="o_cpri_dashboard_card very-high">
+                    <span>Very High Priority Pending/Review</span>
+                    <strong t-esc="state.data.very_high_priority_requests"/>
+                </div>
+
+            </div>
+
+            <div class="o_cpri_dashboard_table_card">
+                <h2>Recent Project Requests</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Request</th>
+                            <th>Client</th>
+                            <th>Company</th>
+                            <th>Status</th>
+                            <th>Budget</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="state.data.recent_requests" t-as="request" t-key="request.id">
+                            <td t-esc="request.name"/>
+                            <td t-esc="request.client"/>
+                            <td t-esc="request.company"/>
+                            <td>
+                                <span class="o_cpri_status_badge" t-esc="request.status"/>
+                            </td>
+                            <td t-esc="request.budget"/>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </t>
+
+</templates>

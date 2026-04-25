@@ -611,3 +611,53 @@ class CrmProjectRequestLead(models.Model):
                 })
 
         return messages
+    
+
+    @api.model
+    def get_project_request_dashboard_data(self):
+        Lead = self.env['crm.lead']
+
+        domain_base = [
+            ('request_type', '=', 'project_request'),
+            ('type', '=', 'lead'),
+        ]
+
+        pending_domain = domain_base + [('intake_state', '=', 'submitted')]
+        under_review_domain = domain_base + [('intake_state', '=', 'under_review')]
+        approved_domain = domain_base + [('intake_state', '=', 'approved')]
+        rejected_domain = domain_base + [('intake_state', '=', 'rejected')]
+
+        high_priority_domain = domain_base + [
+            ('intake_state', 'in', ['submitted', 'under_review']),
+            ('priority', '=', '2'),
+        ]
+
+        very_high_priority_domain = domain_base + [
+            ('intake_state', 'in', ['submitted', 'under_review']),
+            ('priority', '=', '3'),
+        ]
+
+        recent_requests = Lead.search(
+            domain_base,
+            order='create_date desc',
+            limit=6
+        )
+
+        return {
+            'total_requests': Lead.search_count(domain_base),
+            'pending_requests': Lead.search_count(pending_domain),
+            'under_review_requests': Lead.search_count(under_review_domain),
+            'approved_requests': Lead.search_count(approved_domain),
+            'rejected_requests': Lead.search_count(rejected_domain),
+            'high_priority_requests': Lead.search_count(high_priority_domain),
+            'very_high_priority_requests': Lead.search_count(very_high_priority_domain),
+            'recent_requests': [{
+                'id': lead.id,
+                'name': lead.name,
+                'client': lead.contact_name or lead.intake_client_name or '-',
+                'company': lead.intake_company_name or '-',
+                'status': dict(lead._fields['intake_state'].selection).get(lead.intake_state),
+                'priority': lead.priority,
+                'budget': lead.intake_requested_budget,
+            } for lead in recent_requests],
+        }

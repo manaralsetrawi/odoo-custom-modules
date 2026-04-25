@@ -38,6 +38,8 @@ Main features:
         'views/hr_employee_views.xml',
         'views/project_team_assignment_wizard_views.xml',
         'views/crm_email_log_views.xml',
+        'crm_project_request_intake/static/src/js/project_request_dashboard.js',
+        'crm_project_request_intake/static/src/xml/project_request_dashboard.xml',
         'views/crm_project_request_menu.xml',
     ],
     'assets': {
