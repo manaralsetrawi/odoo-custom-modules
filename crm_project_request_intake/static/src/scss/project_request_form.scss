@@ -1470,169 +1470,181 @@
 // ======================================================
 
 .o_form_view.o_cpri_intake_form_page {
-    background: #f4f7fa;
+    background: #f6f8fa;
+
+    .o_group:has(.o_cpri_project_contact_right_box) {
+        display: block !important;
+    }
+
+    .o_cpri_project_contact_right_box {
+        width: 42rem !important;
+        max-width: 100% !important;
+        margin-top: 1rem;
+        border-radius: 1rem;
+        margin-bottom: -1.7rem;
+
+    }
 
     .o_cpri_intake_form_sheet {
         max-width: 92rem;
-        border-radius: 1.25rem;
-        border: 0.0625rem solid #d8e2ea;
-        box-shadow: 0 0.9rem 2rem rgba(11, 44, 61, 0.09);
-        padding: 1.5rem;
+        margin: 1.25rem auto;
+        padding: 1.75rem 2rem 2.25rem !important;
         background: #ffffff;
-    }
-
-
-
-
-    .btn-success {
-        background: #1f8a4c;
-        border-color: #1f8a4c;
-    }
-
-    .btn-danger {
-        background: #b42318;
-        border-color: #b42318;
+        border: 0.0625rem solid #dfe6ec;
+        border-radius: 1rem;
+        box-shadow: 0 0.5rem 1.25rem rgba(15, 23, 42, 0.04);
     }
 
     .oe_button_box {
         margin-bottom: 1rem;
 
         .oe_stat_button {
-            border: 0.0625rem solid #dce4ea;
-            background: #f7f9fb;
+            border: 0.0625rem solid #d7e3ea;
+            border-radius: 0.75rem;
+            background: #f7fafb;
+            color: #0b2c3d;
 
             &:hover {
-                background: #eef3f6;
-                border-color: #c9d6df;
+                background: #eef5f7;
+                border-color: #c8d8e0;
             }
         }
     }
 
     .oe_title {
-        padding: 1.25rem 1.5rem;
-        border-radius: 1rem;
-        background: linear-gradient(135deg, #f8fbfd, #eef5f8);
-        border: 0.0625rem solid #dce4ea;
-        margin-bottom: 1rem;
+        margin-bottom: 1.25rem;
+        padding-bottom: 1rem;
+        border-bottom: 0.0625rem solid #e5e7eb;
 
-        h1 {
-            color: #0b2c3d;
-            font-weight: 800;
-        }
-
+        h1,
         h2 {
-            color: #344955;
-            font-weight: 800;
+            color: #111827;
+            font-weight: 600;
         }
-    }
-
-    .o_group {
-        background: #ffffff;
-        border: 0.0625rem solid #e1e8ee;
-        border-radius: 1rem;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 0.35rem 1rem rgba(11, 44, 61, 0.04);
-    }
-
-    .o_group:has(.o_cpri_project_contact_right_box) {
-        display: grid !important;
-        grid-template-columns: 42% 1fr !important;
-        gap: 1.5rem !important;
-        align-items: start !important;
-    }
-
-    .o_cpri_project_contact_right_box {
-        grid-column: 1 !important;
-        width: 100% !important;
-        background: #f8fbfd;
-        border: 0.0625rem solid #d8e2ea;
-        border-radius: 1rem;
-        padding: 1rem;
-        box-shadow: 0 0.35rem 1rem rgba(11, 44, 61, 0.05);
-    }
-
-    .o_cpri_project_contact_right_box .o_td_label {
-        width: 35%;
-        color: #687985;
-        font-weight: 800;
-    }
-
-    .o_cpri_project_contact_right_box .o_field_widget {
-        color: #0b2c3d;
-        font-weight: 800;
     }
 
     .o_notebook {
-        margin-top: 1.25rem;
-        background: #ffffff;
-        border: 0.0625rem solid #dce4ea;
-        border-radius: 1rem;
-        overflow: hidden;
+        margin-top: 1rem;
 
         .nav-tabs {
-            background: #f7f9fb;
-            border-bottom: 0.0625rem solid #dce4ea;
-            padding: 0.5rem 0.75rem 0;
+            gap: 0.25rem;
+            border-bottom: 0.0625rem solid #e5e7eb;
         }
 
         .nav-link {
-            border-radius: 0.7rem 0.7rem 0 0;
-            font-weight: 800;
-            color: #667680;
+            color: #4b5563;
+            font-size: 0.9rem;
+            font-weight: 700;
             padding: 0.75rem 1rem;
+            border: 0 !important;
+            border-radius: 0 !important;
+            background: transparent !important;
 
             &.active {
                 color: #0b2c3d;
-                background: #ffffff;
-                border-color: #dce4ea #dce4ea #ffffff;
+                border-bottom: 0.1875rem solid #0b2c3d !important;
+                background: transparent !important;
             }
 
             &:hover {
                 color: #0b2c3d;
             }
         }
+    }
 
-        .tab-content {
-            padding: 1.25rem;
+    .o_cpri_review_intro {
+        margin-bottom: 1.15rem;
+
+        h3 {
+            margin: 0 0 0.5rem;
+            color: #111827;
+            font-size: 1.35rem;
+            font-weight: 500;
+        }
+
+        p {
+            margin: 0;
+            color: #4b5563;
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
     }
 
-    .o_horizontal_separator {
-        color: #0b2c3d;
-        font-size: 1rem;
-        font-weight: 800;
-        margin-top: 1.25rem;
-        margin-bottom: 0.85rem;
-        border-bottom: 0.0625rem solid #dce4ea;
-    }
+    .o_cpri_review_card {
+        margin-bottom: 1.5rem;
+        padding: 0 !important;
+        background: transparent;
+        border: none;
 
-    label.o_form_label {
-        color: #637583;
-        font-weight: 800;
-    }
+        .o_horizontal_separator {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 0.0625rem solid #e5e7eb;
+            color: #4b5563;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
 
-    .o_field_widget {
-        color: #0b2c3d;
-        font-weight: 650;
-    }
+        label,
+        .o_form_label {
+            color: #111827;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
 
-    textarea,
-    .o_field_text textarea {
-        min-height: 7rem;
-        border-radius: 0.85rem;
-        padding: 0.85rem;
-        border-color: #d8e2ea;
+        .o_field_widget {
+            color: #374151;
+            font-size: 0.9rem;
+        }
 
-        &:focus {
-            border-color: #0b2c3d;
-            box-shadow: 0 0 0 0.15rem rgba(11, 44, 61, 0.12);
+        .o_field_widget:not(.o_field_many2many_tags) input,
+        .o_field_widget:not(.o_field_many2many_tags) textarea {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        textarea {
+            min-height: 4rem;
+            line-height: 1.5;
+            resize: vertical;
+        }
+
+        .o_field_many2many_tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+
+            .badge,
+            .o_tag {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.3rem;
+                min-height: 1.75rem;
+                padding: 0.28rem 0.7rem;
+                border: 0.0625rem solid #d7e3ea;
+                border-radius: 999rem;
+                background-color: #f7fafb !important;
+                color: #0b2c3d !important;
+                font-size: 0.8125rem;
+                font-weight: 600;
+                line-height: 1.2;
+                box-shadow: 0 0.125rem 0.45rem rgba(11, 44, 61, 0.04);
+            }
+
+            .badge:hover,
+            .o_tag:hover {
+                background-color: #eef5f7 !important;
+                border-color: #c8d8e0;
+            }
         }
     }
 
-    .o_readonly_modifier {
-        color: #344955;
-    }
+
+    
 }
 
 // ======================================================
