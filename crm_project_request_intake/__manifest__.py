@@ -46,8 +46,6 @@ Main features:
             'crm_project_request_intake/static/src/scss/project_request_form.scss',
         ],
         'web.assets_backend': [
-            'crm_project_request_intake/static/src/js/project_request_dashboard.js',
-            'crm_project_request_intake/static/src/xml/project_request_dashboard.xml',
             'crm_project_request_intake/static/src/scss/project_request_form.scss',
         ],
     },

@@ -408,6 +408,10 @@
         </field>
     </record>
     
+    <record id="action_project_request_dashboard" model="ir.actions.client">
+        <field name="name">Project Request Dashboard</field>
+        <field name="tag">project_request_dashboard_action</field>
+    </record>
 
 
 </odoo>
