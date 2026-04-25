@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- <record id="action_crm_dashboard" model="ir.actions.client">
+    <record id="action_crm_dashboard" model="ir.actions.act_window">
         <field name="name">CRM Dashboard</field>
-        <field name="tag">crm_dashboard_tag</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('type', '=', 'opportunity')]</field>
+        <field name="context">{'default_type': 'opportunity'}</field>
     </record>
 
     <menuitem id="menu_crm_dashboard"
@@ -11,6 +14,6 @@
               parent="crm.crm_menu_root"
               action="action_crm_dashboard"
               sequence="5"
-              groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"/> -->
+              groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"/>
 
 </odoo>
