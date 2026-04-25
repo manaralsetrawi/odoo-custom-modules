@@ -311,9 +311,7 @@
         </field>
 
     </record>
-
-
-            
+      
 
     <record id="view_crm_lead_form_hide_workflow_tabs_for_project_request" model="ir.ui.view">
         <field name="name">crm.lead.form.hide.workflow.tabs.for.project.request</field>
