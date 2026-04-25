@@ -310,9 +310,25 @@
 
         </field>
 
-        </record>
+    </record>
 
-        
+    <record id="view_crm_lead_kanban_project_request_intake" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.project.request.intake</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="class" add=" o_cpri_lead_kanban_page" separator=" "/>
+            </xpath>
+
+            <xpath expr="//templates/t[@t-name='card']/div" position="attributes">
+                <attribute name="class" add=" o_cpri_lead_kanban_card" separator=" "/>
+            </xpath>
+
+        </field>
+    </record>
+            
 
     <record id="view_crm_lead_form_hide_workflow_tabs_for_project_request" model="ir.ui.view">
         <field name="name">crm.lead.form.hide.workflow.tabs.for.project.request</field>
