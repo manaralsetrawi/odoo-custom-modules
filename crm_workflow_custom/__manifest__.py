@@ -23,8 +23,8 @@
     ],
     'assets': {
         'web.assets_backend': [
-            'crm_workflow_custom/static/src/js/crm_dashboard.js',
-            'crm_workflow_custom/static/src/xml/crm_dashboard.xml',
+            # 'crm_workflow_custom/static/src/js/crm_dashboard.js',
+            # 'crm_workflow_custom/static/src/xml/crm_dashboard.xml',
             'crm_workflow_custom/static/src/scss/crm_workflow.scss',
             'crm_workflow_custom/static/src/scss/crm_dashboard.scss',
         ],
