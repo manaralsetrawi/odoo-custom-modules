@@ -32,12 +32,12 @@
                     <strong t-esc="state.data.rejected_requests"/>
                 </div>
 
-                <div class="o_cpri_dashboard_card high">
+                <div class="o_cpri_dashboard_card high" t-on-click="() => this.openLeads(false, '2')">
                     <span>High Priority Pending/Review</span>
                     <strong t-esc="state.data.high_priority_requests"/>
                 </div>
 
-                <div class="o_cpri_dashboard_card very-high">
+                <div class="o_cpri_dashboard_card very-high" t-on-click="() => this.openLeads(false, '3')">
                     <span>Very High Priority Pending/Review</span>
                     <strong t-esc="state.data.very_high_priority_requests"/>
                 </div>
