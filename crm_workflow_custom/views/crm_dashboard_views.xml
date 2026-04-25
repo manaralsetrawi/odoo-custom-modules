@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <record id="action_crm_custom_dashboard" model="ir.actions.client">
-        <field name="name">CRM Dashboard</field>
+    <!-- Dashboard parent menu only, no action -->
+    <menuitem id="menu_crm_custom_dashboard_root"
+              name="Dashboard"
+              parent="crm.crm_menu_root"
+              sequence="5"
+              groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"/>
+
+    <!-- Opportunity Dashboard action -->
+    <record id="action_crm_opportunity_dashboard" model="ir.actions.client">
+        <field name="name">Opportunity Dashboard</field>
         <field name="tag">crm_dashboard_tag</field>
     </record>
 
-    <menuitem id="menu_crm_dashboard"
-              name="Dashboard"
-              parent="crm.crm_menu_root"
-              action="action_crm_custom_dashboard"
-              sequence="5"
+    <!-- Child menu under Dashboard -->
+    <menuitem id="menu_crm_opportunity_dashboard"
+              name="Opportunity Dashboard"
+              parent="menu_crm_custom_dashboard_root"
+              action="action_crm_opportunity_dashboard"
+              sequence="10"
               groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"/>
 
 </odoo>
