@@ -72,7 +72,7 @@
 
       <menuitem id="menu_project_request_dashboard"
             name="Project Request Dashboard"
-            parent="crm_workflow_custom.menu_crm_dashboard"
+            parent="menu_project_resource_management_root"
             action="action_project_request_dashboard"
             sequence="10"
             groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"/>
