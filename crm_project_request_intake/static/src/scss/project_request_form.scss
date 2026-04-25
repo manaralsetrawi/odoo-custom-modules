@@ -947,6 +947,239 @@
 }
 
 
+//Project Team (popup form view)
+.o_cpri_assignment_wizard_page {
+    .o_form_sheet_bg {
+        background: #f6f8fa;
+    }
+
+    .o_form_sheet {
+        max-width: 58rem;
+        margin: 1.25rem auto;
+        padding: 1.75rem 2rem 2.25rem !important;
+        background: #ffffff;
+        border: 0.0625rem solid #dfe6ec;
+        border-radius: 1rem;
+        box-shadow: 0 0.5rem 1.25rem rgba(15, 23, 42, 0.04);
+    }
+
+    .o_cpri_assignment_wizard_form_header {
+        margin-bottom: 1.15rem;
+
+        .o_cpri_assignment_wizard_label {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #4b5563;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        h2 {
+            max-width: 42rem;
+            margin: 0 0 0.7rem;
+            color: #111827;
+            font-size: 1.35rem;
+            font-weight: 500;
+        }
+
+        p {
+            margin: 0;
+            color: #4b5563;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+    }
+
+    .o_cpri_assignment_wizard_section {
+        margin-bottom: 1.5rem;
+        padding: 0 !important;
+        background: transparent;
+        border: none;
+
+        .o_horizontal_separator {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 0.0625rem solid #e5e7eb;
+            color: #4b5563;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        label,
+        .o_form_label {
+            color: #111827;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .o_field_widget {
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .o_field_widget:not(.o_field_boolean_toggle):not(.o_field_many2many_tags) input,
+        .o_field_widget:not(.o_field_boolean_toggle):not(.o_field_many2many_tags) textarea {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .o_field_many2many_tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+
+            .badge,
+            .o_tag {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.3rem;
+                min-height: 1.75rem;
+                padding: 0.28rem 0.7rem;
+                border: 0.0625rem solid #d7e3ea;
+                border-radius: 999rem;
+                background-color: #f7fafb !important;
+                color: #0b2c3d !important;
+                font-size: 0.8125rem;
+                font-weight: 600;
+                line-height: 1.2;
+                box-shadow: 0 0.125rem 0.45rem rgba(11, 44, 61, 0.04);
+            }
+
+            .badge:hover,
+            .o_tag:hover {
+                background-color: #eef5f7 !important;
+                border-color: #c8d8e0;
+            }
+
+            .o_tag_badge_text,
+            .o_badge_text {
+                color: inherit !important;
+                max-width: 14rem;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .o_delete {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: #60737c !important;
+                opacity: 0.7;
+                margin-left: 0.15rem;
+
+                &:hover {
+                    opacity: 1;
+                    color: #0b2c3d !important;
+                }
+            }
+        }
+    }
+
+    .o_cpri_assignment_wizard_notes {
+        textarea {
+            min-height: 4rem;
+            line-height: 1.5;
+            resize: vertical;
+        }
+    }
+}
+
+
+//Project Teams (Rejection popoup view)
+.o_cpri_reject_wizard_page {
+    .o_form_sheet_bg {
+        background: #f6f8fa;
+    }
+
+    .o_form_sheet {
+        max-width: 48rem;
+        margin: 1.25rem auto;
+        padding: 1.75rem 2rem 2.25rem !important;
+        background: #ffffff;
+        border: 0.0625rem solid #dfe6ec;
+        border-radius: 1rem;
+        box-shadow: 0 0.5rem 1.25rem rgba(15, 23, 42, 0.04);
+    }
+
+    .o_cpri_reject_wizard_form_header {
+        margin-bottom: 1.15rem;
+
+        .o_cpri_reject_wizard_label {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #4b5563;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        h2 {
+            margin: 0 0 0.7rem;
+            color: #111827;
+            font-size: 1.35rem;
+            font-weight: 500;
+        }
+
+        p {
+            margin: 0;
+            color: #4b5563;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+    }
+
+    .o_cpri_reject_wizard_section {
+        margin-bottom: 1.5rem;
+        padding: 0 !important;
+        background: transparent;
+        border: none;
+
+        .o_horizontal_separator {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 0.0625rem solid #e5e7eb;
+            color: #4b5563;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        label,
+        .o_form_label {
+            color: #111827;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .o_field_widget {
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        textarea {
+            min-height: 5rem;
+            line-height: 1.5;
+            resize: vertical;
+        }
+    }
+
+    footer {
+        .btn-danger {
+            background: #b42318;
+            border-color: #b42318;
+
+            &:hover {
+                background: #991b1b;
+                border-color: #991b1b;
+            }
+        }
+    }
+}
+
 
 // ======================================================
 // Project Assignments Kanban
@@ -1812,4 +2045,5 @@
         transform: translateY(-0.05rem);
     }
 }
+
 

@@ -5,12 +5,24 @@
         <field name="name">project.request.reject.wizard.form</field>
         <field name="model">project.request.reject.wizard</field>
         <field name="arch" type="xml">
-            <form string="Reject Project Request">
-                <group>
-                    <field name="lead_id" readonly="1"/>
-                    <field name="rejection_category"/>
-                    <field name="rejection_reason"/>
-                </group>
+            <form string="Reject Project Request" class="o_cpri_reject_wizard_page">
+                <sheet>
+
+                    <div class="o_cpri_reject_wizard_form_header">
+                        <span class="o_cpri_reject_wizard_label">Project Request Decision</span>
+                        <h2>Reject Project Request</h2>
+                        <p>Select the rejection category and provide a clear reason for the client/project record.</p>
+                    </div>
+
+                    <group class="o_cpri_reject_wizard_section" string="Rejection Details">
+                        <field name="lead_id" readonly="1"/>
+                        <field name="rejection_category"/>
+                        <field name="rejection_reason"
+                            placeholder="Write the reason for rejecting this project request..."/>
+                    </group>
+
+                </sheet>
+
                 <footer>
                     <button name="action_confirm_rejection"
                             string="Confirm Rejection"

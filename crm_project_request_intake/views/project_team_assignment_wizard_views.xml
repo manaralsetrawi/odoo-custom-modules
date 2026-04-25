@@ -5,10 +5,18 @@
         <field name="name">project.team.assignment.wizard.form</field>
         <field name="model">project.team.assignment.wizard</field>
         <field name="arch" type="xml">
-            <form string="Assign Project Employees">
+            <form string="Assign Project Employees" class="o_cpri_assignment_wizard_page">
                 <sheet>
 
-                    <group string="Project Assignment Details">
+                    <div class="o_cpri_assignment_wizard_form_header">
+                        <span class="o_cpri_assignment_wizard_label">Project Resource Assignment</span>
+
+                        <h2>Assign Project Employees</h2>
+
+                        <p>Select the project team, review the suggested resources, and confirm the assignment period.</p>
+                    </div>
+
+                    <group class="o_cpri_assignment_wizard_section" string="Project Assignment Details">
                         <group>
                             <field name="lead_id" readonly="1"/>
                             <field name="project_type_id" readonly="1"/>
@@ -22,16 +30,17 @@
                         </group>
                     </group>
 
-                    <group string="Assigned Employees">
+                    <group class="o_cpri_assignment_wizard_section" string="Assigned Employees">
                         <field name="employee_ids"
-                               widget="many2many_tags"
-                               nolabel="1"/>
+                            widget="many2many_tags"
+                            nolabel="1"/>
                     </group>
 
-                    <group string="Assignment Notes">
+                    <group class="o_cpri_assignment_wizard_section o_cpri_assignment_wizard_notes"
+                        string="Assignment Notes">
                         <field name="assignment_notes"
-                               nolabel="1"
-                               placeholder="Write any notes about the selected employees or assignment..."/>
+                            nolabel="1"
+                            placeholder="Write any notes about the selected employees or assignment..."/>
                     </group>
 
                 </sheet>

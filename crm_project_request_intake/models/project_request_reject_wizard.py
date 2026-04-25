@@ -32,9 +32,7 @@ class ProjectRequestRejectWizard(models.TransientModel):
             raise ValidationError(
                 _("Only requests under review can be rejected."))
 
-        rejected_stage = lead._get_stage_by_xmlid(
-            'crm_project_request_intake.crm_stage_project_request_rejected'
-        )
+        
 
         full_reason = "%s\n\n%s" % (
             dict(self._fields['rejection_category'].selection).get(
@@ -45,7 +43,6 @@ class ProjectRequestRejectWizard(models.TransientModel):
         lead.write({
             'intake_state': 'rejected',
             'intake_rejection_reason': full_reason,
-            'stage_id': rejected_stage.id,
         })
         lead._send_project_request_rejection_email()
         
