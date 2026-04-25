@@ -22,7 +22,7 @@ class ProjectRequestDashboard extends Component {
         });
     }
 
-    async openLeads(status = false, priority = false) {
+    openLeads(status = false, priority = false) {
         const domain = [
             ["request_type", "=", "project_request"],
             ["type", "=", "lead"],
@@ -37,19 +37,13 @@ class ProjectRequestDashboard extends Component {
             domain.push(["intake_state", "in", ["submitted", "under_review"]]);
         }
 
-        const kanbanViewId = await this.orm.call(
-            "ir.model.data",
-            "_xmlid_to_res_id",
-            ["crm.view_crm_lead_kanban"]
-        );
-
         this.action.doAction({
             type: "ir.actions.act_window",
             name: "Project Requests",
             res_model: "crm.lead",
             view_mode: "kanban,list,form",
             views: [
-                [kanbanViewId, "kanban"],
+                ["crm.view_crm_lead_kanban", "kanban"],
                 [false, "list"],
                 [false, "form"],
             ],
@@ -57,7 +51,6 @@ class ProjectRequestDashboard extends Component {
             context: {
                 default_type: "lead",
                 default_request_type: "project_request",
-                search_default_project_request: 0,
                 group_by: false,
             },
             target: "current",
