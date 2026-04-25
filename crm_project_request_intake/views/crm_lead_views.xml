@@ -340,9 +340,19 @@
         <field name="inherit_id" ref="crm.view_crm_lead_kanban"/>
         <field name="priority">100</field>
         <field name="arch" type="xml">
-
+       
             <xpath expr="//kanban" position="attributes">
                 <attribute name="class" add=" o_cpri_leads_only_kanban_page" separator=" "/>
+            </xpath>
+
+            <xpath expr="//kanban/progressbar" position="after">
+                <field name="intake_state"/>
+                <field name="request_type"/>
+                <field name="intake_company_name"/>
+                <field name="intake_requested_budget"/>
+                <field name="intake_requested_duration"/>
+                <field name="intake_client_email"/>
+                <field name="intake_client_phone"/>
             </xpath>
 
             <xpath expr="//templates/t[@t-name='card']" position="replace">
@@ -352,32 +362,33 @@
                         <field name="intake_state" class="o_cpri_lead_state_badge"/>
                     </div>
 
-                    <div class="o_cpri_lead_card_info">
-                        <div>
-                            <span>Client</span>
-                            <strong><field name="contact_name"/></strong>
-                        </div>
+                    <div class="o_cpri_lead_client">
+                        <i class="fa fa-user"/>
+                        <field name="contact_name"/>
+                    </div>
 
+                    <div class="o_cpri_lead_card_info">
                         <div>
                             <span>Company</span>
                             <strong><field name="intake_company_name"/></strong>
                         </div>
-
-                        <div>
-                            <span>Request Type</span>
-                            <strong><field name="request_type"/></strong>
-                        </div>
-
                         <div>
                             <span>Budget</span>
                             <strong><field name="intake_requested_budget"/></strong>
                         </div>
+                        <div>
+                            <span>Duration</span>
+                            <strong><field name="intake_requested_duration"/></strong>
+                        </div>
+                        <div>
+                            <span>Request</span>
+                            <strong><field name="request_type"/></strong>
+                        </div>
                     </div>
 
-                    <div class="o_cpri_leads_card_tags">
-                        <field name="tag_ids"
-                            widget="many2many_tags"
-                            options="{'color_field': 'color'}"/>
+                    <div class="o_cpri_lead_contact_line">
+                        <span><i class="fa fa-envelope"/> <field name="intake_client_email"/></span>
+                        <span><i class="fa fa-phone"/> <field name="intake_client_phone"/></span>
                     </div>
 
                     <footer class="o_cpri_leads_card_footer">
@@ -385,7 +396,6 @@
                             <field name="priority" widget="priority"/>
                             <field name="activity_ids" widget="kanban_activity"/>
                         </div>
-
                         <field name="user_id"
                             widget="many2one_avatar_user"
                             domain="[('share', '=', False)]"/>
