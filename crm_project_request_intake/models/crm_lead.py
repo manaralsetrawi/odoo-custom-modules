@@ -661,3 +661,39 @@ class CrmProjectRequestLead(models.Model):
                 'budget': lead.intake_requested_budget,
             } for lead in recent_requests],
         }
+    
+
+    @api.model
+    def action_open_project_request_leads_from_dashboard(self, status=False, priority=False):
+        domain = [
+            ('request_type', '=', 'project_request'),
+            ('type', '=', 'lead'),
+        ]
+
+        if status:
+            domain.append(('intake_state', '=', status))
+
+        if priority:
+            domain.append(('priority', '=', priority))
+            domain.append(('intake_state', 'in', ['submitted', 'under_review']))
+
+        kanban_view = self.env.ref('crm.view_crm_lead_kanban', raise_if_not_found=False)
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Project Requests',
+            'res_model': 'crm.lead',
+            'view_mode': 'kanban,list,form',
+            'views': [
+                (kanban_view.id, 'kanban') if kanban_view else (False, 'kanban'),
+                (False, 'list'),
+                (False, 'form'),
+            ],
+            'domain': domain,
+            'context': {
+                'default_type': 'lead',
+                'default_request_type': 'project_request',
+                'group_by': False,
+            },
+            'target': 'current',
+        }
