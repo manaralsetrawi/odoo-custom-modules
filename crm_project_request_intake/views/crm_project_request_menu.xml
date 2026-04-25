@@ -66,12 +66,7 @@
                   sequence="10"
                   groups="crm_workflow_custom.group_crm_workflow_manager"/>
 
-            <menuitem id="menu_resource_allocations"
-                  name="Resource Allocations"
-                  parent="menu_project_resource_management_root"
-                  action="action_project_team_assignment_line"
-                  sequence="20"
-                  groups="crm_workflow_custom.group_crm_workflow_manager"/>
+
 
             <menuitem id="menu_project_assignment_teams"
                   name="Assignment Teams"
