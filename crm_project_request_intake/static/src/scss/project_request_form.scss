@@ -2131,3 +2131,74 @@
         gap: 0.4rem;
     }
 }
+
+.o_kanban_view.o_cpri_leads_only_kanban_page {
+    .o_kanban_record {
+        border-radius: 1rem;
+        padding: 1rem !important;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fcff 100%) !important;
+        border: 0.0625rem solid #cfe4ef !important;
+        border-top: 0.3rem solid #164465 !important;
+        box-shadow: 0 0.4rem 1.1rem rgba(22, 68, 101, 0.08) !important;
+    }
+
+    .o_cpri_lead_card_top {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.9rem;
+    }
+
+    .o_cpri_leads_card_title {
+        color: #0b2c3d;
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+    .o_cpri_lead_state_badge {
+        color: #164465;
+        font-size: 0.75rem;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .o_cpri_lead_card_info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.65rem;
+        margin-bottom: 0.9rem;
+
+        div {
+            padding: 0.65rem;
+            border-radius: 0.75rem;
+            background: #f3faff;
+            border: 0.0625rem solid #d9ecf5;
+        }
+
+        span {
+            display: block;
+            color: #5f7f93;
+            font-size: 0.72rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+
+        strong {
+            color: #164465;
+            font-size: 0.82rem;
+            font-weight: 800;
+        }
+    }
+
+    .o_cpri_leads_card_tags {
+        margin-bottom: 0.75rem;
+    }
+
+    .o_cpri_leads_card_footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 0.75rem;
+        border-top: 0.0625rem solid #d9ecf5;
+    }
+}
