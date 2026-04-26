@@ -844,11 +844,10 @@ button[name="iap_enrich"] {
         min-height: 240px;
     }
 }
-/* Hide CRM create buttons */
-.o_control_panel .o_control_panel_actions .o_cp_buttons .o_list_button_add,
-.o_control_panel .o_control_panel_actions .o_cp_buttons .o-kanban-button-new,
-.o_control_panel .o_control_panel_actions .o_cp_buttons .o-kanban-button-new,
-.o_control_panel .o_control_panel_actions .o_cp_buttons button.btn-primary,
-.o_control_panel .o_control_panel_actions .o_cp_buttons button.btn-secondary {
+/* Hide New + Generate Leads in CRM My Activities/Pipeline control panel */
+.o_control_panel .o_cp_buttons button.o_list_button_add,
+.o_control_panel .o_cp_buttons button.o-kanban-button-new,
+.o_control_panel .o_cp_buttons button[aria-label="New"],
+.o_control_panel .o_cp_buttons button:contains("Generate Leads") {
     display: none !important;
 }
