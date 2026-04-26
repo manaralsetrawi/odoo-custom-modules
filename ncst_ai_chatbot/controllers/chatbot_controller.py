@@ -78,6 +78,7 @@ class NCSTAIChatbotController(http.Controller):
         - For code questions, explain only the important logic.
         - Keep the answer under 120 words unless the user asks for details.
         - If the user asks for more detail, then expand the answer.
+        - Don't include * in the answers make the format clean and simple.
         """
 
         return """
