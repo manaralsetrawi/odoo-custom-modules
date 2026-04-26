@@ -16,48 +16,88 @@ class NCSTAIChatbotController(http.Controller):
 
         message_lower = message.lower().strip()
 
-        # 1) First check if the user is asking for live Odoo data
-        live_reply = self._handle_live_odoo_question(message_lower)
-        if live_reply:
-            return {"success": True, "reply": live_reply}
+        try:
+            # Help command
+            if message_lower in ["help", "commands", "what can you do"]:
+                return {"success": True, "reply": self._get_help_message()}
 
-        # 2) Otherwise send normal flow/system question to OpenAI
-        return self._ask_openai(message)
+            # Live Odoo data commands
+            live_reply = self._handle_live_odoo_question(message_lower)
+            if live_reply:
+                return {"success": True, "reply": live_reply}
+
+            # Normal AI flow questions
+            return self._ask_openai(message)
+
+        except Exception as e:
+            _logger.exception("Chatbot main error: %s", e)
+            return {
+                "success": False,
+                "reply": "Sorry, I could not complete this request. Please try another question.",
+            }
+
+    # ---------------------------------------------------------
+    # HELP MESSAGE
+    # ---------------------------------------------------------
+
+    def _get_help_message(self):
+        return """You can ask me:
+
+- Explain procurement workflow
+- Explain finance invoice review flow
+- Explain CRM project request flow
+- Show pending CRM project requests
+- Show finance invoices waiting for review
+- Show procurement approvals
+
+For best results, ask short questions."""
 
     # ---------------------------------------------------------
     # LIVE ODOO DATA COMMANDS
     # ---------------------------------------------------------
 
     def _handle_live_odoo_question(self, message_lower):
-        """
-        Detects simple user questions and returns real records from Odoo.
-        This saves tokens because simple record lists do not need OpenAI.
-        """
 
         if ("crm" in message_lower or "project request" in message_lower) and (
             "pending" in message_lower or "show" in message_lower or "waiting" in message_lower
         ):
-            return self._get_pending_crm_requests()
+            return self._safe_get_pending_crm_requests()
 
         if ("finance" in message_lower or "invoice" in message_lower or "invoices" in message_lower) and (
             "review" in message_lower or "pending" in message_lower or "waiting" in message_lower
         ):
-            return self._get_finance_invoices_waiting_review()
+            return self._safe_get_finance_invoices_waiting_review()
 
         if ("procurement" in message_lower or "purchase" in message_lower or "approval" in message_lower) and (
             "approval" in message_lower or "pending" in message_lower or "waiting" in message_lower
         ):
-            return self._get_procurement_pending_approvals()
+            return self._safe_get_procurement_pending_approvals()
 
         return False
 
-    def _get_pending_crm_requests(self):
-        """
-        Shows CRM project requests that are not finished yet.
-        Adjust field names if your module uses different names.
-        """
+    def _safe_get_pending_crm_requests(self):
+        try:
+            return self._get_pending_crm_requests()
+        except Exception as e:
+            _logger.exception("CRM chatbot error: %s", e)
+            return "I could not load CRM project requests. Please check the CRM module fields."
 
-        Lead = request.env["crm.lead"].sudo()
+    def _safe_get_finance_invoices_waiting_review(self):
+        try:
+            return self._get_finance_invoices_waiting_review()
+        except Exception as e:
+            _logger.exception("Finance chatbot error: %s", e)
+            return "I could not load finance invoices. Please check the finance review fields."
+
+    def _safe_get_procurement_pending_approvals(self):
+        try:
+            return self._get_procurement_pending_approvals()
+        except Exception as e:
+            _logger.exception("Procurement chatbot error: %s", e)
+            return "I could not load procurement approvals. Please check the procurement module fields."
+
+    def _get_pending_crm_requests(self):
+        Lead = request.env["crm.lead"]
 
         domain = [
             ("request_type", "=", "project_request"),
@@ -73,7 +113,9 @@ class NCSTAIChatbotController(http.Controller):
 
         for lead in leads:
             client = lead.partner_id.name or lead.contact_name or "No client"
-            state = dict(lead._fields["intake_state"].selection).get(lead.intake_state, lead.intake_state)
+            state = dict(lead._fields["intake_state"].selection).get(
+                lead.intake_state, lead.intake_state
+            )
 
             lines.append(
                 f"- {lead.name} | Client: {client} | Status: {state}"
@@ -82,12 +124,7 @@ class NCSTAIChatbotController(http.Controller):
         return "\n".join(lines)
 
     def _get_finance_invoices_waiting_review(self):
-        """
-        Shows invoices waiting for finance approval.
-        Uses finance_review_state from your custom finance_review_workflow module.
-        """
-
-        Move = request.env["account.move"].sudo()
+        Move = request.env["account.move"]
 
         domain = [
             ("move_type", "in", ["out_invoice", "in_invoice"]),
@@ -116,12 +153,7 @@ class NCSTAIChatbotController(http.Controller):
         return "\n".join(lines)
 
     def _get_procurement_pending_approvals(self):
-        """
-        Shows purchase orders waiting for financial approval.
-        Uses financial_approval_state from purchase_execution_workflow.
-        """
-
-        PurchaseOrder = request.env["purchase.order"].sudo()
+        PurchaseOrder = request.env["purchase.order"]
 
         domain = [
             ("financial_approval_state", "=", "to_approve"),
@@ -146,7 +178,7 @@ class NCSTAIChatbotController(http.Controller):
         return "\n".join(lines)
 
     # ---------------------------------------------------------
-    # OPENAI NORMAL CHAT
+    # OPENAI CHAT
     # ---------------------------------------------------------
 
     def _ask_openai(self, message):
@@ -160,57 +192,49 @@ class NCSTAIChatbotController(http.Controller):
                 "reply": "OpenAI API key is not configured in Odoo system parameters.",
             }
 
-        try:
-            response = requests.post(
-                "https://api.openai.com/v1/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {api_key}",
-                    "Content-Type": "application/json",
-                },
-                json={
-                    "model": model,
-                    "messages": [
-                        {"role": "system", "content": self._get_ncst_system_prompt()},
-                        {"role": "user", "content": message},
-                    ],
-                    "temperature": 0.2,
-                    "max_tokens": 180,
-                },
-                timeout=30,
-            )
+        response = requests.post(
+            "https://api.openai.com/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": model,
+                "messages": [
+                    {"role": "system", "content": self._get_ncst_system_prompt()},
+                    {"role": "user", "content": message},
+                ],
+                "temperature": 0.2,
+                "max_tokens": 160,
+            },
+            timeout=30,
+        )
 
-            if response.status_code != 200:
-                _logger.error("OpenAI API Error: %s", response.text)
-                return {
-                    "success": False,
-                    "reply": "Sorry, the chatbot could not connect to OpenAI right now.",
-                }
-
-            result = response.json()
-            reply = result["choices"][0]["message"]["content"]
-
-            return {
-                "success": True,
-                "reply": reply,
-            }
-
-        except Exception as e:
-            _logger.exception("Chatbot error: %s", e)
+        if response.status_code != 200:
+            _logger.error("OpenAI API Error: %s", response.text)
             return {
                 "success": False,
-                "reply": "An unexpected error happened while contacting the chatbot.",
+                "reply": "Sorry, the chatbot could not connect to OpenAI right now.",
             }
+
+        result = response.json()
+        reply = result["choices"][0]["message"]["content"]
+
+        return {
+            "success": True,
+            "reply": reply,
+        }
 
     def _get_ncst_system_prompt(self):
         return """
 You are NCST AI Assistant inside the NCST Odoo ERP system.
 
 Answer only based on the custom NCST Odoo system described below.
-Keep answers short, clear, and professional.
+Keep answers very short, clear, and professional.
 Use plain text only.
-Do NOT use markdown formatting like bold, stars, headings, or backticks.
-Use 3 to 6 short bullet points maximum.
-Keep answers under 120 words unless the user asks for details.
+Do not use markdown formatting like stars, bold, headings, or backticks.
+Use 3 to 5 short bullet points maximum.
+Keep answers under 100 words unless the user asks for more details.
 
 PROCUREMENT:
 Flow: Purchase Request, RFQs, quotation evaluation, recommended vendor, financial approval if required, purchase order, vendor acknowledgment, goods receipt, end-user confirmation, vendor bill verification, payment, closure.
@@ -224,8 +248,6 @@ CRM:
 Flow: Website Contact Form, Project Request, CRM Lead, Submitted, Under Review, Approved or Rejected, Team Assignment Wizard, Opportunity, Initial Discussion.
 Rules: Only project requests go through review. Approval opens team assignment. Suggested team is based on project type and availability.
 
-If asked about live records, tell the user they can ask:
-show pending CRM project requests
-show finance invoices waiting for review
-show procurement approvals
+If asked about live records, tell the user to type:
+help
 """
