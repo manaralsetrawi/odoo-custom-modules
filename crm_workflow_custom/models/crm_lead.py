@@ -559,6 +559,8 @@ class CrmLead(models.Model):
             stage = record._get_stage_by_name('Approved')
             record.stage_id = stage.id
             record.approval_state = 'approved'
+            record.approved_by = self.env.user
+            record.approved_on = fields.Datetime.now()
             record.followup_status = 'done'
             record.last_followup_date = fields.Date.today()
             record.inactive_alert = False
