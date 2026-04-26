@@ -101,6 +101,14 @@
                 <div class="crmwf_summary_wrap"
                      invisible="type == 'lead' or is_stage_new_inquiry or is_stage_initial_discussion">
 
+                    <!-- Guidance -->
+                    <div class="crmwf_hint_box">
+                        <div class="crmwf_hint_title">Workflow Guidance</div>
+                        <div class="crmwf_hint_text">
+                            Review the request, complete the technical evaluation, upload a text-based proposal PDF if available, generate or refine the proposal summary, then send the request for approval.
+                        </div>
+                    </div>
+                    
                     <!-- Top summary cards -->
                     <group class="crmwf_row">
 
@@ -122,13 +130,6 @@
 
                     </group>
 
-                    <!-- Guidance -->
-                    <div class="crmwf_hint_box">
-                        <div class="crmwf_hint_title">Workflow Guidance</div>
-                        <div class="crmwf_hint_text">
-                            Review the request, complete the technical evaluation, upload a text-based proposal PDF if available, generate or refine the proposal summary, then send the request for approval.
-                        </div>
-                    </div>
 
                     <!-- Main workflow cards -->
                     <group class="crmwf_row">
