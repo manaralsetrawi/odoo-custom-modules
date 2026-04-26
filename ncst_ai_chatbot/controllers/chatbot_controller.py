@@ -40,7 +40,7 @@ class NCSTAIChatbotController(http.Controller):
                         {"role": "user", "content": message},
                     ],
                     "temperature": 0.2,
-                    "max_tokens": 450,
+                    "max_tokens": 180,
                 },
                 timeout=30,
             )
@@ -69,8 +69,15 @@ class NCSTAIChatbotController(http.Controller):
 
     def _get_ncst_system_prompt(self):
         """
-        This prompt teaches the chatbot about the custom NCST Odoo modules.
-        Keep it short enough to save tokens, but detailed enough for flow questions.
+        GENERAL ANSWERING STYLE:
+        - Always answer briefly.
+        - Use 3 to 6 bullet points maximum.
+        - Do not write long paragraphs.
+        - For flow questions, summarize the main steps only.
+        - For role questions, mention only the responsible users.
+        - For code questions, explain only the important logic.
+        - Keep the answer under 120 words unless the user asks for details.
+        - If the user asks for more detail, then expand the answer.
         """
 
         return """
