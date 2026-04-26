@@ -104,7 +104,7 @@
                     <!-- Top summary cards -->
                     <group class="crmwf_row">
 
-                        <group string="Workflow Summary"
+                        <group string="Project Evaluation"
                                class="crmwf_card crmwf_card_summary"
                                groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
                             <field name="technical_feasibility" readonly="not can_edit_technical_fields"/>

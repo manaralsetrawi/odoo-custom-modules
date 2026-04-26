@@ -728,3 +728,90 @@ button[name="iap_enrich"] {
         margin-top: 6px;
     }
 }
+/* === MAIN GRID SPACING === */
+.crmwf_summary_wrap {
+    margin-top: 1.5rem;
+}
+
+/* Row spacing between sections */
+.crmwf_row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Cards */
+.crmwf_card {
+    flex: 1;
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border: 1px solid #e3e8ee;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+/* Card titles */
+.crmwf_card > .o_group_title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0b2c3d;
+    margin-bottom: 1rem;
+    letter-spacing: 0.3px;
+}
+
+/* === FIELD SPACING === */
+.crmwf_card .o_field_widget {
+    margin-bottom: 1rem;
+}
+
+/* Label spacing */
+.crmwf_card label {
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+    color: #5f6c7b;
+}
+
+/* Inputs */
+.crmwf_card input,
+.crmwf_card textarea {
+    border-radius: 0.6rem !important;
+    padding: 0.5rem 0.75rem;
+}
+
+/* === GUIDANCE BOX === */
+.crmwf_hint_box {
+    background: #f4f8fb;
+    border: 1px solid #dce6ee;
+    border-radius: 1rem;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 1.5rem;
+}
+
+.crmwf_hint_title {
+    font-weight: 700;
+    color: #0b2c3d;
+    margin-bottom: 0.4rem;
+}
+
+.crmwf_hint_text {
+    color: #5f6c7b;
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+/* === PROPOSAL CARD IMPROVEMENT === */
+.crmwf_card_proposal textarea {
+    min-height: 90px;
+}
+
+/* === BUTTON SPACING === */
+.crmwf_card button {
+    margin-top: 0.5rem;
+}
+
+/* === MOBILE FALLBACK === */
+@media (max-width: 900px) {
+    .crmwf_row {
+        flex-direction: column;
+    }
+}
