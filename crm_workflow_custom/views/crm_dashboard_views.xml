@@ -21,5 +21,21 @@
               action="action_crm_opportunity_dashboard"
               sequence="10"
               groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"/>
+              
+    <!-- Force CRM My Activities to open Kanban first and show only project request opportunities -->
+    <record id="crm.crm_lead_action_my_activities" model="ir.actions.act_window">
+        <field name="view_mode">kanban,list,graph,pivot,calendar,form,activity</field>
+        <field name="domain">[
+            ('type', '=', 'opportunity'),
+            ('request_type', '=', 'project_request'),
+            ('active', 'in', [True, False]),
+            ('activity_ids.active', 'in', [True, False])
+        ]</field>
+        <field name="context">{
+            'default_type': 'opportunity',
+            'default_request_type': 'project_request',
+            'force_search_count': 1
+        }</field>
+    </record>
 
 </odoo>

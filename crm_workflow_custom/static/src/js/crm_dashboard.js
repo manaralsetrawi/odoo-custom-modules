@@ -9,6 +9,11 @@ class CrmDashboard extends Component {
         this.orm = useService("orm");
         this.action = useService("action");
 
+        this.baseDomain = [
+            ["type", "=", "opportunity"],
+            ["request_type", "=", "project_request"],
+        ];
+
         this.state = useState({
             data: {
                 total_requests: 0,
@@ -44,23 +49,23 @@ class CrmDashboard extends Component {
     }
 
     openFilteredRequests(filterType) {
-        let domain = [];
-        let actionName = "CRM Requests";
+        let domain = [...this.baseDomain];
+        let actionName = "Project Requests";
 
         if (filterType === "new_inquiries") {
-            domain = [["stage_id.name", "=", "New Inquiry"]];
+            domain.push(["stage_id.name", "=", "New Inquiry"]);
             actionName = "New Inquiries";
         } else if (filterType === "waiting_approval") {
-            domain = [["stage_id.name", "=", "Waiting Approval"]];
+            domain.push(["stage_id.name", "=", "Waiting Approval"]);
             actionName = "Waiting Approval Requests";
         } else if (filterType === "approved") {
-            domain = [["stage_id.name", "=", "Approved"]];
+            domain.push(["stage_id.name", "=", "Approved"]);
             actionName = "Approved Requests";
         } else if (filterType === "rejected") {
-            domain = [["stage_id.name", "=", "Rejected"]];
+            domain.push(["stage_id.name", "=", "Rejected"]);
             actionName = "Rejected Requests";
         } else if (filterType === "overdue_followups") {
-            domain = [["followup_status", "=", "overdue"]];
+            domain.push(["followup_status", "=", "overdue"]);
             actionName = "Overdue Follow-ups";
         }
 
@@ -68,14 +73,18 @@ class CrmDashboard extends Component {
             type: "ir.actions.act_window",
             name: actionName,
             res_model: "crm.lead",
-            view_mode: "list,kanban,form",
+            view_mode: "kanban,list,form",
             views: [
-                [false, "list"],
                 [false, "kanban"],
+                [false, "list"],
                 [false, "form"],
             ],
             target: "current",
             domain: domain,
+            context: {
+                default_type: "opportunity",
+                default_request_type: "project_request",
+            },
         });
     }
 }

@@ -116,6 +116,8 @@
         <field name="name">CRM Workflow Analysis</field>
         <field name="res_model">crm.lead</field>
         <field name="view_mode">list,graph,pivot,form</field>
+        <field name="domain">[('type', '=', 'opportunity'), ('request_type', '=', 'project_request')]</field>
+        <field name="context">{'default_type': 'opportunity', 'default_request_type': 'project_request'}</field>
         <field name="search_view_id" ref="view_crm_lead_search_workflow_custom"/>
     </record>
 

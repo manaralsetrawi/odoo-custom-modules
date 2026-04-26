@@ -14,25 +14,38 @@ class CrmDashboard(models.Model):
     rejected_requests = fields.Integer(string='Rejected Requests')
     overdue_followups = fields.Integer(string='Overdue Follow-ups')
 
+    def _get_project_request_domain(self):
+        return [
+            ('type', '=', 'opportunity'),
+            ('request_type', '=', 'project_request'),
+        ]
+
     @api.model
     def get_dashboard_data(self):
         lead_model = self.env['crm.lead']
+        base_domain = self._get_project_request_domain()
 
-        total_requests = lead_model.search_count([])
-        new_inquiries = lead_model.search_count([('stage_id.name', '=', 'New Inquiry')])
-        waiting_approval = lead_model.search_count([('stage_id.name', '=', 'Waiting Approval')])
-        approved_requests = lead_model.search_count([('stage_id.name', '=', 'Approved')])
-        rejected_requests = lead_model.search_count([('stage_id.name', '=', 'Rejected')])
-        overdue_followups = lead_model.search_count([('followup_status', '=', 'overdue')])
+        total_requests = lead_model.search_count(base_domain)
+        new_inquiries = lead_model.search_count(base_domain + [('stage_id.name', '=', 'New Inquiry')])
+        waiting_approval = lead_model.search_count(base_domain + [('stage_id.name', '=', 'Waiting Approval')])
+        approved_requests = lead_model.search_count(base_domain + [('stage_id.name', '=', 'Approved')])
+        rejected_requests = lead_model.search_count(base_domain + [('stage_id.name', '=', 'Rejected')])
+        overdue_followups = lead_model.search_count(base_domain + [('followup_status', '=', 'overdue')])
 
-        recent_requests_records = lead_model.search([], order='create_date desc', limit=5)
+        recent_requests_records = lead_model.search(
+            base_domain,
+            order='create_date desc',
+            limit=5
+        )
+
         waiting_approval_records = lead_model.search(
-            [('stage_id.name', '=', 'Waiting Approval')],
+            base_domain + [('stage_id.name', '=', 'Waiting Approval')],
             order='write_date desc',
             limit=5
         )
+
         overdue_records = lead_model.search(
-            [('followup_status', '=', 'overdue')],
+            base_domain + [('followup_status', '=', 'overdue')],
             order='next_followup_date asc',
             limit=5
         )
@@ -90,6 +103,5 @@ class CrmDashboard(models.Model):
             'Waiting Approval': 'crmdsh_badge_waiting',
             'Approved': 'crmdsh_badge_approved',
             'Rejected': 'crmdsh_badge_rejected',
-            'Under Review': 'crmdsh_badge_review',
         }
         return mapping.get(stage_name, 'crmdsh_badge_default')
