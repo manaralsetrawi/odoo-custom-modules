@@ -57,5 +57,6 @@
         'search_default_activities_upcoming_all': 0,
         'force_search_count': 1
     }</field>
+</record>
 
 </odoo>
