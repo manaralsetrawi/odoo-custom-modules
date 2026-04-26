@@ -844,11 +844,15 @@ button[name="iap_enrich"] {
         min-height: 240px;
     }
 }
-/* Hide default New and Generate Leads buttons in CRM lead/opportunity views */
-.o_action_manager {
+/* Hide New only when the current action title is My Activities */
+.o_control_panel:has(.o_breadcrumb .active:contains("My Activities")) {
     button.o_list_button_add,
-    button.o-kanban-button-new,
-    button.o_button_generate_leads {
+    button.o-kanban-button-new {
         display: none !important;
     }
+}
+
+/* Always hide Generate Leads */
+.o_action_manager button.o_button_generate_leads {
+    display: none !important;
 }
