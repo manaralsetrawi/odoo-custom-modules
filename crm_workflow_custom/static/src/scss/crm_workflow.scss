@@ -844,3 +844,8 @@ button[name="iap_enrich"] {
         min-height: 240px;
     }
 }
+/* Hide New and Generate Leads only on CRM lead/opportunity views */
+.o_action_manager:has(.o_opportunity_kanban) .o_control_panel .o_cp_buttons .btn-primary,
+.o_action_manager:has(.o_opportunity_kanban) .o_control_panel .o_cp_buttons .btn-secondary {
+    display: none !important;
+}
