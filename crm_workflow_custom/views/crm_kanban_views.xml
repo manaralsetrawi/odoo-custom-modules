@@ -84,9 +84,14 @@
     <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
     <field name="arch" type="xml">
 
-        <!-- Disable create (removes New button) -->
+        <!-- Disable create (removes New button)
         <xpath expr="//kanban" position="attributes">
             <attribute name="create">false</attribute>
+            
+        </xpath> -->
+        <xpath expr="//kanban" position="attributes">
+            <attribute name="create">true</attribute>
+            <attribute name="quick_create">false</attribute>
         </xpath>
 
     </field>

@@ -48,15 +48,11 @@
     <field name="target">current</field>
     <field name="context">{
         'default_type': 'opportunity',
-        'default_request_type': 'project_request'
+        'default_request_type': 'project_request',
+        'search_default_my_pipeline': 0,
+        'search_default_assigned_to_me': 0,
+        'force_search_count': 1
     }</field>
 </record>
-
-<menuitem id="menu_create_project_request"
-          name="Create Project Request"
-          parent="crm.crm_menu_root"
-          action="action_create_project_request"
-          sequence="3"
-          groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"/>
 
 </odoo>
