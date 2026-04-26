@@ -205,7 +205,7 @@ For best results, ask short questions."""
                     {"role": "user", "content": message},
                 ],
                 "temperature": 0.2,
-                "max_tokens": 160,
+                "max_tokens": 220,
             },
             timeout=30,
         )
@@ -245,8 +245,30 @@ Flow: Draft Invoice, Submit for Review, Finance Review, Approved or Rejected, Po
 Rules: Invoice cannot be posted unless finance review is approved. Reviewer can approve, reject, or return to draft. Rejection reason should be recorded.
 
 CRM:
-Flow: Website Contact Form, Project Request, CRM Lead, Submitted, Under Review, Approved or Rejected, Team Assignment Wizard, Opportunity, Initial Discussion.
-Rules: Only project requests go through review. Approval opens team assignment. Suggested team is based on project type and availability.
+Purpose: Manages client project requests from website/contact form until opportunity and project resource assignment.
+
+Website flow:
+Contact Us form -> Message Type selected.
+General Inquiry stays as normal inquiry.
+Project Request shows extra project fields and creates CRM lead.
+
+Project request intake flow:
+New Inquiry -> Submitted -> Under Review -> Approved or Rejected -> Team Assignment Wizard -> Converted to Opportunity -> Initial Discussion.
+
+Main CRM pipeline stages:
+New Inquiry, Initial Discussion, Requirement Analysis, Solution Design, Proposal Submission, Negotiation, Won/Lost.
+
+Project Resource Management:
+Project Teams store team name, project types, active status, and team employees.
+Project Assignments connect opportunities/projects with selected teams and assigned employees.
+Team suggestion is based on project type and availability/capacity.
+
+Important CRM rules:
+Only project request leads go through review.
+Start Review moves the request to Under Review.
+Approval opens team assignment wizard.
+After team assignment, the request becomes an opportunity.
+Rejected requests should include a rejection reason.
 
 If asked about live records, tell the user to type:
 help
