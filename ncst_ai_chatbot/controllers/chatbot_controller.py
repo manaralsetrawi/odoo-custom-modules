@@ -69,16 +69,15 @@ class NCSTAIChatbotController(http.Controller):
 
     def _get_ncst_system_prompt(self):
         """
-        GENERAL ANSWERING STYLE:
-        - Always answer briefly.
-        - Use 3 to 6 bullet points maximum.
-        - Do not write long paragraphs.
-        - For flow questions, summarize the main steps only.
-        - For role questions, mention only the responsible users.
-        - For code questions, explain only the important logic.
-        - Keep the answer under 120 words unless the user asks for details.
-        - If the user asks for more detail, then expand the answer.
-        - Don't include * in the answers make the format clean and simple.
+    GENERAL ANSWERING STYLE:
+    - Always answer briefly.
+    - Use 3 to 6 bullet points maximum.
+    - Do not write long paragraphs.
+    - Do NOT use markdown formatting like **bold**, *, #, or backticks.
+    - Use plain text only.
+    - For flow questions, summarize the main steps only.
+    - For role questions, mention only the responsible users.
+    - Keep the answer under 120 words unless the user asks for details.
         """
 
         return """
