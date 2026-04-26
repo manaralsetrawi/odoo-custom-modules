@@ -844,8 +844,11 @@ button[name="iap_enrich"] {
         min-height: 240px;
     }
 }
-/* Hide New and Generate Leads only on CRM lead/opportunity views */
-.o_action_manager:has(.o_opportunity_kanban) .o_control_panel .o_cp_buttons .btn-primary,
-.o_action_manager:has(.o_opportunity_kanban) .o_control_panel .o_cp_buttons .btn-secondary {
+/* Hide CRM create buttons */
+.o_control_panel .o_control_panel_actions .o_cp_buttons .o_list_button_add,
+.o_control_panel .o_control_panel_actions .o_cp_buttons .o-kanban-button-new,
+.o_control_panel .o_control_panel_actions .o_cp_buttons .o-kanban-button-new,
+.o_control_panel .o_control_panel_actions .o_cp_buttons button.btn-primary,
+.o_control_panel .o_control_panel_actions .o_cp_buttons button.btn-secondary {
     display: none !important;
 }
