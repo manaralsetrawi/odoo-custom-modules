@@ -38,6 +38,32 @@ class CrmLead(models.Model):
         ('rejected', 'Rejected'),
     ], string="Approval State", default='not_needed', tracking=True)
 
+    approved_by = fields.Many2one(
+        'res.users',
+        string="Approved By",
+        readonly=True,
+        tracking=True,
+    )
+
+    approved_on = fields.Datetime(
+        string="Approved On",
+        readonly=True,
+        tracking=True,
+    )
+
+    rejected_by = fields.Many2one(
+        'res.users',
+        string="Rejected By",
+        readonly=True,
+        tracking=True,
+    )
+
+    rejected_on = fields.Datetime(
+        string="Rejected On",
+        readonly=True,
+        tracking=True,
+    )
+
     last_followup_date = fields.Date(string="Last Follow-up Date", tracking=True)
     next_followup_date = fields.Date(string="Next Follow-up Date", tracking=True)
 
@@ -560,6 +586,8 @@ class CrmLead(models.Model):
             stage = record._get_stage_by_name('Rejected')
             record.stage_id = stage.id
             record.approval_state = 'rejected'
+            record.rejected_by = self.env.user
+            record.rejected_on = fields.Datetime.now()
             record.followup_status = 'done'
             record.last_followup_date = fields.Date.today()
             record.inactive_alert = False

@@ -815,3 +815,32 @@ button[name="iap_enrich"] {
         flex-direction: column;
     }
 }
+/* Equal card heights in CRM workflow form */
+.o_form_view {
+    .crmwf_summary_wrap .crmwf_row {
+        align-items: stretch !important;
+    }
+
+    .crmwf_summary_wrap .crmwf_card,
+    .crmwf_workflow_page .crmwf_card {
+        min-height: 260px;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .crmwf_summary_wrap .crmwf_row > .o_group,
+    .crmwf_summary_wrap .crmwf_row > .crmwf_card {
+        flex: 1 1 0;
+    }
+
+    .crmwf_card_proposal {
+        min-height: 300px;
+    }
+
+    .crmwf_card_approval,
+    .crmwf_card_followup {
+        min-height: 240px;
+    }
+}

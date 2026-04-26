@@ -201,9 +201,25 @@
                     <group class="crmwf_row">
                         <group string="Approval Information" class="crmwf_card crmwf_card_approval">
                             <field name="approval_state" readonly="1"/>
+
+                            <field name="approved_by"
+                                readonly="1"
+                                invisible="approval_state != 'approved'"/>
+                            <field name="approved_on"
+                                readonly="1"
+                                invisible="approval_state != 'approved'"/>
+
+                            <field name="rejected_by"
+                                readonly="1"
+                                invisible="approval_state != 'rejected'"/>
+                            <field name="rejected_on"
+                                readonly="1"
+                                invisible="approval_state != 'rejected'"/>
+
                             <field name="rejection_reason"
-                                   invisible="approval_state != 'rejected'"
-                                   placeholder="Enter the reason for rejection..."/>
+                                readonly="1"
+                                invisible="approval_state != 'rejected'"
+                                placeholder="Enter the reason for rejection..."/>
                         </group>
 
                         <group string="Follow-up Tracking" class="crmwf_card crmwf_card_followup">
