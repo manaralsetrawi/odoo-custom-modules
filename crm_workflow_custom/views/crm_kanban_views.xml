@@ -77,5 +77,19 @@
 
         </field>
     </record>
+    <!-- This view is used to hide the create button on the kanban view, as creation of leads should be done through a custom form or other means -->
+    <record id="crm_lead_kanban_hide_create" model="ir.ui.view">
+    <field name="name">crm.lead.kanban.hide.create</field>
+    <field name="model">crm.lead</field>
+    <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+    <field name="arch" type="xml">
+
+        <!-- Disable create (removes New button) -->
+        <xpath expr="//kanban" position="attributes">
+            <attribute name="create">false</attribute>
+        </xpath>
+
+    </field>
+</record>
 
 </odoo>
