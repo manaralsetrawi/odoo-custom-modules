@@ -51,8 +51,11 @@
         'default_request_type': 'project_request',
         'search_default_my_pipeline': 0,
         'search_default_assigned_to_me': 0,
+        'search_default_user_id': 0,
+        'search_default_activities_overdue': 0,
+        'search_default_activities_today': 0,
+        'search_default_activities_upcoming_all': 0,
         'force_search_count': 1
     }</field>
-</record>
 
 </odoo>
