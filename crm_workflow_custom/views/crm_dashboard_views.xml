@@ -21,9 +21,10 @@
               action="action_crm_opportunity_dashboard"
               sequence="10"
               groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager"/>
-              
+
     <!-- Force CRM My Activities to open Kanban first and show only project request opportunities -->
     <record id="crm.crm_lead_action_my_activities" model="ir.actions.act_window">
+        <field name="view_id" eval="False"/>
         <field name="view_mode">kanban,list,graph,pivot,calendar,form,activity</field>
         <field name="domain">[
             ('type', '=', 'opportunity'),
