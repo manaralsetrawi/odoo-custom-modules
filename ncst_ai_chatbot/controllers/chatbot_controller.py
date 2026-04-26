@@ -17,47 +17,50 @@ class NCSTAIChatbotController(http.Controller):
         message_lower = message.lower().strip()
 
         try:
-            # Help command
             if message_lower in ["help", "commands", "what can you do"]:
                 return {"success": True, "reply": self._get_help_message()}
 
-            # Live Odoo data commands
             live_reply = self._handle_live_odoo_question(message_lower)
             if live_reply:
                 return {"success": True, "reply": live_reply}
 
-            # Normal AI flow questions
             return self._ask_openai(message)
 
         except Exception as e:
-            _logger.exception("Chatbot main error: %s", e)
+            _logger.exception("Chatbot error: %s", e)
             return {
                 "success": False,
                 "reply": "Sorry, I could not complete this request. Please try another question.",
             }
 
     # ---------------------------------------------------------
-    # HELP MESSAGE
+    # HELP
     # ---------------------------------------------------------
 
     def _get_help_message(self):
         return """You can ask me:
 
+- Explain CRM workflow
+- Explain CRM stages
+- Explain project request approval
+- Explain project team assignment
 - Explain procurement workflow
-- Explain finance invoice review flow
-- Explain CRM project request flow
+- Explain purchase request workflow
+- Explain financial approval in procurement
+- Explain GRN confirmation
+- Explain vendor bill verification
+- Explain finance invoice review
+- Explain budget reservation
+- Explain expense workflow
 - Show pending CRM project requests
 - Show finance invoices waiting for review
-- Show procurement approvals
-
-For best results, ask short questions."""
+- Show procurement approvals"""
 
     # ---------------------------------------------------------
-    # LIVE ODOO DATA COMMANDS
+    # LIVE ODOO DATA
     # ---------------------------------------------------------
 
     def _handle_live_odoo_question(self, message_lower):
-
         if ("crm" in message_lower or "project request" in message_lower) and (
             "pending" in message_lower or "show" in message_lower or "waiting" in message_lower
         ):
@@ -77,108 +80,101 @@ For best results, ask short questions."""
 
     def _safe_get_pending_crm_requests(self):
         try:
-            return self._get_pending_crm_requests()
+            Lead = request.env["crm.lead"]
+
+            domain = [
+                ("request_type", "=", "project_request"),
+                ("type", "=", "lead"),
+                ("intake_state", "in", ["submitted", "under_review"]),
+            ]
+
+            leads = Lead.search(domain, limit=10, order="create_date desc")
+
+            if not leads:
+                return "No pending CRM project requests found."
+
+            lines = ["Pending CRM project requests:"]
+
+            for lead in leads:
+                client = lead.contact_name or lead.intake_client_name or lead.partner_id.name or "No client"
+                state = dict(lead._fields["intake_state"].selection).get(
+                    lead.intake_state, lead.intake_state
+                )
+                lines.append(f"- {lead.name} | Client: {client} | Status: {state}")
+
+            return "\n".join(lines)
+
         except Exception as e:
-            _logger.exception("CRM chatbot error: %s", e)
-            return "I could not load CRM project requests. Please check the CRM module fields."
+            _logger.exception("CRM live data error: %s", e)
+            return "I could not load CRM project requests. Please check the CRM fields."
 
     def _safe_get_finance_invoices_waiting_review(self):
         try:
-            return self._get_finance_invoices_waiting_review()
+            Move = request.env["account.move"]
+
+            domain = [
+                ("move_type", "=", "out_invoice"),
+                ("finance_review_state", "in", ["draft", "submitted"]),
+                ("state", "=", "draft"),
+            ]
+
+            invoices = Move.search(domain, limit=10, order="invoice_date desc, create_date desc")
+
+            if not invoices:
+                return "No finance invoices waiting for review found."
+
+            lines = ["Finance invoices waiting for review:"]
+
+            for inv in invoices:
+                partner = inv.partner_id.name or "No customer"
+                amount = inv.amount_total
+                state = dict(inv._fields["finance_review_state"].selection).get(
+                    inv.finance_review_state, inv.finance_review_state
+                )
+                lines.append(
+                    f"- {inv.name or 'Draft Invoice'} | Customer: {partner} | Amount: {amount:.3f} | Review: {state}"
+                )
+
+            return "\n".join(lines)
+
         except Exception as e:
-            _logger.exception("Finance chatbot error: %s", e)
+            _logger.exception("Finance live data error: %s", e)
             return "I could not load finance invoices. Please check the finance review fields."
 
     def _safe_get_procurement_pending_approvals(self):
         try:
-            return self._get_procurement_pending_approvals()
+            PurchaseOrder = request.env["purchase.order"]
+
+            domain = [
+                ("financial_approval_state", "=", "to_approve"),
+            ]
+
+            orders = PurchaseOrder.search(domain, limit=10, order="create_date desc")
+
+            if not orders:
+                return "No procurement approvals are currently pending."
+
+            lines = ["Pending procurement approvals:"]
+
+            for po in orders:
+                vendor = po.partner_id.name or "No vendor"
+                amount = po.amount_total
+                level = dict(po._fields["required_financial_approval_level"].selection).get(
+                    po.required_financial_approval_level,
+                    po.required_financial_approval_level or "Not specified"
+                )
+                lines.append(
+                    f"- {po.name} | Vendor: {vendor} | Amount: {amount:.3f} | Required approval: {level}"
+                )
+
+            return "\n".join(lines)
+
         except Exception as e:
-            _logger.exception("Procurement chatbot error: %s", e)
-            return "I could not load procurement approvals. Please check the procurement module fields."
-
-    def _get_pending_crm_requests(self):
-        Lead = request.env["crm.lead"]
-
-        domain = [
-            ("request_type", "=", "project_request"),
-            ("intake_state", "in", ["submitted", "under_review"]),
-        ]
-
-        leads = Lead.search(domain, limit=10, order="create_date desc")
-
-        if not leads:
-            return "No pending CRM project requests found."
-
-        lines = ["Pending CRM project requests:"]
-
-        for lead in leads:
-            client = lead.partner_id.name or lead.contact_name or "No client"
-            state = dict(lead._fields["intake_state"].selection).get(
-                lead.intake_state, lead.intake_state
-            )
-
-            lines.append(
-                f"- {lead.name} | Client: {client} | Status: {state}"
-            )
-
-        return "\n".join(lines)
-
-    def _get_finance_invoices_waiting_review(self):
-        Move = request.env["account.move"]
-
-        domain = [
-            ("move_type", "in", ["out_invoice", "in_invoice"]),
-            ("finance_review_state", "in", ["draft", "submitted"]),
-            ("state", "=", "draft"),
-        ]
-
-        invoices = Move.search(domain, limit=10, order="invoice_date desc, create_date desc")
-
-        if not invoices:
-            return "No finance invoices waiting for review found."
-
-        lines = ["Finance invoices waiting for review:"]
-
-        for inv in invoices:
-            partner = inv.partner_id.name or "No partner"
-            amount = inv.amount_total
-            state = dict(inv._fields["finance_review_state"].selection).get(
-                inv.finance_review_state, inv.finance_review_state
-            )
-
-            lines.append(
-                f"- {inv.name or 'Draft Invoice'} | Partner: {partner} | Amount: {amount:.3f} | Review: {state}"
-            )
-
-        return "\n".join(lines)
-
-    def _get_procurement_pending_approvals(self):
-        PurchaseOrder = request.env["purchase.order"]
-
-        domain = [
-            ("financial_approval_state", "=", "to_approve"),
-        ]
-
-        orders = PurchaseOrder.search(domain, limit=10, order="create_date desc")
-
-        if not orders:
-            return "No procurement approvals are currently pending."
-
-        lines = ["Pending procurement approvals:"]
-
-        for po in orders:
-            vendor = po.partner_id.name or "No vendor"
-            amount = po.amount_total
-            level = po.required_financial_approval_level or "Not specified"
-
-            lines.append(
-                f"- {po.name} | Vendor: {vendor} | Amount: {amount:.3f} | Required approval: {level}"
-            )
-
-        return "\n".join(lines)
+            _logger.exception("Procurement live data error: %s", e)
+            return "I could not load procurement approvals. Please check the procurement fields."
 
     # ---------------------------------------------------------
-    # OPENAI CHAT
+    # OPENAI
     # ---------------------------------------------------------
 
     def _ask_openai(self, message):
@@ -205,7 +201,7 @@ For best results, ask short questions."""
                     {"role": "user", "content": message},
                 ],
                 "temperature": 0.2,
-                "max_tokens": 220,
+                "max_tokens": 230,
             },
             timeout=30,
         )
@@ -229,47 +225,234 @@ For best results, ask short questions."""
         return """
 You are NCST AI Assistant inside the NCST Odoo ERP system.
 
-Answer only based on the custom NCST Odoo system described below.
-Keep answers very short, clear, and professional.
+Answer only based on the custom NCST Odoo system described here.
+Keep answers short, clear, and professional.
 Use plain text only.
-Do not use markdown formatting like stars, bold, headings, or backticks.
-Use 3 to 5 short bullet points maximum.
-Keep answers under 100 words unless the user asks for more details.
+Do not use markdown symbols, stars, bold, headings, or backticks.
+Use 3 to 6 short bullet points maximum.
+Keep answers under 120 words unless the user asks for more detail.
 
-PROCUREMENT:
-Flow: Purchase Request, RFQs, quotation evaluation, recommended vendor, financial approval if required, purchase order, vendor acknowledgment, goods receipt, end-user confirmation, vendor bill verification, payment, closure.
-Rules: Above BD 1000 requires at least 3 quotations. Up to BD 5000 requires Director of Finance. Up to BD 9999 requires Deputy CEO. Above BD 9999 requires CEO. Closure requires acknowledgment, receipt confirmation, invoice verification, and payment.
+CRM MODULE:
+Purpose:
+Manages project requests from website/contact form, review, approval, team assignment, opportunity creation, and project pipeline tracking.
 
-FINANCE:
-Flow: Draft Invoice, Submit for Review, Finance Review, Approved or Rejected, Posting after approval.
-Rules: Invoice cannot be posted unless finance review is approved. Reviewer can approve, reject, or return to draft. Rejection reason should be recorded.
+CRM request types:
+- General Inquiry: normal inquiry.
+- Project Request: uses extra project fields and custom review workflow.
 
-CRM:
-Purpose: Manages client project requests from website/contact form until opportunity and project resource assignment.
+Website project request flow:
+- Client submits Contact Us form.
+- If Message Type is Project Request, Odoo creates a CRM lead.
+- The lead stores client name, email, phone, company, project title, description, budget, duration, and notes.
+- New project requests start with intake_state Submitted.
 
-Website flow:
-Contact Us form -> Message Type selected.
-General Inquiry stays as normal inquiry.
-Project Request shows extra project fields and creates CRM lead.
+CRM intake states:
+- Draft
+- Submitted
+- Under Review
+- Approved
+- Rejected
 
-Project request intake flow:
-New Inquiry -> Submitted -> Under Review -> Approved or Rejected -> Team Assignment Wizard -> Converted to Opportunity -> Initial Discussion.
+CRM pipeline stages:
+- New Inquiry
+- Initial Discussion
+- Requirement Analysis
+- Solution Design
+- Proposal Submitted
+- Waiting Approval
+- Approved
+- Rejected
 
-Main CRM pipeline stages:
-New Inquiry, Initial Discussion, Requirement Analysis, Solution Design, Proposal Submission, Negotiation, Won/Lost.
+CRM workflow:
+- New project request is submitted.
+- Project manager starts review.
+- Status becomes Under Review.
+- Reviewer completes project type, client segment, features, meeting notes, requirements, solution summary, recommendation, and risk notes.
+- Approval opens the team assignment wizard.
+- After team assignment, the request is approved and connected to assigned team/employees.
+- Rejected requests require rejection reason.
 
-Project Resource Management:
-Project Teams store team name, project types, active status, and team employees.
-Project Assignments connect opportunities/projects with selected teams and assigned employees.
-Team suggestion is based on project type and availability/capacity.
+CRM technical/proposal flow:
+- Start Analysis moves lead to Requirement Analysis.
+- Submit Proposal validates feasibility, complexity, duration, deadline, summary, and amount.
+- Proposal Submitted then Waiting Approval.
+- Approved records store approved by/date.
+- Rejected records store rejected by/date and reason.
 
-Important CRM rules:
-Only project request leads go through review.
-Start Review moves the request to Under Review.
-Approval opens team assignment wizard.
-After team assignment, the request becomes an opportunity.
-Rejected requests should include a rejection reason.
+CRM project resources:
+- Project teams contain team name, active status, project types, employees, and notes.
+- Team employees are HR employees from AI Research and Development.
+- Project assignments connect a lead/opportunity to a selected team and assigned employees.
 
-If asked about live records, tell the user to type:
-help
+CRM email/proposal features:
+- Proposal PDF can be uploaded and summarized using OpenAI.
+- Summary is saved in Proposal Summary.
+- Approval/rejection emails can be sent to the client.
+- Manual chatter messages can be logged as email logs.
+
+FINANCE REVIEW MODULE:
+Purpose:
+Controls customer invoice review before posting and checks invoice exceptions.
+
+Finance review states:
+- Draft
+- Submitted
+- Approved
+- Rejected
+
+Finance invoice workflow:
+- Draft customer invoice is created.
+- Finance Invoice User submits it for review.
+- Exception checks run before submission.
+- Finance Invoice Reviewer approves, rejects, or returns it to draft.
+- Invoice cannot be posted unless review state is Approved.
+
+Finance exception checks:
+- Customer invoice must have invoice date.
+- Customer invoice must have either payment terms or due date.
+- Customer invoice lines must include tax.
+- Invoice date cannot be later than due date.
+- Vendor bills check bill date, due date, vendor reference, tax, duplicate vendor reference, and invalid date sequence.
+
+Finance roles:
+- Finance Invoice User can submit invoices for review.
+- Finance Invoice Reviewer can approve, reject, and reset to draft.
+
+Finance reports:
+- Finance Review Summary Report can be generated for reviewed invoices.
+
+BUDGET MODULE:
+Purpose:
+Controls department budgets and budget reservations.
+
+Budget reservation states:
+- Draft
+- Submitted
+- Reserved
+- Used
+- Cancelled
+
+Budget reservation workflow:
+- User creates reservation with department, amount, description, and reference.
+- If creator is Finance Manager, submission reserves budget directly.
+- If normal user submits, it becomes Submitted and waits for Finance Manager approval.
+- Finance Manager approves and reserves the amount.
+- Reservation can later be marked Used or Cancelled.
+
+Budget rules:
+- Reservation amount must be greater than zero.
+- Reservation cannot exceed available approved department budget.
+- Reservation allocates amount across approved active department budgets.
+- Only Finance Manager can approve reservations or reset them to draft.
+- Creator or Finance Manager can mark reserved budget as used or cancel it.
+
+EXPENSE MODULE:
+Purpose:
+Manages employee expense requests and reimbursement workflow.
+
+Expense workflow:
+- Draft
+- Submitted
+- Approved by Manager
+- Approved by Finance
+- Paid
+- Rejected
+
+Expense rules:
+- Employee must attach receipt/invoice before submitting.
+- Only employee manager can approve or reject submitted expense.
+- Rejection requires reason.
+- Only Finance can approve after manager approval.
+- Finance approval creates a budget reservation automatically.
+- Mark Paid changes the expense to Paid and marks related reserved budget as Used.
+
+PROCUREMENT MODULE:
+Purpose:
+Controls purchase requests, RFQs, quotation evaluation, financial approval, vendor acknowledgment, goods receipt confirmation, vendor bill verification, payment tracking, and closure.
+
+Purchase Request flow:
+- Draft
+- Waiting Coordinator Approval for teacher requests
+- Waiting Academic Principal Approval for teacher requests
+- Waiting Department Director Approval for admin requests
+- Approved
+- Rejected
+
+Purchase Request rules:
+- Only Teacher or Administrative Staff can create purchase requests.
+- Requester is automatically assigned from logged-in employee.
+- Requester category is automatic.
+- Teacher requests go to Coordinator then Academic Principal.
+- Admin requests go to Department Director.
+- Request details cannot be edited after submission.
+- Only draft purchase requests can be deleted.
+
+Procurement RFQ/PO flow:
+- Approved Purchase Request is linked to RFQs.
+- RFQ lines are filled from purchase request lines.
+- Vendor selection is limited to vendors that supply all requested products.
+- Vendor prices are applied from product vendor price list.
+- Technical and commercial evaluations must be accepted.
+- One quotation is marked as recommended.
+- Financial approval is submitted.
+- After approval, RFQ can be confirmed into Purchase Order.
+- Vendor acknowledgment is recorded.
+- Receipt is completed.
+- End user confirms receipt and compliance.
+- Vendor bill is verified.
+- Payment is tracked.
+- Procurement is closed.
+
+Quotation rules:
+- Above BD 1000 requires at least 3 quotations.
+- If fewer than 3 quotations exist, quotation exception justification is required.
+- Only the recommended quotation can be confirmed.
+- Technical and commercial evaluation cannot stay pending.
+
+Financial approval rules in procurement:
+- Up to BD 5000 requires Director of Finance.
+- Up to BD 9999 requires Deputy CEO.
+- Above BD 9999 requires CEO.
+- Financial approver can approve or reject.
+- Rejection requires financial rejection reason.
+- Budget reservation is created before financial approval.
+- If approved, budget reservation is marked used.
+- If rejected, budget reservation is cancelled.
+
+Procurement roles:
+- Procurement Officer handles evaluation, recommendation, financial approval submission, vendor acknowledgment, and closure.
+- Director of Finance approves lower value requests.
+- Deputy CEO approves medium value requests.
+- CEO approves high value requests.
+- End User Receiver confirms goods receipt compliance.
+- Invoice Verifier verifies or rejects vendor bills.
+
+GRN and receipt confirmation:
+- Stock receipt has GRN Required.
+- Receipt must be Done before end-user confirmation.
+- Compliance status must be Compliant or Non-Compliant, not Pending.
+- Only End User Receiver can confirm receipt.
+- Confirmation stores confirmed by and confirmed date.
+
+Vendor bill verification:
+- Vendor bill links to purchase order.
+- Vendor bill must match PO vendor.
+- Only Invoice Verifier can verify or reject vendor bills.
+- Verified bills store verified by/date.
+- Rejected bills require rejection reason.
+
+Procurement closure:
+- PO must be confirmed.
+- Vendor acknowledgment must be received if required.
+- Incoming receipts must be Done.
+- GRN-required receipts must be confirmed by end user.
+- Vendor bills must exist and be verified.
+- Vendor bills must be paid.
+- Only then procurement can be closed.
+
+Live data commands available:
+- help
+- show pending CRM project requests
+- show finance invoices waiting for review
+- show procurement approvals
 """
