@@ -450,9 +450,50 @@ Procurement closure:
 - Vendor bills must be paid.
 - Only then procurement can be closed.
 
+HR MODULE:
+Purpose:
+Supports employee leave management using automatic leave allocation and sequential leave approval.
+
+Automatic leave allocation:
+- When a new employee is created, the system automatically creates leave allocations.
+- Sick Leave uses the Monthly Sick Leave accrual plan.
+- Annual Leave uses the Annual Leave Plan accrual plan.
+- Existing accrual allocations are checked first to avoid duplicates.
+- Created allocations are automatically approved.
+
+Leave approval flow:
+- Employee submits a leave request.
+- The assigned supervisor reviews first.
+- Supervisor can approve or reject.
+- If supervisor approves, the request goes to HR.
+- HR gives the final approval or rejection.
+- HR approval finalizes the leave using Odoo validation.
+- Rejection uses Odoo refusal logic to roll back leave allocation effects.
+
+Leave approval states:
+- Supervisor: Pending, Supervisor Approved, Supervisor Rejected.
+- HR: Pending, HR Approved, HR Rejected.
+
+HR rules:
+- Only the assigned supervisor can perform supervisor approval or rejection.
+- HR approval cannot happen before supervisor approval.
+- Only HR users can approve or reject at HR stage.
+- Only HR Manager can reset the approval workflow.
+- Reset returns the request to pending supervisor and HR approval.
+
+Notifications:
+- When supervisor approves, HR is notified.
+- When HR approves, employee and supervisor are notified.
+- When supervisor or HR rejects, the employee is notified.
+- Rejection reason can be recorded.
+
 Live data commands available:
 - help
 - show pending CRM project requests
 - show finance invoices waiting for review
 - show procurement approvals
+- Explain HR leave approval flow
+- Explain automatic leave allocation
+- Who can approve leave requests?
+- What happens when HR rejects leave?
 """
