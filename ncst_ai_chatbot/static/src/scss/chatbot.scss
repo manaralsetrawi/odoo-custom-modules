@@ -201,3 +201,17 @@
         right: 0;
     }
 }
+.ncst-ai-chatbot-messages .ncst-ai-message.bot.welcome {
+    display: block !important;
+    width: auto !important;
+    max-width: 85% !important;
+    min-height: auto !important;
+    height: auto !important;
+    margin: 0 0 1rem 0 !important;
+    padding: 0.75rem 0.95rem !important;
+    text-align: left !important;
+    line-height: 1.4 !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    border-radius: 1rem 1rem 1rem 0.35rem !important;
+}
