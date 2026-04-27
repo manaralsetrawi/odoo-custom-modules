@@ -40,6 +40,8 @@ function createChatbot() {
                         <button data-question="Explain finance invoice review">Finance review</button>
                         <button data-question="Explain CRM workflow">CRM workflow</button>
                         <button data-question="Show pending CRM project requests">Pending CRM requests</button>
+                        <button data-question="Who is absent today?">Absent employees today</button>
+                        <button data-question="Paused projects for all">Paused projects today</button>
                         <button data-question="Help">Show commands</button>
                     </div>
                 </div>
