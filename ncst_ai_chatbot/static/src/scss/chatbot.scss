@@ -104,13 +104,14 @@
 }
 
 .ncst-ai-message.bot.welcome {
+    width: auto;
     max-width: 100%;
-    width: fit-content;
-    min-width: unset;
-    padding: 0.7rem 1rem;
-    margin: 0 auto 0.9rem;
-    text-align: center;
+    margin: 0 0 1rem 0;
+    padding: 0.9rem 1rem;
+    text-align: left;
     border-radius: 1rem;
+    line-height: 1.35;
+    box-shadow: none;
 }
 
 .ncst-ai-message.user {
