@@ -87,6 +87,18 @@ function createChatbot() {
         if (!text) {
             return;
         }
+        
+    function formatMessage(text) {
+    if (!text) return "";
+
+    // Convert **bold** to <strong>
+    let formatted = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+    // Preserve line breaks
+    formatted = formatted.replace(/\n/g, "<br>");
+
+    return formatted;
+}
 
         addMessage(text, "user");
         input.value = "";
@@ -115,7 +127,7 @@ function createChatbot() {
     function addMessage(text, type) {
         const msg = document.createElement("div");
         msg.className = `ncst-ai-message ${type}`;
-        msg.textContent = text;
+        msg.innerHTML = formatMessage(text);       
         messages.appendChild(msg);
         messages.scrollTop = messages.scrollHeight;
         return msg;
