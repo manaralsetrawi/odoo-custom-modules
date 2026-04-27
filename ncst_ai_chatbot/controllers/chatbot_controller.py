@@ -324,6 +324,8 @@ class NCSTAIChatbotController(http.Controller):
         lines = ["Projects paused today due to absence:"]
 
         for assignment in assignments:
+            project = assignment.lead_id
+
             absent_on_project = assignment.employee_ids.filtered(
                 lambda emp: emp in selected_employees
             )
@@ -338,7 +340,7 @@ class NCSTAIChatbotController(http.Controller):
 
             assigned_names = ", ".join(assignment.employee_ids.mapped("name")) or "No assigned employees"
             absent_names = ", ".join(absent_on_project.mapped("name")) or "Unknown"
-            
+
             lines.append(
                 f"- Project: {project.name} | Company: {company} | Absent: {absent_names} | Assigned to: {assigned_names}"
             )
