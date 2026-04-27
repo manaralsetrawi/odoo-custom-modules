@@ -24,7 +24,7 @@ function createChatbot() {
 
                 <div class="ncst-ai-chatbot-messages">
                     <div class="ncst-ai-message bot welcome">
-                        Hello! How can I help you?
+                        Hi! Choose an option or ask me anything.
                     </div>
 
                     <div class="ncst-ai-quick-options">
