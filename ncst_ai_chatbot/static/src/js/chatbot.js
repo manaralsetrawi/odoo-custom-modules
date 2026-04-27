@@ -100,6 +100,28 @@ function createChatbot() {
         const msg = document.createElement("div");
         msg.className = `ncst-ai-message ${type}`;
         msg.innerHTML = formatMessage(text);
+
+        if (type.includes("bot") && !type.includes("loading") && !type.includes("welcome")) {
+            const copyButton = document.createElement("button");
+            copyButton.className = "ncst-ai-copy-btn";
+            copyButton.title = "Copy response";
+            copyButton.innerHTML = "⧉";
+
+            copyButton.addEventListener("click", async () => {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    copyButton.innerHTML = "✓";
+                    setTimeout(() => {
+                        copyButton.innerHTML = "⧉";
+                    }, 1200);
+                } catch (error) {
+                    console.error("Copy failed:", error);
+                }
+            });
+
+            msg.appendChild(copyButton);
+        }
+
         messages.appendChild(msg);
         messages.scrollTop = messages.scrollHeight;
         return msg;
