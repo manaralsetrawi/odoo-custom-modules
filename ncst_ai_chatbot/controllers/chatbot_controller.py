@@ -11,9 +11,16 @@ class NCSTAIChatbotController(http.Controller):
 
     @http.route("/ncst_ai_chatbot/message", type="json", auth="user")
     def send_message(self, message=None):
+        # Main JSON endpoint called by chatbot.js via RPC.
+        # Routing order:
+        # 1) validate input
+        # 2) handle built-in commands
+        # 3) try live Odoo data handlers
+        # 4) fallback to OpenAI
         if not message:
             return {"success": False, "reply": "Please write a message first."}
-
+        
+        # Normalize once for keyword matching.
         message_lower = message.lower().strip()
 
         try:
@@ -201,7 +208,7 @@ class NCSTAIChatbotController(http.Controller):
                 "success": False,
                 "reply": "OpenAI API key is not configured in Odoo system parameters.",
             }
-
+        # External API call with timeout to avoid hanging request threads.
         response = requests.post(
             "https://api.openai.com/v1/chat/completions",
             headers={
