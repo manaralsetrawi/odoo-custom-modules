@@ -328,26 +328,19 @@ class NCSTAIChatbotController(http.Controller):
                 lambda emp: emp in selected_employees
             )
 
-            project = assignment.lead_id
             company = (
-                project.partner_id.name
-                or project.intake_company_name
+                project.intake_company_name
+                or project.partner_id.name
                 or project.contact_name
+                or project.intake_client_name
                 or "No company"
             )
 
             assigned_names = ", ".join(assignment.employee_ids.mapped("name")) or "No assigned employees"
             absent_names = ", ".join(absent_on_project.mapped("name")) or "Unknown"
-
-            deadline = (
-                project.project_deadline
-                or project.intake_project_deadline
-                or assignment.planned_end_date
-                or "No deadline"
-            )
-
+            
             lines.append(
-                f"- Project: {project.name} | Company: {company} | Absent: {absent_names} | Assigned to: {assigned_names} | Deadline: {deadline}"
+                f"- Project: {project.name} | Company: {company} | Absent: {absent_names} | Assigned to: {assigned_names}"
             )
 
         return "\n".join(lines)
