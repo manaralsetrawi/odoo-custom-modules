@@ -227,22 +227,30 @@
 .ncst-ai-message.bot {
     position: relative;
     padding-right: 2.3rem;
+    padding-bottom: 2rem;
 }
 
 .ncst-ai-copy-btn {
     position: absolute;
-    top: 0.45rem;
-    right: 0.45rem;
-    width: 1.45rem;
-    height: 1.45rem;
+    right: 0.55rem;
+    bottom: 0.55rem;
+    width: 1.65rem;
+    height: 1.65rem;
     border: none;
-    border-radius: 0.45rem;
+    border-radius: 0.5rem;
     background: #eef4f7;
     color: #0b2c3d;
-    font-size: 0.85rem;
-    line-height: 1;
     cursor: pointer;
-    opacity: 0.65;
+    opacity: 0.75;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ncst-ai-copy-btn svg {
+    width: 1rem;
+    height: 1rem;
+    display: block;
 }
 
 .ncst-ai-copy-btn:hover {
