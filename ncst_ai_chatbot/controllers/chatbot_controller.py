@@ -71,8 +71,9 @@ class NCSTAIChatbotController(http.Controller):
         ):
             return self._safe_get_finance_invoices_waiting_review()
 
-        if ("procurement" in message_lower or "purchase" in message_lower or "approval" in message_lower) and (
-            "approval" in message_lower or "pending" in message_lower or "waiting" in message_lower
+        if (
+            ("procurement" in message_lower or "purchase" in message_lower)
+            and ("approval" in message_lower or "pending" in message_lower or "waiting" in message_lower or "show" in message_lower)
         ):
             return self._safe_get_procurement_pending_approvals()
 
