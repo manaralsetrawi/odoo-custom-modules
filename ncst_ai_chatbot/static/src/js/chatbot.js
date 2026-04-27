@@ -9,8 +9,8 @@ function createChatbot() {
 
     const chatbotHTML = `
         <div class="ncst-ai-chatbot-widget">
-            <button class="ncst-ai-chatbot-button" title="AI Chatbot">
-                ✨
+            <button class="ncst-ai-chatbot-button" title="NCST AI Assistant">
+                🎧
             </button>
 
             <div class="ncst-ai-chatbot-window">
@@ -23,8 +23,17 @@ function createChatbot() {
                 </div>
 
                 <div class="ncst-ai-chatbot-messages">
-                    <div class="ncst-ai-message bot">
-                        Hello! How can I help you today?
+                    <div class="ncst-ai-message bot welcome">
+                        Hello! How can I help you?
+                    </div>
+
+                    <div class="ncst-ai-quick-options">
+                        <button data-question="Explain HR leave approval flow">HR leave flow</button>
+                        <button data-question="Explain procurement workflow">Procurement flow</button>
+                        <button data-question="Explain finance invoice review">Finance review</button>
+                        <button data-question="Explain CRM workflow">CRM workflow</button>
+                        <button data-question="Show pending CRM project requests">Pending CRM requests</button>
+                        <button data-question="Help">Show commands</button>
                     </div>
                 </div>
 
@@ -45,6 +54,7 @@ function createChatbot() {
     const sendButton = widget.querySelector(".ncst-ai-chatbot-send");
     const input = widget.querySelector(".ncst-ai-chatbot-input");
     const messages = widget.querySelector(".ncst-ai-chatbot-messages");
+    const optionButtons = widget.querySelectorAll(".ncst-ai-quick-options button");
 
     button.addEventListener("click", () => {
         windowBox.classList.toggle("active");
@@ -55,8 +65,15 @@ function createChatbot() {
         windowBox.classList.remove("active");
     });
 
-    async function sendMessage() {
-        const text = input.value.trim();
+    optionButtons.forEach((option) => {
+        option.addEventListener("click", () => {
+            const question = option.dataset.question;
+            sendMessage(question);
+        });
+    });
+
+    async function sendMessage(optionText = null) {
+        const text = optionText || input.value.trim();
 
         if (!text) {
             return;
@@ -95,7 +112,7 @@ function createChatbot() {
         return msg;
     }
 
-    sendButton.addEventListener("click", sendMessage);
+    sendButton.addEventListener("click", () => sendMessage());
 
     input.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {

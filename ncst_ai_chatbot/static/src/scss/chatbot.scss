@@ -13,24 +13,28 @@
     border: none;
     background: #0b2c3d;
     color: #ffffff;
-    font-size: 1.5rem;
-    box-shadow: 0 0.8rem 1.8rem rgba(11, 44, 61, 0.25);
+    font-size: 1.45rem;
+    box-shadow: 0 0.8rem 1.8rem rgba(11, 44, 61, 0.28);
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .ncst-ai-chatbot-button:hover {
     background: #123e55;
+    transform: translateY(-0.08rem);
 }
 
 .ncst-ai-chatbot-window {
     display: none;
     position: absolute;
     right: 0;
-    bottom: 4.5rem;
-    width: 22rem;
-    height: 30rem;
+    bottom: 4.6rem;
+    width: 24rem;
+    height: 32rem;
     background: #ffffff;
-    border-radius: 1rem;
+    border-radius: 1.25rem;
     box-shadow: 0 1rem 2.5rem rgba(11, 44, 61, 0.25);
     border: 0.0625rem solid #d9e3ea;
     overflow: hidden;
@@ -44,24 +48,31 @@
 .ncst-ai-chatbot-header {
     background: #0b2c3d;
     color: #ffffff;
-    padding: 1rem;
+    padding: 1rem 1.2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
+.ncst-ai-chatbot-header strong {
+    display: block;
+    font-size: 1rem;
+    font-weight: 800;
+}
+
 .ncst-ai-chatbot-header span {
     display: block;
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     color: #c8d6df;
-    margin-top: 0.2rem;
+    margin-top: 0.25rem;
 }
 
 .ncst-ai-chatbot-close {
     background: transparent;
     border: none;
     color: #ffffff;
-    font-size: 1.5rem;
+    font-size: 1.7rem;
+    line-height: 1;
     cursor: pointer;
 }
 
@@ -69,17 +80,18 @@
     flex: 1;
     padding: 1rem;
     overflow-y: auto;
-    background: #f6f8fa;
+    background: #f7f9fb;
 }
 
 .ncst-ai-message {
-    max-width: 85%;
-    padding: 0.7rem 0.9rem;
-    border-radius: 0.9rem;
-    margin-bottom: 0.7rem;
-    font-size: 0.9rem;
-    line-height: 1.4;
+    max-width: 82%;
+    padding: 0.75rem 0.95rem;
+    border-radius: 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.92rem;
+    line-height: 1.45;
     white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .ncst-ai-message.bot {
@@ -87,21 +99,56 @@
     color: #1f2d3d;
     border: 0.0625rem solid #d9e3ea;
     margin-right: auto;
+    box-shadow: 0 0.3rem 0.8rem rgba(11, 44, 61, 0.05);
+    border-bottom-left-radius: 0.35rem;
+}
+
+.ncst-ai-message.bot.welcome {
+    max-width: 90%;
+    text-align: left;
 }
 
 .ncst-ai-message.user {
     background: #0b2c3d;
     color: #ffffff;
     margin-left: auto;
+    border-bottom-right-radius: 0.35rem;
 }
 
 .ncst-ai-message.loading {
     opacity: 0.7;
 }
 
+.ncst-ai-quick-options {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    margin: 0.4rem 0 1rem;
+}
+
+.ncst-ai-quick-options button {
+    background: #ffffff;
+    color: #0b2c3d;
+    border: 0.0625rem solid #0b2c3d;
+    border-radius: 1rem;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    max-width: 88%;
+    text-align: right;
+    transition: all 0.2s ease;
+}
+
+.ncst-ai-quick-options button:hover {
+    background: #0b2c3d;
+    color: #ffffff;
+    transform: translateY(-0.08rem);
+}
+
 .ncst-ai-chatbot-input-area {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.6rem;
     padding: 0.8rem;
     background: #ffffff;
     border-top: 0.0625rem solid #d9e3ea;
@@ -109,25 +156,43 @@
 
 .ncst-ai-chatbot-input {
     flex: 1;
+    min-width: 0;
     border: 0.0625rem solid #cfd9e0;
-    border-radius: 0.6rem;
-    padding: 0.6rem;
+    border-radius: 0.8rem;
+    padding: 0.65rem 0.8rem;
     outline: none;
+    font-size: 0.9rem;
+    color: #1f2d3d;
 }
 
 .ncst-ai-chatbot-input:focus {
     border-color: #0b2c3d;
+    box-shadow: 0 0 0 0.15rem rgba(11, 44, 61, 0.08);
 }
 
 .ncst-ai-chatbot-send {
     border: none;
-    border-radius: 0.6rem;
+    border-radius: 0.8rem;
     background: #0b2c3d;
     color: #ffffff;
-    padding: 0.6rem 0.9rem;
+    padding: 0.65rem 1rem;
     cursor: pointer;
+    font-weight: 700;
 }
 
 .ncst-ai-chatbot-send:hover {
     background: #123e55;
+}
+
+@media (max-width: 480px) {
+    .ncst-ai-chatbot-widget {
+        right: 1rem;
+        bottom: 1rem;
+    }
+
+    .ncst-ai-chatbot-window {
+        width: calc(100vw - 2rem);
+        height: 32rem;
+        right: 0;
+    }
 }
