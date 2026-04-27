@@ -1,7 +1,7 @@
 import logging
 import requests
 
-from odoo import http
+from odoo import http, fields
 from odoo.http import request
 
 _logger = logging.getLogger(__name__)
@@ -61,6 +61,18 @@ class NCSTAIChatbotController(http.Controller):
     # ---------------------------------------------------------
 
     def _handle_live_odoo_question(self, message_lower):
+        if (
+            ("absent" in message_lower or "absence" in message_lower or "did not attend" in message_lower)
+            and ("today" in message_lower or "employees" in message_lower or "who" in message_lower)
+        ):
+            return self._safe_get_absent_employees_today()
+
+        if (
+            ("paused" in message_lower or "pause" in message_lower or "affected" in message_lower)
+            and ("project" in message_lower or "projects" in message_lower)
+        ):
+            return self._safe_get_paused_projects_due_to_absence(message_lower)
+
         if ("crm" in message_lower or "project request" in message_lower) and (
             "pending" in message_lower or "show" in message_lower or "waiting" in message_lower
         ):
@@ -222,6 +234,123 @@ class NCSTAIChatbotController(http.Controller):
             "success": True,
             "reply": reply,
         }
+    def _safe_get_absent_employees_today(self):
+        try:
+            return self._get_absent_employees_today()
+        except Exception as e:
+            _logger.exception("Absent employees chatbot error: %s", e)
+            return "I could not load absent employees. Please check Attendance and HR employee records."
+
+
+    def _get_absent_employees_today(self):
+        today = fields.Date.context_today(request.env.user)
+
+        Employee = request.env["hr.employee"]
+        Attendance = request.env["hr.attendance"]
+
+        employees = Employee.search([("active", "=", True)])
+
+        present_employee_ids = Attendance.search([
+            ("check_in", ">=", f"{today} 00:00:00"),
+            ("check_in", "<=", f"{today} 23:59:59"),
+        ]).mapped("employee_id").ids
+
+        absent_employees = employees.filtered(lambda emp: emp.id not in present_employee_ids)
+
+        if not absent_employees:
+            return "No absent employees found today."
+
+        lines = ["Absent employees today:"]
+        for emp in absent_employees[:20]:
+            lines.append(f"- {emp.name}")
+
+        lines.append("")
+        lines.append("Ask: paused projects for all")
+        lines.append("Or: paused projects for employee name")
+
+        return "\n".join(lines)
+
+
+    def _safe_get_paused_projects_due_to_absence(self, message_lower):
+        try:
+            return self._get_paused_projects_due_to_absence(message_lower)
+        except Exception as e:
+            _logger.exception("Paused projects chatbot error: %s", e)
+            return "I could not load paused projects. Please check project assignments and attendance data."
+
+
+    def _get_paused_projects_due_to_absence(self, message_lower):
+        today = fields.Date.context_today(request.env.user)
+
+        Employee = request.env["hr.employee"]
+        Attendance = request.env["hr.attendance"]
+        Assignment = request.env["project.team.assignment"]
+
+        employees = Employee.search([("active", "=", True)])
+
+        present_employee_ids = Attendance.search([
+            ("check_in", ">=", f"{today} 00:00:00"),
+            ("check_in", "<=", f"{today} 23:59:59"),
+        ]).mapped("employee_id").ids
+
+        absent_employees = employees.filtered(lambda emp: emp.id not in present_employee_ids)
+
+        if not absent_employees:
+            return "No absent employees found today, so no projects are paused due to absence."
+
+        selected_employees = absent_employees
+
+        if "all" not in message_lower:
+            matched = absent_employees.filtered(
+                lambda emp: emp.name and emp.name.lower() in message_lower
+            )
+            if matched:
+                selected_employees = matched
+            else:
+                return (
+                    "Please choose one absent employee name or ask:\n"
+                    "paused projects for all"
+                )
+
+        assignments = Assignment.search([
+            ("employee_ids", "in", selected_employees.ids),
+            ("planned_start_date", "<=", today),
+            ("planned_end_date", ">=", today),
+        ])
+
+        if not assignments:
+            return "No active projects are paused today for the selected absent employee(s)."
+
+        lines = ["Projects paused today due to absence:"]
+
+        for assignment in assignments:
+            absent_on_project = assignment.employee_ids.filtered(
+                lambda emp: emp in selected_employees
+            )
+
+            project = assignment.lead_id
+            company = (
+                project.partner_id.name
+                or project.intake_company_name
+                or project.contact_name
+                or "No company"
+            )
+
+            assigned_names = ", ".join(assignment.employee_ids.mapped("name")) or "No assigned employees"
+            absent_names = ", ".join(absent_on_project.mapped("name")) or "Unknown"
+
+            deadline = (
+                project.project_deadline
+                or project.intake_project_deadline
+                or assignment.planned_end_date
+                or "No deadline"
+            )
+
+            lines.append(
+                f"- Project: {project.name} | Company: {company} | Absent: {absent_names} | Assigned to: {assigned_names} | Deadline: {deadline}"
+            )
+
+        return "\n".join(lines)
 
     def _get_ncst_system_prompt(self):
         return """
