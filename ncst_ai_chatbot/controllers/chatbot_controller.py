@@ -66,8 +66,9 @@ class NCSTAIChatbotController(http.Controller):
         ):
             return self._safe_get_pending_crm_requests()
 
-        if ("finance" in message_lower or "invoice" in message_lower or "invoices" in message_lower) and (
-            "review" in message_lower or "pending" in message_lower or "waiting" in message_lower
+        if (
+            ("finance" in message_lower or "invoice" in message_lower or "invoices" in message_lower)
+            and ("show" in message_lower or "list" in message_lower or "pending" in message_lower or "waiting" in message_lower)
         ):
             return self._safe_get_finance_invoices_waiting_review()
 
