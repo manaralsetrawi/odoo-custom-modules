@@ -23,7 +23,7 @@ function createChatbot() {
             <div class="ncst-ai-chatbot-window">
                 <div class="ncst-ai-chatbot-header">
                     <div>
-                        <strong>NCST AI Assistant</strong>
+                        <strong>AI Assistant</strong>
                         <span>HR • Procurement • Finance • CRM</span>
                     </div>
                     <button class="ncst-ai-chatbot-close">×</button>
