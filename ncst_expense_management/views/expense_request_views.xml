@@ -115,6 +115,7 @@
         <field name="model">expense.request</field>
         <field name="arch" type="xml">
             <form string="Expense Request">
+            
                 <header>
                     <button name="action_submit"
                             string="Submit"
@@ -145,8 +146,8 @@
                             string="Mark as Paid"
                             type="object"
                             class="btn-secondary"
-                            invisible="state != 'approved_finance'"
-                            groups="ncst_expense_management.group_expense_finance"/>
+                            invisible="not can_mark_paid"
+                            groups="ncst_budget_management.group_budget_manager"/>
 
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,submitted,approved_manager,approved_finance,paid,rejected"/>
@@ -208,6 +209,7 @@
                 </sheet>
 
                 <field name="can_manager_approve" invisible="1"/>
+                <field name="can_mark_paid" invisible="1"/>
             </form>
         </field>
     </record>
