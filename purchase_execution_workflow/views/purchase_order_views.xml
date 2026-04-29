@@ -100,10 +100,9 @@
                                 </group>
 
                                 <field name="quotation_exception_reason"
-                                       readonly="not can_edit_procurement_fields"
-                                       required="is_above_quotation_threshold and quotation_count_for_request &lt; 3"
-                                       invisible="not is_above_quotation_threshold or quotation_count_for_request &gt;= 3"
-                                       placeholder="Enter the reason if fewer than 3 quotations were obtained..."/>
+                                    readonly="not can_edit_procurement_fields"
+                                    invisible="not is_above_quotation_threshold or quotation_count_for_request &gt;= 3"
+                                    placeholder="Enter the reason if fewer than 3 quotations were obtained before sending for financial approval..."/>
 
                                 <field name="missing_vendor_price"
                                        readonly="1"
