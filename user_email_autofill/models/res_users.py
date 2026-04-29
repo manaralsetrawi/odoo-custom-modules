@@ -86,6 +86,11 @@ class ResUsers(models.Model):
             "purchase.group_purchase_user",
             "purchase.group_purchase_manager",
 
+            # Sales
+            "sales_team.group_sale_salesman",
+            "sales_team.group_sale_salesman_all_leads",
+            "sales_team.group_sale_manager",
+
             # Technical section extras
             "base.group_allow_export",
             "uom.group_uom",
