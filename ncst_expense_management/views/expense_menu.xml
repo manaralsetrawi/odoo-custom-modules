@@ -29,4 +29,11 @@
             action="action_expense_type"
             sequence="20"
             groups="base.group_system,ncst_expense_management.group_expense_finance"/>
+
+    <menuitem id="menu_team_expense_request"
+          name="Team Expense Requests"
+          parent="menu_expense_root"
+          action="action_team_expense_request"
+          sequence="15"
+          groups="base.group_user"/>
 </odoo>
