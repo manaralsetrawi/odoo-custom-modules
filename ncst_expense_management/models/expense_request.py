@@ -100,11 +100,10 @@ class ExpenseRequest(models.Model):
         compute='_compute_can_manager_approve',
     )
 
-
     budget_reservation_state = fields.Selection(
-    related='budget_reservation_id.state',
-    string='Budget Reservation Status',
-    readonly=True,
+        related='budget_reservation_id.state',
+        string='Budget Reservation Status',
+        readonly=True,
     )
 
     can_mark_paid = fields.Boolean(
@@ -259,9 +258,9 @@ class ExpenseRequest(models.Model):
 
     # needed for manar
     def action_mark_paid(self):
-        if not self.env.user.has_group('ncst_budget_management.group_budget_manager'):
+        if not self.env.user.has_group('ncst_budget_management.group_budget_finance_manager'):
             raise ValidationError(
-                'Only the Budget Manager can mark expense requests as paid.')
+                'Only the Budget Finance Manager can mark expense requests as paid.')
 
         for record in self:
             if record.state != 'approved_finance':
@@ -277,7 +276,6 @@ class ExpenseRequest(models.Model):
             record.state = 'paid'
             record.paid_by = self.env.user
             record.paid_date = fields.Datetime.now()
-
 
     @api.depends('state', 'budget_reservation_state')
     def _compute_can_mark_paid(self):
