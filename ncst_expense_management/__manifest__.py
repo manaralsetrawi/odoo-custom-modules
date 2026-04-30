@@ -14,6 +14,7 @@
     'data': [
         'security/expense_security.xml',
         'security/ir.model.access.csv',
+        'data/expense_sequence.xml',
         'views/expense_type_views.xml',
         'views/expense_request_views.xml',
         'views/expense_reject_wizard_views.xml',
