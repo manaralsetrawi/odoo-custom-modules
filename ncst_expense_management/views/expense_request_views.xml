@@ -147,7 +147,7 @@
                             type="object"
                             class="btn-secondary"
                             invisible="not can_mark_paid"
-                            groups="ncst_budget_management.group_budget_manager"/>
+                            groups="ncst_budget_management.group_budget_finance_manager"/>
 
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,submitted,approved_manager,approved_finance,paid,rejected"/>
