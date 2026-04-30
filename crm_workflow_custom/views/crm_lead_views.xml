@@ -138,9 +138,8 @@
                                class="crmwf_card crmwf_card_proposal"
                                groups="crm_workflow_custom.group_crm_workflow_user,crm_workflow_custom.group_crm_workflow_manager,crm_workflow_custom.group_crm_technical_reviewer">
                             <field name="proposal_summary"
-                                   placeholder="Enter a short summary of the proposed solution..."
-                                   required="(is_stage_analysis or is_stage_solution_design or is_stage_proposal) and can_edit_proposal_fields"
-                                   readonly="not can_edit_proposal_fields"/>
+                                placeholder="Enter a short summary of the proposed solution or generate it from the uploaded PDF..."
+                                readonly="not can_edit_proposal_fields"/>
                             <field name="negotiation_notes"
                                    placeholder="Add any negotiation comments or client feedback..."
                                    readonly="not can_edit_proposal_fields"/>
