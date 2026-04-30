@@ -100,6 +100,18 @@ class ExpenseRequest(models.Model):
         compute='_compute_can_manager_approve',
     )
 
+
+    budget_reservation_state = fields.Selection(
+    related='budget_reservation_id.state',
+    string='Budget Reservation Status',
+    readonly=True,
+    )
+
+    can_mark_paid = fields.Boolean(
+        string='Can Mark Paid',
+        compute='_compute_can_mark_paid',
+    )
+
     submitted_by = fields.Many2one(
         'res.users', string='Submitted By', readonly=True)
     submitted_date = fields.Datetime(string='Submitted On', readonly=True)
@@ -266,16 +278,12 @@ class ExpenseRequest(models.Model):
             record.paid_by = self.env.user
             record.paid_date = fields.Datetime.now()
 
-    can_mark_paid = fields.Boolean(
-        string='Can Mark Paid',
-        compute='_compute_can_mark_paid',
-    )
 
-    @api.depends('state', 'budget_reservation_id', 'budget_reservation_id.state')
+    @api.depends('state', 'budget_reservation_state')
     def _compute_can_mark_paid(self):
         for record in self:
             record.can_mark_paid = (
                 record.state == 'approved_finance'
                 and record.budget_reservation_id
-                and record.budget_reservation_id.state == 'reserved'
+                and record.budget_reservation_state == 'reserved'
             )
