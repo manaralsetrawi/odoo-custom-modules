@@ -790,6 +790,8 @@ class PurchaseOrder(models.Model):
     def _check_procurement_validations(self):
         for order in self:
             if (
+                order.amount_total > 1000
+                and
                 order.purchase_request_id
                 and order.purchase_request_id.state != "approved"
             ):
