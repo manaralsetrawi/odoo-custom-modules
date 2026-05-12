@@ -1,3 +1,11 @@
+"""Auto-generate user email/login and tighten default group access.
+
+This extension:
+- Builds a default email/login from the user's name
+- Enforces unique names
+- Strips extra groups on create, leaving only minimum internal access
+"""
+
 import re
 
 from odoo import api, models, Command
@@ -8,6 +16,7 @@ class ResUsers(models.Model):
     _inherit = "res.users"
 
     def _generate_email_from_name(self, name):
+        """Build a standardized email from a user's name."""
         domain = "ncst.edu.bh"
         clean_name = (name or "").strip().lower()
         clean_name = re.sub(r"[^a-zA-Z\s]", "", clean_name)
@@ -25,6 +34,7 @@ class ResUsers(models.Model):
 
     @api.onchange("name")
     def _onchange_name_generate_email_login(self):
+        """Auto-fill login/email when the name changes in the form."""
         for record in self:
             if record.name:
                 generated_email = record._generate_email_from_name(record.name)
@@ -34,6 +44,7 @@ class ResUsers(models.Model):
 
     @api.constrains("name")
     def _check_unique_name(self):
+        """Prevent duplicate user display names (simple uniqueness rule)."""
         for record in self:
             if record.name:
                 existing_user = self.search([
@@ -166,6 +177,7 @@ class ResUsers(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        """Create users with auto email/login and minimal access groups."""
         for vals in vals_list:
             # Auto-generate email/login on create too
             if vals.get("name"):

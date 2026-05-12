@@ -3,10 +3,12 @@
 import { rpc } from "@web/core/network/rpc";
 
 function createChatbot() {
+    // Prevent duplicate widget injection if assets reload.
     if (document.querySelector(".ncst-ai-chatbot-widget")) {
         return;
     }
 
+    // Static HTML for the floating chat widget.
     const chatbotHTML = `
         <div class="ncst-ai-chatbot-widget">
             <button class="ncst-ai-chatbot-button" title="NCST AI Assistant">
@@ -56,6 +58,7 @@ function createChatbot() {
 
     document.body.insertAdjacentHTML("beforeend", chatbotHTML);
 
+    // Cache DOM elements to avoid repeated queries.
     const widget = document.querySelector(".ncst-ai-chatbot-widget");
     const button = widget.querySelector(".ncst-ai-chatbot-button");
     const windowBox = widget.querySelector(".ncst-ai-chatbot-window");
@@ -66,21 +69,25 @@ function createChatbot() {
     const optionButtons = widget.querySelectorAll(".ncst-ai-quick-options button");
 
     button.addEventListener("click", () => {
+        // Toggle visibility of the chat window.
         windowBox.classList.toggle("active");
         input.focus();
     });
 
     closeButton.addEventListener("click", () => {
+        // Close the widget panel (keep it in DOM).
         windowBox.classList.remove("active");
     });
 
     optionButtons.forEach((option) => {
         option.addEventListener("click", () => {
+            // Quick-option buttons send predefined questions.
             sendMessage(option.dataset.question);
         });
     });
 
     function formatMessage(text) {
+        // Minimal HTML-escape + formatting for chatbot output.
         if (!text) {
             return "";
         }
@@ -97,11 +104,13 @@ function createChatbot() {
     }
 
     function addMessage(text, type) {
+        // Append a message bubble and keep scroll pinned to the bottom.
         const msg = document.createElement("div");
         msg.className = `ncst-ai-message ${type}`;
         msg.innerHTML = formatMessage(text);
 
         if (type.includes("bot") && !type.includes("loading") && !type.includes("welcome")) {
+            // Copy button for bot answers (not for loading/welcome).
             const copyButton = document.createElement("button");
             copyButton.className = "ncst-ai-copy-btn";
             copyButton.title = "Copy response";
@@ -117,6 +126,7 @@ function createChatbot() {
 
             copyButton.addEventListener("click", async () => {
                 try {
+                    // Use Clipboard API when available.
                     await navigator.clipboard.writeText(text);
                     copyButton.innerHTML = "✓";
                     setTimeout(() => {
@@ -144,6 +154,7 @@ function createChatbot() {
     }
 
     async function sendMessage(optionText = null) {
+        // Send either the quick-option text or the input value.
         const text = optionText || input.value.trim();
 
         if (!text) {
@@ -153,6 +164,7 @@ function createChatbot() {
         addMessage(text, "user");
         input.value = "";
 
+        // Show a temporary bot bubble while waiting for the server.
         const loadingMessage = addMessage("Typing...", "bot loading");
 
         try {
@@ -183,4 +195,5 @@ function createChatbot() {
     });
 }
 
+// Initialize after DOM is ready.
 document.addEventListener("DOMContentLoaded", createChatbot);

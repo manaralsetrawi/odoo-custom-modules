@@ -1,14 +1,26 @@
+"""Finance review workflow + exception controls for `account.move`.
+
+This file extends invoices/bills with:
+- A finance review approval flow (submit/approve/reject)
+- An automated exception checker that can block posting
+- A few wizard actions to show results / collect rejection reason
+"""
+
 from odoo import fields, models, _
 from odoo.exceptions import ValidationError
 
 
 class AccountMove(models.Model):
+    """Extend `account.move` with finance review + exception enforcement."""
+
     _inherit = 'account.move'
 
     # -------------------------------------------------------------------------
     # Finance review workflow for customer invoices only
     # -------------------------------------------------------------------------
 
+    # Main review state for customer invoices (out_invoice). This is independent
+    # from the standard `state` (draft/posted) and is used to gate posting.
     finance_review_state = fields.Selection([
         ('draft', 'Draft'),
         ('submitted', 'Submitted'),
@@ -61,6 +73,7 @@ class AccountMove(models.Model):
     # Exception control fields
     # -------------------------------------------------------------------------
 
+    # Exception status is set by `_run_finance_exception_checks()` and can block posting.
     finance_exception_status = fields.Selection([
         ('valid', 'Valid'),
         ('has_issue', 'Has Issue'),
@@ -120,6 +133,7 @@ class AccountMove(models.Model):
     # Kept only so nothing breaks if already referenced
     # -------------------------------------------------------------------------
 
+    # Compatibility fields for older views/reports that might still reference them.
     finance_readiness_status = fields.Selection([
         ('incomplete', 'Needs Completion'),
         ('ready', 'Ready for Review'),
@@ -154,10 +168,12 @@ class AccountMove(models.Model):
     # -------------------------------------------------------------------------
 
     def _is_review_target_document(self):
+        """Only customer invoices go through the finance *review* workflow."""
         self.ensure_one()
         return self.move_type == 'out_invoice'
 
     def _check_finance_invoice_user_group(self):
+        """Guard: users allowed to submit invoices for finance review."""
         if not (
             self.env.user.has_group('finance_review_workflow.group_finance_invoice_user') or
             self.env.user.has_group('finance_review_workflow.group_finance_invoice_reviewer')
@@ -167,12 +183,14 @@ class AccountMove(models.Model):
             )
 
     def _check_finance_invoice_reviewer_group(self):
+        """Guard: only reviewers can approve/reject/reset."""
         if not self.env.user.has_group('finance_review_workflow.group_finance_invoice_reviewer'):
             raise ValidationError(
                 _("Only the Finance Invoice Reviewer can perform this action.")
             )
 
     def _is_exception_target_document(self):
+        """Exception checks apply to both customer invoices and vendor bills."""
         self.ensure_one()
         return self.move_type in ('out_invoice', 'in_invoice')
 
@@ -222,7 +240,7 @@ class AccountMove(models.Model):
                 'finance_readiness_status': 'ready',
             }
 
-            # Real invoice/bill lines only
+            # Use only real lines (exclude sections/notes).
             real_lines = move.invoice_line_ids.filtered(lambda l: not l.display_type)
             has_tax = any(line.tax_ids for line in real_lines)
 
@@ -230,12 +248,13 @@ class AccountMove(models.Model):
             # Customer invoice checks
             # -------------------------------------------------------------
             if move.move_type == 'out_invoice':
+                # Block if required fields are missing or inconsistent.
                 if not move.invoice_date:
                     vals['finance_missing_invoice_date'] = True
                     issues.append("Invoice date is missing.")
                     status = 'blocked'
 
-                # Customer invoice must have either payment terms OR due date
+                # Customer invoice must have either payment terms OR a due date.
                 if not move.invoice_payment_term_id and not move.invoice_date_due:
                     vals['finance_missing_payment_term'] = True
                     issues.append("Either payment terms or due date must be provided.")
@@ -255,6 +274,7 @@ class AccountMove(models.Model):
             # Vendor bill checks
             # -------------------------------------------------------------
             if move.move_type == 'in_invoice':
+                # Vendor bills need ref + dates + tax; duplicates are blocked.
                 if not move.invoice_date:
                     vals['finance_missing_invoice_date'] = True
                     issues.append("Bill date is missing.")
@@ -278,6 +298,7 @@ class AccountMove(models.Model):
                     status = 'blocked'
 
                 if move.ref and move.partner_id:
+                    # Duplicate vendor bill reference is a common accounting issue.
                     duplicate_bill = self.search([
                         ('id', '!=', move.id),
                         ('move_type', '=', 'in_invoice'),
@@ -296,7 +317,7 @@ class AccountMove(models.Model):
                     issues.append("Bill date cannot be later than due date.")
                     status = 'blocked'
 
-                # keep old completeness fields synced only
+                # Keep old completeness fields synced (compat mode).
                 if vals['finance_missing_bill_reference'] or vals['finance_missing_bill_tax']:
                     vals['finance_readiness_status'] = 'incomplete'
                     old_issues = []
@@ -319,11 +340,7 @@ class AccountMove(models.Model):
     # -------------------------------------------------------------------------
 
     def action_submit_finance_review(self):
-        """
-        Before submitting:
-        - always run exception checks automatically
-        - block submit if invoice is not valid
-        """
+        """Submit draft customer invoice for finance review (after exception checks)."""
         self._check_finance_invoice_user_group()
 
         for move in self:
@@ -356,6 +373,7 @@ class AccountMove(models.Model):
             })
 
     def action_approve_finance_review(self):
+        """Approve a submitted customer invoice (reviewer only)."""
         self._check_finance_invoice_reviewer_group()
 
         for move in self:
@@ -375,6 +393,7 @@ class AccountMove(models.Model):
             })
 
     def action_open_finance_reject_wizard(self):
+        """Open a wizard popup to capture rejection reason."""
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
@@ -388,6 +407,7 @@ class AccountMove(models.Model):
         }
 
     def action_reject_finance_review(self):
+        """Reject a submitted customer invoice (requires a reason)."""
         self._check_finance_invoice_reviewer_group()
 
         for move in self:
@@ -410,6 +430,7 @@ class AccountMove(models.Model):
             })
 
     def action_reset_finance_review_to_draft(self):
+        """Return a draft customer invoice back to review state = draft."""
         self._check_finance_invoice_reviewer_group()
 
         for move in self:
@@ -428,6 +449,7 @@ class AccountMove(models.Model):
     # -------------------------------------------------------------------------
 
     def action_check_finance_exceptions(self):
+        """Run checks and show the results in a wizard popup."""
         self.ensure_one()
         self._run_finance_exception_checks()
 
@@ -452,6 +474,7 @@ class AccountMove(models.Model):
         }
 
     def action_generate_finance_summary_report(self):
+        """Print/export the finance review summary report."""
         self.ensure_one()
         return self.env.ref(
             'finance_review_workflow.action_finance_review_summary_report'
@@ -462,6 +485,9 @@ class AccountMove(models.Model):
     # -------------------------------------------------------------------------
 
     def action_post(self):
+        # Hard business rule:
+        # - Customer invoices must be finance-approved before posting.
+        # - Any blocked exception (invoice or bill) prevents posting.
         for move in self:
             if move._is_review_target_document() and move.finance_review_state != 'approved':
                 raise ValidationError(

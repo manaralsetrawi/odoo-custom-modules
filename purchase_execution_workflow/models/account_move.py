@@ -9,6 +9,7 @@ class AccountMove(models.Model):
     # PHASE 5 - VENDOR BILL VERIFICATION AND 3-WAY MATCHING SUPPORT
     # -------------------------------------------------------------------------
 
+    # Link vendor bill -> PO (used for 3-way matching and validation).
     purchase_order_id = fields.Many2one(
         'purchase.order',
         string='Related Purchase Order',
@@ -28,6 +29,7 @@ class AccountMove(models.Model):
         help='Purchase Request linked indirectly through the related Purchase Order.'
     )
 
+    # Custom verification state independent from standard `state`/`payment_state`.
     invoice_verification_status = fields.Selection([
         ('pending', 'Pending'),
         ('verified', 'Verified'),
@@ -60,6 +62,7 @@ class AccountMove(models.Model):
         help='Reason entered if the vendor bill is rejected during verification.'
     )
 
+    # Technical helper: simplifies view/button conditions.
     is_vendor_bill = fields.Boolean(
         string='Is Vendor Bill',
         compute='_compute_is_vendor_bill',
@@ -70,6 +73,7 @@ class AccountMove(models.Model):
     # PHASE 6 - PAYMENT TRACKING HELPER
     # -------------------------------------------------------------------------
 
+    # Friendly label mapped from Odoo's `payment_state`.
     payment_tracking_status = fields.Selection([
         ('not_paid', 'Not Paid'),
         ('partial', 'Partially Paid'),
@@ -85,6 +89,7 @@ class AccountMove(models.Model):
 
     @api.depends('invoice_line_ids.purchase_line_id.order_id', 'invoice_origin')
     def _compute_purchase_order_id(self):
+        """Find the related PO from invoice lines or `invoice_origin`."""
         for move in self:
             purchase_orders = move.invoice_line_ids.mapped('purchase_line_id.order_id')
 
@@ -98,11 +103,13 @@ class AccountMove(models.Model):
 
     @api.depends('move_type')
     def _compute_is_vendor_bill(self):
+        """True only for vendor bills (`in_invoice`)."""
         for move in self:
             move.is_vendor_bill = move.move_type == 'in_invoice'
 
     @api.depends('payment_state')
     def _compute_payment_tracking_status(self):
+        """Map Odoo payment state to a simpler status used by dashboards."""
         for move in self:
             if move.payment_state == 'not_paid':
                 move.payment_tracking_status = 'not_paid'
@@ -118,12 +125,14 @@ class AccountMove(models.Model):
                 move.payment_tracking_status = 'unknown'
 
     def _check_invoice_verifier_access(self):
+        """Access control: only the Invoice Verifier group can verify/reject."""
         if not self.env.user.has_group('purchase_execution_workflow.group_invoice_verifier'):
             raise AccessError(
                 'Only an Invoice Verifier can verify or reject vendor bills.'
             )
 
     def _check_vendor_bill_link(self):
+        """Guard: verification actions are allowed only on vendor bills with a PO link."""
         for move in self:
             if move.move_type != 'in_invoice':
                 raise ValidationError('This action is only allowed for vendor bills.')
@@ -134,6 +143,7 @@ class AccountMove(models.Model):
                 )
 
     def _check_vendor_matches_po(self):
+        """Guard: bill vendor must match the linked PO vendor."""
         for move in self:
             if move.purchase_order_id and move.partner_id != move.purchase_order_id.partner_id:
                 raise ValidationError(
@@ -141,6 +151,7 @@ class AccountMove(models.Model):
                 )
 
     def _check_bill_quantities_against_received_quantities(self):
+        """3-way match helper: ensure billed qty doesn't exceed received qty."""
         for move in self:
             if not move.purchase_order_id:
                 continue
@@ -164,6 +175,7 @@ class AccountMove(models.Model):
 
 
     def action_verify_vendor_bill(self):
+        """Mark a vendor bill as verified after validations succeed."""
         self._check_invoice_verifier_access()
 
         for move in self:
@@ -177,6 +189,7 @@ class AccountMove(models.Model):
             move.invoice_rejection_reason = False
 
     def action_open_invoice_reject_wizard(self):
+        """Open a wizard to capture rejection reason."""
         self._check_invoice_verifier_access()
         self.ensure_one()
 
@@ -198,6 +211,7 @@ class AccountMove(models.Model):
         }
 
     def action_reject_vendor_bill(self):
+        """Reject vendor bill (requires rejection reason)."""
         self._check_invoice_verifier_access()
 
         for move in self:

@@ -1,3 +1,12 @@
+"""CRM Lead extensions for project-request workflow.
+
+This file adds:
+- Project request workflow fields (technical review, proposal, approvals)
+- Follow-up tracking fields (used by dashboard + cron reminders)
+- Convenience compute helpers for UI buttons/roles
+- Optional PDF->summary generation using OpenAI
+"""
+
 import base64
 import re
 from datetime import timedelta
@@ -10,8 +19,11 @@ from odoo.exceptions import UserError, ValidationError
 
 
 class CrmLead(models.Model):
+    """Extend `crm.lead` with a guided project-request flow."""
+
     _inherit = 'crm.lead'
 
+    # Technical review inputs set by technical reviewers.
     technical_feasibility = fields.Selection([
         ('pending', 'Pending'),
         ('feasible', 'Feasible'),
@@ -24,6 +36,7 @@ class CrmLead(models.Model):
         ('high', 'High'),
     ], string="Complexity Level", tracking=True)
 
+    # Planning / proposal information captured during the flow.
     estimated_duration = fields.Char(string="Estimated Delivery Duration", tracking=True)
     project_deadline = fields.Date(string="Project Deadline", tracking=True)
     proposal_summary = fields.Text(string="Proposal Summary", tracking=True)
@@ -31,6 +44,7 @@ class CrmLead(models.Model):
     negotiation_notes = fields.Text(string="Negotiation Notes", tracking=True)
     rejection_reason = fields.Text(string="Rejection Reason", tracking=True)
 
+    # Approval state is separate from stage to support more explicit logic + auditing.
     approval_state = fields.Selection([
         ('not_needed', 'Not Needed'),
         ('to_approve', 'To Approve'),
@@ -64,6 +78,7 @@ class CrmLead(models.Model):
         tracking=True,
     )
 
+    # Follow-up tracking (these fields are also used by dashboard KPIs).
     last_followup_date = fields.Date(string="Last Follow-up Date", tracking=True)
     next_followup_date = fields.Date(string="Next Follow-up Date", tracking=True)
 
@@ -74,6 +89,7 @@ class CrmLead(models.Model):
         ('overdue', 'Overdue'),
     ], string="Follow-up Status", default='not_started', tracking=True)
 
+    # Flag toggled by the cron when follow-up becomes overdue.
     inactive_alert = fields.Boolean(string="Needs Follow-up", default=False, tracking=True)
 
     # Proposal PDF fields
@@ -115,6 +131,7 @@ class CrmLead(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        """Create leads and schedule an initial follow-up activity."""
         records = super().create(vals_list)
         for record in records:
             record._create_followup_activity(
@@ -125,6 +142,7 @@ class CrmLead(models.Model):
 
     @api.depends('stage_id', 'stage_id.name')
     def _compute_stage_flags(self):
+        """Expose stage booleans for clean view logic."""
         for record in self:
             stage_name = (record.stage_id.name or '').strip()
 
@@ -139,6 +157,7 @@ class CrmLead(models.Model):
 
     @api.depends('stage_id', 'stage_id.name')
     def _compute_action_buttons(self):
+        """Compute visibility of flow buttons based on stage."""
         for record in self:
             stage_name = (record.stage_id.name or '').strip()
 
@@ -149,6 +168,7 @@ class CrmLead(models.Model):
             record.show_reject_btn = stage_name == 'Waiting Approval'
 
     def _compute_can_edit_technical_fields(self):
+        """Role check: who can edit technical feasibility fields."""
         user = self.env.user
         can_edit = (
             user.has_group('crm_workflow_custom.group_crm_technical_reviewer') or
@@ -158,6 +178,7 @@ class CrmLead(models.Model):
             record.can_edit_technical_fields = can_edit
 
     def _compute_can_edit_proposal_fields(self):
+        """Role check: who can edit proposal + planning fields."""
         user = self.env.user
         is_manager = user.has_group('crm_workflow_custom.group_crm_workflow_manager')
         is_reviewer = user.has_group('crm_workflow_custom.group_crm_technical_reviewer')
@@ -167,6 +188,7 @@ class CrmLead(models.Model):
             record.can_edit_proposal_fields = is_manager or (is_workflow_user and not is_reviewer)
 
     def _compute_can_use_flow_buttons(self):
+        """Role check: who can use workflow transition buttons."""
         user = self.env.user
         is_manager = user.has_group('crm_workflow_custom.group_crm_workflow_manager')
         is_reviewer = user.has_group('crm_workflow_custom.group_crm_technical_reviewer')
@@ -177,6 +199,7 @@ class CrmLead(models.Model):
 
     @api.onchange('complexity_level')
     def _onchange_complexity_level_auto_fill_planning(self):
+        """Suggest duration/deadline defaults from the selected complexity."""
         duration_map = {
             'low': 30,
             'medium': 90,
@@ -199,12 +222,14 @@ class CrmLead(models.Model):
 
     @api.constrains('partner_id', 'type')
     def _check_internal_contact_required(self):
+        """Enforce a contact for non-lead types."""
         for record in self:
             if record.type != 'lead' and not record.partner_id:
                 raise ValidationError(_("Contact is required."))
 
     @api.constrains('estimated_duration')
     def _check_estimated_duration_value(self):
+        """Basic validation to avoid negative/zero durations."""
         for record in self:
             value = (record.estimated_duration or '').strip()
             if not value:
@@ -221,17 +246,20 @@ class CrmLead(models.Model):
 
     @api.constrains('proposal_amount')
     def _check_proposal_amount_value(self):
+        """Prevent invalid (<= 0) project values."""
         for record in self:
             if record.proposal_amount and record.proposal_amount <= 0:
                 raise ValidationError(_("Estimated Project Value must be greater than 0."))
 
     def _get_stage_by_name(self, stage_name):
+        """Fetch a `crm.stage` by exact name (raises if missing)."""
         stage = self.env['crm.stage'].search([('name', '=', stage_name)], limit=1)
         if not stage:
             raise UserError(_("Stage '%s' was not found.") % stage_name)
         return stage
 
     def _create_followup_activity(self, summary, note=''):
+        """Create a TODO activity for the assigned salesperson (if any)."""
         activity_type = self.env.ref('mail.mail_activity_data_todo', raise_if_not_found=False)
         if not activity_type:
             return
@@ -253,6 +281,7 @@ class CrmLead(models.Model):
             })
 
     def _extract_text_from_uploaded_pdf(self):
+        """Read up to ~20 pages of text from the uploaded proposal PDF."""
         self.ensure_one()
 
         if not self.proposal_pdf:
@@ -297,6 +326,7 @@ class CrmLead(models.Model):
         return extracted_text
 
     def _extract_summary_from_responses_payload(self, payload):
+        """Normalize different response formats into a single text summary."""
         if payload.get("output_text"):
             return payload.get("output_text", "").strip()
 
@@ -316,6 +346,7 @@ class CrmLead(models.Model):
         return "\n".join(collected).strip()
 
     def _call_openai_summary_api(self, source_text):
+        """Call OpenAI Responses API to summarize the PDF text."""
         self.ensure_one()
 
         config = self.env['ir.config_parameter'].sudo()
@@ -396,6 +427,7 @@ class CrmLead(models.Model):
         return summary_text.strip()
 
     def action_generate_summary_from_pdf(self):
+        """Button action: generate and store `proposal_summary` from `proposal_pdf`."""
         for record in self:
             extracted_text = record._extract_text_from_uploaded_pdf()
             summary_text = record._call_openai_summary_api(extracted_text)
@@ -410,6 +442,7 @@ class CrmLead(models.Model):
         }
 
     def _get_proposal_validation_errors(self):
+        """Return a list of missing/invalid fields required to proceed."""
         self.ensure_one()
         errors = []
 
@@ -452,6 +485,7 @@ class CrmLead(models.Model):
         return errors
 
     def _raise_combined_validation_error(self, errors, action_label):
+        """Raise one friendly error message containing all validation issues."""
         if errors:
             message = _("Please complete the following before %s:\n- %s") % (
                 action_label,
@@ -461,6 +495,7 @@ class CrmLead(models.Model):
 
     @api.model
     def sync_workflow_stages(self):
+        """Create/update the project-request stages and migrate old stages."""
         stage_model = self.env['crm.stage'].sudo()
         lead_model = self.env['crm.lead'].sudo()
 
@@ -512,6 +547,7 @@ class CrmLead(models.Model):
         return True
 
     def action_start_analysis(self):
+        """Move lead to 'Requirement Analysis' and start follow-up tracking."""
         for record in self:
             stage = record._get_stage_by_name('Requirement Analysis')
             record.stage_id = stage.id
@@ -524,6 +560,7 @@ class CrmLead(models.Model):
             )
 
     def action_submit_proposal(self):
+        """Move to 'Proposal Submitted' after validating proposal fields."""
         for record in self:
             errors = record._get_proposal_validation_errors()
             record._raise_combined_validation_error(errors, _("submitting the proposal"))
@@ -540,6 +577,7 @@ class CrmLead(models.Model):
             )
 
     def action_send_to_approval(self):
+        """Move to 'Waiting Approval' (keeps audit fields in approval_state)."""
         for record in self:
             errors = record._get_proposal_validation_errors()
             record._raise_combined_validation_error(errors, _("sending for approval"))
@@ -555,6 +593,7 @@ class CrmLead(models.Model):
             )
 
     def action_approve_project(self):
+        """Approve: move stage, set approval audit fields, stop follow-ups."""
         for record in self:
             stage = record._get_stage_by_name('Approved')
             record.stage_id = stage.id
@@ -566,6 +605,7 @@ class CrmLead(models.Model):
             record.inactive_alert = False
 
     def action_reject_project(self):
+        """Open a wizard to collect rejection reason."""
         self.ensure_one()
 
         return {
@@ -581,6 +621,7 @@ class CrmLead(models.Model):
         }
 
     def action_reject_project_confirm(self):
+        """Reject: requires a reason, then updates audit fields and ends follow-up."""
         for record in self:
             if not record.rejection_reason:
                 raise ValidationError(_("Please enter the rejection reason before rejecting the project."))
@@ -596,6 +637,7 @@ class CrmLead(models.Model):
 
     @api.model
     def _cron_check_inactive_leads(self):
+        """Cron: mark overdue follow-ups and create a reminder activity."""
         today = fields.Date.today()
 
         leads = self.search([

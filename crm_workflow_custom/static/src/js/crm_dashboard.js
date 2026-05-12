@@ -6,14 +6,20 @@ import { useService } from "@web/core/utils/hooks";
 
 class CrmDashboard extends Component {
     setup() {
+        // Odoo services:
+        // - orm: RPC helper to call Python model methods
+        // - action: navigation helper to open views (kanban/list/form)
         this.orm = useService("orm");
         this.action = useService("action");
 
+        // Base domain for "Project Request" opportunities.
+        // Keep this aligned with the backend domain used in `crm.dashboard`.
         this.baseDomain = [
             ["type", "=", "opportunity"],
             ["request_type", "=", "project_request"],
         ];
 
+        // Local reactive state (defaults prevent template crashes before RPC returns).
         this.state = useState({
             data: {
                 total_requests: 0,
@@ -29,6 +35,7 @@ class CrmDashboard extends Component {
         });
 
         onWillStart(async () => {
+            // Fetch aggregated dashboard payload from the backend.
             this.state.data = await this.orm.call(
                 "crm.dashboard",
                 "get_dashboard_data",
@@ -38,6 +45,7 @@ class CrmDashboard extends Component {
     }
 
     openLeadRecord(recordId) {
+        // Open a single CRM lead/opportunity (form view).
         this.action.doAction({
             type: "ir.actions.act_window",
             name: "CRM Request",
@@ -49,6 +57,8 @@ class CrmDashboard extends Component {
     }
 
     openFilteredRequests(filterType) {
+        // Open a list/kanban of requests filtered by KPI tile.
+        // Note: stage filters depend on exact stage names.
         let domain = [...this.baseDomain];
         let actionName = "Project Requests";
 

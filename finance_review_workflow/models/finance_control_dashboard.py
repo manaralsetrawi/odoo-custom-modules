@@ -1,12 +1,27 @@
+"""Finance control dashboard model.
+
+This model exists to show a small set of KPI counters and provide buttons that
+open the corresponding `account.move` lists.
+"""
+
 from odoo import api, fields, models
 
 
 class FinanceControlDashboard(models.Model):
+    """Dashboard record used by a form view.
+
+    Quick Odoo reminder:
+    - Computed fields: `compute=...` fills values automatically.
+    - Action methods: `action_*` returns an `ir.actions.*` dict to open a view.
+    """
+
     _name = 'finance.control.dashboard'
     _description = 'Finance Control Dashboard'
 
+    # Single title field shown in the dashboard header.
     name = fields.Char(default='Finance Control', readonly=True)
 
+    # KPI counters (computed, read-only). These are displayed as tiles.
     draft_invoice_count = fields.Integer(
         string='Draft Invoices',
         compute='_compute_dashboard_counts',
@@ -40,15 +55,25 @@ class FinanceControlDashboard(models.Model):
 
     @api.depends()
     def _compute_dashboard_counts(self):
-        """Compute quick finance control counts."""
+        """Compute all KPI counters.
+
+        Uses `search_count` for performance.
+        """
+        # `sudo()` makes the KPI numbers stable regardless of the user's access
+        # rights (common for dashboards). If you want per-user numbers, remove it.
         Move = self.env['account.move'].sudo()
 
         for rec in self:
+            # Standard Odoo invoice model:
+            # - move_type = out_invoice -> customer invoices
+            # - state = draft/posted -> document state
             rec.draft_invoice_count = Move.search_count([
                 ('move_type', '=', 'out_invoice'),
                 ('state', '=', 'draft'),
             ])
 
+            # Custom workflow fields (added by this module):
+            # - finance_review_state: tracks finance review status (submitted/approved/rejected)
             rec.waiting_review_count = Move.search_count([
                 ('move_type', '=', 'out_invoice'),
                 ('state', '=', 'draft'),
@@ -67,9 +92,11 @@ class FinanceControlDashboard(models.Model):
 
             rec.blocked_documents_count = Move.search_count([
                 ('move_type', 'in', ['out_invoice', 'in_invoice']),
+                # finance_exception_status is a custom flag used to block processing.
                 ('finance_exception_status', '=', 'blocked'),
             ])
 
+            # Unpaid posted documents (used for finance follow-up).
             rec.unpaid_posted_count = Move.search_count([
                 ('move_type', 'in', ['out_invoice', 'in_invoice']),
                 ('state', '=', 'posted'),
@@ -82,7 +109,7 @@ class FinanceControlDashboard(models.Model):
 
     @api.model
     def action_open_finance_control_dashboard(self):
-        """Open or create the single dashboard record."""
+        """Open (and create if missing) the single dashboard record."""
         dashboard = self.search([], limit=1)
         if not dashboard:
             dashboard = self.create({})
@@ -101,6 +128,7 @@ class FinanceControlDashboard(models.Model):
     # ---------------------------------------------------------
 
     def _open_moves(self, title, domain, context=None):
+        """Helper: build an action that opens `account.move` with a domain."""
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
@@ -117,6 +145,7 @@ class FinanceControlDashboard(models.Model):
     # ---------------------------------------------------------
 
     def action_open_draft_invoices(self):
+        # Action method (button): open draft customer invoices.
         self.ensure_one()
         return self._open_moves(
             'Draft Invoices',
@@ -128,6 +157,7 @@ class FinanceControlDashboard(models.Model):
         )
 
     def action_open_waiting_review_invoices(self):
+        # Action method (button): open invoices with finance review submitted.
         self.ensure_one()
         return self._open_moves(
             'Invoices Waiting Review',
@@ -140,6 +170,7 @@ class FinanceControlDashboard(models.Model):
         )
 
     def action_open_approved_invoices(self):
+        # Action method (button): open finance-approved invoices.
         self.ensure_one()
         return self._open_moves(
             'Approved Invoices',
@@ -151,6 +182,7 @@ class FinanceControlDashboard(models.Model):
         )
 
     def action_open_rejected_invoices(self):
+        # Action method (button): open finance-rejected invoices.
         self.ensure_one()
         return self._open_moves(
             'Rejected Invoices',
@@ -162,6 +194,7 @@ class FinanceControlDashboard(models.Model):
         )
 
     def action_open_blocked_documents(self):
+        # Action method (button): open blocked customer/vendor documents.
         self.ensure_one()
         return self._open_moves(
             'Blocked Documents',
@@ -172,6 +205,7 @@ class FinanceControlDashboard(models.Model):
         )
 
     def action_open_unpaid_posted_documents(self):
+        # Action method (button): open posted documents that still need payment follow-up.
         self.ensure_one()
         return self._open_moves(
             'Unpaid Posted Documents',

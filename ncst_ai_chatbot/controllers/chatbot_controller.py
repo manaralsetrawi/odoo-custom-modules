@@ -1,3 +1,12 @@
+"""NCST AI chatbot HTTP controller.
+
+This controller exposes a JSON endpoint consumed by the frontend chatbot widget.
+It tries to answer using:
+1) simple built-in commands
+2) live Odoo data (fast, deterministic)
+3) OpenAI fallback (free-text answers)
+"""
+
 import logging
 import requests
 
@@ -11,6 +20,8 @@ class NCSTAIChatbotController(http.Controller):
 
     @http.route("/ncst_ai_chatbot/message", type="json", auth="user")
     def send_message(self, message=None):
+        # `type="json"` means this method receives JSON params and returns JSON.
+        # `auth="user"` requires a logged-in user (request.env uses that user's access rules).
         # Main JSON endpoint called by chatbot.js via RPC.
         # Routing order:
         # 1) validate input
@@ -24,13 +35,16 @@ class NCSTAIChatbotController(http.Controller):
         message_lower = message.lower().strip()
 
         try:
+            # Lightweight command-like messages (no AI call needed).
             if message_lower in ["help", "commands", "what can you do"]:
                 return {"success": True, "reply": self._get_help_message()}
 
+            # Live handlers return a string reply or False.
             live_reply = self._handle_live_odoo_question(message_lower)
             if live_reply:
                 return {"success": True, "reply": live_reply}
 
+            # Fallback: use OpenAI for general explanations.
             return self._ask_openai(message)
 
         except Exception as e:
@@ -68,6 +82,8 @@ class NCSTAIChatbotController(http.Controller):
     # ---------------------------------------------------------
 
     def _handle_live_odoo_question(self, message_lower):
+        # Keyword routing for "live" answers.
+        # Keep conditions simple and predictable (avoid AI hallucinations).
         if (
             ("absent" in message_lower or "absence" in message_lower or "did not attend" in message_lower)
             and ("today" in message_lower or "employees" in message_lower or "who" in message_lower)
@@ -100,10 +116,12 @@ class NCSTAIChatbotController(http.Controller):
         return False
 
     def _safe_get_pending_crm_requests(self):
+        # Safe wrapper: always return a user-friendly string, never a traceback.
         try:
             Lead = request.env["crm.lead"]
 
             domain = [
+                # Custom fields from the CRM intake module.
                 ("request_type", "=", "project_request"),
                 ("type", "=", "lead"),
                 ("intake_state", "in", ["submitted", "under_review"]),
@@ -130,11 +148,13 @@ class NCSTAIChatbotController(http.Controller):
             return "I could not load CRM project requests. Please check the CRM fields."
 
     def _safe_get_finance_invoices_waiting_review(self):
+        # Shows invoices that are still in Odoo draft and not yet finance-approved.
         try:
             Move = request.env["account.move"]
 
             domain = [
                 ("move_type", "=", "out_invoice"),
+                # `finance_review_state` is a custom workflow field.
                 ("finance_review_state", "in", ["draft", "submitted"]),
                 ("state", "=", "draft"),
             ]
@@ -163,6 +183,7 @@ class NCSTAIChatbotController(http.Controller):
             return "I could not load finance invoices. Please check the finance review fields."
 
     def _safe_get_procurement_pending_approvals(self):
+        # Shows purchase orders waiting for the financial approval step.
         try:
             PurchaseOrder = request.env["purchase.order"]
 
@@ -199,6 +220,8 @@ class NCSTAIChatbotController(http.Controller):
     # ---------------------------------------------------------
 
     def _ask_openai(self, message):
+        # OpenAI is used only as a fallback when no live handler matches.
+        # API key/model are stored in Odoo system parameters.
         config = request.env["ir.config_parameter"].sudo()
         api_key = config.get_param("openai_api_key")
         model = config.get_param("openai_model") or "gpt-3.5-turbo"
@@ -209,6 +232,7 @@ class NCSTAIChatbotController(http.Controller):
                 "reply": "OpenAI API key is not configured in Odoo system parameters.",
             }
         # External API call with timeout to avoid hanging request threads.
+        # This uses the legacy Chat Completions endpoint.
         response = requests.post(
             "https://api.openai.com/v1/chat/completions",
             headers={
@@ -235,13 +259,16 @@ class NCSTAIChatbotController(http.Controller):
             }
 
         result = response.json()
+        # Response format: choices[0].message.content contains the assistant text.
         reply = result["choices"][0]["message"]["content"]
 
         return {
             "success": True,
             "reply": reply,
         }
+
     def _safe_get_absent_employees_today(self):
+        # Safe wrapper around attendance logic.
         try:
             return self._get_absent_employees_today()
         except Exception as e:
@@ -250,6 +277,7 @@ class NCSTAIChatbotController(http.Controller):
 
 
     def _get_absent_employees_today(self):
+        # Uses `hr.attendance` check-in timestamps to infer presence for the day.
         today = fields.Date.context_today(request.env.user)
 
         Employee = request.env["hr.employee"]
@@ -279,6 +307,7 @@ class NCSTAIChatbotController(http.Controller):
 
 
     def _safe_get_paused_projects_due_to_absence(self, message_lower):
+        # Safe wrapper around project assignment logic.
         try:
             return self._get_paused_projects_due_to_absence(message_lower)
         except Exception as e:
@@ -287,6 +316,7 @@ class NCSTAIChatbotController(http.Controller):
 
 
     def _get_paused_projects_due_to_absence(self, message_lower):
+        # Finds absent employees, then finds active assignments that include them.
         today = fields.Date.context_today(request.env.user)
 
         Employee = request.env["hr.employee"]
@@ -308,6 +338,7 @@ class NCSTAIChatbotController(http.Controller):
         selected_employees = absent_employees
 
         if "all" not in message_lower:
+            # If user asked for a specific employee, do a simple name match.
             matched = absent_employees.filtered(
                 lambda emp: emp.name and emp.name.lower() in message_lower
             )
@@ -320,6 +351,7 @@ class NCSTAIChatbotController(http.Controller):
                 )
 
         assignments = Assignment.search([
+            # `employee_ids` is a many2many on the assignment model.
             ("employee_ids", "in", selected_employees.ids),
             ("planned_start_date", "<=", today),
             ("planned_end_date", ">=", today),
@@ -355,6 +387,8 @@ class NCSTAIChatbotController(http.Controller):
         return "\n".join(lines)
 
     def _get_ncst_system_prompt(self):
+        # System prompt anchors the AI to NCST's custom Odoo modules and terminology.
+        # Keep it updated when workflows/labels change.
         return """
 You are NCST AI Assistant inside the NCST Odoo ERP system.
 
