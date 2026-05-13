@@ -434,8 +434,8 @@ class PurchaseRequest(models.Model):
             if 79 not in user_group_ids and 61 not in user_group_ids:
                 raise UserError("Only users in the Teacher or Administrator groups can delete purchase requests.")
 
-            if rec.state != 'draft':
-                raise UserError("Only draft purchase requests can be deleted.")
+            # if rec.state != 'draft':
+            #     raise UserError("Only draft purchase requests can be deleted.")
 
         return super().unlink()
 
