@@ -615,7 +615,7 @@ class CrmProjectRequestLead(models.Model):
 
     @api.model
     def get_project_request_dashboard_data(self):
-        Lead = self.env['crm.lead']
+        Lead = self.env['crm.lead'].with_context(active_test=False)
 
         domain_base = [
             ('request_type', '=', 'project_request'),
@@ -637,6 +637,7 @@ class CrmProjectRequestLead(models.Model):
             ('priority', '=', '3'),
         ]
 
+    
         recent_requests = Lead.search(
             domain_base,
             order='create_date desc',
@@ -659,6 +660,7 @@ class CrmProjectRequestLead(models.Model):
                 'status': dict(lead._fields['intake_state'].selection).get(lead.intake_state),
                 'priority': lead.priority,
                 'budget': lead.intake_requested_budget,
+                'active': lead.active,
             } for lead in recent_requests],
         }
     
@@ -694,6 +696,7 @@ class CrmProjectRequestLead(models.Model):
                 'default_type': 'lead',
                 'default_request_type': 'project_request',
                 'group_by': False,
+                'active_test': False,
             },
             'target': 'current',
         }
