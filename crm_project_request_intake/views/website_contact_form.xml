@@ -33,7 +33,7 @@
                                     <h4 class="crm_request_form_title">Send Us a Message</h4>
 
                                     <t t-if="request.params.get('success')">
-                                        <div class="alert alert-success" role="alert">
+                                        <div id="success_alert" class="alert alert-success" role="alert">
                                             Your request has been submitted successfully.
                                         </div>
                                     </t>
@@ -182,6 +182,22 @@
                                             </button>
                                         </div>
                                     </form>
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function () {
+                                            const successAlert = document.getElementById("success_alert");
+
+                                            if (successAlert) {
+                                                setTimeout(function () {
+                                                    successAlert.style.transition = "opacity 0.5s ease";
+                                                    successAlert.style.opacity = "0";
+
+                                                    setTimeout(function () {
+                                                        successAlert.style.display = "none";
+                                                    }, 500);
+                                                }, 7000);
+                                            }
+                                        });
+                                    </script>
                                 </div>
 
                             </div>
