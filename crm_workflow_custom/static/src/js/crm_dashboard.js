@@ -6,9 +6,12 @@ import { useService } from "@web/core/utils/hooks";
 
 class CrmDashboard extends Component {
     setup() {
+        // -----------------------------------------------------------------
+        // SECTION: Odoo services and shared domain
+        // -----------------------------------------------------------------
         // Odoo services:
-        // - orm: RPC helper to call Python model methods
-        // - action: navigation helper to open views (kanban/list/form)
+        // - orm: calls Python model methods
+        // - action: opens views (kanban/list/form)
         this.orm = useService("orm");
         this.action = useService("action");
 
@@ -19,7 +22,10 @@ class CrmDashboard extends Component {
             ["request_type", "=", "project_request"],
         ];
 
-        // Local reactive state (defaults prevent template crashes before RPC returns).
+        // -----------------------------------------------------------------
+        // SECTION: Reactive state
+        // -----------------------------------------------------------------
+        // Defaults keep the template stable before the RPC returns.
         this.state = useState({
             data: {
                 total_requests: 0,
@@ -35,7 +41,7 @@ class CrmDashboard extends Component {
         });
 
         onWillStart(async () => {
-            // Fetch aggregated dashboard payload from the backend.
+            // Load the dashboard numbers and lists from the backend.
             this.state.data = await this.orm.call(
                 "crm.dashboard",
                 "get_dashboard_data",
@@ -45,7 +51,10 @@ class CrmDashboard extends Component {
     }
 
     openLeadRecord(recordId) {
-        // Open a single CRM lead/opportunity (form view).
+        // -----------------------------------------------------------------
+        // SECTION: Navigation helpers
+        // -----------------------------------------------------------------
+        // Open a single CRM lead/opportunity in form view.
         this.action.doAction({
             type: "ir.actions.act_window",
             name: "CRM Request",
@@ -57,8 +66,8 @@ class CrmDashboard extends Component {
     }
 
     openFilteredRequests(filterType) {
-        // Open a list/kanban of requests filtered by KPI tile.
-        // Note: stage filters depend on exact stage names.
+        // Open a list/kanban of requests filtered by the KPI tile.
+        // Stage filters depend on exact stage names.
         let domain = [...this.baseDomain];
         let actionName = "Project Requests";
 

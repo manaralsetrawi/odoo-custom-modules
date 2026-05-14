@@ -3,11 +3,17 @@
 import { rpc } from "@web/core/network/rpc";
 
 function createChatbot() {
+    // -----------------------------------------------------------------
+    // SECTION: Guard against duplicate widget
+    // -----------------------------------------------------------------
     // Prevent duplicate widget injection if assets reload.
     if (document.querySelector(".ncst-ai-chatbot-widget")) {
         return;
     }
 
+    // -----------------------------------------------------------------
+    // SECTION: Widget HTML
+    // -----------------------------------------------------------------
     // Static HTML for the floating chat widget.
     const chatbotHTML = `
         <div class="ncst-ai-chatbot-widget">
@@ -58,6 +64,9 @@ function createChatbot() {
 
     document.body.insertAdjacentHTML("beforeend", chatbotHTML);
 
+    // -----------------------------------------------------------------
+    // SECTION: DOM cache
+    // -----------------------------------------------------------------
     // Cache DOM elements to avoid repeated queries.
     const widget = document.querySelector(".ncst-ai-chatbot-widget");
     const button = widget.querySelector(".ncst-ai-chatbot-button");
@@ -68,8 +77,11 @@ function createChatbot() {
     const messages = widget.querySelector(".ncst-ai-chatbot-messages");
     const optionButtons = widget.querySelectorAll(".ncst-ai-quick-options button");
 
+    // -----------------------------------------------------------------
+    // SECTION: Basic UI events
+    // -----------------------------------------------------------------
     button.addEventListener("click", () => {
-        // Toggle visibility of the chat window.
+        // Toggle chat window visibility.
         windowBox.classList.toggle("active");
         input.focus();
     });
@@ -86,6 +98,9 @@ function createChatbot() {
         });
     });
 
+    // -----------------------------------------------------------------
+    // SECTION: Message formatting helpers
+    // -----------------------------------------------------------------
     function formatMessage(text) {
         // Minimal HTML-escape + formatting for chatbot output.
         if (!text) {
@@ -103,6 +118,9 @@ function createChatbot() {
         return formatted;
     }
 
+    // -----------------------------------------------------------------
+    // SECTION: Message rendering
+    // -----------------------------------------------------------------
     function addMessage(text, type) {
         // Append a message bubble and keep scroll pinned to the bottom.
         const msg = document.createElement("div");
@@ -110,7 +128,7 @@ function createChatbot() {
         msg.innerHTML = formatMessage(text);
 
         if (type.includes("bot") && !type.includes("loading") && !type.includes("welcome")) {
-            // Copy button for bot answers (not for loading/welcome).
+            // Add a copy button for bot answers (not for loading/welcome).
             const copyButton = document.createElement("button");
             copyButton.className = "ncst-ai-copy-btn";
             copyButton.title = "Copy response";
@@ -153,6 +171,9 @@ function createChatbot() {
         return msg;
     }
 
+    // -----------------------------------------------------------------
+    // SECTION: Send message flow
+    // -----------------------------------------------------------------
     async function sendMessage(optionText = null) {
         // Send either the quick-option text or the input value.
         const text = optionText || input.value.trim();
@@ -186,6 +207,9 @@ function createChatbot() {
         }
     }
 
+    // -----------------------------------------------------------------
+    // SECTION: Input events
+    // -----------------------------------------------------------------
     sendButton.addEventListener("click", () => sendMessage());
 
     input.addEventListener("keydown", (event) => {

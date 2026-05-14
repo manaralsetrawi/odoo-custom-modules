@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <!--
+        QWeb template notes (beginner friendly):
+        - <t t-call="..."> includes another template (layout or container).
+        - <t t-foreach="docs" t-as="doc"> loops through report records.
+        - <t t-if="..."> shows content only when the condition is true.
+        - <t t-set="var" t-value="..."> creates a temporary variable.
+        - <t t-esc="..."> prints a field value safely (escaped).
+    -->
     <template id="finance_review_summary_template">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
