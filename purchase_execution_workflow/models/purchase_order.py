@@ -487,7 +487,7 @@ class PurchaseOrder(models.Model):
             self.order_line = [Command.clear()]
             return {
                 "domain": {
-                    [("is_company", "=", True)]
+                    "partner_id": [("is_company", "=", True)]
                 }
             }
 
