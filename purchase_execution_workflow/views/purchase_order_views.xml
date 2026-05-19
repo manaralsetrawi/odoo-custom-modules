@@ -8,7 +8,9 @@
 
             <!-- Show Purchase Request before Vendor -->
             <xpath expr="//field[@name='partner_id']" position="before">
-                <field name="purchase_request_id"/>
+                <field name="purchase_request_id"
+                    domain="[('state', '=', 'approved')]"
+                    options="{'no_create': True, 'no_create_edit': True}"/>
             </xpath>
 
             <!-- Restrict vendor selection to valid company vendors for the selected PR -->

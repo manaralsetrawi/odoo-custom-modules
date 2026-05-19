@@ -487,8 +487,24 @@ class PurchaseOrder(models.Model):
             self.order_line = [Command.clear()]
             return {
                 "domain": {
-                    "partner_id": [("is_company", "=", True)]
+                    "purchase_request_id": [("state", "=", "approved")],
+                    "partner_id": [("is_company", "=", True)],
                 }
+            }
+
+        if self.purchase_request_id.state != "approved":
+            self.purchase_request_id = False
+            self.partner_id = False
+            self.order_line = [Command.clear()]
+            return {
+                "warning": {
+                    "title": "Invalid Purchase Request",
+                    "message": "Only approved Purchase Requests can be selected for RFQ creation.",
+                },
+                "domain": {
+                    "purchase_request_id": [("state", "=", "approved")],
+                    "partner_id": [("is_company", "=", True)],
+                },
             }
 
         new_lines = [Command.clear()]
