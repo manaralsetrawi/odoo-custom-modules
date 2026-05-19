@@ -13,7 +13,7 @@
 
             <!-- Restrict vendor selection to valid company vendors for the selected PR -->
             <xpath expr="//field[@name='partner_id']" position="attributes">
-                <attribute name="domain">[('id', 'in', available_vendor_ids), ('supplier_rank', '&gt;', 0), ('is_company', '=', True)]</attribute>
+                <attribute name="domain">[('id', 'in', available_vendor_ids), ('is_company', '=', True)]</attribute>
                 <attribute name="readonly">not purchase_request_id</attribute>
                 <attribute name="placeholder">Select a vendor after choosing the Purchase Request...</attribute>
             </xpath>
