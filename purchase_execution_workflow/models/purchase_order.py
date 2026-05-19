@@ -354,7 +354,7 @@ class PurchaseOrder(models.Model):
             seller_partners = self.env["res.partner"]
             for seller in product.product_tmpl_id.seller_ids:
                 partner = self._get_supplier_partner_from_seller(seller)
-                if partner and partner.is_company and partner.supplier_rank > 0:
+                if partner and partner.is_company:
                     seller_partners |= partner
 
             product_vendor_ids = set(seller_partners.ids)
@@ -487,7 +487,7 @@ class PurchaseOrder(models.Model):
             self.order_line = [Command.clear()]
             return {
                 "domain": {
-                    "partner_id": [("supplier_rank", ">", 0), ("is_company", "=", True)]
+                    [("is_company", "=", True)]
                 }
             }
 
@@ -523,7 +523,6 @@ class PurchaseOrder(models.Model):
             "domain": {
                 "partner_id": [
                     ("id", "in", valid_vendors.ids),
-                    ("supplier_rank", ">", 0),
                     ("is_company", "=", True),
                 ]
             }
